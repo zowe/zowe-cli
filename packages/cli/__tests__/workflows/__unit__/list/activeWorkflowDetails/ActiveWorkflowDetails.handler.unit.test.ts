@@ -179,4 +179,50 @@ describe("List workflow details handler", () => {
                 listVariables);
         });
     });
+    describe("Credential censoring in error diagnostics", () => {
+        // Distinctive plaintext secrets that must never appear in serialized error output
+        const FAKE_PASSWORD = "sup3rSecretP4ssw0rd";
+        const FAKE_TOKEN = "sup3rSecretT0kenValue";
+
+        it("should censor credentials in additionalDetails when no workflow matches the name", async () => {
+            const handlerReq = require("../../../../../src/workflows/list/activeWorkflowDetails/ActiveWorkflowDetails.handler");
+            const handler = new handlerReq.default();
+
+            // No matching workflow key -> handler throws with arguments serialized into additionalDetails
+            ListWorkflows.getWfKey = jest.fn(async (_session): Promise<any> => undefined);
+
+            let error: any;
+            try {
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        host: "fake-host",
+                        user: "fake-user",
+                        password: FAKE_PASSWORD,
+                        tokenValue: FAKE_TOKEN,
+                        workflowName: "fake-name"
+                    },
+                    response: {
+                        format: { output: jest.fn() },
+                        data: { setObj: jest.fn(), setMessage: jest.fn() },
+                        console: { log: jest.fn(), error: jest.fn() }
+                    },
+                    profiles: { get: jest.fn() }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.additionalDetails).toBeDefined();
+            // Functional: secrets are redacted and non-sensitive context is retained
+            expect(error.additionalDetails).toContain("****");
+            expect(error.additionalDetails).toContain("fake-name");
+            expect(error.additionalDetails).toContain("fake-host");
+            // Regression: raw credentials must never leak into the serialized diagnostics
+            expect(error.additionalDetails).not.toContain(FAKE_PASSWORD);
+            expect(error.additionalDetails).not.toContain(FAKE_TOKEN);
+        });
+    });
 });

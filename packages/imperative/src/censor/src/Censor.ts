@@ -473,7 +473,7 @@ export class Censor {
         for (const [key, value] of Object.entries(data)) {
             if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
                 newData[key] = this.CENSOR_RESPONSE;
-            } else if (typeof value == "object") {
+            } else if (value != null && typeof value == "object") {
                 newData[key] = this.mCensorObject(value, secureValues);
             } else {
                 newData[key] = value;
