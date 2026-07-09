@@ -388,42 +388,14 @@ export class CommandProcessor {
                 `${CommandProcessor.ERROR_TAG} invoke(): Cannot invoke the handler for command "${this.definition.name}". The handler is blank.`);
         }
 
-        let commandLine = ImperativeConfig.instance.commandLine || this.commandLine;
-
-        // determine if the command has the user option and mask the user value
-        let regEx = /--(user|u) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the password option and mask the password value
-        regEx = /--(password|pass|pw) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the token value option and mask the token value
-        regEx = /--(token-value|tokenValue|tv) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert key file option and mask the value
-        regEx = /--(cert-key-file|certKeyFile) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert file passphrase option and mask the value
-        regEx = /--(cert-file-passphrase|certFilePassphrase) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
+        // Censor any sensitive options before the command line is logged. This
+        // masks credentials regardless of the separator used (`--opt value` or
+        // `--opt=value`), the dash form (short aliases), or embedded whitespace
+        // in the value (masked via the parsed arguments).
+        const commandLine = LoggerUtils.censorCommandLine(
+            ImperativeConfig.instance.commandLine || this.commandLine,
+            params.arguments
+        );
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);
         // Log the invoke

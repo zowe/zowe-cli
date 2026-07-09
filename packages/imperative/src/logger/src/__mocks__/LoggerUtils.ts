@@ -20,5 +20,6 @@ LoggerUtils.censorRawData.mockImplementation((data: string, category: string = "
 
 LoggerUtils.censorCLIArgs = loggerUtilsRequire.censorCLIArgs;
 LoggerUtils.censorYargsArguments = loggerUtilsRequire.censorYargsArguments;
+LoggerUtils.censorCommandLine = loggerUtilsRequire.censorCommandLine;
 
 exports.LoggerUtils = LoggerUtils;
