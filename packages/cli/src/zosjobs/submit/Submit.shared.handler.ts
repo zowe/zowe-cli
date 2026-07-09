@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
+import { LoggerUtils, IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import * as  fs from "fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
@@ -141,7 +141,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                 throw new ImperativeError({
                     msg: `Internal submit error: Unable to determine the JCL source. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(LoggerUtils.censorYargsArguments(params.arguments))
                 });
         }
 

@@ -74,6 +74,42 @@ describe("submit shared handler", () => {
             expect(error.message).toMatchSnapshot();
         });
 
+        it("should censor credentials from the diagnostics when the JCL source cannot be determined", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Distinctive plaintext secrets that must never appear in serialized error output
+            const FAKE_PASSWORD = "sup3rSecretP4ssw0rd";
+            const FAKE_TOKEN = "sup3rSecretT0kenValue";
+
+            // Fresh arguments object (avoid mutating the shared test constant) carrying credentials
+            const copy: any = Object.assign({}, DEFAULT_PARAMETERS);
+            copy.arguments = {
+                ...DEFAULT_PARAMETERS.arguments,
+                password: FAKE_PASSWORD,
+                tokenValue: FAKE_TOKEN
+            };
+
+            // The handler should fail (no JCL source specified -> default branch serializes arguments)
+            let error: any;
+            try {
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error instanceof ImperativeError).toBe(true);
+            expect(error.additionalDetails).toBeDefined();
+            // Functional: sensitive values redacted, non-sensitive context retained
+            expect(error.additionalDetails).toContain("****");
+            expect(error.additionalDetails).toContain(DEFAULT_PARAMETERS.arguments.host);
+            // Regression: raw credentials must never leak into the serialized diagnostics
+            expect(error.additionalDetails).not.toContain(FAKE_PASSWORD);
+            expect(error.additionalDetails).not.toContain(FAKE_TOKEN);
+        });
+
         it("should not transform an error thrown by the submit JCL API", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/zosjobs/submit/Submit.shared.handler");

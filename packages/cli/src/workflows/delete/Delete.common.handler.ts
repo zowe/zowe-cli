@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { LoggerUtils, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { ListWorkflows, IActiveWorkflows, IWorkflowsInfo, DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -61,7 +61,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 if (getWfKey === null || getWfKey.workflows.length === 0) {
                     throw new ImperativeError({
                         msg: `No workflows match the provided workflow name.`,
-                        additionalDetails: JSON.stringify(params)
+                        additionalDetails: JSON.stringify(LoggerUtils.censorYargsArguments(params.arguments))
                     });
                 }
                 const successWfs: IWorkflowsInfo[] = [];
@@ -106,7 +106,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 throw new ImperativeError({
                     msg: `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +
                     `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(LoggerUtils.censorYargsArguments(params.arguments))
                 });
         }
     }
