@@ -94,7 +94,7 @@ describe("submit shared handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(error instanceof ImperativeError).toBe(true);
+            expect(error).toBeInstanceOf(ImperativeError);
             expect(error.additionalDetails).toBeDefined();
             // Functional: sensitive values redacted, non-sensitive context retained
             expect(error.additionalDetails).toContain("****");
