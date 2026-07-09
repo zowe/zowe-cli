@@ -111,7 +111,7 @@ fn unit_test_util_get_socket_string() {
 }
 
 #[test]
-fn unit_test_util_get_daemon_token() {
+fn unit_test_util_get_daemon_token_from_dir() {
     use std::fs;
     use std::path::PathBuf;
 

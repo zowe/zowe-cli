@@ -125,7 +125,8 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 }
 
 /**
- * Read the secret daemon token from the owner-only daemon pid file.
+ * Read the secret daemon token from the owner-only pid file in the supplied
+ * daemon directory.
  *
  * The daemon stores a freshly generated token in `daemon_pid.json` (which is
  * restricted to the owner) every time it starts. We echo this token back to the
@@ -136,19 +137,10 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
  * because the daemon writes the pid file (with the token) as it starts up. If we
  * read it too early we could get a stale token from a previous daemon.
  *
+ * @param daemon_dir The daemon directory that contains `daemon_pid.json`.
+ *
  * @returns The token on success, or None if it could not be read (e.g. when
  *          talking to an older daemon that does not write a token).
- */
-pub fn util_get_daemon_token() -> Option<String> {
-    let daemon_dir = util_get_daemon_dir().ok()?;
-    util_get_daemon_token_from_dir(&daemon_dir)
-}
-
-/**
- * Read the daemon token from the pid file in the supplied daemon directory.
- * Split out from util_get_daemon_token so it can be unit tested against an
- * isolated directory without relying on the (process-global) ZOWE_DAEMON_DIR
- * environment variable.
  */
 pub(crate) fn util_get_daemon_token_from_dir(daemon_dir: &Path) -> Option<String> {
     let mut pid_file_path = daemon_dir.to_path_buf();
