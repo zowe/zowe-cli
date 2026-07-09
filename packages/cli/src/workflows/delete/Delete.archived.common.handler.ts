@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { Censor, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import {
     IArchivedWorkflows,
     IWorkflowsInfo,
@@ -156,7 +156,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                     msg:
                         `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(Censor.censorObject(params.arguments))
                 });
         }
     }
