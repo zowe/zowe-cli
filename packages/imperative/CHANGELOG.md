@@ -3,7 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
-- BugFix: Restricted profile properties sourced from team config to only those declared in the profile type's schema, preventing config injection of arbitrary command options.
+- BugFix: Restricted profile properties sourced from team config to only those declared in the profile type's schema, preventing config injection of arbitrary command options. [#2787](https://github.com/zowe/zowe-cli/pull/2787)
 
 ## `5.27.20`
 
