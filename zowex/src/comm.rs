@@ -21,9 +21,19 @@ use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
 #[cfg(target_family = "windows")]
+use std::os::windows::io::AsRawHandle;
+#[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
-use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
+use windows_sys::Win32::Foundation::{CloseHandle, LocalFree, ERROR_PIPE_BUSY, HANDLE, PSID};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::Security::Authorization::{GetSecurityInfo, SE_KERNEL_OBJECT};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::Security::{
+    EqualSid, GetTokenInformation, TokenUser, OWNER_SECURITY_INFORMATION, TOKEN_QUERY, TOKEN_USER,
+};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::System::Threading::{GetCurrentProcess, OpenProcessToken};
 
 extern crate base64;
 use base64::prelude::*;
@@ -77,7 +87,22 @@ pub async fn comm_establish_connection(
 
         #[cfg(target_family = "windows")]
         match ClientOptions::new().open(daemon_socket) {
-            Ok(stream) => break stream,
+            Ok(stream) => {
+                if windows_pipe_owned_by_current_user(&stream) {
+                    break stream;
+                }
+                // A pipe with our daemon's name exists, but it was not created by
+                // the current user. Since the pipe name is predictable, another
+                // local account could have squatted on it before our real daemon
+                // started, in order to capture what we would otherwise send to
+                // it. Drop this connection and keep retrying/starting our own
+                // daemon instead of trusting it.
+                eprintln!(
+                    "Warning: The Zowe daemon pipe at {} is not owned by the current user. Ignoring it.",
+                    daemon_socket
+                );
+                drop(stream);
+            }
             // Two possible errors when calling ClientOptions::open:
             // https://docs.rs/tokio/latest/tokio/net/windows/named_pipe/struct.ClientOptions.html#method.open
             Err(e)
@@ -150,6 +175,88 @@ pub async fn comm_establish_connection(
     };
 
     Ok(stream)
+}
+
+/**
+ * Confirm that the named pipe we just connected to was created by the
+ * current Windows user.
+ *
+ * The pipe name is derived from the user name (see util_get_socket_string),
+ * so it is guessable by any other local account on a shared host. That
+ * account could squat on the pipe name before our real daemon starts,
+ * causing us to hand it the command line, environment, stdin, and secure
+ * prompt replies that we intend for our own daemon. We compare the pipe's
+ * owning SID to our own, and treat any failure to positively confirm a
+ * match as untrusted.
+ *
+ * @param stream
+ *      The already-connected pipe client.
+ *
+ * @returns
+ *      true only if the pipe's owning security principal is the current user.
+ */
+#[cfg(target_family = "windows")]
+fn windows_pipe_owned_by_current_user(stream: &NamedPipeClient) -> bool {
+    unsafe {
+        let pipe_handle = stream.as_raw_handle() as HANDLE;
+
+        let mut pipe_owner_sid: PSID = std::ptr::null_mut();
+        let mut unused_group_sid: PSID = std::ptr::null_mut();
+        let mut security_descriptor: *mut core::ffi::c_void = std::ptr::null_mut();
+
+        let sec_info_result = GetSecurityInfo(
+            pipe_handle,
+            SE_KERNEL_OBJECT,
+            OWNER_SECURITY_INFORMATION,
+            &mut pipe_owner_sid,
+            &mut unused_group_sid,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            &mut security_descriptor,
+        );
+        if sec_info_result != 0 || pipe_owner_sid.is_null() {
+            eprintln!("Warning: Unable to verify the owner of the Zowe daemon pipe.");
+            return false;
+        }
+
+        let mut current_user_token: HANDLE = 0;
+        if OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut current_user_token) == 0 {
+            eprintln!("Warning: Unable to determine the identity of the current user.");
+            LocalFree(security_descriptor as _);
+            return false;
+        }
+
+        let mut token_user_len: u32 = 0;
+        GetTokenInformation(
+            current_user_token,
+            TokenUser,
+            std::ptr::null_mut(),
+            0,
+            &mut token_user_len,
+        );
+        let mut token_user_buf: Vec<u8> = vec![0; token_user_len as usize];
+        let got_token_user = GetTokenInformation(
+            current_user_token,
+            TokenUser,
+            token_user_buf.as_mut_ptr() as *mut core::ffi::c_void,
+            token_user_len,
+            &mut token_user_len,
+        );
+        CloseHandle(current_user_token);
+
+        if got_token_user == 0 {
+            eprintln!("Warning: Unable to read the identity of the current user.");
+            LocalFree(security_descriptor as _);
+            return false;
+        }
+
+        let current_user_sid = (*(token_user_buf.as_ptr() as *const TOKEN_USER)).User.Sid;
+        let owned_by_current_user = EqualSid(pipe_owner_sid, current_user_sid) != 0;
+
+        LocalFree(security_descriptor as _);
+
+        owned_by_current_user
+    }
 }
 
 /**
