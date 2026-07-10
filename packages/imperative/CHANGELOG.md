@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where the generated config schema applied type-specific property rules (such as the RSE `protocol: https`-only constraint) to typeless profiles, causing valid values like `protocol: http` to be flagged as invalid. Each conditional now requires the `type` property to be present. [#2602](https://github.com/zowe/zowe-cli/issues/2602)
 - BugFix: Fixed an issue where passing an object with `null` values to the `Censor.mCensorObject` function caused a runtime error. Now, only non-null values are recursively handled in this function. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
 
 ## `8.33.2`
