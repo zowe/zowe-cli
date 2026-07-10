@@ -97,11 +97,12 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
+            const tokenLength = 32;
             // Generate a fresh, high-entropy token for this daemon process. It is
             // stored in the owner-only PID file (see recordDaemonPid) and required
             // on every client request, so that only the user who can read that file
             // is able to drive this daemon.
-            this.mDaemonToken = crypto.randomBytes(32).toString("hex");
+            this.mDaemonToken = crypto.randomBytes(tokenLength).toString("hex");
             this.mServer = net.createServer((c) => {
                 new DaemonClient(c, this.mServer, this.mUser, this.mDaemonToken).run();
             });

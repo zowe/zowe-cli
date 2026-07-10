@@ -123,10 +123,11 @@ export class WebDiffManager implements IWebDiffManager {
      * @returns A safely-encoded JavaScript string literal
      */
     private encodeForScript(str: string): string {
+        const base16 = 16;
         return JSON.stringify(str)
             .replaceAll("<", "\\u003c")
             .replaceAll(">", "\\u003e")
-            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(16));
+            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(base16));
     }
 
     /**
