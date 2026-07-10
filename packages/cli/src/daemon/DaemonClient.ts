@@ -204,7 +204,7 @@ export class DaemonClient {
         // therefore the owner. This is what protects the daemon on Windows, where
         // the named pipe can be opened by local users other than the owner.
         if (!this.mDaemonToken) {
-            throw new ImperativeError({msg: "Unable to initialize the Daemon Client wihtout a proper token"});
+            throw new ImperativeError({msg: "Unable to initialize the Daemon Client without a proper token"});
         }
         if (!this.isValidToken(jsonData.token)) {
             Imperative.api.appLogger.warn("A connection was attempted with a missing or invalid daemon token.");
