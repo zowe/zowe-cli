@@ -30,7 +30,8 @@ use windows_sys::Win32::Foundation::{CloseHandle, LocalFree, ERROR_PIPE_BUSY, HA
 use windows_sys::Win32::Security::Authorization::{GetSecurityInfo, SE_KERNEL_OBJECT};
 #[cfg(target_family = "windows")]
 use windows_sys::Win32::Security::{
-    EqualSid, GetTokenInformation, TokenUser, OWNER_SECURITY_INFORMATION, TOKEN_QUERY, TOKEN_USER,
+    EqualSid, GetTokenInformation, TokenOwner, OWNER_SECURITY_INFORMATION, TOKEN_OWNER,
+    TOKEN_QUERY,
 };
 #[cfg(target_family = "windows")]
 use windows_sys::Win32::System::Threading::{GetCurrentProcess, OpenProcessToken};
@@ -186,8 +187,10 @@ pub async fn comm_establish_connection(
  * account could squat on the pipe name before our real daemon starts,
  * causing us to hand it the command line, environment, stdin, and secure
  * prompt replies that we intend for our own daemon. We compare the pipe's
- * owning SID to our own, and treat any failure to positively confirm a
- * match as untrusted.
+ * owning SID to the owner SID of our own token (not our user SID, since
+ * Windows assigns BUILTIN\Administrators as the default owner of objects
+ * created by an account in the local Administrators group), and treat any
+ * failure to positively confirm a match as untrusted.
  *
  * @param stream
  *      The already-connected pipe client.
@@ -226,32 +229,35 @@ fn windows_pipe_owned_by_current_user(stream: &NamedPipeClient) -> bool {
             return false;
         }
 
-        let mut token_user_len: u32 = 0;
+        let mut token_owner_len: u32 = 0;
         GetTokenInformation(
             current_user_token,
-            TokenUser,
+            TokenOwner,
             std::ptr::null_mut(),
             0,
-            &mut token_user_len,
+            &mut token_owner_len,
         );
-        let mut token_user_buf: Vec<u8> = vec![0; token_user_len as usize];
-        let got_token_user = GetTokenInformation(
+        let mut token_owner_buf: Vec<u8> = vec![0; token_owner_len as usize];
+        let got_token_owner = GetTokenInformation(
             current_user_token,
-            TokenUser,
-            token_user_buf.as_mut_ptr() as *mut core::ffi::c_void,
-            token_user_len,
-            &mut token_user_len,
+            TokenOwner,
+            token_owner_buf.as_mut_ptr() as *mut core::ffi::c_void,
+            token_owner_len,
+            &mut token_owner_len,
         );
         CloseHandle(current_user_token);
 
-        if got_token_user == 0 {
-            eprintln!("Warning: Unable to read the identity of the current user.");
+        if got_token_owner == 0 || (token_owner_len as usize) < std::mem::size_of::<TOKEN_OWNER>()
+        {
+            eprintln!("Warning: Unable to determine the identity of the current user.");
             LocalFree(security_descriptor as _);
             return false;
         }
 
-        let current_user_sid = (*(token_user_buf.as_ptr() as *const TOKEN_USER)).User.Sid;
-        let owned_by_current_user = EqualSid(pipe_owner_sid, current_user_sid) != 0;
+        let token_owner: TOKEN_OWNER =
+            std::ptr::read_unaligned(token_owner_buf.as_ptr() as *const TOKEN_OWNER);
+        let current_user_owner_sid = token_owner.Owner;
+        let owned_by_current_user = EqualSid(pipe_owner_sid, current_user_owner_sid) != 0;
 
         LocalFree(security_descriptor as _);
 
