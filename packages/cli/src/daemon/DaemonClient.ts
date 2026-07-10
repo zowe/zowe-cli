@@ -39,11 +39,10 @@ export class DaemonClient {
      * @param {net.Server} mServer
      * @param {string} mOwner
      * @param {string} mDaemonToken Secret token that the client must echo back to
-     *      prove it could read the owner-only PID file. When undefined, token
-     *      validation is skipped (used only in tests).
+     *      prove it could read the owner-only PID file.
      * @memberof DaemonClient
      */
-    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private mDaemonToken: string) {
+    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private readonly mDaemonToken: string) {
         if (!this.mDaemonToken) {
             throw new ImperativeError({msg: "Unable to initialize the Daemon Client wihtout a proper token"});
         }
