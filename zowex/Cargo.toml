@@ -28,7 +28,7 @@ fslock = "0.2.1"
 windows-sys = { version = "0.52.0", features = [
     "Win32_Foundation",
     "Win32_Security",
-    "Win32_Security_Authorization",
+    "Win32_System_Pipes",
     "Win32_System_Threading",
 ] }
 

@@ -25,16 +25,15 @@ use std::os::windows::io::AsRawHandle;
 #[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
-use windows_sys::Win32::Foundation::{CloseHandle, LocalFree, ERROR_PIPE_BUSY, HANDLE, PSID};
+use windows_sys::Win32::Foundation::{CloseHandle, ERROR_PIPE_BUSY, HANDLE};
 #[cfg(target_family = "windows")]
-use windows_sys::Win32::Security::Authorization::{GetSecurityInfo, SE_KERNEL_OBJECT};
+use windows_sys::Win32::Security::{EqualSid, GetTokenInformation, TokenUser, TOKEN_QUERY, TOKEN_USER};
 #[cfg(target_family = "windows")]
-use windows_sys::Win32::Security::{
-    EqualSid, GetTokenInformation, TokenOwner, OWNER_SECURITY_INFORMATION, TOKEN_OWNER,
-    TOKEN_QUERY,
+use windows_sys::Win32::System::Pipes::GetNamedPipeServerProcessId;
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::System::Threading::{
+    GetCurrentProcess, OpenProcess, OpenProcessToken, PROCESS_QUERY_LIMITED_INFORMATION,
 };
-#[cfg(target_family = "windows")]
-use windows_sys::Win32::System::Threading::{GetCurrentProcess, OpenProcessToken};
 
 extern crate base64;
 use base64::prelude::*;
@@ -179,90 +178,112 @@ pub async fn comm_establish_connection(
 }
 
 /**
- * Confirm that the named pipe we just connected to was created by the
- * current Windows user.
+ * Confirm that the named pipe we just connected to is being served by a
+ * process running as the current Windows user.
  *
  * The pipe name is derived from the user name (see util_get_socket_string),
  * so it is guessable by any other local account on a shared host. That
  * account could squat on the pipe name before our real daemon starts,
  * causing us to hand it the command line, environment, stdin, and secure
- * prompt replies that we intend for our own daemon. We compare the pipe's
- * owning SID to the owner SID of our own token (not our user SID, since
- * Windows assigns BUILTIN\Administrators as the default owner of objects
- * created by an account in the local Administrators group), and treat any
- * failure to positively confirm a match as untrusted.
+ * prompt replies that we intend for our own daemon. We identify the process
+ * on the other end of the pipe and compare its user SID to our own user SID
+ * (not the pipe's kernel-object owner, which Windows can default to
+ * BUILTIN\Administrators rather than the actual creating account), and treat
+ * any failure to positively confirm a match as untrusted.
  *
  * @param stream
  *      The already-connected pipe client.
  *
  * @returns
- *      true only if the pipe's owning security principal is the current user.
+ *      true only if the process serving the pipe runs as the current user.
  */
 #[cfg(target_family = "windows")]
 fn windows_pipe_owned_by_current_user(stream: &NamedPipeClient) -> bool {
     unsafe {
         let pipe_handle = stream.as_raw_handle() as HANDLE;
 
-        let mut pipe_owner_sid: PSID = std::ptr::null_mut();
-        let mut unused_group_sid: PSID = std::ptr::null_mut();
-        let mut security_descriptor: *mut core::ffi::c_void = std::ptr::null_mut();
-
-        let sec_info_result = GetSecurityInfo(
-            pipe_handle,
-            SE_KERNEL_OBJECT,
-            OWNER_SECURITY_INFORMATION,
-            &mut pipe_owner_sid,
-            &mut unused_group_sid,
-            std::ptr::null_mut(),
-            std::ptr::null_mut(),
-            &mut security_descriptor,
-        );
-        if sec_info_result != 0 || pipe_owner_sid.is_null() {
-            eprintln!("Warning: Unable to verify the owner of the Zowe daemon pipe.");
+        let mut server_pid: u32 = 0;
+        if GetNamedPipeServerProcessId(pipe_handle, &mut server_pid) == 0 {
+            eprintln!("Warning: Unable to determine the process serving the Zowe daemon pipe.");
             return false;
         }
 
-        let mut current_user_token: HANDLE = 0;
-        if OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &mut current_user_token) == 0 {
-            eprintln!("Warning: Unable to determine the identity of the current user.");
-            LocalFree(security_descriptor as _);
+        let server_process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, server_pid);
+        if server_process == 0 {
+            eprintln!("Warning: Unable to open the process serving the Zowe daemon pipe.");
             return false;
         }
+        let server_user_sid = windows_process_user_sid(server_process);
+        CloseHandle(server_process);
 
-        let mut token_owner_len: u32 = 0;
-        GetTokenInformation(
-            current_user_token,
-            TokenOwner,
-            std::ptr::null_mut(),
-            0,
-            &mut token_owner_len,
-        );
-        let mut token_owner_buf: Vec<u8> = vec![0; token_owner_len as usize];
-        let got_token_owner = GetTokenInformation(
-            current_user_token,
-            TokenOwner,
-            token_owner_buf.as_mut_ptr() as *mut core::ffi::c_void,
-            token_owner_len,
-            &mut token_owner_len,
-        );
-        CloseHandle(current_user_token);
+        let current_user_sid = windows_process_user_sid(GetCurrentProcess());
 
-        if got_token_owner == 0 || (token_owner_len as usize) < std::mem::size_of::<TOKEN_OWNER>()
-        {
-            eprintln!("Warning: Unable to determine the identity of the current user.");
-            LocalFree(security_descriptor as _);
-            return false;
+        match (server_user_sid, current_user_sid) {
+            (Some(server_user_sid_buf), Some(current_user_sid_buf)) => {
+                // Both TOKEN_USER.User.Sid pointers point into their own
+                // buffer, so both buffers must outlive this EqualSid call.
+                let server_sid =
+                    std::ptr::read_unaligned(server_user_sid_buf.as_ptr() as *const TOKEN_USER)
+                        .User
+                        .Sid;
+                let current_sid =
+                    std::ptr::read_unaligned(current_user_sid_buf.as_ptr() as *const TOKEN_USER)
+                        .User
+                        .Sid;
+                EqualSid(server_sid, current_sid) != 0
+            }
+            _ => {
+                eprintln!("Warning: Unable to verify the owner of the Zowe daemon pipe.");
+                false
+            }
         }
-
-        let token_owner: TOKEN_OWNER =
-            std::ptr::read_unaligned(token_owner_buf.as_ptr() as *const TOKEN_OWNER);
-        let current_user_owner_sid = token_owner.Owner;
-        let owned_by_current_user = EqualSid(pipe_owner_sid, current_user_owner_sid) != 0;
-
-        LocalFree(security_descriptor as _);
-
-        owned_by_current_user
     }
+}
+
+/**
+ * Fetch the raw TOKEN_USER bytes (SID and attributes) for the user running
+ * the given process.
+ *
+ * The returned buffer owns the memory that the contained SID pointer points
+ * into, so it must be kept alive for as long as that SID is used.
+ *
+ * @param process_handle
+ *      A handle to the process whose user identity we want. This may be a
+ *      pseudo-handle, such as the one returned by GetCurrentProcess.
+ *
+ * @returns
+ *      The raw TOKEN_USER buffer on success, or None on any failure.
+ */
+#[cfg(target_family = "windows")]
+unsafe fn windows_process_user_sid(process_handle: HANDLE) -> Option<Vec<u8>> {
+    let mut token_handle: HANDLE = 0;
+    if OpenProcessToken(process_handle, TOKEN_QUERY, &mut token_handle) == 0 {
+        return None;
+    }
+
+    let mut token_user_len: u32 = 0;
+    GetTokenInformation(
+        token_handle,
+        TokenUser,
+        std::ptr::null_mut(),
+        0,
+        &mut token_user_len,
+    );
+    let mut token_user_buf: Vec<u8> = vec![0; token_user_len as usize];
+    let got_token_user = GetTokenInformation(
+        token_handle,
+        TokenUser,
+        token_user_buf.as_mut_ptr() as *mut core::ffi::c_void,
+        token_user_len,
+        &mut token_user_len,
+    );
+    CloseHandle(token_handle);
+
+    if got_token_user == 0 || (token_user_len as usize) < std::mem::size_of::<TOKEN_USER>() {
+        return None;
+    }
+
+    Some(token_user_buf)
 }
 
 /**
