@@ -43,6 +43,15 @@ export class LoggerUtils {
         "password", "pass", "pw", "token-value", "tokenValue", "tv",
         "cert-key-file", "certKeyFile", "cert-file-passphrase", "certFilePassphrase"];
 
+    /*
+    * Environment-variable NAME patterns that indicate a sensitive value.
+    * Environment variables never pass through the CLI-argument censoring path, so their values must be redacted by
+    * name before the environment is serialized into diagnostic output. This catches both the credential env vars that
+    * Zowe explicitly supports (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE) and unrelated secrets that commonly
+    * share the same environment (e.g. AWS_SECRET_ACCESS_KEY, GITHUB_TOKEN).
+    */
+    private static readonly SECURE_ENV_NAME_PATTERN = /PASS|TOKEN|SECRET|KEY|CRED|AUTH/i;
+
     /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args
@@ -248,5 +257,35 @@ export class LoggerUtils {
                 newData = newData.replace(new RegExp(sec, "gi"), LoggerUtils.CENSOR_RESPONSE);
         }
         return newData;
+    }
+
+    /**
+     * Determine whether an environment-variable name indicates a sensitive value.
+     * @param {string} name - the environment-variable name to test
+     * @returns {boolean} - True if the variable should be redacted; False otherwise
+     */
+    public static isSecureEnvName(name: string): boolean {
+        return name != null && LoggerUtils.SECURE_ENV_NAME_PATTERN.test(name);
+    }
+
+    /**
+     * Copy and censor environment variables before logging/printing.
+     *
+     * Environment variables frequently hold credentials - Zowe explicitly supports supplying secure option values
+     * this way (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE), and unrelated secrets (AWS_SECRET_ACCESS_KEY,
+     * GITHUB_TOKEN, etc.) commonly share the same environment. Because these values never pass through the
+     * CLI-argument censoring path, every variable whose name matches a credential pattern is redacted here. The
+     * serialized result is additionally routed through {@link LoggerUtils.censorRawData} so that any config-derived
+     * secure values are masked as well.
+     *
+     * @param {NodeJS.ProcessEnv} env - the environment to censor (defaults to process.env)
+     * @returns {string} - a censored, pretty-printed JSON string of the environment
+     */
+    public static censorEnvVariables(env: NodeJS.ProcessEnv = process.env): string {
+        const censored: Record<string, string> = {};
+        for (const [name, value] of Object.entries(env)) {
+            censored[name] = LoggerUtils.isSecureEnvName(name) ? LoggerUtils.CENSOR_RESPONSE : value;
+        }
+        return LoggerUtils.censorRawData(JSON.stringify(censored, null, 2));
     }
 }

@@ -188,4 +188,67 @@ describe("LoggerUtils tests", () => {
             });
         });
     });
+
+    describe("isSecureEnvName", () => {
+        for (const name of ["ZOWE_OPT_PASSWORD", "ZOWE_OPT_TOKEN_VALUE", "ZOWE_OPT_CERT_FILE_PASSPHRASE",
+            "AWS_SECRET_ACCESS_KEY", "GITHUB_TOKEN", "MY_API_CREDENTIAL", "SOME_AUTH_HEADER", "private_key"]) {
+            it(`should identify "${name}" as sensitive`, () => {
+                expect(LoggerUtils.isSecureEnvName(name)).toBe(true);
+            });
+        }
+
+        for (const name of ["PATH", "HOME", "PWD", "ZOWE_OPT_HOST", "ZOWE_OPT_PORT", "ZOWE_OPT_USER", "LANG", "SHELL"]) {
+            it(`should not identify "${name}" as sensitive`, () => {
+                expect(LoggerUtils.isSecureEnvName(name)).toBe(false);
+            });
+        }
+
+        it("should not throw on a null or undefined name", () => {
+            expect(LoggerUtils.isSecureEnvName(null)).toBe(false);
+            expect(LoggerUtils.isSecureEnvName(undefined)).toBe(false);
+        });
+    });
+
+    describe("censorEnvVariables", () => {
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            // Default: no usable config, so only name-based redaction applies
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: { exists: false } } as any);
+        });
+
+        it("should redact env vars whose names match a credential pattern", () => {
+            const env = {
+                ZOWE_OPT_PASSWORD: "superSecret",
+                ZOWE_OPT_TOKEN_VALUE: "myToken",
+                AWS_SECRET_ACCESS_KEY: "awsSecret",
+                GITHUB_TOKEN: "ghToken"
+            } as any;
+            const received = JSON.parse(LoggerUtils.censorEnvVariables(env));
+            expect(received.ZOWE_OPT_PASSWORD).toEqual(LoggerUtils.CENSOR_RESPONSE);
+            expect(received.ZOWE_OPT_TOKEN_VALUE).toEqual(LoggerUtils.CENSOR_RESPONSE);
+            expect(received.AWS_SECRET_ACCESS_KEY).toEqual(LoggerUtils.CENSOR_RESPONSE);
+            expect(received.GITHUB_TOKEN).toEqual(LoggerUtils.CENSOR_RESPONSE);
+        });
+
+        it("should preserve env vars whose names are not sensitive", () => {
+            const env = { PATH: "/usr/bin", ZOWE_OPT_HOST: "example.com", ZOWE_OPT_PORT: "443" } as any;
+            const received = JSON.parse(LoggerUtils.censorEnvVariables(env));
+            expect(received.PATH).toEqual("/usr/bin");
+            expect(received.ZOWE_OPT_HOST).toEqual("example.com");
+            expect(received.ZOWE_OPT_PORT).toEqual("443");
+        });
+
+        it("should default to process.env when no environment is supplied", () => {
+            process.env.CENSOR_UNIT_TEST_PASSWORD = "shouldBeHidden";
+            process.env.CENSOR_UNIT_TEST_HOST = "shouldBeVisible";
+            try {
+                const received = JSON.parse(LoggerUtils.censorEnvVariables());
+                expect(received.CENSOR_UNIT_TEST_PASSWORD).toEqual(LoggerUtils.CENSOR_RESPONSE);
+                expect(received.CENSOR_UNIT_TEST_HOST).toEqual("shouldBeVisible");
+            } finally {
+                delete process.env.CENSOR_UNIT_TEST_PASSWORD;
+                delete process.env.CENSOR_UNIT_TEST_HOST;
+            }
+        });
+    });
 });
