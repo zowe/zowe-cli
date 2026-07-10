@@ -201,7 +201,11 @@ export class TextUtils {
 
         for (const obj of objects) {
             const row = headers.map((header) => {
-                return TextUtils.wordWrap(obj[header] || "", maxColumnWidth, "", hardWrap);
+                const value = obj[header];
+                // Coerce rather than rely on truthiness: falsy-but-meaningful values
+                // such as 0 and false must still be rendered.
+                const text = value == null ? "" : String(value);
+                return TextUtils.wordWrap(text, maxColumnWidth, "", hardWrap);
             });
             table.push(row);
         }
