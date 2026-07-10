@@ -44,7 +44,7 @@ export class DaemonClient {
      */
     constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private readonly mDaemonToken: string) {
         if (!this.mDaemonToken) {
-            throw new ImperativeError({msg: "Unable to initialize the Daemon Client wihtout a proper token"});
+            throw new ImperativeError({msg: "Unable to initialize the Daemon Client without a proper token"});
         }
     }
 
