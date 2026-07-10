@@ -91,16 +91,20 @@ pub async fn comm_establish_connection(
                 if windows_pipe_owned_by_current_user(&stream) {
                     break stream;
                 }
-                // A pipe with our daemon's name exists, but it was not created by
-                // the current user. Since the pipe name is predictable, another
-                // local account could have squatted on it before our real daemon
-                // started, in order to capture what we would otherwise send to
-                // it. Drop this connection and keep retrying/starting our own
-                // daemon instead of trusting it.
-                eprintln!(
-                    "Warning: The Zowe daemon pipe at {} is not owned by the current user. Ignoring it.",
-                    daemon_socket
-                );
+                // A pipe with our daemon's name exists, but it is not served by a
+                // process running as the current user. Since the pipe name is
+                // predictable, another local account could have squatted on it
+                // before our real daemon started, in order to capture what we
+                // would otherwise send to it. Drop this connection and keep
+                // retrying/starting our own daemon instead of trusting it. Only
+                // warn once, since this branch is reached on every retry.
+                static WARNED_UNTRUSTED_PIPE: std::sync::Once = std::sync::Once::new();
+                WARNED_UNTRUSTED_PIPE.call_once(|| {
+                    eprintln!(
+                        "Warning: The Zowe daemon pipe at {} does not belong to the current user. Ignoring it.",
+                        daemon_socket
+                    );
+                });
                 drop(stream);
             }
             // Two possible errors when calling ClientOptions::open:
@@ -181,15 +185,15 @@ pub async fn comm_establish_connection(
  * Confirm that the named pipe we just connected to is being served by a
  * process running as the current Windows user.
  *
- * The pipe name is derived from the user name (see util_get_socket_string),
- * so it is guessable by any other local account on a shared host. That
- * account could squat on the pipe name before our real daemon starts,
- * causing us to hand it the command line, environment, stdin, and secure
- * prompt replies that we intend for our own daemon. We identify the process
- * on the other end of the pipe and compare its user SID to our own user SID
- * (not the pipe's kernel-object owner, which Windows can default to
- * BUILTIN\Administrators rather than the actual creating account), and treat
- * any failure to positively confirm a match as untrusted.
+ * The pipe name is derived from the user name by default (see
+ * util_get_socket_string), though it can be overridden via the
+ * ZOWE_DAEMON_PIPE environment variable. The default name is guessable by
+ * any other local account on a shared host, which could squat on it before
+ * our real daemon starts, causing us to hand it the command line,
+ * environment, stdin, and secure prompt replies that we intend for our own
+ * daemon. We identify the process on the other end of the pipe and compare
+ * its user SID to our own, treating any failure to positively confirm a
+ * match as untrusted.
  *
  * @param stream
  *      The already-connected pipe client.

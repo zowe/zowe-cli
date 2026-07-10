@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
+- BugFix: Prevented the daemon client from connecting to a Windows named pipe that belongs to a different user. [#2790](https://github.com/zowe/zowe-cli/pull/2790)
 
 ## `8.33.1`
 
