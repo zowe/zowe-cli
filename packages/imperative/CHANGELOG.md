@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Redacted sensitive environment variables and command-line arguments from the diagnostic information written to the log when a command handler fails to load or throws an error, preventing credentials supplied via environment variables (for example, `ZOWE_OPT_PASSWORD`) from being persisted to disk in plain text. [#2791](https://github.com/zowe/zowe-cli/pull/2791)
+- BugFix: Redacted sensitive environment variables and command-line arguments from the diagnostic information written to the log when a command handler fails to load or throws an error. This prevents credentials supplied via environment variables (for example, `ZOWE_OPT_PASSWORD`) from being persisted to disk in plain text. [#2791](https://github.com/zowe/zowe-cli/pull/2791)
 
 ## `5.27.20`
 
