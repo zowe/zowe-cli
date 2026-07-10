@@ -504,7 +504,7 @@ describe("DaemonClient tests", () => {
         expect(client.end).toHaveBeenCalled();
     });
 
-    it("should failt to initialize the DaemonClient if no token is provided", () => {
+    it("should fail to initialize the DaemonClient if no token is provided", () => {
         const client = {
             on: jest.fn(),
             write: jest.fn(),
