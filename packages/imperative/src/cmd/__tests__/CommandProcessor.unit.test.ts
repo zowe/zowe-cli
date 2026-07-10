@@ -1142,6 +1142,9 @@ describe("Command Processor", () => {
 
         process.env.ZOWE_OPT_PASSWORD = "superSecretPwd";
         process.env.MY_DIAG_TEST_HOST = "visibleHostValue";
+        // Inject an equals-form credential into argv to prove the diagnostic argv line is censored too
+        const originalArgv = process.argv;
+        process.argv = [...process.argv, "--password=argvSecretPwd"];
         try {
             const parms: any = {
                 arguments: { _: ["check", "for", "banana"], $0: "", valid: true, throwImperative: true },
@@ -1151,11 +1154,15 @@ describe("Command Processor", () => {
             await processor.invoke(parms);
 
             expect(errorOutput).toContain("Environmental variables:");
-            // Sensitive value must be redacted; non-sensitive value preserved
+            // Sensitive env value must be redacted; non-sensitive value preserved
             expect(errorOutput).not.toContain("superSecretPwd");
             expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
             expect(errorOutput).toContain("visibleHostValue");
+            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            expect(errorOutput).not.toContain("argvSecretPwd");
+            expect(errorOutput).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
         } finally {
+            process.argv = originalArgv;
             delete process.env.ZOWE_OPT_PASSWORD;
             delete process.env.MY_DIAG_TEST_HOST;
         }
@@ -1181,6 +1188,9 @@ describe("Command Processor", () => {
 
         process.env.AWS_SECRET_ACCESS_KEY = "awsSuperSecret";
         process.env.MY_DIAG_TEST_PORT = "visiblePortValue";
+        // Inject an equals-form credential into argv to prove the diagnostic argv line is censored too
+        const originalArgv = process.argv;
+        process.argv = [...process.argv, "--token-value=argvSecretToken"];
         try {
             const parms: any = {
                 arguments: { _: ["check", "for", "banana"], $0: "", valid: true },
@@ -1193,7 +1203,11 @@ describe("Command Processor", () => {
             expect(errorOutput).not.toContain("awsSuperSecret");
             expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
             expect(errorOutput).toContain("visiblePortValue");
+            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            expect(errorOutput).not.toContain("argvSecretToken");
+            expect(errorOutput).toContain(`--token-value ${Censor.CENSOR_RESPONSE}`);
         } finally {
+            process.argv = originalArgv;
             delete process.env.AWS_SECRET_ACCESS_KEY;
             delete process.env.MY_DIAG_TEST_PORT;
         }

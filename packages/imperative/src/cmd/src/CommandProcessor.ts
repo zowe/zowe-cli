@@ -985,7 +985,7 @@ export class CommandProcessor {
             this.log.error("Diagnostic information:\n" +
                 "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                 "Environmental variables: '%s'",
-            os.platform(), os.arch(), Censor.censorCLIArgs(process.argv).join(" "),
+            os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
             Censor.censorEnvVariables());
             const errorMessage: string = TextUtils.formatMessage(couldNotInstantiateCommandHandler.message, {
                 commandHandler: nodePath.normalize(handlerPath) || "\"undefined or not specified\"",
@@ -1053,7 +1053,7 @@ export class CommandProcessor {
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
             "Node versions: '%s'" +
             "Environmental variables: '%s'",
-        os.platform(), os.arch(), Censor.censorCLIArgs(process.argv).join(" "),
+        os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
         JSON.stringify(process.versions, null, 2),
         Censor.censorEnvVariables());
 
