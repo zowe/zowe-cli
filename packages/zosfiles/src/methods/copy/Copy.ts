@@ -525,7 +525,12 @@ export class Copy {
      */
     private static generateDatasetOptions(targetOptions: ICrossLparCopyDatasetOptions, dsInfo: IZosmfListResponse): ICreateDataSetOptions {
         return JSON.parse(JSON.stringify({
-            alcunit: Copy.convertAlcTozOSMF(dsInfo.spacu),
+            // `sizex` is always reported in tracks by the z/OSMF list API, even when the data set
+            // was originally allocated in another unit (`spacu` still reports that original unit).
+            // Pairing that track count with `spacu` would re-interpret it in the source's unit and
+            // over-allocate the target -- 15 tracks read from a CYLINDERS data set would be
+            // allocated as 15 cylinders (225 tracks). Always allocate in tracks to match `primary`.
+            alcunit: "TRK",
             dsorg: dsInfo.dsorg,
             volser: targetOptions.targetVolser,
             primary: parseInt(dsInfo.sizex),
@@ -540,23 +545,5 @@ export class Copy {
         }));
     }
 
-    /**
-     * Converts the ALC value from the format returned by the Get() call to the format used by the Create() call.
-     * @param {string} getValue - The ALC value from the Get() call.
-     * @returns {string} - The ALC value in the format used by the Create() call.
-     */
-    private static convertAlcTozOSMF(getValue: string): string {
-        /**
-         *  Create dataset only accepts tracks or cylinders as allocation units.
-         *  When the get() call retreives the dataset info, it will convert size
-         *  allocations of the other unit types in to tracks. So we will always
-         *  allocate the new target in tracks.
-        */
-        const alcMap: Record<string, string> = {
-            "TRACKS": "TRK",
-            "CYLINDERS": "CYL"
-        };
-        return alcMap[getValue.toUpperCase()] || "TRK";
-    }
 }
 
