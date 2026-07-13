@@ -173,9 +173,9 @@ export class ConfigAutoStore {
             */
             if (!config.api.profiles.exists(profileName) && config.api.profiles.exists(baseProfileName) ||
                 profileObj[propName] == null && !profileSecureProps.includes(propName) &&
-                    (baseProfileObj[propName] != null || baseProfileSecureProps.includes(propName)) ||
+                (baseProfileObj[propName] != null || baseProfileSecureProps.includes(propName)) ||
                 (propName === "tokenValue" && profileObj.tokenType == null && baseProfileObj.tokenType != null ||
-                profileType === "base")
+                    profileType === "base")
             ) {
                 propProfilePath = config.api.profiles.getProfilePathFromName(baseProfileName);
                 isSecureProp = baseProfileSchema.properties[propName].secure || baseProfileSecureProps.includes(propName);
@@ -203,7 +203,10 @@ export class ConfigAutoStore {
         try {
             await config.save();
         } catch (err) {
-            throw ConfigUtils.secureSaveError();
+            if (err.message?.includes("Failed to initialize secure credential manager")) {
+                throw ConfigUtils.secureSaveError();
+            }
+            throw err;
         }
         const storedMsg = `Stored properties in ${config.layerActive().path}: ${profileProps.join(", ")}`;
         if (opts.params) {

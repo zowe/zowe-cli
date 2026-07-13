@@ -369,8 +369,11 @@ export class ConvertV1Profiles {
         try {
             await newConfig.save();
         } catch (err) {
-            throw ConfigUtils.secureSaveError();
-        }
+            if (err.message?.includes("Failed to initialize secure credential manager")) {
+                throw ConfigUtils.secureSaveError();
+            }
+            throw err;
+        }   
         ConvertV1Profiles.putCfgFileNmInResult(newConfig);
 
         try {

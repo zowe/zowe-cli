@@ -801,7 +801,7 @@ describe("ConvertV1Profiles tests", () => {
             it("should throw a secureSaveError when newConfig.save() fails", async () => {
                 ConvertV1Profiles["convertOpts"] = { deleteV1Profs: false };
 
-                saveSpy.mockRejectedValueOnce(new Error("Failed to load Keytar module"));
+                saveSpy.mockRejectedValueOnce(new Error("Failed to initialize secure credential manager"));
 
                 jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({
                     secureErrorDetails: jest.fn().mockReturnValue(undefined)

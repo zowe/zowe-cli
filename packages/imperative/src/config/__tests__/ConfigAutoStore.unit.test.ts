@@ -573,7 +573,7 @@ describe("ConfigAutoStore tests", () => {
             autoStore: true
         });
 
-        const saveError = new Error("Failed to load Keytar module");
+        const saveError = new Error("Failed to initialize secure credential manager");
         ImperativeConfig.instance.config.save = jest.fn().mockRejectedValueOnce(saveError);
 
         const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
