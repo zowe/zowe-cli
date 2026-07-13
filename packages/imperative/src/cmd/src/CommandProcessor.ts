@@ -1104,8 +1104,8 @@ export class CommandProcessor {
             this.log.error("Diagnostic information:\n" +
                 "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                 "Environmental variables: '%s'",
-            os.platform(), os.arch(), process.argv.join(" "),
-            JSON.stringify(process.env, null, 2));
+            os.platform(), os.arch(), LoggerUtils.censorCommandLine(process.argv.join(" ")),
+            LoggerUtils.censorEnvVariables());
             const errorMessage: string = TextUtils.formatMessage(couldNotInstantiateCommandHandler.message, {
                 commandHandler: nodePath.normalize(handlerPath) || "\"undefined or not specified\"",
                 definitionName: this.definition.name
@@ -1172,9 +1172,9 @@ export class CommandProcessor {
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
             "Node versions: '%s'" +
             "Environmental variables: '%s'",
-        os.platform(), os.arch(), process.argv.join(" "),
+        os.platform(), os.arch(), LoggerUtils.censorCommandLine(process.argv.join(" ")),
         JSON.stringify(process.versions, null, 2),
-        JSON.stringify(process.env, null, 2));
+        LoggerUtils.censorEnvVariables());
 
         // If this is an instance of an imperative error, then we are good to go and can formulate the response.
         // If it is an Error object, then something truly unexpected occurred in the handler.
