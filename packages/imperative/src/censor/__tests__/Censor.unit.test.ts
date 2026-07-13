@@ -455,6 +455,97 @@ describe("Censor tests", () => {
         });
     });
 
+    describe("isSecureEnvName", () => {
+        for (const name of ["ZOWE_OPT_PASSWORD", "ZOWE_OPT_TOKEN_VALUE", "ZOWE_OPT_CERT_FILE_PASSPHRASE",
+            "AWS_SECRET_ACCESS_KEY", "GITHUB_TOKEN", "MY_API_CREDENTIAL", "SOME_AUTH_HEADER", "private_key"]) {
+            it(`should identify "${name}" as sensitive`, () => {
+                expect(Censor.isSecureEnvName(name)).toBe(true);
+            });
+        }
+
+        for (const name of ["PATH", "HOME", "PWD", "ZOWE_OPT_HOST", "ZOWE_OPT_PORT", "ZOWE_OPT_USER", "LANG", "SHELL"]) {
+            it(`should not identify "${name}" as sensitive`, () => {
+                expect(Censor.isSecureEnvName(name)).toBe(false);
+            });
+        }
+
+        it("should not throw on a null or undefined name", () => {
+            expect(Censor.isSecureEnvName(null)).toBe(false);
+            expect(Censor.isSecureEnvName(undefined)).toBe(false);
+        });
+    });
+
+    describe("censorEnvVariables", () => {
+        let impConfigSpy: jest.SpyInstance = null;
+
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            // Default: no usable config, so only name-based redaction applies
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: { exists: false } } as any);
+        });
+
+        afterAll(() => {
+            impConfigSpy?.mockRestore();
+            (Censor as any).mConfig = null;
+        });
+
+        it("should redact env vars whose names match a credential pattern", () => {
+            const env = {
+                ZOWE_OPT_PASSWORD: "superSecret",
+                ZOWE_OPT_TOKEN_VALUE: "myToken",
+                AWS_SECRET_ACCESS_KEY: "awsSecret",
+                GITHUB_TOKEN: "ghToken"
+            } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.ZOWE_OPT_PASSWORD).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.ZOWE_OPT_TOKEN_VALUE).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.AWS_SECRET_ACCESS_KEY).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.GITHUB_TOKEN).toEqual(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should preserve env vars whose names are not sensitive", () => {
+            const env = { PATH: "/usr/bin", ZOWE_OPT_HOST: "example.com", ZOWE_OPT_PORT: "443" } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.PATH).toEqual("/usr/bin");
+            expect(received.ZOWE_OPT_HOST).toEqual("example.com");
+            expect(received.ZOWE_OPT_PORT).toEqual("443");
+        });
+
+        it("should default to process.env when no environment is supplied", () => {
+            process.env.CENSOR_UNIT_TEST_PASSWORD = "shouldBeHidden";
+            process.env.CENSOR_UNIT_TEST_HOST = "shouldBeVisible";
+            try {
+                const received = JSON.parse(Censor.censorEnvVariables());
+                expect(received.CENSOR_UNIT_TEST_PASSWORD).toEqual(Censor.CENSOR_RESPONSE);
+                expect(received.CENSOR_UNIT_TEST_HOST).toEqual("shouldBeVisible");
+            } finally {
+                delete process.env.CENSOR_UNIT_TEST_PASSWORD;
+                delete process.env.CENSOR_UNIT_TEST_HOST;
+            }
+        });
+
+        it("should also mask config-derived secure values via censorRawData", () => {
+            const findSecure = jest.fn().mockReturnValue(["profiles.secret.properties.secret"]);
+            const envSettingsReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read");
+            envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" }, showSecureArgs: { value: "FALSE" } } as any);
+            (Censor as any).addCensoredOption("secret");
+            impConfigSpy.mockReturnValue({
+                config: {
+                    exists: true,
+                    api: { secure: { findSecure } },
+                    mProperties: { profiles: { secret: { properties: { secret: "configSecretValue" } } } }
+                },
+                envVariablePrefix: "ZOWE"
+            } as any);
+
+            // A benignly-named env var holds a value that is a known config secret
+            const env = { SOME_BENIGN_NAME: "configSecretValue" } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.SOME_BENIGN_NAME).toEqual(Censor.CENSOR_RESPONSE);
+            envSettingsReadSpy.mockRestore();
+        });
+    });
+
     describe("censorObject", () => {
         const secrets = ["secret0", "secret1"];
         let impConfigSpy: jest.SpyInstance = null;
