@@ -1026,6 +1026,32 @@ describe("Command Response", () => {
         expect(response.buildJsonResponse()).toMatchSnapshot();
     });
 
+    it("should strip ANSI color codes from the JSON response", () => {
+        // Regression test for #2615. Console output is colorized for a terminal, and those buffers
+        // are what writeJsonResponse serializes, so without stripping, the escape sequences survive
+        // into the JSON string values and anything parsing --response-format-json reads them back
+        // as part of the text. The escapes are written directly here rather than produced by chalk,
+        // which this suite mocks.
+        const ESC = String.fromCharCode(27);
+        const red = `${ESC}[31m`;
+        const reset = `${ESC}[39m`;
+
+        const response = new CommandResponse({ responseFormat: "json", silent: true });
+        response.console.error(`${red}Syntax Error:${reset} something went wrong`);
+        response.console.log(`${red}All done${reset}`);
+        response.data.setMessage(`${red}finished${reset}`);
+
+        const json = response.writeJsonResponse();
+
+        expect(json.stderr.toString()).not.toContain(ESC);
+        expect(json.stdout.toString()).not.toContain(ESC);
+        expect(json.message).not.toContain(ESC);
+
+        expect(json.stderr.toString()).toContain("Syntax Error: something went wrong");
+        expect(json.stdout.toString()).toContain("All done");
+        expect(json.message).toBe("finished");
+    });
+
     describe("format APIs", () => {
         describe("error checking", () => {
             it("should detect missing parameters", () => {

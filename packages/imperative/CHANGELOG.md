@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where color escape sequences appeared inside the output of commands run with `--response-format-json`, so tools consuming that JSON read the escape codes back as part of the text. [#2615](https://github.com/zowe/zowe-cli/issues/2615)
 - BugFix: Fixed an issue where passing an object with `null` values to the `Censor.mCensorObject` function caused a runtime error. Now, only non-null values are recursively handled in this function. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
 
 ## `8.33.2`

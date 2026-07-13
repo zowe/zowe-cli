@@ -21,6 +21,7 @@ import { IHandlerProgressApi } from "../doc/response/api/handler/IHandlerProgres
 import { IProgressBarParms } from "../doc/response/parms/IProgressBarParms";
 import { Constants } from "../../../constants";
 import { ImperativeExpect } from "../../../expect";
+import stripAnsi = require("strip-ansi");
 import { IHandlerFormatOutputApi } from "../doc/response/api/handler/IHandlerFormatOutputApi";
 import { ICommandOutputFormat, OUTPUT_FORMAT } from "../doc/response/response/ICommandOutputFormat";
 import { Arguments } from "yargs";
@@ -952,9 +953,12 @@ export class CommandResponse implements ICommandResponseApi {
         let response: ICommandResponse;
         try {
             response = this.buildJsonResponse();
-            (response.stderr as any) = response.stderr.toString();
-            (response.stdout as any) = response.stdout.toString();
-            response.message = Censor.censorRawData(response.message, "json");
+            // Console output is colorized for a terminal, and those buffers are what get
+            // serialized here. Left alone, the ANSI escapes survive into the JSON string values,
+            // so anything consuming `--response-format-json` reads them back as part of the text.
+            (response.stderr as any) = stripAnsi(response.stderr.toString());
+            (response.stdout as any) = stripAnsi(response.stdout.toString());
+            response.message = stripAnsi(Censor.censorRawData(response.message, "json"));
             response.data =  response.data ? JSON.parse(Censor.censorRawData(JSON.stringify(response.data), "json")) : undefined;
             response.error = response.error ? JSON.parse(Censor.censorRawData(JSON.stringify(response.error), "json")) : undefined;
 
