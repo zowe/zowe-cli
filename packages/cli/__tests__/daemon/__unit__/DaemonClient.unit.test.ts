@@ -511,7 +511,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const errorMsg = "Unable to initialize the Daemon Client wihtout a proper token";
+        const errorMsg = "Unable to initialize the Daemon Client without a proper token";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const makeClient = (token: any) => new DaemonClient(client as any, undefined as any, "fake", token);
 
