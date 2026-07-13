@@ -47,6 +47,9 @@
   "dependencies": {
     "ssh2": "^1.15.0"
   },
+  "bundledDependencies": [
+    "ssh2"
+  ],
   "devDependencies": {
     "@types/ssh2": "^1.11.19",
     "@zowe/cli-test-utils": "8.33.2",

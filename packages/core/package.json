@@ -48,6 +48,10 @@
     "comment-json": "~4.2.3",
     "string-width": "^4.2.3"
   },
+  "bundledDependencies": [
+    "comment-json",
+    "string-width"
+  ],
   "devDependencies": {
     "@zowe/cli-test-utils": "8.33.2",
     "@zowe/imperative": "8.33.2"

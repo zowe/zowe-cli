@@ -47,6 +47,9 @@
   "dependencies": {
     "@zowe/zos-files-for-zowe-sdk": "8.33.2"
   },
+  "bundledDependencies": [
+    "@zowe/zos-files-for-zowe-sdk"
+  ],
   "devDependencies": {
     "@zowe/cli-test-utils": "8.33.2",
     "@zowe/core-for-zowe-sdk": "8.33.2",

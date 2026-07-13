@@ -31,7 +31,6 @@
     "lib",
     "prebuilds",
     "scripts",
-    "npm-shrinkwrap.json",
     "web-help-logo.png"
   ],
   "publishConfig": {
@@ -85,6 +84,24 @@
   "optionalDependencies": {
     "@zowe/secrets-for-zowe-sdk": "8.32.0"
   },
+  "bundledDependencies": [
+    "@zowe/core-for-zowe-sdk",
+    "@zowe/imperative",
+    "@zowe/provisioning-for-zowe-sdk",
+    "@zowe/secrets-for-zowe-sdk",
+    "@zowe/zos-console-for-zowe-sdk",
+    "@zowe/zos-files-for-zowe-sdk",
+    "@zowe/zos-jobs-for-zowe-sdk",
+    "@zowe/zos-logs-for-zowe-sdk",
+    "@zowe/zos-tso-for-zowe-sdk",
+    "@zowe/zos-uss-for-zowe-sdk",
+    "@zowe/zos-workflows-for-zowe-sdk",
+    "@zowe/zosmf-for-zowe-sdk",
+    "find-process",
+    "lodash",
+    "minimatch",
+    "tar"
+  ],
   "engines": {
     "node": ">=20.9.0"
   }

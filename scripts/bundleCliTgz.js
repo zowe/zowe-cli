@@ -24,7 +24,6 @@ fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 
 try {
     // Install node_modules directly inside packages/cli
-    execCmd("npm run preshrinkwrap");
     const zoweRegistry = require("../lerna.json").command.publish.registry;
     const npmArgs = ["--ignore-scripts", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
     execCmd(`npm install ${npmArgs.join(" ")}`);
@@ -52,6 +51,5 @@ try {
 } finally {
     fs.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });
     fs.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
-    fs.rmSync(path.join(cliPkgDir, "npm-shrinkwrap.json"), { force: true });
     fs.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
 }

@@ -49,6 +49,10 @@
     "lodash": "^4.17.23",
     "minimatch": "^10.2.3"
   },
+  "bundledDependencies": [
+    "lodash",
+    "minimatch"
+  ],
   "devDependencies": {
     "@zowe/cli-test-utils": "8.33.2",
     "@zowe/core-for-zowe-sdk": "8.33.2",
