@@ -23,6 +23,10 @@ fs.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_m
 fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 
 try {
+    // Derive a standalone package-lock.json from the root workspace lockfile so
+    // that npm install below uses pinned versions (replaces the old preshrinkwrap step)
+    execCmd("node ../../scripts/rewriteLockfile.js");
+
     // Install node_modules directly inside packages/cli
     const zoweRegistry = require("../lerna.json").command.publish.registry;
     const npmArgs = ["--ignore-scripts", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
@@ -51,5 +55,6 @@ try {
 } finally {
     fs.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });
     fs.renameSync(path.join(cliPkgDir, "node_modules_old"), path.join(cliPkgDir, "node_modules"));
+    fs.rmSync(path.join(cliPkgDir, "package-lock.json"), { force: true });
     fs.renameSync(pkgJsonFile + ".bak", pkgJsonFile);
 }
