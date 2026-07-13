@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue on Windows where running a command from the same directory with different casing, such as `ops` in CMD and `OPS` in Git Bash, stored a separate set of credentials in the secure credential store for each. The project directory is now resolved to its real path, so one directory has one set of credentials. [#2604](https://github.com/zowe/zowe-cli/issues/2604)
 - BugFix: Fixed an issue where passing an object with `null` values to the `Censor.mCensorObject` function caused a runtime error. Now, only non-null values are recursively handled in this function. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
 
 ## `8.33.2`
