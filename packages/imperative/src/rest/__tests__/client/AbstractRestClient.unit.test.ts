@@ -1666,12 +1666,11 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
-                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type %s", "FakeTokenType");
             });
 
-            it("should log the token type when it is a secure value", () => {
+            it("should never log the token value, only the token type", () => {
                 // Create a logger, then feed that to anything that wants it
-                (Censor as any).mCensoredOptions.add("tokenType");
                 const zoweLogger = Logger.getImperativeLogger();
                 jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
                 const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
@@ -1692,8 +1691,9 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
-                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token");
-                expect(zoweTraceLoggerSpy).not.toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type %s", "FakeTokenType");
+                const allLoggedArgs = zoweTraceLoggerSpy.mock.calls.flat().join(" ");
+                expect(allLoggedArgs).not.toContain("FakeTokenValue");
             });
 
             it("should return false when a token session has no token value", () => {
