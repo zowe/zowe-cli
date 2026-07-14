@@ -232,6 +232,57 @@ describe("DaemonDecider tests", () => {
         expect(restrictedPaths).toContain(path.join(daemonDir, "daemon.sock"));
     });
 
+    it("should write a random token into the pid file and pass it to each client", () => {
+        process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
+
+        let capturedClientToken: string;
+        const DaemonClientMock = require("../../../src/daemon/DaemonClient").DaemonClient;
+        DaemonClientMock.mockImplementation((_client: any, _server: any, _owner: string, token: string) => {
+            capturedClientToken = token;
+            return { run: jest.fn() };
+        });
+
+        // capture the contents written to the pid file
+        let pidFileContents = "";
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((_path: any, contents: any) => {
+            pidFileContents = contents;
+        });
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => { return; });
+
+        // invoke the createServer callback so a DaemonClient is constructed
+        createServerMock.mockImplementation((method: any) => {
+            method("fakeClient", "fakeServer");
+            return { on, listen };
+        });
+
+        const daemonDecider = new DaemonDecider(["some/file/path", "zowe", "--daemon"]);
+        daemonDecider.init();
+
+        const writtenPid = JSON.parse(pidFileContents);
+        // the token must exist, be a 64-char hex string (32 random bytes), and
+        // match the token handed to the DaemonClient
+        expect(writtenPid.token).toMatch(/^[0-9a-f]{64}$/);
+        expect(capturedClientToken).toBe(writtenPid.token);
+
+        writeFileSyncSpy.mockRestore();
+    });
+
+    it("should generate a different token on each daemon start", () => {
+        process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
+
+        const tokens: string[] = [];
+        jest.spyOn(fs, "writeFileSync").mockImplementation((_path: any, contents: any) => {
+            tokens.push(JSON.parse(contents).token);
+        });
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => { return; });
+
+        new DaemonDecider(["some/file/path", "zowe", "--daemon"]).init();
+        new DaemonDecider(["some/file/path", "zowe", "--daemon"]).init();
+
+        expect(tokens).toHaveLength(2);
+        expect(tokens[0]).not.toBe(tokens[1]);
+    });
+
     it("should throw an error when it cannot write the process ID file", () => {
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);

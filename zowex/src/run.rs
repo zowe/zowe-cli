@@ -272,8 +272,10 @@ pub async fn run_daemon_command(
 
     let executor = util_get_username();
 
-    // create the response structure for this message
-    let response: DaemonResponse =
+    // create the response structure for this message. The token is filled in
+    // later, once we have a connection and know the daemon has written its pid
+    // file (which contains the token).
+    let mut response: DaemonResponse =
         if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
             // Sending Control-C shutdown request
             let control_c: String = "\x03".to_string();
@@ -283,7 +285,8 @@ pub async fn run_daemon_command(
                 env: None,
                 stdinLength: Some(0),
                 stdin: Some(control_c),
-                user: Some(BASE64_STANDARD.encode(executor)),
+                user: Some(BASE64_STANDARD.encode(&executor)),
+                token: None,
             }
         } else {
             DaemonResponse {
@@ -292,24 +295,10 @@ pub async fn run_daemon_command(
                 env: Some(util_get_zowe_env()),
                 stdinLength: Some(stdin.len() as i32),
                 stdin: None,
-                user: Some(BASE64_STANDARD.encode(executor)),
+                user: Some(BASE64_STANDARD.encode(&executor)),
+                token: None,
             }
         };
-
-    let mut _resp: Vec<u8>;
-    match serde_json::to_vec(&response) {
-        Ok(ok_val) => {
-            _resp = ok_val;
-            if response.stdinLength.unwrap() > 0 {
-                _resp.push(b'\x0c');
-                _resp.append(&mut stdin);
-            }
-        }
-        Err(err_val) => {
-            eprintln!("Failed to convert response to JSON\nDetails = {}", err_val);
-            return Err(EXIT_CODE_CANT_CONVERT_JSON);
-        }
-    }
 
     let mut tries = 0;
     let socket_string: String = match util_get_socket_string() {
@@ -322,6 +311,8 @@ pub async fn run_daemon_command(
 
     #[cfg(target_family = "windows")]
     let mut locked = false;
+
+    let daemon_dir = util_get_daemon_dir()?;
     loop {
         #[cfg(target_family = "windows")]
         if !locked {
@@ -367,7 +358,24 @@ pub async fn run_daemon_command(
             }
         }
 
-        match comm_talk(&_resp, &mut stream).await {
+        // Now that the daemon is running and we are connected, read the secret
+        // token from the owner-only pid file and include it in our request. We
+        // (re)read and (re)serialize on every attempt so that a daemon restart
+        // between retries still gets the correct token.
+        response.token = util_get_daemon_token_from_dir(&daemon_dir);
+        let mut request_bytes: Vec<u8> = match serde_json::to_vec(&response) {
+            Ok(ok_val) => ok_val,
+            Err(err_val) => {
+                eprintln!("Failed to convert response to JSON\nDetails = {}", err_val);
+                return Err(EXIT_CODE_CANT_CONVERT_JSON);
+            }
+        };
+        if response.stdinLength.unwrap_or(0) > 0 {
+            request_bytes.push(b'\x0c');
+            request_bytes.extend_from_slice(&stdin);
+        }
+
+        match comm_talk(&request_bytes, &mut stream).await {
             Ok(ok_val) => {
                 return Ok(ok_val);
             }

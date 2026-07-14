@@ -47,7 +47,7 @@ use rpassword::read_password;
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::proc::*;
-use crate::util::util_get_username;
+use crate::util::{util_get_daemon_dir, util_get_daemon_token_from_dir, util_get_username};
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
@@ -320,6 +320,14 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     let mut exit_code = EXIT_CODE_SUCCESS;
     let mut _progress = false;
 
+    // get the daemon directory so we can read the token from its pid file later on
+    let daemon_dir = util_get_daemon_dir().map_err(|exit_code| {
+        io::Error::new(
+            io::ErrorKind::Other,
+            format!("Unable to get the zowe daemon directory (exit code {exit_code})"),
+        )
+    })?;
+
     loop {
         let mut reply: Option<String> = None;
 
@@ -390,6 +398,10 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             stdinLength: None,
                             stdin: Some(s),
                             user: Some(BASE64_STANDARD.encode(executor)),
+                            // We are already connected, so the pid file (and its
+                            // token) is present. Echo the token back so the daemon
+                            // accepts our prompt reply.
+                            token: util_get_daemon_token_from_dir(&daemon_dir),
                         };
                         let v = serde_json::to_string(&response)?;
                         reader.get_mut().write_all(v.as_bytes()).await?;
