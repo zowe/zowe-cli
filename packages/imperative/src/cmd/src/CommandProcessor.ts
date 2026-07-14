@@ -372,23 +372,10 @@ export class CommandProcessor {
             commandArguments: params.arguments
         });
 
-        let commandLine = ImperativeConfig.instance.commandLine || this.commandLine;
-
-        for (const secureArg of Censor.CENSORED_OPTIONS) {
-            let regex: RegExp;
-            if (secureArg.length > 1) {
-                regex = new RegExp(`--${secureArg} ([^\\s]+)`, "gi");
-            } else {
-                regex = new RegExp(`-${secureArg} ([^\\s]+)`, "gi");
-            }
-            if (commandLine.search(regex) >= 0) {
-                if (secureArg.length > 1) {
-                    commandLine = commandLine.replace(regex, `--${secureArg} ${Censor.CENSOR_RESPONSE}`);
-                } else {
-                    commandLine = commandLine.replace(regex, `-${secureArg} ${Censor.CENSOR_RESPONSE}`);
-                }
-            }
-        }
+        const commandLine = Censor.censorCommandLine(
+            ImperativeConfig.instance.commandLine || this.commandLine,
+            params.arguments
+        );
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);
         // Log the invoke
@@ -998,8 +985,8 @@ export class CommandProcessor {
             this.log.error("Diagnostic information:\n" +
                 "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                 "Environmental variables: '%s'",
-            os.platform(), os.arch(), process.argv.join(" "),
-            JSON.stringify(process.env, null, 2));
+            os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
+            Censor.censorEnvVariables());
             const errorMessage: string = TextUtils.formatMessage(couldNotInstantiateCommandHandler.message, {
                 commandHandler: nodePath.normalize(handlerPath) || "\"undefined or not specified\"",
                 definitionName: this.definition.name
@@ -1066,9 +1053,9 @@ export class CommandProcessor {
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
             "Node versions: '%s'" +
             "Environmental variables: '%s'",
-        os.platform(), os.arch(), process.argv.join(" "),
+        os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
         JSON.stringify(process.versions, null, 2),
-        JSON.stringify(process.env, null, 2));
+        Censor.censorEnvVariables());
 
         // If this is an instance of an imperative error, then we are good to go and can formulate the response.
         // If it is an Error object, then something truly unexpected occurred in the handler.

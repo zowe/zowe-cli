@@ -2,6 +2,17 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Redacted sensitive environment variables and command-line arguments from the diagnostic information written to the log when a command handler fails to load or throws an error. This prevents credentials supplied via environment variables (for example, `ZOWE_OPT_PASSWORD`) from being persisted to disk in plain text. [#2788](https://github.com/zowe/zowe-cli/pull/2788)
+- BugFix: Fixed an issue where passing an object with `null` values to the `Censor.mCensorObject` function caused a runtime error. Now, only non-null values are recursively handled in this function. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
+
+## `8.33.2`
+
+- BugFix: Masked sensitive command-line options that are supplied in the equals-separated form (for example, `--user=example` or `-u=example`) before the command line is written to the log, and also mask secure values that contain embedded whitespace.
+- BugFix: Updated `Logger.ts` to wrap the formatted message with `Censor.censorRawData`. [#2772] (https://github.com/zowe/zowe-cli/pull/2772)
+- BugFix: Redacted `cert`, `key` fields, and token value from logs in `AbstractRestClient`. [#2781](https://github.com/zowe/zowe-cli/pull/2781)
+
 ## `8.33.1`
 
 - BugFix: Fixed inconsistent error messages when credentials fail to save by using the `secureSaveError` helper in `ConfigAutoStore` and `ConvertV1Profiles`. [#1907](https://github.com/zowe/zowe-cli/issues/1907)

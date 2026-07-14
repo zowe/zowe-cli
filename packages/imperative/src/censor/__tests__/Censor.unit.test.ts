@@ -133,6 +133,58 @@ describe("Censor tests", () => {
         }
     });
 
+    describe("censorCommandLine", () => {
+        it("should censor a sensitive option supplied in the space-separated form", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password secret --port 443");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("secret");
+            // non-secure option should be untouched
+            expect(result).toContain("--port 443");
+        });
+
+        it("should censor a sensitive option supplied in the equals-separated form", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password=secret");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("secret");
+        });
+
+        it("should censor a sensitive short option supplied in the equals-separated form when its value is known", () => {
+            const result = Censor.censorCommandLine("zowe cmd -p=secret", { _: [], $0: "", password: "secret" });
+            expect(result).toContain(Censor.CENSOR_RESPONSE);
+            expect(result).not.toContain("secret");
+        });
+
+        it("should censor a sensitive value that contains embedded whitespace when the parsed args are supplied", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password two words", { _: [], $0: "", password: "two words" });
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("two words");
+            // the tail of the value must not leak
+            expect(result).not.toMatch(/\bwords\b/);
+        });
+
+        it("should not consume the boundary of a preceding argument", () => {
+            const result = Censor.censorCommandLine("zowe cmd --port 443 --password=secret");
+            expect(result).toContain("--port 443");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should not censor non-sensitive options", () => {
+            const commandLine = "zowe cmd --host example.com --port 443 --user fakeUser";
+            const result = Censor.censorCommandLine(commandLine);
+            expect(result).toEqual(commandLine);
+            expect(result).not.toContain(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should ignore the reserved yargs keys ($0 and _) when censoring by value", () => {
+            const result = Censor.censorCommandLine("zowe cmd example", { _: ["cmd", "example"], $0: "zowe" });
+            expect(result).toEqual("zowe cmd example");
+        });
+
+        it.each([null, undefined, ""])("should return %p unchanged", (input) => {
+            expect(Censor.censorCommandLine(input as any)).toEqual(input);
+        });
+    });
+
     describe("censorSession", () => {
         const fakeUser = "fakeUser";
         const fakePassword = "fakePassword";
@@ -400,6 +452,97 @@ describe("Censor tests", () => {
                 const expected = `masked secret: ${Censor.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
             });
+        });
+    });
+
+    describe("isSecureEnvName", () => {
+        for (const name of ["ZOWE_OPT_PASSWORD", "ZOWE_OPT_TOKEN_VALUE", "ZOWE_OPT_CERT_FILE_PASSPHRASE",
+            "AWS_SECRET_ACCESS_KEY", "GITHUB_TOKEN", "MY_API_CREDENTIAL", "SOME_AUTH_HEADER", "private_key"]) {
+            it(`should identify "${name}" as sensitive`, () => {
+                expect(Censor.isSecureEnvName(name)).toBe(true);
+            });
+        }
+
+        for (const name of ["PATH", "HOME", "PWD", "ZOWE_OPT_HOST", "ZOWE_OPT_PORT", "ZOWE_OPT_USER", "LANG", "SHELL"]) {
+            it(`should not identify "${name}" as sensitive`, () => {
+                expect(Censor.isSecureEnvName(name)).toBe(false);
+            });
+        }
+
+        it("should not throw on a null or undefined name", () => {
+            expect(Censor.isSecureEnvName(null)).toBe(false);
+            expect(Censor.isSecureEnvName(undefined)).toBe(false);
+        });
+    });
+
+    describe("censorEnvVariables", () => {
+        let impConfigSpy: jest.SpyInstance = null;
+
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            // Default: no usable config, so only name-based redaction applies
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: { exists: false } } as any);
+        });
+
+        afterAll(() => {
+            impConfigSpy?.mockRestore();
+            (Censor as any).mConfig = null;
+        });
+
+        it("should redact env vars whose names match a credential pattern", () => {
+            const env = {
+                ZOWE_OPT_PASSWORD: "superSecret",
+                ZOWE_OPT_TOKEN_VALUE: "myToken",
+                AWS_SECRET_ACCESS_KEY: "awsSecret",
+                GITHUB_TOKEN: "ghToken"
+            } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.ZOWE_OPT_PASSWORD).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.ZOWE_OPT_TOKEN_VALUE).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.AWS_SECRET_ACCESS_KEY).toEqual(Censor.CENSOR_RESPONSE);
+            expect(received.GITHUB_TOKEN).toEqual(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should preserve env vars whose names are not sensitive", () => {
+            const env = { PATH: "/usr/bin", ZOWE_OPT_HOST: "example.com", ZOWE_OPT_PORT: "443" } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.PATH).toEqual("/usr/bin");
+            expect(received.ZOWE_OPT_HOST).toEqual("example.com");
+            expect(received.ZOWE_OPT_PORT).toEqual("443");
+        });
+
+        it("should default to process.env when no environment is supplied", () => {
+            process.env.CENSOR_UNIT_TEST_PASSWORD = "shouldBeHidden";
+            process.env.CENSOR_UNIT_TEST_HOST = "shouldBeVisible";
+            try {
+                const received = JSON.parse(Censor.censorEnvVariables());
+                expect(received.CENSOR_UNIT_TEST_PASSWORD).toEqual(Censor.CENSOR_RESPONSE);
+                expect(received.CENSOR_UNIT_TEST_HOST).toEqual("shouldBeVisible");
+            } finally {
+                delete process.env.CENSOR_UNIT_TEST_PASSWORD;
+                delete process.env.CENSOR_UNIT_TEST_HOST;
+            }
+        });
+
+        it("should also mask config-derived secure values via censorRawData", () => {
+            const findSecure = jest.fn().mockReturnValue(["profiles.secret.properties.secret"]);
+            const envSettingsReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read");
+            envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" }, showSecureArgs: { value: "FALSE" } } as any);
+            (Censor as any).addCensoredOption("secret");
+            impConfigSpy.mockReturnValue({
+                config: {
+                    exists: true,
+                    api: { secure: { findSecure } },
+                    mProperties: { profiles: { secret: { properties: { secret: "configSecretValue" } } } }
+                },
+                envVariablePrefix: "ZOWE"
+            } as any);
+
+            // A benignly-named env var holds a value that is a known config secret
+            const env = { SOME_BENIGN_NAME: "configSecretValue" } as any;
+            const received = JSON.parse(Censor.censorEnvVariables(env));
+            expect(received.SOME_BENIGN_NAME).toEqual(Censor.CENSOR_RESPONSE);
+            envSettingsReadSpy.mockRestore();
         });
     });
 
