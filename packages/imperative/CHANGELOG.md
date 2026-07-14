@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting.
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2804](https://github.com/zowe/zowe-cli/pull/2804)
 
 ## `5.27.21`
 
