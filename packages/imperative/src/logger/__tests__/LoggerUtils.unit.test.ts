@@ -105,6 +105,16 @@ describe("LoggerUtils tests", () => {
         it.each([null, undefined, ""])("should return %p unchanged", (input) => {
             expect(LoggerUtils.censorCommandLine(input as any)).toEqual(input);
         });
+
+        it("should censor a value that contains regex metacharacters without throwing", () => {
+            const secret = "p@$$(w)ord[1]*";
+            let result: string;
+            expect(() => {
+                result = LoggerUtils.censorCommandLine(`zowe cmd --password ${secret}`, { _: [], $0: "", password: secret });
+            }).not.toThrow();
+            expect(result).not.toContain(secret);
+            expect(result).toContain(LoggerUtils.CENSOR_RESPONSE);
+        });
     });
 
     describe("censorRawData", () => {
@@ -185,6 +195,55 @@ describe("LoggerUtils tests", () => {
                 const received = LoggerUtils.censorRawData(`masked secret: ${secrets[1]}`, "This is not the console");
                 const expected = `masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
+            });
+
+            describe("secure values containing regex metacharacters (regression for unescaped RegExp)", () => {
+                beforeEach(() => {
+                    // censorRawData reads through cached singletons; clear them so each test's own mocks/values apply.
+                    (LoggerUtils as any).mConfig = null;
+                    (LoggerUtils as any).mSecureFields = null;
+                    (LoggerUtils as any).mLayer = null;
+                });
+
+                const trickySecrets = [
+                    "pa$$word",     // $ - end-of-input anchor
+                    "se(cret",      // ( - unterminated group
+                    "se[cret",      // [ - unterminated character class
+                    "p+ass*word?",  // +, *, ? - quantifiers
+                    "back\\slash",  // \\ - escape character
+                    "a.b.c",        // . - any-char wildcard
+                    "^caret$",      // ^, $ - anchors
+                    "pipe|value",   // | - alternation
+                    "brace{2}"      // {} - quantifier braces
+                ];
+
+                for (const secret of trickySecrets) {
+                    it(`masks the literal secret "${secret}" and never throws`, () => {
+                        secureFields.mockReturnValue(["secret.secret"]);
+                        layersGet.mockReturnValue({ properties: { secret: { secret } } });
+
+                        let received: string;
+                        expect(() => { received = LoggerUtils.censorRawData(`masked secret: ${secret}`, "log"); }).not.toThrow();
+                        expect(received).toEqual(`masked secret: ${LoggerUtils.CENSOR_RESPONSE}`);
+                        expect(received).not.toContain(secret);
+                    });
+                }
+
+                it("does not throw a SyntaxError for a secret with multiple unbalanced regex constructs", () => {
+                    const secret = "unterminated(group[class";
+                    secureFields.mockReturnValue(["secret.secret"]);
+                    layersGet.mockReturnValue({ properties: { secret: { secret } } });
+                    expect(() => LoggerUtils.censorRawData(`value: ${secret}`, "log")).not.toThrow();
+                    expect(LoggerUtils.censorRawData(`value: ${secret}`, "log")).toEqual(`value: ${LoggerUtils.CENSOR_RESPONSE}`);
+                });
+
+                it("matches the secret literally and does not over-censor regex-equivalent text", () => {
+                    secureFields.mockReturnValue(["secret.secret"]);
+                    layersGet.mockReturnValue({ properties: { secret: { secret: "a.c" } } });
+                    // "axc" matches the wildcard pattern /a.c/ but is NOT the real secret; it must remain visible.
+                    const received = LoggerUtils.censorRawData("literal: a.c, lookalike: axc", "log");
+                    expect(received).toEqual(`literal: ${LoggerUtils.CENSOR_RESPONSE}, lookalike: axc`);
+                });
             });
         });
     });
