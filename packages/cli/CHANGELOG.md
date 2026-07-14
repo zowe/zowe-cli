@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.30`
 
 - BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2786](https://github.com/zowe/zowe-cli/pull/2786)
 
