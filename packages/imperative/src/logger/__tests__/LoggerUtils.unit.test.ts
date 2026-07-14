@@ -197,7 +197,7 @@ describe("LoggerUtils tests", () => {
                 expect(received).toEqual(expected);
             });
 
-            describe("secure values containing regex metacharacters (regression for unescaped RegExp)", () => {
+            describe("secure values containing regex metacharacters", () => {
                 beforeEach(() => {
                     // censorRawData reads through cached singletons; clear them so each test's own mocks/values apply.
                     (LoggerUtils as any).mConfig = null;
