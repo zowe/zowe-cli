@@ -41,6 +41,15 @@ export class Censor {
 
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
+    /*
+    * Environment-variable NAME patterns that indicate a sensitive value.
+    * Environment variables never pass through the CLI-argument censoring path, so their values must be redacted by
+    * name before the environment is serialized into diagnostic output. This catches both the credential env vars that
+    * Zowe explicitly supports (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE) and unrelated secrets that commonly
+    * share the same environment (e.g. AWS_SECRET_ACCESS_KEY, GITHUB_TOKEN).
+    */
+    private static readonly SECURE_ENV_NAME_PATTERN = /PASS|TOKEN|SECRET|KEY|CRED|AUTH/i;
+
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
 
@@ -226,6 +235,17 @@ export class Censor {
         return this.CENSORED_OPTIONS.includes(prop);
     }
 
+    /**
+     * Escape every regular-expression metacharacter in a string so it can be safely embedded in a `RegExp` as a
+     * literal. Secure values and option names are user-supplied and can frequently contain these characters.
+     * 
+     * @param {string} value - The literal string to escape
+     * @returns {string} - The escaped string, safe to pass to `new RegExp`
+     */
+    private static escapeRegExp(value: string): string {
+        return `${value}`.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    }
+
     /****************************************************************************************
      * Bread and butter functions, setting up the class and performing censorship of values *
      ****************************************************************************************/
@@ -358,7 +378,7 @@ export class Censor {
         // consuming the leading boundary, and normalizes the separator to a
         // space in the censored output.
         for (const secureArg of this.CENSORED_OPTIONS) {
-            const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+            const escapedArg = this.escapeRegExp(secureArg);
             const dashes = secureArg.length > 1 ? "--" : "-";
             const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
             censoredLine = censoredLine.replace(regex, `${dashes}${secureArg} ${this.CENSOR_RESPONSE}`);
@@ -395,10 +415,42 @@ export class Censor {
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
             if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
-                newData = newData.replace(new RegExp(sec, "gi"), this.CENSOR_RESPONSE);
+                // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
+                // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
+                newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
             }
         }
         return newData;
+    }
+
+    /**
+     * Determine whether an environment-variable name indicates a sensitive value.
+     * @param {string} name - the environment-variable name to test
+     * @returns {boolean} - True if the variable should be redacted; False otherwise
+     */
+    public static isSecureEnvName(name: string): boolean {
+        return name != null && this.SECURE_ENV_NAME_PATTERN.test(name);
+    }
+
+    /**
+     * Copy and censor environment variables before logging/printing.
+     *
+     * Environment variables frequently hold credentials - Zowe explicitly supports supplying secure option values
+     * this way (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE), and unrelated secrets (AWS_SECRET_ACCESS_KEY,
+     * GITHUB_TOKEN, etc.) commonly share the same environment. Because these values never pass through the
+     * CLI-argument censoring path, every variable whose name matches a credential pattern is redacted here. The
+     * serialized result is additionally routed through {@link Censor.censorRawData} so that any config-derived secure
+     * values are masked as well.
+     *
+     * @param {NodeJS.ProcessEnv} env - the environment to censor (defaults to process.env)
+     * @returns {string} - a censored, pretty-printed JSON string of the environment
+     */
+    public static censorEnvVariables(env: NodeJS.ProcessEnv = process.env): string {
+        const censored: Record<string, string> = {};
+        for (const [name, value] of Object.entries(env)) {
+            censored[name] = this.isSecureEnvName(name) ? this.CENSOR_RESPONSE : value;
+        }
+        return this.censorRawData(JSON.stringify(censored, null, 2));
     }
 
     /**
