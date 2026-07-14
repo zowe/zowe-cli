@@ -150,11 +150,19 @@ export class LoggerUtils {
     }
 
     /**
-     * Singleton implementation of an internal reference of ImperativeConfig.instance.config
+     * Internal reference to ImperativeConfig.instance.config.
+     *
+     * Read fresh on every access. In persistent/daemon mode a single process
+     * serves many commands and reloads the active team config in place before
+     * each command (see CommandProcessor.invoke -> config.reload()). Caching a
+     * reference here is unnecessary for correctness (reload mutates the same
+     * object) but would break if the config object is ever replaced, so we
+     * always read the current instance - mirroring the {@link LoggerUtils.layer}
+     * and {@link LoggerUtils.secureFields} getters.
      */
     private static mConfig: Config = null;
     private static get config(): Config {
-        if (LoggerUtils.mConfig == null) LoggerUtils.mConfig = ImperativeConfig.instance.config;
+        LoggerUtils.mConfig = ImperativeConfig.instance.config;
         return LoggerUtils.mConfig;
     }
 
@@ -171,11 +179,19 @@ export class LoggerUtils {
     }
 
     /**
-     * Singleton implementation of an internal reference to the secure fields stored in the config
+     * Internal reference to the secure fields stored in the config.
+     *
+     * Recomputed on every access. The set of property paths to redact must
+     * reflect the on-disk secure arrays at the time of each log call, not at
+     * first use. In persistent/daemon mode the active team config is reloaded
+     * before each command, so a user marking an additional property as secure
+     * (or removing one) takes effect on the very next command. Memoizing this
+     * would freeze the first command's view for the life of the process and
+     * leak newly-secured values to the logs until a restart.
      */
     private static mSecureFields: string[] = null;
     private static get secureFields(): string[] {
-        if (LoggerUtils.mSecureFields == null) LoggerUtils.mSecureFields = LoggerUtils.config.api.secure.secureFields();
+        LoggerUtils.mSecureFields = LoggerUtils.config.api.secure.secureFields();
         return LoggerUtils.mSecureFields;
     }
 
