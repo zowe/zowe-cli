@@ -183,6 +183,16 @@ describe("Censor tests", () => {
         it.each([null, undefined, ""])("should return %p unchanged", (input) => {
             expect(Censor.censorCommandLine(input as any)).toEqual(input);
         });
+
+        it("should censor a value that contains regex metacharacters without throwing", () => {
+            const secret = "p@$$(w)ord[1]*";
+            let result: string;
+            expect(() => {
+                result = Censor.censorCommandLine(`zowe cmd --password ${secret}`, { _: [], $0: "", password: secret });
+            }).not.toThrow();
+            expect(result).not.toContain(secret);
+            expect(result).toContain(Censor.CENSOR_RESPONSE);
+        });
     });
 
     describe("censorSession", () => {
@@ -451,6 +461,55 @@ describe("Censor tests", () => {
                 const received = Censor.censorRawData(`masked secret: ${secrets[1]}`, "This is not the console");
                 const expected = `masked secret: ${Censor.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
+            });
+
+            describe("secure values containing regex metacharacters (regression for unescaped RegExp)", () => {
+                beforeEach(() => {
+                    // A sibling test above assigns a cached Censor.mConfig; clear it so censorRawData falls back to
+                    // the mocked ImperativeConfig.instance.config where each test below defines its own secret value.
+                    (Censor as any).mConfig = null;
+                    (Censor as any).addCensoredOption("secret");
+                });
+
+                const trickySecrets = [
+                    "pa$$word",     // $ - end-of-input anchor
+                    "se(cret",      // ( - unterminated group
+                    "se[cret",      // [ - unterminated character class
+                    "p+ass*word?",  // +, *, ? - quantifiers
+                    "back\\slash",  // \\ - escape character
+                    "a.b.c",        // . - any-char wildcard
+                    "^caret$",      // ^, $ - anchors
+                    "pipe|value",   // | - alternation
+                    "brace{2}"      // {} - quantifier braces
+                ];
+
+                for (const secret of trickySecrets) {
+                    it(`masks the literal secret "${secret}" and never throws`, () => {
+                        findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+                        impConfig.config.mProperties.profiles.secret.properties = { secret };
+
+                        let received: string;
+                        expect(() => { received = Censor.censorRawData(`masked secret: ${secret}`, "log"); }).not.toThrow();
+                        expect(received).toEqual(`masked secret: ${Censor.CENSOR_RESPONSE}`);
+                        expect(received).not.toContain(secret);
+                    });
+                }
+
+                it("does not throw a SyntaxError for a secret with multiple unbalanced regex constructs", () => {
+                    findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+                    const secret = "unterminated(group[class";
+                    impConfig.config.mProperties.profiles.secret.properties = { secret };
+                    expect(() => Censor.censorRawData(`value: ${secret}`, "log")).not.toThrow();
+                    expect(Censor.censorRawData(`value: ${secret}`, "log")).toEqual(`value: ${Censor.CENSOR_RESPONSE}`);
+                });
+
+                it("matches the secret literally and does not over-censor regex-equivalent text", () => {
+                    findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+                    impConfig.config.mProperties.profiles.secret.properties = { secret: "a.c" };
+                    // "axc" matches the wildcard pattern /a.c/ but is NOT the real secret; it must remain visible.
+                    const received = Censor.censorRawData("literal: a.c, lookalike: axc", "log");
+                    expect(received).toEqual(`literal: ${Censor.CENSOR_RESPONSE}, lookalike: axc`);
+                });
             });
         });
     });
