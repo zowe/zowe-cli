@@ -118,7 +118,7 @@ fn unit_test_util_get_daemon_token_from_dir() {
     // Use an isolated daemon dir and read it directly (not via ZOWE_DAEMON_DIR)
     // so this test does not race with other tests that mutate that env variable.
     let mut token_test_dir: PathBuf = env::temp_dir();
-    token_test_dir.push("zowe_daemon_token_test");
+    token_test_dir.push(format!("zowe_daemon_token_test_{}", std::process::id()));
     let _ = fs::remove_dir_all(&token_test_dir);
     fs::create_dir_all(&token_test_dir).unwrap();
 
