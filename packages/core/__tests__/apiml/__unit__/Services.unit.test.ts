@@ -868,6 +868,52 @@ describe("APIML Services unit tests", () => {
 
             expect(actualJson).toContain("//\"basePath\": \"test1/v2\\n\\\"badProp\\\": \\\"badString\\\"\"");
         });
+
+        it("should escape newlines and quotes in gatewayUrlConflicts (basePath conflict) comments", () => {
+            const testCase: IApimlProfileInfo[] = [{
+                profName: "test1",
+                profType: "type1",
+                basePaths: [
+                    "test1/v1",
+                    "test1/v2"
+                ],
+                pluginConfigs: new Set(),
+                gatewayUrlConflicts: {
+                    "pluginA": ["v1"],
+                    "pluginB\n\"badKey\": \"badValue": ["v1\",\n\"bad\": \"data"]
+                }
+            }];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.profiles.test1.properties.bad).toBeUndefined();
+            expect(parsed.profiles.test1.properties.badKey).toBeUndefined();
+        });
+
+        it("should escape newlines and quotes in a conflicting default profile type", () => {
+            const badProfType = "type1\",\n\"bad\": \"data";
+            const testCase: IApimlProfileInfo[] = [
+                {
+                    profName: "test1",
+                    profType: badProfType,
+                    basePaths: ["test1/v1"],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test2",
+                    profType: badProfType,
+                    basePaths: ["test2/v1"],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                }
+            ];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.defaults.bad).toBeUndefined();
+            expect(parsed.defaults[badProfType]).toBe("test1");
+        });
     });
 
 });
