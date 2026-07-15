@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2804](https://github.com/zowe/zowe-cli/pull/2804)
 
 ## `5.27.21`
 
