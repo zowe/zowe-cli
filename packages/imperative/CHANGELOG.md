@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Prevented prototype pollution when setting config or profile properties. `Config.set`, `ConfigProfiles.set`, and the `ConfigSecure` property walkers now reject dotted paths whose segments use reserved property names.
+- BugFix: Prevented prototype pollution when setting config or profile properties. `Config.set`, `ConfigProfiles.set`, and the `ConfigSecure` property walkers now reject dotted paths whose segments use reserved property names. [#2806](https://github.com/zowe/zowe-cli/pull/2806)
 
 ## `5.27.21`
 
