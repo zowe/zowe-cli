@@ -13,6 +13,8 @@ import * as JSONC from "comment-json";
 import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { ConfigApi } from "./ConfigApi";
+import { ConfigUtils } from "../ConfigUtils";
+import { ImperativeError } from "../../../error";
 
 /**
  * API Class for manipulating config profiles.
@@ -28,6 +30,15 @@ export class ConfigProfiles extends ConfigApi {
      * @param profile The JSON profile object to set into the specified location,
      */
     public set(path: string, profile: IConfigProfile): void {
+        // Guard the hand-rolled path walker below against prototype pollution.
+        // A path such as "__proto__" would otherwise reparent the profiles
+        // object or write onto Object.prototype.
+        if (ConfigUtils.hasUnsafeProperty(path)) {
+            throw new ImperativeError({
+                msg: `Invalid profile path '${path}': path segments may not use ` +
+                    `the reserved property names ${ConfigUtils.UNSAFE_PROP_NAMES.join(", ")}.`
+            });
+        }
         profile.properties = profile.properties || {};
         const layer = this.mConfig.layerActive();
         const segments: string[] = path.split(".");
@@ -107,6 +118,18 @@ export class ConfigProfiles extends ConfigApi {
      * @returns The expanded path.
      */
     public getProfilePathFromName(shortPath: string): string {
+        // Defense-in-depth: reject profile names that resolve to an unsafe
+        // JSON path before they reach any downstream path walker. This covers
+        // every source of a profile name (config `defaults`, the CLI
+        // `--<type>-profile` argument, base-profile fallbacks, and nested
+        // profile keys), not just `defaults`.
+        if (shortPath.split(".").some((segment) => segment.length === 0 || ConfigUtils.UNSAFE_PROP_NAMES.includes(segment))) {
+            throw new ImperativeError({
+                msg: `Invalid profile name '${shortPath}': profile names may not be empty, contain ` +
+                    `leading, trailing, or consecutive dots, or use the reserved property names ` +
+                    `${ConfigUtils.UNSAFE_PROP_NAMES.join(", ")}.`
+            });
+        }
         return shortPath.replace(/(^|\.)/g, "$1profiles.");
     }
 
