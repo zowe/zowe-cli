@@ -53,6 +53,17 @@ export class LoggerUtils {
     private static readonly SECURE_ENV_NAME_PATTERN = /PASS|TOKEN|SECRET|KEY|CRED|AUTH/i;
 
     /**
+     * Escape every regular-expression metacharacter in a string so it can be safely embedded in a `RegExp` as a
+     * literal. Secure values and option names are user-supplied and can frequently contain these characters.
+     * 
+     * @param {string} value - The literal string to escape
+     * @returns {string} - The escaped string, safe to pass to `new RegExp`
+     */
+    private static escapeRegExp(value: string): string {
+        return `${value}`.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    }
+
+    /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args
      * @returns {string[]}
@@ -140,7 +151,7 @@ export class LoggerUtils {
         // consuming the leading boundary, and normalizes the separator to a
         // space in the censored output.
         for (const secureArg of LoggerUtils.COMMAND_LINE_CENSORED_OPTIONS) {
-            const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+            const escapedArg = LoggerUtils.escapeRegExp(secureArg);
             const dashes = secureArg.length > 1 ? "--" : "-";
             const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
             censoredLine = censoredLine.replace(regex, `${dashes}${secureArg} ${LoggerUtils.CENSOR_RESPONSE}`);
@@ -270,7 +281,9 @@ export class LoggerUtils {
         for (const prop of LoggerUtils.secureFields) {
             const sec = lodash.get(layer.properties, prop);
             if (sec && typeof sec !== "object" && !LoggerUtils.isSpecialValue(prop))
-                newData = newData.replace(new RegExp(sec, "gi"), LoggerUtils.CENSOR_RESPONSE);
+                // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
+                // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
+                newData = newData.replace(new RegExp(LoggerUtils.escapeRegExp(sec), "gi"), LoggerUtils.CENSOR_RESPONSE);
         }
         return newData;
     }
