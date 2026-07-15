@@ -438,6 +438,56 @@ describe("Config tests", () => {
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toBe("The secure option is only valid when setting a single property");
         });
+
+        describe("prototype pollution", () => {
+            // Regression test for the auto-store prototype-pollution vector: a
+            // malicious project config could resolve a profile name to
+            // "__proto__", causing the auto-store path to call
+            // config.set("profiles.__proto__.properties.<prop>", value) and
+            // walk onto Object.prototype.
+            afterEach(() => {
+                // Ensure a leaked pollution in one assertion can't mask another
+                delete (Object.prototype as any).properties;
+            });
+
+            it.each([
+                "profiles.__proto__.properties.host",
+                "profiles.constructor.properties.host",
+                "profiles.prototype.properties.host",
+                "__proto__.polluted"
+            ])("should reject the reserved path segment in '%s'", async (badPath) => {
+                const config = await Config.load(MY_APP);
+                let caughtError: Error;
+                try {
+                    config.set(badPath, "attacker-value");
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain("reserved property names");
+                // The core guarantee: Object.prototype was NOT polluted
+                expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("properties");
+                expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("polluted");
+                expect(({} as any).properties).toBeUndefined();
+            });
+
+            it("should not pollute the prototype and should not create the malicious profile", async () => {
+                const config = await Config.load(MY_APP);
+                expect(() => config.set("profiles.__proto__.properties.host", "evil")).toThrow();
+                // A freshly created, unrelated object must not inherit anything
+                expect(({} as any).properties).toBeUndefined();
+                // Nothing was written into the active layer either
+                const layer = (config as any).layerActive();
+                expect(Object.getOwnPropertyNames(layer.properties.profiles)).not.toContain("__proto__");
+            });
+
+            it("should still set a legitimate property whose profile is literally named 'profiles'", async () => {
+                const config = await Config.load(MY_APP);
+                // "profiles" is a legal (if unusual) profile name and must not be blocked
+                config.set("profiles.profiles.properties.color", "green");
+                expect(config.properties.profiles.profiles.properties.color).toBe("green");
+            });
+        });
     });
 
     describe("set (with comments)", () => {

@@ -132,6 +132,21 @@ describe("Config API tests", () => {
                 const profile = profilesApi.get("grape");
                 expect(profile).toEqual({});
             });
+            it.each(["__proto__", "constructor", "prototype", "fruit.__proto__"])(
+                "should reject a profile path containing the reserved segment '%s'", async (badPath) => {
+                    const config = await Config.load(MY_APP);
+                    const fakeProfile: IConfigProfile = { type: "fruit", profiles: {}, properties: { color: "green" } };
+                    let caughtError: Error;
+                    try {
+                        config.api.profiles.set(badPath, fakeProfile);
+                    } catch (error) {
+                        caughtError = error;
+                    }
+                    expect(caughtError).toBeDefined();
+                    expect(caughtError.message).toContain("reserved property names");
+                    expect(({} as any).color).toBeUndefined();
+                    expect(({} as any).properties).toBeUndefined();
+                });
         });
         describe("get", () => {
             it("should get a first level profile", async () => {
@@ -228,6 +243,37 @@ describe("Config API tests", () => {
                 const profilePath = "profiles.zosmf";
                 // eslint-disable-next-line deprecation/deprecation
                 expect(config.api.profiles.expandPath(profilePath)).toEqual("profiles.profiles.profiles.zosmf");
+            });
+        });
+        describe("getProfilePathFromName", () => {
+            it.each(["__proto__", "constructor", "prototype", "lpar1.__proto__.zosmf"])(
+                "should reject a profile name containing the reserved segment '%s'", async (badName) => {
+                    const config = await Config.load(MY_APP);
+                    let caughtError: Error;
+                    try {
+                        config.api.profiles.getProfilePathFromName(badName);
+                    } catch (error) {
+                        caughtError = error;
+                    }
+                    expect(caughtError).toBeDefined();
+                    expect(caughtError.message).toContain("Invalid profile name");
+                });
+            it.each(["", ".lpar1", "lpar1.", "lpar1..zosmf"])(
+                "should reject a profile name with empty segments: '%s'", async (badName) => {
+                    const config = await Config.load(MY_APP);
+                    let caughtError: Error;
+                    try {
+                        config.api.profiles.getProfilePathFromName(badName);
+                    } catch (error) {
+                        caughtError = error;
+                    }
+                    expect(caughtError).toBeDefined();
+                    expect(caughtError.message).toContain("Invalid profile name");
+                });
+            it("should still expand a legitimate (including dotted/nested) profile name", async () => {
+                const config = await Config.load(MY_APP);
+                expect(config.api.profiles.getProfilePathFromName("lpar1")).toEqual("profiles.lpar1");
+                expect(config.api.profiles.getProfilePathFromName("lpar1.zosmf")).toEqual("profiles.lpar1.profiles.zosmf");
             });
         });
         describe("getProfileNameFromPath", () => {

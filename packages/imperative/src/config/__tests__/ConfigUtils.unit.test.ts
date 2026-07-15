@@ -38,6 +38,26 @@ describe("Config Utils", () => {
         });
     });
 
+    describe("hasUnsafeProperty", () => {
+        it("should flag paths that contain a reserved property name", () => {
+            expect(ConfigUtils.hasUnsafeProperty("profiles.__proto__.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeProperty("profiles.constructor.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeProperty("profiles.prototype.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeProperty("__proto__")).toBe(true);
+        });
+
+        it("should not flag normal config property paths", () => {
+            expect(ConfigUtils.hasUnsafeProperty("profiles.lpar1.properties.host")).toBe(false);
+            // "profiles" as a profile name is legal and must not be flagged
+            expect(ConfigUtils.hasUnsafeProperty("profiles.profiles.properties.host")).toBe(false);
+            expect(ConfigUtils.hasUnsafeProperty("defaults.zosmf")).toBe(false);
+        });
+
+        it("should expose the reserved property names", () => {
+            expect([...ConfigUtils.UNSAFE_PROP_NAMES].sort()).toEqual(["__proto__", "constructor", "prototype"]);
+        });
+    });
+
     describe("getActiveProfileName", () => {
         it("should get name from command arguments", () => {
             const profileName = ConfigUtils.getActiveProfileName("fruit", {
