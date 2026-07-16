@@ -645,6 +645,23 @@ describe("Config tests", () => {
                 config.set("profiles.profiles.properties.color", "green");
                 expect(config.properties.profiles.profiles.properties.color).toBe("green");
             });
+
+            it.each([
+                "",
+                ".profiles.lpar1.properties.host",
+                "profiles.lpar1.properties.host.",
+                "profiles..properties.host"
+            ])("should reject the empty path segment in '%s'", async (badPath) => {
+                const config = await Config.load(MY_APP);
+                let caughtError: Error;
+                try {
+                    config.set(badPath, "some-value");
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain("may not be empty");
+            });
         });
     });
 

@@ -83,8 +83,8 @@ export class ConfigSecure extends ConfigApi {
                     // Extract and set secure properties
                     for (const [sPath, sValue] of Object.entries(secureProps)) {
                         if (sPath === p) {
-                            // Defense-in-depth: never walk into a reserved key
-                            if (ConfigUtils.hasUnsafeProperty(sPath)) continue;
+                            // Defense-in-depth: never walk into a reserved or empty key
+                            if (ConfigUtils.hasUnsafeOrEmptyProperty(sPath)) continue;
                             const segments = sPath.split(".");
                             let obj: any = layer.properties;
                             for (let x = 0; x < segments.length; x++) {
@@ -162,8 +162,8 @@ export class ConfigSecure extends ConfigApi {
                 return element.global == layer.global && element.user == layer.user && element.propPath == path;
             });
             if (envVarManaged) { continue; }
-            // Defense-in-depth: never walk into a reserved key
-            if (ConfigUtils.hasUnsafeProperty(path)) continue;
+            // Defense-in-depth: never walk into a reserved or empty key
+            if (ConfigUtils.hasUnsafeOrEmptyProperty(path)) continue;
             const segments = path.split(".");
             let obj: any = opts?.properties ?? layer.properties;
             for (let x = 0; x < segments.length; x++) {

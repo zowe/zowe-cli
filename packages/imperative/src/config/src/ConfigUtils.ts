@@ -37,13 +37,15 @@ export class ConfigUtils {
 
     /**
      * Determine whether a dotted config property path or profile name contains
-     * a segment that could be abused for prototype pollution.
+     * a segment that is empty (e.g. from a leading, trailing, or consecutive
+     * dot) or that could be abused for prototype pollution. Both flavors of bad
+     * segment are unsafe to hand to a hand-rolled dotted-path walker.
      * @param propertyPath Dotted path (e.g. "profiles.lpar1.properties.host")
      *                     or profile name (e.g. "lpar1.zosmf")
-     * @returns True if any segment is a reserved/unsafe property name
+     * @returns True if any segment is empty or a reserved/unsafe property name
      */
-    public static hasUnsafeProperty(propertyPath: string): boolean {
-        return propertyPath.split(".").some((segment) => ConfigUtils.UNSAFE_PROP_NAMES.includes(segment));
+    public static hasUnsafeOrEmptyProperty(propertyPath: string): boolean {
+        return propertyPath.split(".").some((segment) => segment.length === 0 || ConfigUtils.UNSAFE_PROP_NAMES.includes(segment));
     }
 
     /**

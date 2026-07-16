@@ -30,12 +30,14 @@ export class ConfigProfiles extends ConfigApi {
      * @param profile The JSON profile object to set into the specified location,
      */
     public set(path: string, profile: IConfigProfile): void {
-        // Guard the hand-rolled path walker below against prototype pollution.
-        // A path such as "__proto__" would otherwise reparent the profiles
-        // object or write onto Object.prototype.
-        if (ConfigUtils.hasUnsafeProperty(path)) {
+        // Guard the hand-rolled path walker below against prototype pollution
+        // and malformed paths. A path such as "__proto__" would otherwise
+        // reparent the profiles object or write onto Object.prototype, and an
+        // empty segment (e.g. "lpar1..zosmf") would silently create a bogus
+        // "" profile.
+        if (ConfigUtils.hasUnsafeOrEmptyProperty(path)) {
             throw new ImperativeError({
-                msg: `Invalid profile path '${path}': path segments may not use ` +
+                msg: `Invalid profile path '${path}': path segments may not be empty or use ` +
                     `the reserved property names ${ConfigUtils.UNSAFE_PROP_NAMES.join(", ")}.`
             });
         }
@@ -118,12 +120,12 @@ export class ConfigProfiles extends ConfigApi {
      * @returns The expanded path.
      */
     public getProfilePathFromName(shortPath: string): string {
-        // Defense-in-depth: reject profile names that resolve to an unsafe
-        // JSON path before they reach any downstream path walker. This covers
-        // every source of a profile name (config `defaults`, the CLI
-        // `--<type>-profile` argument, base-profile fallbacks, and nested
+        // Defense-in-depth: reject profile names that resolve to an unsafe or
+        // malformed JSON path before they reach any downstream path walker.
+        // This covers every source of a profile name (config `defaults`, the
+        // CLI `--<type>-profile` argument, base-profile fallbacks, and nested
         // profile keys), not just `defaults`.
-        if (shortPath.split(".").some((segment) => segment.length === 0 || ConfigUtils.UNSAFE_PROP_NAMES.includes(segment))) {
+        if (ConfigUtils.hasUnsafeOrEmptyProperty(shortPath)) {
             throw new ImperativeError({
                 msg: `Invalid profile name '${shortPath}': profile names may not be empty, contain ` +
                     `leading, trailing, or consecutive dots, or use the reserved property names ` +
