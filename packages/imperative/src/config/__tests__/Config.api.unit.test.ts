@@ -147,6 +147,19 @@ describe("Config API tests", () => {
                     expect(({} as any).color).toBeUndefined();
                     expect(({} as any).properties).toBeUndefined();
                 });
+            it.each(["", ".fruit", "fruit.", "fruit..apple"])(
+                "should reject a profile path with an empty segment: '%s'", async (badPath) => {
+                    const config = await Config.load(MY_APP);
+                    const fakeProfile: IConfigProfile = { type: "fruit", profiles: {}, properties: { color: "green" } };
+                    let caughtError: Error;
+                    try {
+                        config.api.profiles.set(badPath, fakeProfile);
+                    } catch (error) {
+                        caughtError = error;
+                    }
+                    expect(caughtError).toBeDefined();
+                    expect(caughtError.message).toContain("Invalid profile path");
+                });
         });
         describe("get", () => {
             it("should get a first level profile", async () => {
