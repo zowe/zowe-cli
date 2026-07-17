@@ -28,6 +28,27 @@ import { IExtendersJsonOpts } from "./doc/IExtenderOpts";
 
 export class ConfigUtils {
     /**
+     * Property names that must never appear as a segment when walking a plain
+     * object with hand-rolled (non-lodash) dotted-path traversal. Dereferencing
+     * or assigning to any of these keys can mutate `Object.prototype`
+     * (prototype pollution) or otherwise corrupt the JS object graph.
+     */
+    public static readonly UNSAFE_PROP_NAMES: readonly string[] = ["__proto__", "constructor", "prototype"];
+
+    /**
+     * Determine whether a dotted config property path or profile name contains
+     * a segment that is empty (e.g. from a leading, trailing, or consecutive
+     * dot) or that could be abused for prototype pollution. Both flavors of bad
+     * segment are unsafe to hand to a hand-rolled dotted-path walker.
+     * @param propertyPath Dotted path (e.g. "profiles.lpar1.properties.host")
+     *                     or profile name (e.g. "lpar1.zosmf")
+     * @returns True if any segment is empty or a reserved/unsafe property name
+     */
+    public static hasUnsafeOrEmptyProperty(propertyPath: string): boolean {
+        return propertyPath.split(".").some((segment) => segment.length === 0 || ConfigUtils.UNSAFE_PROP_NAMES.includes(segment));
+    }
+
+    /**
      * Retrieves the Zowe CLI home directory. In the situation Imperative has
      * not initialized it we use a default value.
      * @returns {string} - Returns the Zowe home directory
