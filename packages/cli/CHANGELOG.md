@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated the `zowe zos-files uss edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#TBD](https://github.com/zowe/zowe-cli/pull/TBD)
+- BugFix: Updated the `zowe zos-files uss edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#2815](https://github.com/zowe/zowe-cli/pull/2815)
 
 ## `7.29.30`
 
