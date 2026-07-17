@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.33.3`
 
 - Enhancement: Added the `zowe config export-redacted` command to export Zowe configuration layers with sensitive values redacted for troubleshooting and sharing purposes. [#2732](https://github.com/zowe/zowe-cli/pull/2732)
 - BugFix: The `Config.set` function, `ConfigProfiles.set` function, and the `ConfigSecure` property walkers now reject dotted paths whose segments are empty or use reserved property names. [#2807](https://github.com/zowe/zowe-cli/pull/2807)
