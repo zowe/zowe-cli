@@ -37,7 +37,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
 
                 for (const layer of layers) {
                     if (layer.exists) {
-                        const redactedConfig = await this.createRedactedConfig(layer, params.arguments);
+                        const redactedConfig = this.createRedactedConfig(layer, params.arguments);
                         const sourceName = path.join(path.basename(path.dirname(layer.path)), path.basename(layer.path));
                         const formattedOutput = JSON.stringify(redactedConfig, null, 2);
 
@@ -52,7 +52,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 }
                 params.response.data.setObj(dryRunOutputs);
             } else {
-                const exportedFiles = await this.exportToDirectory(exportDir, params.arguments);
+                const exportedFiles = this.exportToDirectory(exportDir, params.arguments);
                 const maxSourceLength = Math.max(...exportedFiles.map(file => file.source.length));
                 for (const file of exportedFiles) {
                     const relativeTarget = path.relative(process.cwd(), file.target);
@@ -257,9 +257,10 @@ export default class ExportRedactedHandler implements ICommandHandler {
 
     private getOrCreateKey(value: any, propertyName: string): string {
         const valueStr = String(value);
+        const cacheKey = `${typeof value}:${valueStr}`;
 
-        if (this.valueToKeyMap.has(valueStr)) {
-            return this.valueToKeyMap.get(valueStr)!;
+        if (this.valueToKeyMap.has(cacheKey)) {
+            return this.valueToKeyMap.get(cacheKey)!;
         }
 
         const keyPrefix = this.getKeyPrefix(propertyName, value);
@@ -271,7 +272,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
             key = "$" + key;
         }
 
-        this.valueToKeyMap.set(valueStr, key);
+        this.valueToKeyMap.set(cacheKey, key);
 
         return key;
     }
