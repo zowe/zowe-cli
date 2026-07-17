@@ -83,7 +83,16 @@ export class EditUtilities {
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            return path.join(tmpdir(), path.parse(lfFile.fileName).name + '_' + hash + ext);
+            const ussDir = path.join(tmpdir(), "zowe-edit-uss");
+            if (existsSync(ussDir)) {
+                const st = lstatSync(ussDir);
+                if (!st.isDirectory() || (st.mode & 0o777) !== 0o700 || st.uid !== process.getuid?.()) {
+                    throw new ImperativeError({ msg: `Unsafe temp directory detected at ${ussDir}` });
+                }
+            } else {
+                mkdirSync(ussDir, { recursive: true, mode: 0o700 });
+            }
+            return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
         const dsDir = path.join(tmpdir(), "zowe-edit-ds");
         if (existsSync(dsDir)) {
