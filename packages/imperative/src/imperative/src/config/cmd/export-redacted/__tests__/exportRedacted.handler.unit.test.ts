@@ -13,12 +13,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { ImperativeConfig } from "../../../../../..";
 import ExportRedactedHandler from "../exportRedacted.handler";
-import { ProfileInfo, ConfigUtils } from "../../../../../../config";
 
 describe("ExportRedactedHandler", () => {
     let handler: ExportRedactedHandler;
     let mockParams: any;
-    let mockProfileInfo: ProfileInfo;
 
     beforeEach(() => {
         handler = new ExportRedactedHandler();
@@ -41,46 +39,19 @@ describe("ExportRedactedHandler", () => {
             }
         } as any;
 
-        mockProfileInfo = {
-            readProfilesFromDisk: jest.fn().mockResolvedValue(undefined),
-            getTeamConfig: jest.fn().mockReturnValue({
-                layerActive: jest.fn().mockReturnValue({
-                    path: "/mock/config.json"
-                }),
-                layers: []
-            })
-        } as any;
-
         // Mock ImperativeConfig
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: {
-                exists: true
+                exists: true,
+                layers: [
+                    {
+                        exists: true,
+                        global: false,
+                        user: false,
+                        path: "/mock/config.json"
+                    }
+                ]
             }
-        } as any);
-
-        // Mock ConfigUtils.initImpUtils
-        jest.spyOn(ConfigUtils, "initImpUtils").mockReturnValue({
-            log: jest.fn(),
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn()
-        } as any);
-
-        // Mock ProfileInfo constructor
-        jest.spyOn(ProfileInfo.prototype, "readProfilesFromDisk").mockResolvedValue(undefined);
-        jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
-            layerActive: jest.fn().mockReturnValue({
-                path: "/mock/config.json"
-            }),
-            layers: [
-                {
-                    exists: true,
-                    global: false,
-                    user: false,
-                    path: "/mock/config.json"
-                }
-            ]
         } as any);
 
         // Mock fs.readFileSync
@@ -263,7 +234,7 @@ describe("ExportRedactedHandler", () => {
         mockParams.arguments.dryRun = false;
         mockParams.arguments.exportDir = path.join(process.cwd(), "mock");
 
-        // Mock layers in ProfileInfo with different source path lengths
+        // Mock layers with different source path lengths
         const layers = [
             {
                 exists: true,
@@ -279,11 +250,11 @@ describe("ExportRedactedHandler", () => {
             }
         ];
 
-        jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
-            layerActive: jest.fn().mockReturnValue({
-                path: path.join(process.cwd(), "mock", "zowe.config.json")
-            }),
-            layers
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: {
+                exists: true,
+                layers
+            }
         } as any);
 
         // Mock fs.existsSync & fs.writeFileSync
