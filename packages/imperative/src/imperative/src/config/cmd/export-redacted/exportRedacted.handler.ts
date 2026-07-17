@@ -15,7 +15,7 @@ import { ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError 
 import { ProfileInfo } from "../../../../../config";
 
 export default class ExportRedactedHandler implements ICommandHandler {
-    private keyCounter = 1;
+    private keyCounters: Map<string, number> = new Map();
     private valueToKeyMap: Map<string, string> = new Map();
     private profileInfo: ProfileInfo;
 
@@ -114,8 +114,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
     }
 
     private async createRedactedConfig(layer: any, args: any): Promise<any> {
-        const teamConfig = this.profileInfo.getTeamConfig();
-        const activeLayer = layer || teamConfig.layerActive();
+        const activeLayer = layer;
 
         // Read the raw JSON file directly to avoid any ProfileInfo processing/merging
         let originalConfig: any;
@@ -139,41 +138,9 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 redacted.profiles = {};
 
                 for (const [profileName, profileData] of Object.entries(value as any)) {
-                    const profile = profileData as any;
-                    const redactedProfile: any = {};
-
-                    if (profile.type) {
-                        redactedProfile.type = profile.type;
-                    }
-
-                    if (profile.properties) {
-                        redactedProfile.properties = {};
-                        for (const [propName, propValue] of Object.entries(profile.properties)) {
-                            redactedProfile.properties[propName] = this.redactValue(
-                                propName,
-                                propValue,
-                                null,
-                                args
-                            );
-                        }
-                    }
-
-                    if (profile.profiles) {
-                        redactedProfile.profiles = {};
-                        for (const [nestedProfileName, nestedProfileData] of Object.entries(profile.profiles)) {
-                            const redactedNestedName = args.redactProfileNames ?
-                                this.getOrCreateKey(nestedProfileName, "profile") : nestedProfileName;
-                            redactedProfile.profiles[redactedNestedName] = this.redactProfileObject(nestedProfileData, args);
-                        }
-                    }
-
-                    if (profile.secure && !args.hideSecureFields) {
-                        redactedProfile.secure = profile.secure;
-                    }
-
                     const redactedProfileName = args.redactProfileNames ?
                         this.getOrCreateKey(profileName, "profile") : profileName;
-                    redacted.profiles[redactedProfileName] = redactedProfile;
+                    redacted.profiles[redactedProfileName] = this.redactProfileObject(profileData, args);
                 }
             } else if (key === "defaults") {
                 if (args.redactProfileNames && value && typeof value === "object" && !Array.isArray(value)) {
@@ -198,9 +165,9 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 }
             } else {
                 if (key === "$schema") {
-                    redacted[key] = "<SCHEMA_PATH_REDACTED>";
+                    redacted[rawKey] = "<SCHEMA_PATH_REDACTED>";
                 } else {
-                    redacted[key] = this.redactObject(value, args);
+                    redacted[rawKey] = this.redactObject(value, args);
                 }
             }
         }
@@ -220,7 +187,6 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 redactedProfile.properties[propName] = this.redactValue(
                     propName,
                     propValue,
-                    null,
                     args
                 );
             }
@@ -242,7 +208,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         return redactedProfile;
     }
 
-    private redactValue(propertyName: string, value: any, schema: any, args: any): any {
+    private redactValue(propertyName: string, value: any, args: any): any {
         const valueType = typeof value;
 
         switch (valueType) {
@@ -267,7 +233,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
             case "object":
                 if (value === null) return null;
                 if (Array.isArray(value)) {
-                    return value.map(item => this.redactValue(propertyName, item, schema, args));
+                    return value.map(item => this.redactValue(propertyName, item, args));
                 }
                 return this.redactObject(value, args);
 
@@ -288,7 +254,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         if (typeof obj === "object") {
             const redacted: any = {};
             for (const [key, value] of Object.entries(obj)) {
-                redacted[key] = this.redactValue(key, value, null, args);
+                redacted[key] = this.redactValue(key, value, args);
             }
             return redacted;
         }
@@ -304,11 +270,13 @@ export default class ExportRedactedHandler implements ICommandHandler {
         }
 
         const keyPrefix = this.getKeyPrefix(propertyName, value);
-        let key = `<${keyPrefix}${this.keyCounter}>`;
+        const nextCount = (this.keyCounters.get(keyPrefix) ?? 0) + 1;
+        this.keyCounters.set(keyPrefix, nextCount);
+
+        let key = `<${keyPrefix}${nextCount}>`;
         if (valueStr.startsWith("$")) {
             key = "$" + key;
         }
-        this.keyCounter++;
 
         this.valueToKeyMap.set(valueStr, key);
 

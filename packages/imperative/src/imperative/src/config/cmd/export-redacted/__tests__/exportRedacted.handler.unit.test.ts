@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { ImperativeConfig } from "../../../../../../";
+import { ImperativeConfig } from "../../../../../..";
 import ExportRedactedHandler from "../exportRedacted.handler";
 import { ProfileInfo, ConfigUtils } from "../../../../../../config";
 
