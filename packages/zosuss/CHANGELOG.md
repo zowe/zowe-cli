@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- **Next Breaking**: SSH connections now verify the server's host key before sending any credentials. Previously the CLI connected to whatever answered at the target address without confirming its identity, allowing a network attacker to impersonate the z/OS SSH server and capture mainframe credentials. On first connection the host key's fingerprint is presented for confirmation (trust on first use) and, once accepted, saved to the `hostKey` ssh profile property so the user is not prompted again; a changed key is rejected with a warning. Specify `--insecure` (or `ZOWE_OPT_INSECURE=true`, or the `insecure` profile property) to skip verification and restore the previous behavior. In CI environments the key is never prompted for - verification stays on and the connection fails with an explanatory error unless a key is pinned or `--insecure` is specified.
+- Enhancement: Added `hostKey` and `insecure` ssh profile properties / CLI options to control SSH host key verification. When a host key is pinned, its algorithm is requested from the server so that a renegotiated key type is not misreported as a changed key.
+
 ## `7.29.0`
 
 - BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)

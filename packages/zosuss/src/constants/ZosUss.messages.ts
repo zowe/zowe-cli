@@ -35,5 +35,14 @@ export const ZosUssMessages: { [key: string]: IMessageDefinition } = {
     },
     expiredPassword: {
         message: "Your password has expired"
+    },
+    hostKeyVerificationFailed: {
+        message: "Host key verification failed. The SSH server's host key is not trusted, so the connection " +
+            "was rejected before any credentials were sent."
+    },
+    hostKeyChanged: {
+        message: "Host key verification failed. The SSH server's host key does not match the previously trusted " +
+            "key. This may indicate a man-in-the-middle attack, or the server's host key may have legitimately " +
+            "changed. The connection was rejected before any credentials were sent."
     }
 };
