@@ -48,7 +48,7 @@
     },
     "__tests__/__packages__/cli-test-utils": {
       "name": "@zowe/cli-test-utils",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "find-up": "^5.0.0",
@@ -57,7 +57,7 @@
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/imperative": "8.33.3"
       },
       "peerDependencies": {
         "@zowe/imperative": "^8.0.0"
@@ -539,6 +539,7 @@
       "version": "0.8.1",
       "integrity": "sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "dependencies": {
@@ -552,6 +553,7 @@
       "version": "0.3.9",
       "integrity": "sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "dependencies": {
@@ -1090,6 +1092,7 @@
       "version": "4.0.4",
       "integrity": "sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==",
       "dev": true,
+      "license": "BSD-3-Clause",
       "optional": true,
       "peer": true,
       "engines": {
@@ -1160,6 +1163,7 @@
       "version": "10.9.2",
       "integrity": "sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "dependencies": {
@@ -1204,6 +1208,7 @@
       "version": "3.1.1",
       "integrity": "sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "engines": {
@@ -3413,6 +3418,7 @@
       "version": "1.0.12",
       "integrity": "sha512-UCYBaeFvM11aU2y3YPZ//O5Rhj+xKyzy7mvcIoAjASbigy8mHMryP5cK7dgjlz2hWxh1g5pLw084E0a/wlUSFQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -3420,6 +3426,7 @@
       "version": "1.0.11",
       "integrity": "sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -3427,6 +3434,7 @@
       "version": "1.0.3",
       "integrity": "sha512-ysT8mhdixWK6Hw3i1V2AeRqZ5WfXg1G43mqoYlM2nc6388Fq5jcXyr5mRsqViLx/GJYdoL0bfXD8nmF+Zn/Iow==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -3434,6 +3442,7 @@
       "version": "1.0.4",
       "integrity": "sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -4226,6 +4235,7 @@
       "version": "4.1.3",
       "integrity": "sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -5855,6 +5865,7 @@
       "version": "4.0.4",
       "integrity": "sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==",
       "dev": true,
+      "license": "BSD-3-Clause",
       "optional": true,
       "peer": true,
       "engines": {
@@ -5925,6 +5936,7 @@
       "version": "10.9.2",
       "integrity": "sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "dependencies": {
@@ -5969,6 +5981,7 @@
       "version": "3.1.1",
       "integrity": "sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "engines": {
@@ -5979,6 +5992,7 @@
       "version": "1.1.1",
       "integrity": "sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -8455,6 +8469,7 @@
       "version": "4.0.4",
       "integrity": "sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==",
       "dev": true,
+      "license": "BSD-3-Clause",
       "optional": true,
       "peer": true,
       "engines": {
@@ -8525,6 +8540,7 @@
       "version": "10.9.2",
       "integrity": "sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "dependencies": {
@@ -8569,6 +8585,7 @@
       "version": "3.1.1",
       "integrity": "sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true,
       "engines": {
@@ -12970,6 +12987,7 @@
       "version": "3.0.1",
       "integrity": "sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==",
       "dev": true,
+      "license": "MIT",
       "optional": true,
       "peer": true
     },
@@ -13515,21 +13533,21 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2",
-        "@zowe/provisioning-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-console-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-files-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-logs-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-tso-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-uss-for-zowe-sdk": "8.33.2",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.33.2",
-        "@zowe/zosmf-for-zowe-sdk": "8.33.2",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3",
+        "@zowe/provisioning-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-console-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-files-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-logs-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-tso-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-uss-for-zowe-sdk": "8.33.3",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.33.3",
+        "@zowe/zosmf-for-zowe-sdk": "8.33.3",
         "find-process": "^1.4.7",
         "lodash": "^4.17.23",
         "minimatch": "^10.2.3",
@@ -13541,7 +13559,7 @@
       "devDependencies": {
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.17.6",
-        "@zowe/cli-test-utils": "8.33.2",
+        "@zowe/cli-test-utils": "8.33.3",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "which": "^4.0.0"
@@ -13609,15 +13627,15 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "~4.2.3",
         "string-width": "^4.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13628,7 +13646,7 @@
     },
     "packages/imperative": {
       "name": "@zowe/imperative",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "@types/semver": "^7.5.0",
@@ -13739,16 +13757,16 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "^4.2.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13773,15 +13791,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.33.2"
+        "@zowe/zos-files-for-zowe-sdk": "8.33.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13793,12 +13811,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13810,17 +13828,17 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.23",
         "minimatch": "^10.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2",
-        "@zowe/zos-uss-for-zowe-sdk": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3",
+        "@zowe/zos-uss-for-zowe-sdk": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13864,15 +13882,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.33.2"
+        "@zowe/zos-files-for-zowe-sdk": "8.33.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13884,12 +13902,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13901,12 +13919,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13918,15 +13936,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "8.33.2"
+        "@zowe/zosmf-for-zowe-sdk": "8.33.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/core-for-zowe-sdk": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/core-for-zowe-sdk": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13938,15 +13956,15 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.33.2",
+      "version": "8.33.3",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.19",
-        "@zowe/cli-test-utils": "8.33.2",
-        "@zowe/imperative": "8.33.2"
+        "@zowe/cli-test-utils": "8.33.3",
+        "@zowe/imperative": "8.33.3"
       },
       "engines": {
         "node": ">=20.9.0"
