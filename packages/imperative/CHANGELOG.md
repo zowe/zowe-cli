@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.33.3`
 
 - BugFix: The `Config.set` function, `ConfigProfiles.set` function, and the `ConfigSecure` property walkers now reject dotted paths whose segments are empty or use reserved property names. [#2807](https://github.com/zowe/zowe-cli/pull/2807)
 - BugFix: Escaped regular-expression metacharacters in secure values before masking them in the `Censor.censorRawData` function. [#2799](https://github.com/zowe/zowe-cli/pull/2799)
