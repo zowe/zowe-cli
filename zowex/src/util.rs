@@ -125,6 +125,34 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 }
 
 /**
+ * Read the secret daemon token from the owner-only pid file in the supplied
+ * daemon directory.
+ *
+ * The daemon stores a freshly generated token in `daemon_pid.json` (which is
+ * restricted to the owner) every time it starts. We echo this token back to the
+ * daemon on every request to prove that we are the user that owns the daemon.
+ * Only the owner can read the pid file, so only the owner can learn the token.
+ *
+ * This must be called only after we have established a connection to the daemon,
+ * because the daemon writes the pid file (with the token) as it starts up. If we
+ * read it too early we could get a stale token from a previous daemon.
+ *
+ * @param daemon_dir The daemon directory that contains `daemon_pid.json`.
+ *
+ * @returns The token on success, or None if it could not be read (e.g. when
+ *          talking to an older daemon that does not write a token).
+ */
+pub(crate) fn util_get_daemon_token_from_dir(daemon_dir: &Path) -> Option<String> {
+    let mut pid_file_path = daemon_dir.to_path_buf();
+    pid_file_path.push("daemon_pid.json");
+
+    let pid_file = std::fs::File::open(&pid_file_path).ok()?;
+    let pid_reader = std::io::BufReader::new(pid_file);
+    let daemon_pid_for_user: DaemonPidForUser = serde_json::from_reader(pid_reader).ok()?;
+    daemon_pid_for_user.token
+}
+
+/**
  * Restrict the ~/.zowe/bin directory and the zowe executable within it so that
  * only the current user has access. The running executable resides in that bin
  * directory, so we derive both paths from our own executable path.

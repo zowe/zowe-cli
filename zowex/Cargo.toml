@@ -25,7 +25,12 @@ yansi = "0.5.1"
 
 [target.'cfg(windows)'.dependencies]
 fslock = "0.2.1"
-windows-sys = "0.52.0"
+windows-sys = { version = "0.52.0", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Pipes",
+    "Win32_System_Threading",
+] }
 
 [dev-dependencies]
 tokio-test = "0.4.4"
