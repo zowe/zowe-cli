@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- **Next Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending any credentials, protecting against man-in-the-middle attacks. On first connection you are prompted to confirm the server's fingerprint; the accepted key is saved to your ssh profile. Specify the new `--insecure` option (or `ZOWE_OPT_INSECURE=true`) to skip verification and restore the previous behavior, or pin a trusted key with `--host-key`.
 - BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
 - BugFix: Prevented the daemon client from connecting to a Windows named pipe that belongs to a different user. [#2790](https://github.com/zowe/zowe-cli/pull/2790)
 - BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. The daemon now generates a random secret token at startup, stores it in the owner-only `daemon_pid.json` file, and requires every client request to echo it back (compared in constant time). Because only the owner can read that file, this closes a gap on Windows, where the named pipe can be opened by local users other than the owner and the previously self-asserted user name check was insufficient. [#2743](https://github.com/zowe/zowe-cli/pull/2743)

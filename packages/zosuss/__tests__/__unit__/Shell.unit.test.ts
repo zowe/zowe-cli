@@ -111,6 +111,141 @@ describe("Shell", () => {
         checkMockFunctionsWithCommand(command);
     });
 
+    describe("Host key verification", () => {
+        // Build a realistic SSH public key blob: 4-byte big-endian length, algorithm name, then key data
+        function makeKeyBlob(algorithm: string, keyData = "key-material"): Buffer {
+            const nameBuf = Buffer.from(algorithm, "ascii");
+            const lenBuf = Buffer.alloc(4);
+            lenBuf.writeUInt32BE(nameBuf.length, 0);
+            return Buffer.concat([lenBuf, nameBuf, Buffer.from(keyData)]);
+        }
+
+        const fakeKey = makeKeyBlob("ssh-ed25519");
+        const fakeKeyB64 = fakeKey.toString("base64");
+
+        function getHostVerifier(): (keyBuf: Buffer, cb: (valid: boolean) => void) => void {
+            // The config passed to conn.connect() carries the hostVerifier callback
+            return mockConnect.mock.calls[0][0].hostVerifier;
+        }
+
+        function getConnectConfig(): any {
+            return mockConnect.mock.calls[0][0];
+        }
+
+        it("should compute an OpenSSH-style SHA256 fingerprint", () => {
+            const fingerprint = Shell.getHostKeyFingerprint(fakeKey);
+            expect(fingerprint).toMatch(/^SHA256:[A-Za-z0-9+/]+$/);
+            expect(fingerprint).not.toContain("="); // padding stripped
+        });
+
+        it("should accept any key when insecure is true", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", insecure: true });
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            expect(cb).toHaveBeenCalledWith(true);
+        });
+
+        describe("host key algorithm", () => {
+            it("should parse the algorithm name out of a key blob", () => {
+                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-ed25519"))).toBe("ssh-ed25519");
+                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-rsa"))).toBe("ssh-rsa");
+                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ecdsa-sha2-nistp256"))).toBe("ecdsa-sha2-nistp256");
+            });
+
+            it("should return undefined for a blob that cannot be parsed", () => {
+                expect(Shell.getHostKeyAlgorithm(Buffer.alloc(0))).toBeUndefined();
+                expect(Shell.getHostKeyAlgorithm(Buffer.from([0, 0]))).toBeUndefined();
+                // Length prefix larger than the buffer
+                const bogus = Buffer.alloc(8);
+                bogus.writeUInt32BE(9999, 0);
+                expect(Shell.getHostKeyAlgorithm(bogus)).toBeUndefined();
+            });
+
+            it("should request the pinned key's algorithm so the same key type is presented", async () => {
+                const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64 });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(getConnectConfig().algorithms).toEqual({ serverHostKey: ["ssh-ed25519"] });
+            });
+
+            it("should not pin an algorithm when no host key is pinned", async () => {
+                const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(getConnectConfig().algorithms).toBeUndefined();
+            });
+
+            it("should not pin an algorithm when insecure is true", async () => {
+                const session = new SshSession({
+                    hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64, insecure: true
+                });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(getConnectConfig().algorithms).toBeUndefined();
+            });
+        });
+
+        it("should accept a presented key that matches the pinned hostKey", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64 });
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            expect(cb).toHaveBeenCalledWith(true);
+        });
+
+        it("should reject an unknown key when no interactive verifier is set", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            expect(cb).toHaveBeenCalledWith(false);
+        });
+
+        it("should delegate an unknown key to the interactive verifier (changed=false)", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(true);
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            await new Promise(process.nextTick);
+            expect(session.hostKeyVerifier).toHaveBeenCalledWith(
+                expect.objectContaining({ key: fakeKeyB64, changed: false })
+            );
+            expect(cb).toHaveBeenCalledWith(true);
+        });
+
+        it("should mark changed=true when the presented key differs from the pinned key", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: "a-different-pinned-key" });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(true);
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            await new Promise(process.nextTick);
+            expect(session.hostKeyVerifier).toHaveBeenCalledWith(
+                expect.objectContaining({ key: fakeKeyB64, changed: true })
+            );
+            expect(cb).toHaveBeenCalledWith(true);
+        });
+
+        it("should reject when the interactive verifier declines the key", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(false);
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            await new Promise(process.nextTick);
+            expect(cb).toHaveBeenCalledWith(false);
+        });
+
+        it("should reject when the interactive verifier throws", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
+            session.hostKeyVerifier = jest.fn().mockRejectedValue(new Error("prompt failed"));
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            const cb = jest.fn();
+            getHostVerifier()(fakeKey, cb);
+            await new Promise(process.nextTick);
+            expect(cb).toHaveBeenCalledWith(false);
+        });
+    });
+
     describe("Connection validation", () => {
         it("should determine that the connection is valid", async () => {
             const response = await Shell.isConnectionValid(fakeSshSession);
