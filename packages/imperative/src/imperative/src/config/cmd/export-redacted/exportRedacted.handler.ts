@@ -12,7 +12,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError } from "../../../../..";
-import { ProfileInfo } from "../../../../../config";
 
 export default class ExportRedactedHandler implements ICommandHandler {
     private keyCounters: Map<string, number> = new Map();
