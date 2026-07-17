@@ -25,6 +25,8 @@ use base64::prelude::*;
 use is_terminal::IsTerminal;
 
 #[cfg(target_family = "windows")]
+use std::path::Path;
+#[cfg(target_family = "windows")]
 extern crate fslock;
 #[cfg(target_family = "windows")]
 extern crate home;
@@ -305,14 +307,14 @@ pub async fn run_daemon_command(
         Ok(ok_val) => ok_val,
         Err(err_val) => return Err(err_val),
     };
+    let daemon_dir = util_get_daemon_dir()?;
 
     #[cfg(target_family = "windows")]
-    let mut lock_file = get_win_lock_file()?;
+    let mut lock_file = get_win_lock_file(&daemon_dir)?;
 
     #[cfg(target_family = "windows")]
     let mut locked = false;
 
-    let daemon_dir = util_get_daemon_dir()?;
     loop {
         #[cfg(target_family = "windows")]
         if !locked {
@@ -652,12 +654,8 @@ fn form_win_cmd_script_arg_vec<'a>(
 }
 
 #[cfg(target_family = "windows")]
-fn get_win_lock_file() -> Result<LockFile, i32> {
-    let mut lock_path: PathBuf;
-    match util_get_daemon_dir() {
-        Ok(ok_val) => lock_path = ok_val,
-        Err(err_val) => return Err(err_val),
-    }
+fn get_win_lock_file(daemon_dir: &Path) -> Result<LockFile, i32> {
+    let mut lock_path: PathBuf = daemon_dir.to_path_buf();
     lock_path.push("daemon.lock");
 
     if let Err(err_val) = File::create(&lock_path) {
