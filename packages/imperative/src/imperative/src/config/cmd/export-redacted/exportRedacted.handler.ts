@@ -17,7 +17,6 @@ import { ProfileInfo } from "../../../../../config";
 export default class ExportRedactedHandler implements ICommandHandler {
     private keyCounters: Map<string, number> = new Map();
     private valueToKeyMap: Map<string, string> = new Map();
-    private profileInfo: ProfileInfo;
 
     public async process(params: IHandlerParameters): Promise<void> {
         try {
@@ -29,15 +28,11 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 });
             }
 
-            this.profileInfo = new ProfileInfo("zowe");
-            await this.profileInfo.readProfilesFromDisk();
-
             const exportDir = params.arguments.exportDir || process.cwd();
             const isDryRun = params.arguments.dryRun;
 
             if (isDryRun) {
-                const teamConfig = this.profileInfo.getTeamConfig();
-                const layers = teamConfig.layers;
+                const layers = ImperativeConfig.instance.config.layers;
                 const dryRunOutputs: any = {};
                 let hasOutput = false;
 
@@ -46,7 +41,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                         const redactedConfig = await this.createRedactedConfig(layer, params.arguments);
                         const sourceName = path.join(path.basename(path.dirname(layer.path)), path.basename(layer.path));
                         const formattedOutput = JSON.stringify(redactedConfig, null, 2);
-                        
+
                         if (hasOutput) {
                             params.response.console.log("\n" + "=".repeat(80) + "\n");
                         }
@@ -75,18 +70,17 @@ export default class ExportRedactedHandler implements ICommandHandler {
         }
     }
 
-    private async exportToDirectory(exportDir: string, args: any): Promise<Array<{ source: string, target: string }>> {
+    private exportToDirectory(exportDir: string, args: any): Array<{ source: string, target: string }> {
         if (!fs.existsSync(exportDir)) {
             fs.mkdirSync(exportDir, { recursive: true });
         }
 
-        const teamConfig = this.profileInfo.getTeamConfig();
-        const layers = teamConfig.layers;
+        const layers = ImperativeConfig.instance.config.layers;
         const exportedFiles: Array<{ source: string, target: string }> = [];
 
         for (const layer of layers) {
             if (layer.exists) {
-                const redactedConfig = await this.createRedactedConfig(layer, args);
+                const redactedConfig = this.createRedactedConfig(layer, args);
                 
                 let filename: string;
                 if (layer.global && layer.user) {
@@ -101,7 +95,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 
                 const filePath = path.join(exportDir, filename);
                 const formattedOutput = JSON.stringify(redactedConfig, null, 2);
-                await this.writeToFile(formattedOutput, filePath);
+                this.writeToFile(formattedOutput, filePath);
 
                 exportedFiles.push({
                     source: path.join(path.basename(path.dirname(layer.path)), path.basename(layer.path)),
@@ -113,7 +107,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         return exportedFiles;
     }
 
-    private async createRedactedConfig(layer: any, args: any): Promise<any> {
+    private createRedactedConfig(layer: any, args: any): unknown {
         const activeLayer = layer;
 
         // Read the raw JSON file directly to avoid any ProfileInfo processing/merging
@@ -309,7 +303,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         });
     }
 
-    private async writeToFile(content: string, filePath: string): Promise<void> {
+    private writeToFile(content: string, filePath: string): void {
         try {
             const dir = path.dirname(filePath);
             if (!fs.existsSync(dir)) {
