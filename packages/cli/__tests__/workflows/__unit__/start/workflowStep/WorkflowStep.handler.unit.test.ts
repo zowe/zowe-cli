@@ -223,4 +223,74 @@ describe("Start workflow common handler", () => {
 
         });
     });
+    describe("Credential censoring in error diagnostics", () => {
+        // Distinctive plaintext secrets that must never appear in serialized error output
+        const FAKE_PASSWORD = "sup3rSecretP4ssw0rd";
+        const FAKE_TOKEN = "sup3rSecretT0kenValue";
+
+        const buildArgs = (extra: Record<string, any>) => ({
+            $0: "fake",
+            _: ["fake"],
+            host: "fake-host",
+            user: "fake-user",
+            password: FAKE_PASSWORD,
+            tokenValue: FAKE_TOKEN,
+            ...extra
+        });
+
+        const buildResponse = () => ({
+            data: { setObj: jest.fn(), setMessage: jest.fn() },
+            console: { log: jest.fn(), error: jest.fn() }
+        });
+
+        it("should censor credentials in additionalDetails when no workflow matches the name", async () => {
+            const handlerReq = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.handler");
+            const handler = new handlerReq.default();
+
+            // No matching workflow key -> handler throws with arguments serialized into additionalDetails
+            ListWorkflows.getWfKey = jest.fn(async (_session): Promise<any> => null);
+
+            let error: any;
+            try {
+                await handler.processCmd({
+                    arguments: buildArgs({ workflowName: "fake-name" }),
+                    response: buildResponse(),
+                    profiles: { get: jest.fn() }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.additionalDetails).toBeDefined();
+            expect(error.additionalDetails).toContain("****");
+            expect(error.additionalDetails).toContain("fake-host");
+            expect(error.additionalDetails).not.toContain(FAKE_PASSWORD);
+            expect(error.additionalDetails).not.toContain(FAKE_TOKEN);
+        });
+
+        it("should censor credentials in additionalDetails when the start criteria is invalid", async () => {
+            const handlerReq = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.handler");
+            const handler = new handlerReq.default();
+
+            let error: any;
+            try {
+                // Neither workflowKey nor workflowName -> hits the default (internal error) branch
+                await handler.processCmd({
+                    arguments: buildArgs({}),
+                    response: buildResponse(),
+                    profiles: { get: jest.fn() }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.additionalDetails).toBeDefined();
+            expect(error.additionalDetails).toContain("****");
+            expect(error.additionalDetails).toContain("fake-host");
+            expect(error.additionalDetails).not.toContain(FAKE_PASSWORD);
+            expect(error.additionalDetails).not.toContain(FAKE_TOKEN);
+        });
+    });
 });

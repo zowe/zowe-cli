@@ -15,6 +15,7 @@ import { CliUtils } from "../../utilities/src/CliUtils";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import type { ICommandProfileProperty } from "../../cmd/src/doc/profiles/definition/ICommandProfileProperty";
+import type { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import type { ICensorOptions } from "./doc/ICensorOptions";
 import type { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
 import type { IProfileSchema } from "../../profiles/src/doc/definition/IProfileSchema";
@@ -39,6 +40,15 @@ export class Censor {
     private static readonly MAIN_CENSORED_HEADERS = ["Authorization", "Cookie", "Proxy-Authorization"];
 
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
+
+    /*
+    * Environment-variable NAME patterns that indicate a sensitive value.
+    * Environment variables never pass through the CLI-argument censoring path, so their values must be redacted by
+    * name before the environment is serialized into diagnostic output. This catches both the credential env vars that
+    * Zowe explicitly supports (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE) and unrelated secrets that commonly
+    * share the same environment (e.g. AWS_SECRET_ACCESS_KEY, GITHUB_TOKEN).
+    */
+    private static readonly SECURE_ENV_NAME_PATTERN = /PASS|TOKEN|SECRET|KEY|CRED|AUTH/i;
 
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
@@ -225,6 +235,17 @@ export class Censor {
         return this.CENSORED_OPTIONS.includes(prop);
     }
 
+    /**
+     * Escape every regular-expression metacharacter in a string so it can be safely embedded in a `RegExp` as a
+     * literal. Secure values and option names are user-supplied and can frequently contain these characters.
+     * 
+     * @param {string} value - The literal string to escape
+     * @returns {string} - The escaped string, safe to pass to `new RegExp`
+     */
+    private static escapeRegExp(value: string): string {
+        return `${value}`.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    }
+
     /****************************************************************************************
      * Bread and butter functions, setting up the class and performing censorship of values *
      ****************************************************************************************/
@@ -312,6 +333,61 @@ export class Censor {
     }
 
     /**
+     * Copy and censor a raw command-line string before logging/printing.
+     *
+     * This is resilient to the different ways a user may supply a sensitive
+     * option on the command line:
+     *  - space separated (`--password secret`)
+     *  - equals separated (`--password=secret`)
+     *  - single-dash short form / aliases (`-p secret` / `-p=secret`)
+     *
+     * When the parsed command arguments are supplied, the literal value of
+     * every secure option is additionally masked wherever it appears in the
+     * string. This catches secure values that contain embedded whitespace
+     * (e.g. a quoted `--password "two words"`, which arrives here as
+     * `--password two words` once the shell has stripped the quotes) that a
+     * token-based regex cannot reliably match.
+     *
+     * @param {string} commandLine - The raw command-line string to censor
+     * @param {ICommandArguments} args - The parsed command arguments, if available
+     * @returns {string} - The censored command-line string
+     */
+    public static censorCommandLine(commandLine: string, args?: ICommandArguments): string {
+        if (commandLine == null || commandLine.length === 0) { return commandLine; }
+        let censoredLine = commandLine;
+        // Value-based censoring first, using the parsed arguments. Because we
+        // know the exact value, this reliably masks values containing embedded
+        // whitespace that the token-based regex below would otherwise truncate.
+        if (args) {
+            for (const optName of Object.keys(args)) {
+                if (this.CENSORED_OPTIONS.includes(optName)) {
+                    const value = args[optName];
+                    if (value != null && typeof value !== "object") {
+                        const strVal = `${value}`;
+                        if (strVal.length > 0 && strVal !== this.CENSOR_RESPONSE) {
+                            // String split/join performs a literal (non-regex) replacement of every occurrence
+                            censoredLine = censoredLine.split(strVal).join(this.CENSOR_RESPONSE);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Option-name based censoring. Matches both the `--opt value` and
+        // `--opt=value` forms (and the single-dash short form) without
+        // consuming the leading boundary, and normalizes the separator to a
+        // space in the censored output.
+        for (const secureArg of this.CENSORED_OPTIONS) {
+            const escapedArg = this.escapeRegExp(secureArg);
+            const dashes = secureArg.length > 1 ? "--" : "-";
+            const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
+            censoredLine = censoredLine.replace(regex, `${dashes}${secureArg} ${this.CENSOR_RESPONSE}`);
+        }
+
+        return censoredLine;
+    }
+
+    /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string} data - the data to censor
      * @returns {string} - the censored data
@@ -339,10 +415,42 @@ export class Censor {
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
             if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
-                newData = newData.replace(new RegExp(sec, "gi"), this.CENSOR_RESPONSE);
+                // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
+                // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
+                newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
             }
         }
         return newData;
+    }
+
+    /**
+     * Determine whether an environment-variable name indicates a sensitive value.
+     * @param {string} name - the environment-variable name to test
+     * @returns {boolean} - True if the variable should be redacted; False otherwise
+     */
+    public static isSecureEnvName(name: string): boolean {
+        return name != null && this.SECURE_ENV_NAME_PATTERN.test(name);
+    }
+
+    /**
+     * Copy and censor environment variables before logging/printing.
+     *
+     * Environment variables frequently hold credentials - Zowe explicitly supports supplying secure option values
+     * this way (e.g. ZOWE_OPT_PASSWORD, ZOWE_OPT_TOKEN_VALUE), and unrelated secrets (AWS_SECRET_ACCESS_KEY,
+     * GITHUB_TOKEN, etc.) commonly share the same environment. Because these values never pass through the
+     * CLI-argument censoring path, every variable whose name matches a credential pattern is redacted here. The
+     * serialized result is additionally routed through {@link Censor.censorRawData} so that any config-derived secure
+     * values are masked as well.
+     *
+     * @param {NodeJS.ProcessEnv} env - the environment to censor (defaults to process.env)
+     * @returns {string} - a censored, pretty-printed JSON string of the environment
+     */
+    public static censorEnvVariables(env: NodeJS.ProcessEnv = process.env): string {
+        const censored: Record<string, string> = {};
+        for (const [name, value] of Object.entries(env)) {
+            censored[name] = this.isSecureEnvName(name) ? this.CENSOR_RESPONSE : value;
+        }
+        return this.censorRawData(JSON.stringify(censored, null, 2));
     }
 
     /**
@@ -378,7 +486,7 @@ export class Censor {
         for (const [key, value] of Object.entries(data)) {
             if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
                 newData[key] = this.CENSOR_RESPONSE;
-            } else if (typeof value == "object") {
+            } else if (value != null && typeof value == "object") {
                 newData[key] = this.mCensorObject(value, secureValues);
             } else {
                 newData[key] = value;

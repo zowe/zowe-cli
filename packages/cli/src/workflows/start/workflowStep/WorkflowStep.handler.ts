@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { Censor, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { StartWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -66,7 +66,7 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                     if (getWfKey === null) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
+                            additionalDetails: JSON.stringify(Censor.censorObject(params.arguments))
                         });
                     }
                     await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
@@ -86,7 +86,7 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                 throw new ImperativeError({
                     msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
                     `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(Censor.censorObject(params.arguments))
                 });
         }
     }
