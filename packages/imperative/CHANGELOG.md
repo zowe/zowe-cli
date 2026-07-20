@@ -7,6 +7,7 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)
 - BugFix: The `Config.set` function, `ConfigProfiles.set` function, and the `ConfigSecure` property walkers now reject dotted paths whose segments are empty or use reserved property names. [#2806](https://github.com/zowe/zowe-cli/pull/2806)
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2804](https://github.com/zowe/zowe-cli/pull/2804)
+- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#TBD](https://github.com/zowe/zowe-cli/pull/TBD)
 
 ## `5.27.21`
 
