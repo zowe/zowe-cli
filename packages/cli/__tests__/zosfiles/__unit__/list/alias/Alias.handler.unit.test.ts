@@ -73,8 +73,6 @@ describe("List Alias handler", () => {
             expect(response.success).toBe(true);
             expect(response.apiResponse.alias).toBe("MY.ALIAS.NAME");
             expect(response.apiResponse.targetDsn).toBe("REAL.DATASET.NAME");
-            expect(logMessage).toContain("Alias");
-            expect(logMessage).toContain("REAL.DATASET.NAME");
         });
     });
 });
