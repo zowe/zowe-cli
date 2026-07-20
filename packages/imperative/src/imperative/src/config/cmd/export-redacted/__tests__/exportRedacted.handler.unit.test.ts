@@ -105,7 +105,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact profile names consistently", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const topProfileKey = Object.keys(result.profiles)[0];
@@ -127,7 +127,7 @@ describe("ExportRedactedHandler", () => {
 
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const topProfileKey = Object.keys(result.profiles)[0];
@@ -144,7 +144,7 @@ describe("ExportRedactedHandler", () => {
 
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         expect(Object.keys(result.profiles)[0]).toBe("test-profile");
@@ -155,7 +155,7 @@ describe("ExportRedactedHandler", () => {
     it("should preserve secure field names when not hidden", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -165,7 +165,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact string values but preserve booleans", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -190,7 +190,7 @@ describe("ExportRedactedHandler", () => {
 
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -203,7 +203,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact array and nested object type properties", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -223,7 +223,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact schema path", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[2][0];
         const result = JSON.parse(logCall);
 
         expect(result.$schema).toBe("<SCHEMA_PATH_REDACTED>");
