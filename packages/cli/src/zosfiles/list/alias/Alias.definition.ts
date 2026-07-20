@@ -21,7 +21,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).LI
  */
 export const AliasDefinition: ICommandDefinition = {
     name: "alias",
-    aliases: ["al"],
+    aliases: ["a"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",

@@ -23,11 +23,6 @@ export default class AliasHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         });
 
-        // Display the resolved target data set name
-        commandParameters.response.console.log(
-            `Alias: ${response.apiResponse.alias}\nTarget: ${response.apiResponse.targetDsn}`
-        );
-
         return response;
     }
 }

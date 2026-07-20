@@ -562,9 +562,17 @@ export class List {
             let targetDsn: string | undefined;
 
             for (const line of outputLines) {
-                const match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
+                // Check for standard aliases
+                let match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
                 if (match && match[2]) {
                     targetDsn = match[2].trim();
+                    break;
+                }
+
+                // Check for symbolic aliases
+                match = line.match(/RESOLVED-(.+)/i);
+                if (match && match[1]) {
+                    targetDsn = match[1].trim();
                     break;
                 }
             }
