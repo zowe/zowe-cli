@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Recent Changes
+## `8.33.4`
 
 - BugFix: Adjusted permissions for the macOS TLS socket to ensure secure use. [#2811](https://github.com/zowe/zowe-cli/pull/2811)
 
