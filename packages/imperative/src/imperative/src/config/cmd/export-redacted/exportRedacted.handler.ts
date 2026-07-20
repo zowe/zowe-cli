@@ -30,6 +30,11 @@ export default class ExportRedactedHandler implements ICommandHandler {
             const exportDir = params.arguments.exportDir || process.cwd();
             const isDryRun = params.arguments.dryRun;
 
+            params.response.console.log(
+                "Warning: Review the redacted output carefully before sharing or placing it anywhere external " +
+                "or sensitive.\n"
+            );
+
             if (isDryRun) {
                 const layers = ImperativeConfig.instance.config.layers;
                 const dryRunOutputs: any = {};
@@ -204,6 +209,10 @@ export default class ExportRedactedHandler implements ICommandHandler {
     private redactValue(propertyName: string, value: any, args: any): any {
         const valueType = typeof value;
 
+        if (args.showHostPath && (propertyName === "host" || propertyName === "basePath")) {
+            return value;
+        }
+
         switch (valueType) {
             case "string":
                 if (args.redactStrings && value !== "") {
@@ -281,7 +290,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         const lowerName = propertyName.toLowerCase();
         const valueType = typeof value;
 
-        const namePrefixes = ["host", "port", "path", "user", "base", "profile"];
+        const namePrefixes = ["host", "port", "path", "user", "base", "profile","password"];
         const matchedPrefix = namePrefixes.find(prefix => lowerName.includes(prefix));
         if (matchedPrefix) {
             return matchedPrefix;
