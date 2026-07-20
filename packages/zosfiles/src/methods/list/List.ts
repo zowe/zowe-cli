@@ -561,18 +561,32 @@ export class List {
             const outputLines: string[] = amsResponse.apiResponse?.output ?? [];
             let targetDsn: string | undefined;
 
+            let symbolicValue: string | undefined;
+
             for (const line of outputLines) {
-                // Check for standard aliases
+                // Check for standard aliases (NONVSAM/VSAM)
                 let match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
                 if (match && match[2]) {
                     targetDsn = match[2].trim();
                     break;
                 }
 
-                // Check for symbolic aliases
+                // Capture the symbolic value for comparison
+                match = line.match(/SYMBOLIC-(.+)/i);
+                if (match && match[1]) {
+                    symbolicValue = match[1].trim();
+                    continue;
+                }
+
+                // Check for resolved value and compare against symbolic
                 match = line.match(/RESOLVED-(.+)/i);
                 if (match && match[1]) {
-                    targetDsn = match[1].trim();
+                    const resolvedValue = match[1].trim();
+                    if (symbolicValue && resolvedValue === symbolicValue) {
+                        // Symbolic variable was not resolved — skip
+                        continue;
+                    }
+                    targetDsn = resolvedValue;
                     break;
                 }
             }
