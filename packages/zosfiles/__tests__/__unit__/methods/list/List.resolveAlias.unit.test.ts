@@ -230,4 +230,58 @@ describe("List.resolveAlias", () => {
         expect(error).toBeDefined();
         expect(error?.message).toBe("Connection refused");
     });
+
+    it("should resolve a symbolic alias when RESOLVED differs from SYMBOLIC", async () => {
+        jest.spyOn(Invoke, "ams").mockResolvedValue({
+            success: true,
+            commandResponse: "AMS command executed successfully.",
+            apiResponse: {
+                output: [
+                    "ALIAS --------- HLQ.ALIAS.PDS",
+                    "     IN-CAT --- MY.COOL.CAT",
+                    "     HISTORY",
+                    "       RELEASE----------2    CREATION-------2026.001",
+                    "     ENCRYPTION",
+                    "     DATA SET ENCRYPTION-----(NO)",
+                    "   ASSOCIATIONS",
+                    "     SYMBOLIC-HLQ.&MYVAR..PDS",
+                    "     RESOLVED-HLQ.MY.REAL.PDS",
+                    "   THE NUMBER OF ENTRIES PROCESSED WAS:"
+                ]
+            }
+        });
+
+        const response = await List.resolveAlias(dummySession, "HLQ.ALIAS.PDS");
+
+        expect(response.success).toBe(true);
+        expect(response.apiResponse.alias).toBe("HLQ.ALIAS.PDS");
+        expect(response.apiResponse.targetDsn).toBe("HLQ.MY.REAL.PDS");
+    });
+
+    it("should throw an error when symbolic alias is not resolved (SYMBOLIC equals RESOLVED)", async () => {
+        jest.spyOn(Invoke, "ams").mockResolvedValue({
+            success: true,
+            commandResponse: "AMS command executed successfully.",
+            apiResponse: {
+                output: [
+                    "ALIAS --------- HLQ.ALIAS.PDS",
+                    "     IN-CAT --- MY.COOL.CAT",
+                    "   ASSOCIATIONS",
+                    "     SYMBOLIC-HLQ.&MYVAR..PDS",
+                    "     RESOLVED-HLQ.&MYVAR..PDS",
+                    "   THE NUMBER OF ENTRIES PROCESSED WAS:"
+                ]
+            }
+        });
+
+        let error: ImperativeError | undefined;
+        try {
+            await List.resolveAlias(dummySession, "HLQ.ALIAS.PDS");
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error).toBeDefined();
+        expect(error?.message).toContain(ZosFilesMessages.aliasTargetNotFound.message);
+    });
 });
