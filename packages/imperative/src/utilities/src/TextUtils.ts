@@ -201,7 +201,7 @@ export class TextUtils {
 
         for (const obj of objects) {
             const row = headers.map((header) => {
-                return TextUtils.wordWrap(obj[header] || "", maxColumnWidth, "", hardWrap);
+                return TextUtils.wordWrap(obj[header] ?? "", maxColumnWidth, "", hardWrap);
             });
             table.push(row);
         }
