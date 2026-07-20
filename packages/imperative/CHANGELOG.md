@@ -2,9 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.33.4`
+## Recent Changes
 
 - Enhancement: Added the `zowe config export-redacted` command to export Zowe configuration layers with sensitive values redacted for troubleshooting and sharing purposes. [#2732](https://github.com/zowe/zowe-cli/pull/2732)
+
+## `8.33.4`
+
 - BugFix: Fixed an issue where `TextUtils.getTable` rendered an empty cell instead of the value when a cell contained `0` or `false`, causing commands that display numeric tables to appear to be missing data. [#2698](https://github.com/zowe/zowe-cli/issues/2698)
 
 ## `8.33.3`
