@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. [#2805](https://github.com/zowe/zowe-cli/pull/2805)
 - BugFix: Fixed "Access is denied" error when running CLI commands on Windows if daemon mode is active. [#2808](https://github.com/zowe/zowe-cli/issues/2808)
+- BugFix: Updated the `zowe zos-files uss edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#2815](https://github.com/zowe/zowe-cli/pull/2815)
 
 ## `7.29.30`
 
