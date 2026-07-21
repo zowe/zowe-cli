@@ -23,9 +23,6 @@ export default class AliasHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         });
 
-        // Set the object explicitly for clean --rfj JSON output
-        commandParameters.response.data.setObj(response.apiResponse);
-
         return response;
     }
 }

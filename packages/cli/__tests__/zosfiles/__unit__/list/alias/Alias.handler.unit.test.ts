@@ -45,8 +45,6 @@ describe("List Alias handler", () => {
                 protocol: "https"
             });
 
-            const setObjMock = jest.fn();
-
             // Call processWithSession directly to bypass session creation
             const response = await handler.processWithSession({
                 arguments: {
@@ -57,7 +55,7 @@ describe("List Alias handler", () => {
                 response: {
                     data: {
                         setMessage: jest.fn(),
-                        setObj: setObjMock
+                        setObj: jest.fn()
                     },
                     console: {
                         log: jest.fn((logArgs) => {
@@ -75,11 +73,6 @@ describe("List Alias handler", () => {
             expect(response.success).toBe(true);
             expect(response.apiResponse.alias).toBe("MY.ALIAS.NAME");
             expect(response.apiResponse.targetDsn).toBe("REAL.DATASET.NAME");
-            expect(setObjMock).toHaveBeenCalledTimes(1);
-            expect(setObjMock).toHaveBeenCalledWith({
-                alias: "MY.ALIAS.NAME",
-                targetDsn: "REAL.DATASET.NAME"
-            });
         });
     });
 });
