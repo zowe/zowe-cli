@@ -265,7 +265,9 @@ export class Copy {
                 };
             }
 
-            const downloadDir = path.join(tmpdir(), fromPds);
+            const safeTmpDir = path.join(tmpdir(), "zowe-copy-pds");
+            ZosFilesUtils.ensureSafeTempDir(safeTmpDir);
+            const downloadDir = path.join(safeTmpDir, fromPds);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
             const truncatedMembers: string[] = [];
@@ -296,11 +298,11 @@ export class Copy {
                     continue;
                 }
             }
-            const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+            const truncatedMembersFile = path.join(downloadDir, 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 const firstTenMembers = truncatedMembers.slice(0, 10);
-                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w', mode: 0o600});
                 const numMembers = truncatedMembers.length - firstTenMembers.length;
                 return {
                     success: true,
@@ -313,7 +315,6 @@ export class Copy {
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
-            fs.rmSync(truncatedMembersFile, {force: true});
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
