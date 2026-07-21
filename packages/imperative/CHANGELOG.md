@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.34.0`
 
 - Enhancement: Added the `zowe config export-redacted` command to export Zowe configuration layers with sensitive values redacted for troubleshooting and sharing purposes. [#2732](https://github.com/zowe/zowe-cli/pull/2732)
 
