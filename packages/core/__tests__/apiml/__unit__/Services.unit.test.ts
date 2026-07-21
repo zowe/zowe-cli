@@ -407,10 +407,6 @@ describe("APIML Services unit tests", () => {
         });
 
         it("should not hang (ReDoS) when a service ID is a catastrophic-backtracking pattern", async () => {
-            // A malicious/compromised APIML service can name itself with an evil regex. If the
-            // service ID is compiled into a RegExp and matched against an attacker-supplied base
-            // path, it causes catastrophic backtracking that hangs the CLI. The literal prefix
-            // check must handle this in linear time regardless of the service ID contents.
             const evilServiceId = "(a+)+";
             const maliciousBasePath = "/" + "a".repeat(40) + "!";
             const services: IApimlService[] = [
