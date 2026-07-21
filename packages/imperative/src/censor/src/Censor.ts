@@ -238,7 +238,7 @@ export class Censor {
     /**
      * Escape every regular-expression metacharacter in a string so it can be safely embedded in a `RegExp` as a
      * literal. Secure values and option names are user-supplied and can frequently contain these characters.
-     * 
+     *
      * @param {string} value - The literal string to escape
      * @returns {string} - The escaped string, safe to pass to `new RegExp`
      */

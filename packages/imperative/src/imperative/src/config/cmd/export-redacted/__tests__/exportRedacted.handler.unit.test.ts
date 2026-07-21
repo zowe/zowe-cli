@@ -264,7 +264,7 @@ describe("ExportRedactedHandler", () => {
         await handler.process(mockParams);
 
         expect(writeSpy).toHaveBeenCalledTimes(2);
-        
+
         // Sources: "mock/zowe.config.json" (21 chars) and "longer-mock-path/zowe.config.json" (32 chars)
         // Source 1 should be padded to 33 chars: "mock/zowe.config.json            "
         // Source 2 should be padded to 33 chars: "longer-mock-path/zowe.config.json"
