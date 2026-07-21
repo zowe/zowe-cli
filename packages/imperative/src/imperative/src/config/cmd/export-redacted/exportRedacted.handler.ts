@@ -47,7 +47,8 @@ export default class ExportRedactedHandler implements ICommandHandler {
                         const formattedOutput = JSON.stringify(redactedConfig, null, 2);
 
                         if (hasOutput) {
-                            params.response.console.log("\n" + "=".repeat(80) + "\n");
+                            const separatorLength = 80;
+                            params.response.console.log("\n" + "=".repeat(separatorLength) + "\n");
                         }
                         params.response.console.log(`--- ${sourceName} ---`);
                         params.response.console.log(formattedOutput);
@@ -85,7 +86,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         for (const layer of layers) {
             if (layer.exists) {
                 const redactedConfig = this.createRedactedConfig(layer, args);
-                
+
                 let filename: string;
                 if (layer.global && layer.user) {
                     filename = "global.zowe.config.user.json";
@@ -96,7 +97,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 } else {
                     filename = "project.zowe.config.json";
                 }
-                
+
                 const filePath = path.join(exportDir, filename);
                 const formattedOutput = JSON.stringify(redactedConfig, null, 2);
                 this.writeToFile(formattedOutput, filePath);
