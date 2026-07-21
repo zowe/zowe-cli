@@ -140,9 +140,14 @@ export class Services {
                 .reduce((a, b) => a.filter(x => b.includes(x)));
 
             if (commonGatewayUrls.length > 0) {
-                const serviceIdPrefix = new RegExp(`^/${profInfo.profName}/`);
-                profInfo.basePaths = profInfo.basePaths.filter(basePath =>
-                    commonGatewayUrls.includes(basePath.replace(serviceIdPrefix, "")));
+                // Strip the literal "/<serviceId>/" prefix from each base path.
+                const serviceIdPrefix = `/${profInfo.profName}/`;
+                profInfo.basePaths = profInfo.basePaths.filter(basePath => {
+                    const strippedBasePath = basePath.startsWith(serviceIdPrefix)
+                        ? basePath.slice(serviceIdPrefix.length)
+                        : basePath;
+                    return commonGatewayUrls.includes(strippedBasePath);
+                });
                 profInfo.gatewayUrlConflicts = {};
             }
         }

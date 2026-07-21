@@ -375,6 +375,79 @@ describe("APIML Services unit tests", () => {
                 }
             ]);
         });
+
+        it("should strip the service ID prefix literally when it contains regex metacharacters", async () => {
+            // The service ID "svc+" contains a regex metacharacter. Previously the prefix was
+            // stripped with a RegExp (`^/svc+/`), which treats "+" as a quantifier and fails to
+            // match the literal base path, causing the base path to be dropped incorrectly.
+            const services: IApimlService[] = [
+                genApimlService("fakeApi", "svc+", [1])
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "svc+",
+                    profType: "fakeProfile",
+                    basePaths: ["/svc+/api/v1"],
+                    pluginConfigs: new Set(configs),
+                    gatewayUrlConflicts: {}
+                }
+            ]);
+        });
+
+        it("should not hang (ReDoS) when a service ID is a catastrophic-backtracking pattern", async () => {
+            // A malicious/compromised APIML service can name itself with an evil regex. If the
+            // service ID is compiled into a RegExp and matched against an attacker-supplied base
+            // path, it causes catastrophic backtracking that hangs the CLI. The literal prefix
+            // check must handle this in linear time regardless of the service ID contents.
+            const evilServiceId = "(a+)+";
+            const maliciousBasePath = "/" + "a".repeat(40) + "!";
+            const services: IApimlService[] = [
+                {
+                    serviceId: evilServiceId,
+                    status: "UP",
+                    apiml: {
+                        apiInfo: [
+                            { apiId: "fakeApi", gatewayUrl: "api/v1", basePath: maliciousBasePath }
+                        ] as any,
+                        service: null,
+                        authentication: [{ supportsSso: true } as any]
+                    },
+                    instances: []
+                }
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+
+            const start = Date.now();
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+            const elapsed = Date.now() - start;
+
+            // The malicious base path does not match the "/<serviceId>/" prefix, so it is filtered out.
+            expect(response[0].profName).toEqual(evilServiceId);
+            expect(response[0].basePaths).toEqual([]);
+            // Guard against reintroducing a RegExp built from the service ID: literal handling is linear.
+            expect(elapsed).toBeLessThan(1000);
+        });
     });
 
     describe("convertApimlProfileInfoToProfileConfig", () => {
