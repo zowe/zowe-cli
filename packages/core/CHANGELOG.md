@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Improved the handling of APIML service base paths during `zowe config auto-init`. [#2819](https://github.com/zowe/zowe-cli/pull/2819)
+
 ## `8.32.0`
 
 - Enhancement: Added `certAccount` option to base profile options to support client certificate authentication using certificates stored in system keystores on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
