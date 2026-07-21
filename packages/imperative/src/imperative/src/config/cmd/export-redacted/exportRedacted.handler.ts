@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError } from "../../../../..";
+import { ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError, TextUtils } from "../../../../..";
 
 export default class ExportRedactedHandler implements ICommandHandler {
     private keyCounters: Map<string, number> = new Map();
@@ -47,7 +47,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                         const formattedOutput = JSON.stringify(redactedConfig, null, 2);
 
                         if (hasOutput) {
-                            params.response.console.log("\n" + "=".repeat(80) + "\n");
+                            params.response.console.log("\n" + "=".repeat(TextUtils.DEFAULT_WRAP_WIDTH) + "\n");
                         }
                         params.response.console.log(`--- ${sourceName} ---`);
                         params.response.console.log(formattedOutput);
@@ -85,7 +85,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         for (const layer of layers) {
             if (layer.exists) {
                 const redactedConfig = this.createRedactedConfig(layer, args);
-                
+
                 let filename: string;
                 if (layer.global && layer.user) {
                     filename = "global.zowe.config.user.json";
@@ -96,7 +96,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
                 } else {
                     filename = "project.zowe.config.json";
                 }
-                
+
                 const filePath = path.join(exportDir, filename);
                 const formattedOutput = JSON.stringify(redactedConfig, null, 2);
                 this.writeToFile(formattedOutput, filePath);

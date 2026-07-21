@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated various dependencies for technical currency. [#2817](https://github.com/zowe/zowe-cli/pull/2817)
+
 ## `8.33.3`
 
 - BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
