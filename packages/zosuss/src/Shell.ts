@@ -22,7 +22,7 @@ import { ZosUssMessages } from "./constants/ZosUss.messages";
 interface IConnectionState {
     /** Set to true when the connection was aborted because the server's host key was not trusted. */
     hostKeyRejected: boolean;
-    /** Set to true when the rejected host key differed from a previously pinned key (possible attack). */
+    /** Set to true when the rejected host key differed from a previously pinned key. */
     hostKeyChanged: boolean;
 }
 

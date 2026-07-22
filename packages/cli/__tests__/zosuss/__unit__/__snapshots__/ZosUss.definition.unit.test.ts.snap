@@ -93,14 +93,14 @@ Object {
           "aliases": Array [
             "hk",
           ],
-          "description": "The trusted host key of the z/OS SSH server, as the base64-encoded key blob presented by the server (the part after the key type in a known_hosts entry). When set, the server's key is verified against this value before any credentials are sent. Usually populated automatically on first connect after you accept the key; set it manually to pin a known key and skip the first-time prompt.",
+          "description": "The trusted host key of the z/OS SSH server, as the base64-encoded key blob presented by the server. When set, the server's key is verified against it before any credentials are sent.",
           "group": "z/OS Ssh Connection Options",
           "name": "host-key",
           "type": "string",
         },
         Object {
           "defaultValue": false,
-          "description": "Skip verification of the z/OS SSH server's host key. By default the CLI confirms the server's identity on first connect and rejects the connection if the key later changes, which protects against man-in-the-middle attacks. Specify this option to skip that check entirely and connect without verifying the server. This is insecure and should only be used for legacy or automated environments that cannot yet trust a host key.",
+          "description": "Skip verification of the z/OS SSH server's host key, so the server's identity is not confirmed before credentials are sent.",
           "group": "z/OS Ssh Connection Options",
           "name": "insecure",
           "type": "boolean",

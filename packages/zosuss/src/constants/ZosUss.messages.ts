@@ -42,7 +42,7 @@ export const ZosUssMessages: { [key: string]: IMessageDefinition } = {
     },
     hostKeyChanged: {
         message: "Host key verification failed. The SSH server's host key does not match the previously trusted " +
-            "key. This may indicate a man-in-the-middle attack, or the server's host key may have legitimately " +
-            "changed. The connection was rejected before any credentials were sent."
+            "key. The server's host key may have changed, or the server may not be the one you " +
+            "previously connected to. The connection was rejected before any credentials were sent."
     }
 };
