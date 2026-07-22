@@ -246,6 +246,96 @@ describe("LoggerUtils tests", () => {
                 });
             });
         });
+
+        // A persistent daemon reloads the active team config before each command, so a change
+        // to the on-disk "secure" arrays has to take effect on the next command rather than 
+        // being frozen at first use.
+        describe("should reflect on-disk secure arrays on every call (daemon cache invalidation)", () => {
+            beforeEach(() => {
+                impConfigSpy.mockReturnValue(impConfig);
+                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" } });
+            });
+
+            it("recomputes the secure field set on every call rather than caching it once", () => {
+                secureFields.mockReturnValue(["profiles.lpar1.properties.apiKey"]);
+                layersGet.mockReturnValue({ properties: { profiles: { lpar1: { properties: { apiKey: secrets[1] } } } } });
+
+                LoggerUtils.censorRawData(`api: ${secrets[1]}`);
+                LoggerUtils.censorRawData(`api: ${secrets[1]}`);
+
+                // If the path set were memoized, secureFields() would be invoked at most once.
+                expect(secureFields).toHaveBeenCalledTimes(2);
+                // layers.get() is likewise re-read per call so masked values stay current.
+                expect(layersGet).toHaveBeenCalledTimes(2);
+            });
+
+            it("masks a value whose property becomes secure after the first call (simulated config edit + reload)", () => {
+                // First command: only the (special, app-masked) password is marked secure on disk.
+                // The custom apiKey is not yet secure, so its value is present in the output verbatim.
+                secureFields.mockReturnValueOnce(["profiles.lpar1.properties.password"]);
+                layersGet.mockReturnValueOnce({
+                    properties: { profiles: { lpar1: { properties: { password: secrets[0] } } } }
+                });
+                const first = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`);
+                expect(first).toEqual(`pw: ${secrets[0]}, api: ${secrets[1]}`);
+
+                // The user edits zowe.config.json to also mark apiKey secure; the daemon reloads
+                // the team config before the next command, so secureFields()/layers now include it.
+                secureFields.mockReturnValueOnce([
+                    "profiles.lpar1.properties.password",
+                    "profiles.lpar1.properties.apiKey"
+                ]);
+                layersGet.mockReturnValueOnce({
+                    properties: { profiles: { lpar1: { properties: { password: secrets[0], apiKey: secrets[1] } } } }
+                });
+                const second = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`);
+
+                // Regression: the newly-secured value must be redacted on the very next command,
+                // not leaked until the daemon is restarted.
+                expect(second).toEqual(`pw: ${secrets[0]}, api: ${LoggerUtils.CENSOR_RESPONSE}`);
+                expect(second).not.toContain(secrets[1]);
+            });
+
+            it("stops masking a value once its property is removed from the secure set on reload", () => {
+                secureFields.mockReturnValueOnce(["profiles.lpar1.properties.apiKey"]);
+                layersGet.mockReturnValueOnce({
+                    properties: { profiles: { lpar1: { properties: { apiKey: secrets[1] } } } }
+                });
+                expect(LoggerUtils.censorRawData(`api: ${secrets[1]}`)).toEqual(`api: ${LoggerUtils.CENSOR_RESPONSE}`);
+
+                // Property de-secured on disk, then reloaded: the value is no longer masked.
+                secureFields.mockReturnValueOnce([]);
+                layersGet.mockReturnValueOnce({
+                    properties: { profiles: { lpar1: { properties: { apiKey: secrets[1] } } } }
+                });
+                expect(LoggerUtils.censorRawData(`api: ${secrets[1]}`)).toEqual(`api: ${secrets[1]}`);
+            });
+
+            it("picks up the current config object each call instead of a stale cached reference", () => {
+                // First call binds to the initial config instance.
+                secureFields.mockReturnValueOnce(["profiles.lpar1.properties.apiKey"]);
+                layersGet.mockReturnValueOnce({
+                    properties: { profiles: { lpar1: { properties: { apiKey: secrets[1] } } } }
+                });
+                expect(LoggerUtils.censorRawData(`api: ${secrets[1]}`)).toEqual(`api: ${LoggerUtils.CENSOR_RESPONSE}`);
+
+                // Simulate the config object being replaced (rather than reloaded in place). A
+                // stale cached mConfig would keep reading the old, empty secure set.
+                const freshSecureFields = jest.fn().mockReturnValue(["profiles.lpar1.properties.apiKey"]);
+                const freshLayersGet = jest.fn().mockReturnValue({
+                    properties: { profiles: { lpar1: { properties: { apiKey: secrets[0] } } } }
+                });
+                impConfigSpy.mockReturnValue({
+                    config: {
+                        exists: true,
+                        api: { layers: { get: freshLayersGet }, secure: { secureFields: freshSecureFields } }
+                    }
+                });
+                expect(LoggerUtils.censorRawData(`api: ${secrets[0]}`)).toEqual(`api: ${LoggerUtils.CENSOR_RESPONSE}`);
+                expect(freshSecureFields).toHaveBeenCalled();
+                expect(freshLayersGet).toHaveBeenCalled();
+            });
+        });
     });
 
     describe("isSecureEnvName", () => {

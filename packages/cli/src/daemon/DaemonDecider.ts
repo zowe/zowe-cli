@@ -9,6 +9,7 @@
 *
 */
 
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
@@ -64,6 +65,16 @@ export class DaemonDecider {
     private mUser: string;
 
     /**
+     * Secret token that authenticates daemon clients as the owner of this
+     * daemon. Generated once per daemon process and stored in the owner-only
+     * PID file so that only the owner can read it.
+     * @private
+     * @type {string}
+     * @memberof DaemonDecider
+     */
+    private mDaemonToken: string;
+
+    /**
      * Indicator for whether or not to start the server
      * @private
      * @type {boolean}
@@ -86,8 +97,14 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
+            const tokenLength = 32;
+            // Generate a fresh, high-entropy token for this daemon process. It is
+            // stored in the owner-only PID file (see recordDaemonPid) and required
+            // on every client request, so that only the user who can read that file
+            // is able to drive this daemon.
+            this.mDaemonToken = crypto.randomBytes(tokenLength).toString("hex");
             this.mServer = net.createServer((c) => {
-                new DaemonClient(c, this.mServer, this.mUser).run();
+                new DaemonClient(c, this.mServer, this.mUser, this.mDaemonToken).run();
             });
 
             this.mServer.on('error', this.error.bind(this));
@@ -141,7 +158,8 @@ export class DaemonDecider {
     private recordDaemonPid() {
         const pidForUser: IDaemonPidForUser = {
             user: this.mUser,
-            pid: process.pid
+            pid: process.pid,
+            token: this.mDaemonToken
         };
 
         const pidFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_pid.json");
@@ -156,9 +174,7 @@ export class DaemonDecider {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
         }
 
-        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +
-            "\n" + pidForUserStr
-        );
+        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath);
     }
 
     /**
