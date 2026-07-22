@@ -104,11 +104,13 @@ describe("Files Edit Utilities", () => {
             let existsSyncSpy: jest.SpyInstance;
             let lstatSyncSpy: jest.SpyInstance;
             let mkdirSyncSpy: jest.SpyInstance;
+            let hasOwnerOnlyAccessSpy: jest.SpyInstance;
 
             beforeEach(() => {
                 existsSyncSpy = jest.spyOn(fs, "existsSync");
                 lstatSyncSpy = jest.spyOn(fs, "lstatSync");
                 mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn() as any);
+                hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess");
             });
 
             it("should create temp dir with mode 0o700 when it does not exist", async () => {
@@ -121,24 +123,26 @@ describe("Files Edit Utilities", () => {
                     { recursive: true, mode: 0o700 }
                 );
             });
-            it("should succeed when existing temp dir has correct permissions and owner", async () => {
+            it("should use a per-user temp directory name so co-tenants on a shared tmp don't collide", async () => {
+                existsSyncSpy.mockReturnValue(false);
+
+                const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+                const expectedToken = (EditUtilities as any).getUserTempToken();
+
+                expect(expectedToken).toMatch(/^[0-9a-f]{10}$/);
+                expect(response).toContain(`zowe-edit-ds-${expectedToken}`);
+            });
+            it("should succeed when existing temp dir has owner-only access", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o700,
-                    uid: process.getuid?.()
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+                hasOwnerOnlyAccessSpy.mockReturnValue(true);
 
                 const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
                 expect(response).toContain("zowe-edit-ds");
             });
             it("should throw ImperativeError when temp dir path is not a directory", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => false,
-                    mode: 0o700,
-                    uid: process.getuid?.()
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => false } as any);
 
                 try {
                     await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
@@ -147,30 +151,12 @@ describe("Files Edit Utilities", () => {
                 }
                 expect(caughtError).toBeInstanceOf(ImperativeError);
                 expect(caughtError.message).toContain("Unsafe temp directory");
+                expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
             });
-            it("should throw ImperativeError when temp dir has unsafe permissions", async () => {
+            it("should throw ImperativeError when temp dir does not have owner-only access", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o755,
-                    uid: process.getuid?.()
-                } as any);
-
-                try {
-                    await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
-                } catch(e) {
-                    caughtError = e;
-                }
-                expect(caughtError).toBeInstanceOf(ImperativeError);
-                expect(caughtError.message).toContain("Unsafe temp directory");
-            });
-            it("should throw ImperativeError when temp dir is owned by a different user", async () => {
-                existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o700,
-                    uid: (process.getuid?.() ?? 0) + 1
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+                hasOwnerOnlyAccessSpy.mockReturnValue(false);
 
                 try {
                     await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
@@ -185,11 +171,13 @@ describe("Files Edit Utilities", () => {
             let existsSyncSpy: jest.SpyInstance;
             let lstatSyncSpy: jest.SpyInstance;
             let mkdirSyncSpy: jest.SpyInstance;
+            let hasOwnerOnlyAccessSpy: jest.SpyInstance;
 
             beforeEach(() => {
                 existsSyncSpy = jest.spyOn(fs, "existsSync");
                 lstatSyncSpy = jest.spyOn(fs, "lstatSync");
                 mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn() as any);
+                hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess");
             });
 
             it("should create temp dir with mode 0o700 when it does not exist", async () => {
@@ -202,24 +190,26 @@ describe("Files Edit Utilities", () => {
                     { recursive: true, mode: 0o700 }
                 );
             });
-            it("should succeed when existing temp dir has correct permissions and owner", async () => {
+            it("should use a per-user temp directory name so co-tenants on a shared tmp don't collide", async () => {
+                existsSyncSpy.mockReturnValue(false);
+
+                const response = await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
+                const expectedToken = (EditUtilities as any).getUserTempToken();
+
+                expect(expectedToken).toMatch(/^[0-9a-f]{10}$/);
+                expect(response).toContain(`zowe-edit-uss-${expectedToken}`);
+            });
+            it("should succeed when existing temp dir has owner-only access", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o700,
-                    uid: process.getuid?.()
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+                hasOwnerOnlyAccessSpy.mockReturnValue(true);
 
                 const response = await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
                 expect(response).toContain("zowe-edit-uss");
             });
             it("should throw ImperativeError when temp dir path is not a directory", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => false,
-                    mode: 0o700,
-                    uid: process.getuid?.()
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => false } as any);
 
                 try {
                     await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
@@ -228,30 +218,12 @@ describe("Files Edit Utilities", () => {
                 }
                 expect(caughtError).toBeInstanceOf(ImperativeError);
                 expect(caughtError.message).toContain("Unsafe temp directory");
+                expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
             });
-            it("should throw ImperativeError when temp dir has unsafe permissions", async () => {
+            it("should throw ImperativeError when temp dir does not have owner-only access", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o755,
-                    uid: process.getuid?.()
-                } as any);
-
-                try {
-                    await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
-                } catch(e) {
-                    caughtError = e;
-                }
-                expect(caughtError).toBeInstanceOf(ImperativeError);
-                expect(caughtError.message).toContain("Unsafe temp directory");
-            });
-            it("should throw ImperativeError when temp dir is owned by a different user", async () => {
-                existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({
-                    isDirectory: () => true,
-                    mode: 0o700,
-                    uid: (process.getuid?.() ?? 0) + 1
-                } as any);
+                lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+                hasOwnerOnlyAccessSpy.mockReturnValue(false);
 
                 try {
                     await EditUtilities.buildTempPath(localFileUSS, commandParametersUss);
@@ -429,6 +401,26 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
+        });
+
+        it("should restrict the freshly downloaded stash file to the owner (0600) - [useStash = false]", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.tempPath = "someStashPath";
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+            const chmodSpy = jest.spyOn(fs, "chmodSync").mockImplementation(jest.fn());
+
+            //TEST CONFIRMATION
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            if (process.platform === "win32") {
+                // chmod mode is a no-op on Windows; the 0700 dir + icacls handle it there
+                expect(chmodSpy).not.toHaveBeenCalled();
+            } else {
+                expect(chmodSpy).toHaveBeenCalledWith("someStashPath", 0o600);
+            }
+            chmodSpy.mockRestore();
         });
 
         it("localDownload should properly pass non-falsy binary option to Download.dataSet", async () => {
