@@ -89,6 +89,8 @@ const PRETEND_SESSION = new Session({
 });
 const HEAD = Headers.APPLICATION_JSON;
 
+const realTempFile = CreateWorkflow.getTempFile;
+
 function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
@@ -758,8 +760,8 @@ describe("Create workflow from local file", () => {
 describe("getTempFile", () => {
     it("should generate a different remote file name on each call when a customDir is given", () => {
         const customDir = "/u/custom/dir";
-        const first = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile, customDir);
-        const second = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile, customDir);
+        const first = realTempFile(wfOwner, wfDefinitionFile, customDir);
+        const second = realTempFile(wfOwner, wfDefinitionFile, customDir);
         expect(first).not.toEqual(second);
         expect(first).toContain(customDir);
     });
