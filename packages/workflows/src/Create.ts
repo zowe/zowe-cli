@@ -27,6 +27,7 @@ import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
 import { IVariable } from "./doc/IVariable";
 import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { basename } from "path";
+import { randomBytes } from "crypto";
 
 /**
  * Class to handle creation of zOSMF workflow instance
@@ -159,9 +160,20 @@ export class CreateWorkflow{
             await CreateWorkflow.uploadTempFile(session, VariableInputFile, tempVariableInputFile);
         }
 
-        const resp: ICreatedWorkflowLocal = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
-            systemName, Owner, tempVariableInputFile, Variables,
-            AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
+        let resp: ICreatedWorkflowLocal;
+        try {
+            resp = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
+                systemName, Owner, tempVariableInputFile, Variables,
+                AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
+        } catch (error) {
+            if (!keepFiles){
+                await CreateWorkflow.deleteTempFile(session, tempDefinitionFile);
+                if (VariableInputFile){
+                    await CreateWorkflow.deleteTempFile(session, tempVariableInputFile);
+                }
+            }
+            throw error;
+        }
 
         if (!keepFiles){
             resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];
@@ -190,9 +202,9 @@ export class CreateWorkflow{
     public static getTempFile(userId: string, localFile: string, customDir?: string): string{
         let remoteFile: string;
         if (customDir){
-            remoteFile = customDir + "/" + basename(localFile);
+            remoteFile = customDir + "/" + randomBytes(16).toString("hex") + basename(localFile);
         } else {
-            remoteFile = WorkflowConstants.tempPath + "/" + userId + Date.now().toString() + basename(localFile);
+            remoteFile = WorkflowConstants.tempPath + "/" + userId + randomBytes(16).toString("hex") + basename(localFile);
         }
         return remoteFile;
     }
