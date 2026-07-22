@@ -75,6 +75,28 @@ describe("TextUtils", () => {
         expect(table).toContain("row1");
     });
 
+    it("should right-align numeric columns and left-align non-numeric columns", () => {
+        TextUtils.chalk.level = 0;
+        const numericTableObjects = [
+            { item: "Widget A", quantity: 15, price: "12.50" },
+            { item: "Widget B", quantity: 120, price: "3.00" }
+        ];
+        const table = TextUtils.getTable(numericTableObjects, "yellow");
+        expect(table).toContain("Widget A         15   12.50");
+        expect(table).toContain("Widget B        120    3.00");
+    });
+
+    it("should left-align columns with mixed numeric and non-numeric data", () => {
+        TextUtils.chalk.level = 0;
+        const mixedTableObjects = [
+            { item: "Widget A", code: "100" },
+            { item: "Widget B", code: "N/A" }
+        ];
+        const table = TextUtils.getTable(mixedTableObjects, "yellow");
+        expect(table).toContain("Widget A  100");
+        expect(table).toContain("Widget B  N/A");
+    });
+
     it(".wordWrap should properly wrap any given text", () => {
         TextUtils.chalk.level = 0; // turn off color
         const text = "testing can be interesting";
