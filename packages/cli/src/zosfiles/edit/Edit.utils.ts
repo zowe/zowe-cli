@@ -162,8 +162,18 @@ export class EditUtilities {
      * @returns {ILocalFile}
      */
     public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
-        // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        // account for both useStash|!useStash and uss|ds when downloading.
+        // When only refreshing the etag (useStash), download to a throwaway scratch file with a
+        // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.
+        let scratchPath!: string;
+        if (useStash) {
+            const crypto = require("crypto");
+            const randomNameBytes = 16;
+            const scratchDir = path.join(tmpdir(), `zowe-edit-${lfFile.fileType}`);
+            ZosFilesUtils.ensureSafeTempDir(scratchDir);
+            scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
+        }
+        const tempPath = useStash ? scratchPath : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -183,7 +193,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
+            await this.destroyTempFile(scratchPath);
         }
         return lfFile;
     }
