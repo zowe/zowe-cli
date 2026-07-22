@@ -234,6 +234,7 @@ describe("issue ssh handler tests", () => {
 
 describe("SshBaseHandler host key verification", () => {
     const originalCI = process.env.CI;
+    const originalIsTTY = (process.stdin as any).isTTY;
     const fakeKeyInfo = { fingerprint: "SHA256:testfingerprint", key: "presented-key-base64", changed: false };
 
     // Build a handler with persistHostKey stubbed so the config layer is not exercised here.
@@ -263,11 +264,13 @@ describe("SshBaseHandler host key verification", () => {
 
     beforeEach(() => {
         delete process.env.CI;
+        (process.stdin as any).isTTY = true;
         jest.restoreAllMocks();
     });
 
     afterEach(() => {
         if (originalCI === undefined) { delete process.env.CI; } else { process.env.CI = originalCI; }
+        (process.stdin as any).isTTY = originalIsTTY;
         jest.restoreAllMocks();
     });
 
@@ -331,6 +334,20 @@ describe("SshBaseHandler host key verification", () => {
         expect(params.response.console.prompt).not.toHaveBeenCalled();
         expect(params.response.console.error).toHaveBeenCalledWith(
             expect.stringContaining(ZosUssMessages.hostKeyVerificationFailed.message));
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
+    });
+
+    it("should not prompt when no interactive terminal is available and should reject", async () => {
+        (process.stdin as any).isTTY = false;
+        const handler = newHandler();
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(false);
+        expect(params.response.console.prompt).not.toHaveBeenCalled();
         expect((handler as any).persistHostKey).not.toHaveBeenCalled();
     });
 
