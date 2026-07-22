@@ -965,7 +965,7 @@ describe("Copy", () => {
             });
         });
         it("should handle truncation errors and log them to a file", async () => {
-            const truncatedMembersFilePath = path.join(tmpdir(), "truncatedMembers.txt");
+            const truncatedMembersFilePath = path.join(tmpdir(), "zowe-copy-pds", fromDataSetName, "truncatedMembers.txt");
             let response;
             const sourceResponse = {
                 apiResponse: {
