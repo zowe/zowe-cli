@@ -280,7 +280,7 @@ export class Shell {
             // per algorithm, and which one it presents is negotiated; without this, a change in negotiation
             // (e.g. an ssh2 upgrade reordering its preferences) would present a different - but still
             // legitimate - key and be misreported as a changed key.
-            ...(pinnedAlgorithm != null ? { algorithms: { serverHostKey: [pinnedAlgorithm] } } : {}),
+            ...pinnedAlgorithm != null ? { algorithms: { serverHostKey: [pinnedAlgorithm] } } : {},
             readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
                 session.ISshSession.handshakeTimeout : 0
         } as any);
