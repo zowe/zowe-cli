@@ -79,7 +79,7 @@ export interface ISshSession {
     /**
      * Skip verification of the SSH server's host key. Defaults to false, meaning the server's identity
      * is verified before any credentials are sent. When true, host key verification is skipped entirely
-     * and the connection is vulnerable to man-in-the-middle attacks.
+     * and credentials are sent without confirming the server's identity.
      * @type {boolean}
      * @memberof ISession
      */

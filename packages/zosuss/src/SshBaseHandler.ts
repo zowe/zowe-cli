@@ -181,7 +181,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
         // Host key verification explicitly disabled - warn the user and leave the hook unset so any key is accepted.
         if (session.ISshSession.insecure === true) {
             this.console.error("Warning: SSH host key verification is disabled (--insecure). The server's " +
-                "identity is not being verified, so the connection is vulnerable to man-in-the-middle attacks.\n");
+                "identity is not being verified.\n");
             return;
         }
 
@@ -203,8 +203,8 @@ export abstract class SshBaseHandler implements ICommandHandler {
             // Interactive: present the fingerprint and prompt (trust on first use).
             if (info.changed) {
                 this.console.error("WARNING: THE SSH HOST KEY HAS CHANGED FOR THIS SERVER!\n" +
-                    "This could indicate a man-in-the-middle attack, or the server's host key may have " +
-                    "legitimately changed.\n");
+                    "The server's host key may have changed, or the server may not be the one you " +
+                    "previously connected to.\n");
             } else {
                 this.console.log(`The authenticity of host '${session.ISshSession.hostname}' can't be established.\n`);
             }
