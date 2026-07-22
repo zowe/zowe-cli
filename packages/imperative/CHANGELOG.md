@@ -2,9 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `5.27.22`
+## Recent Changes
 
 - BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)
+
+## `5.27.22`
+
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)
 - BugFix: The `Config.set` function, `ConfigProfiles.set` function, and the `ConfigSecure` property walkers now reject dotted paths whose segments are empty or use reserved property names. [#2806](https://github.com/zowe/zowe-cli/pull/2806)
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2804](https://github.com/zowe/zowe-cli/pull/2804)
@@ -248,8 +251,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added the function IO.giveAccessOnlyToOwner to restrict access to only the currently running user ID.
 - Enhancement: Enable command arguments to change `{$Prefix}_EDITOR`. Updating IDiffOptions
-  to include names for the files that are to be compared. Updating IO.getDefaultTextEditor() for different os versions. Updating return value types for `CliUtils.readPrompt`. Changes made to support recent zowe cli work:
-  [zowe-cli#1672](https://github.com/zowe/zowe-cli/pull/1672)
+to include names for the files that are to be compared. Updating IO.getDefaultTextEditor() for different os versions. Updating return value types for `CliUtils.readPrompt`. Changes made to support recent zowe cli work:
+[zowe-cli#1672](https://github.com/zowe/zowe-cli/pull/1672)
 
 ## `5.13.2`
 
@@ -470,7 +473,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.1.0`
 
 - Enhancement: Introduced flag `--show-inputs-only` to show the inputs of the command
-  that would be used if a command were executed.
+that would be used if a command were executed.
 - Enhancement: Added dark theme to web help that is automatically used when system-wide dark mode is enabled.
 - BugFix: Fixed ProfileInfo API `argTeamConfigLoc` not recognizing secure fields in multi-layer operations. [#800](https://github.com/zowe/imperative/pull/800)
 - BugFix: Fixed ProfileInfo API `updateKnownProperty` possibly storing information in the wrong location due to optional osLoc information. [#800](https://github.com/zowe/imperative/pull/800)
@@ -585,8 +588,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Replaced hidden `--dcd` option used by CommandProcessor in daemon mode with IDaemonResponse object.
 - **Next Breaking**
-  - Changed the "args" type on the `Imperative.parse` method to allow a string array.
-  - Restructured the IDaemonResponse interface to provide information to CommandProcessor.
+    - Changed the "args" type on the `Imperative.parse` method to allow a string array.
+    - Restructured the IDaemonResponse interface to provide information to CommandProcessor.
 
 ## `5.0.0-next.202201061509`
 
@@ -618,10 +621,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.0.0-next.202112132158`
 
 - Enhancement: Added an environment variable to control whether or not sensitive data will be masked in the console output.<br/>
-  This behavior excludes any TRACE level logs for both, Imperative.log and AppName.log.<br/>
-  This behavior also excludes properties defined as secure by the plugin developers.<br/>
-  If the schema definition is not found, we will exclude the following properties: user, password, tokenValue, and keyPassphrase.<br/>
-  More information: [zowe/zowe-cli #1106](https://github.com/zowe/zowe-cli/issues/1106)
+    This behavior excludes any TRACE level logs for both, Imperative.log and AppName.log.<br/>
+    This behavior also excludes properties defined as secure by the plugin developers.<br/>
+    If the schema definition is not found, we will exclude the following properties: user, password, tokenValue, and keyPassphrase.<br/>
+    More information: [zowe/zowe-cli #1106](https://github.com/zowe/zowe-cli/issues/1106)
 
 ## `5.0.0-next.202112101814`
 
@@ -637,7 +640,7 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Changed CLI prompt input to be hidden for properties designated as secure in team config. [zowe/zowe-cli#1106](https://github.com/zowe/zowe-cli/issues/1106)
 - BugFix: Improved error message when Keytar module fails to load. [#27](https://github.com/zowe/imperative/issues/27)
 - **Next Breaking**
-  - Removed the `ConfigProfiles.load` API method. Use the methods `ConfigLayers.find` and `ConfigSecure.securePropsForProfile` instead. [#568](https://github.com/zowe/imperative/issues/568)
+    - Removed the `ConfigProfiles.load` API method. Use the methods `ConfigLayers.find` and `ConfigSecure.securePropsForProfile` instead. [#568](https://github.com/zowe/imperative/issues/568)
 
 ## `5.0.0-next.202111301806`
 
@@ -651,7 +654,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Changed credentials to be stored securely by default for v1 profiles to be consistent with the experience for v2 profiles. [zowe/zowe-cli#1128](https://github.com/zowe/zowe-cli/issues/1128)
 - **Next Breaking**
-  - Removed the `credentialServiceName` property from ImperativeConfig. The default credential manager uses the `name` property instead.
+    - Removed the `credentialServiceName` property from ImperativeConfig. The default credential manager uses the `name` property instead.
 
 ## `5.0.0-next.202111101806`
 
@@ -662,12 +665,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added `autoStore` property to config JSON files which defaults to true. When this property is enabled and the CLI prompts you to enter connection info, the values you enter will be saved to disk (or credential vault if they are secure) for future use. [zowe/zowe-cli#923](https://github.com/zowe/zowe-cli/issues/923)
 - **Next Breaking**
-  - Changed the default behavior of `Config.set` so that it no longer coerces string values to other types unless the `parseString` option is true.
+    - Changed the default behavior of `Config.set` so that it no longer coerces string values to other types unless the `parseString` option is true.
 
 ## `5.0.0-next.202110201735`
 
 - **LTS Breaking**
-  - Changed the return value of the public `PluginManagementFacility.requirePluginModuleCallback` function
+    - Changed the return value of the public `PluginManagementFacility.requirePluginModuleCallback` function
 - BugFix: Updated the profiles list as soon as the plugin is installed.
 
 ## `5.0.0-next.202110191937`
@@ -679,7 +682,7 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Added `config update-schemas [--depth <value>]` command. [zowe/zowe-cli#1059](https://github.com/zowe/zowe-cli/issues/1059)
 - Enhancement: Added the ability to update the global schema file when installing a new plugin. [zowe/zowe-cli#1059](https://github.com/zowe/zowe-cli/issues/1059)
 - **Next Breaking**
-  - Renamed public static function ConfigSchemas.loadProfileSchemas to ConfigSchemas.loadSchema
+    - Renamed public static function ConfigSchemas.loadProfileSchemas to ConfigSchemas.loadSchema
 
 ## `5.0.0-next.202110011948`
 
@@ -718,13 +721,13 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Better support for comments in JSON
 - Bugfix: Revert schema changes related to additionalProperties. Re-enable IntelliSense when editing zowe.config.json files
 - **Next Breaking**
-  - Changed the schema paths and updated schema version
+    - Changed the schema paths and updated schema version
 
 ## `5.0.0-next.202106221817`
 
 - **Next Breaking**
-  - Replaced --user with --user-config on all config command groups due to conflict with --user option during config auto-initialization
-  - Replaced --global with --global-config on all config command groups for consistency
+    - Replaced --user with --user-config on all config command groups due to conflict with --user option during config auto-initialization
+    - Replaced --global with --global-config on all config command groups for consistency
 
 ## `5.0.0-next.202106212048`
 
@@ -733,16 +736,16 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.0.0-next.202106041929`
 
 - **LTS Breaking**: Removed the following previously deprecated items:
-  - ICliLoadProfile.ICliILoadProfile -- use ICliLoadProfile.ICliLoadProfile
-  - IImperativeErrorParms.suppressReport -- has not been used since 10/17/2018
-  - IImperativeConfig.pluginBaseCliVersion -- has not been used since version 1.0.1
-  - AbstractRestClient.performRest -- use AbstractRestClient.request
-  - AbstractSession.HTTP_PROTOCOL -- use SessConstants.HTTP_PROTOCOL
-  - AbstractSession.HTTPS_PROTOCOL -- use SessConstants.HTTPS_PROTOCOL
-  - AbstractSession.TYPE_NONE -- use SessConstants.AUTH_TYPE_NONE
-  - AbstractSession.TYPE_BASIC -- use SessConstants.AUTH_TYPE_BASIC
-  - AbstractSession.TYPE_BEARER -- use SessConstants.AUTH_TYPE_BEARER
-  - AbstractSession.TYPE_TOKEN -- use SessConstants.AUTH_TYPE_TOKEN
+    - ICliLoadProfile.ICliILoadProfile -- use ICliLoadProfile.ICliLoadProfile
+    - IImperativeErrorParms.suppressReport -- has not been used since 10/17/2018
+    - IImperativeConfig.pluginBaseCliVersion -- has not been used since version 1.0.1
+    - AbstractRestClient.performRest -- use AbstractRestClient.request
+    - AbstractSession.HTTP_PROTOCOL -- use SessConstants.HTTP_PROTOCOL
+    - AbstractSession.HTTPS_PROTOCOL -- use SessConstants.HTTPS_PROTOCOL
+    - AbstractSession.TYPE_NONE -- use SessConstants.AUTH_TYPE_NONE
+    - AbstractSession.TYPE_BASIC -- use SessConstants.AUTH_TYPE_BASIC
+    - AbstractSession.TYPE_BEARER -- use SessConstants.AUTH_TYPE_BEARER
+    - AbstractSession.TYPE_TOKEN -- use SessConstants.AUTH_TYPE_TOKEN
 
 ## `5.0.0-next.202104262004`
 
@@ -756,14 +759,14 @@ All notable changes to the Imperative package will be documented in this file.
 ## `5.0.0-next.202104071400`
 
 - Enhancement: Add the ProfileInfo API to provide the following functionality:
-  - Read configuration from disk.
-  - Transparently read either a new team configuration or old style profiles.
-  - Resolve order of precedence for profile argument values.
-  - Provide information to enable callers to prompt for missing profile arguments.
-  - Retain the location in which a profile or argument was found.
-  - Automatically initialize CredentialManager, including an option to specify a custom keytar module.
-  - Provide a means to postpone the loading of secure arguments until specifically requested by the calling app to delay loading sensitive data until it is needed.
-  - Provide access to the lower-level Config API to fully manipulate the team configuration file.
+    - Read configuration from disk.
+    - Transparently read either a new team configuration or old style profiles.
+    - Resolve order of precedence for profile argument values.
+    - Provide information to enable callers to prompt for missing profile arguments.
+    - Retain the location in which a profile or argument was found.
+    - Automatically initialize CredentialManager, including an option to specify a custom keytar module.
+    - Provide a means to postpone the loading of secure arguments until specifically requested by the calling app to delay loading sensitive data until it is needed.
+    - Provide access to the lower-level Config API to fully manipulate the team configuration file.
 
 ## `5.0.0-next.202103111923`
 
@@ -788,7 +791,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `5.0.0-next.202010161240`
 
-- Enhancement: Allow process exit code to be passed to daemon clients.
+- Enhancement:  Allow process exit code to be passed to daemon clients.
 
 ## `5.0.0-next.202009251501`
 
@@ -966,25 +969,25 @@ All notable changes to the Imperative package will be documented in this file.
 - Add the --dd flag to profile creation to allow the profile to be created without the default values specified for that profile.
 - Use a token for authentication if a token is present in the underlying REST session object.
 - Added a new ConnectionPropsForSessCfg.addPropsOrPrompt function that places credentials (including a possible token) into a session configuration object.
-  - Plugins must use this function to create their sessions to gain the features of automatic token-handling and prompting for missing connection options.
-  - Connection information is obtained from the command line, environment variables, a service profile, a base profile, or from an option's default value in a service profile's definition, in that order.
-  - If key connection information is not supplied to any cor Zowe command, the command will prompt for:
-    - host
-    - port
-    - user
-    - and password
-  - Any prompt will timeout after 30 seconds so that it will not hang an automated script.
+    - Plugins must use this function to create their sessions to gain the features of automatic token-handling and prompting for missing connection options.
+    - Connection information is obtained from the command line, environment variables, a service profile, a base profile, or from an option's default value in a service profile's definition, in that order.
+    - If key connection information is not supplied to any cor Zowe command, the command will prompt for:
+        -  host
+        -  port
+        -  user
+        -  and password
+    - Any prompt will timeout after 30 seconds so that it will not hang an automated script.
 - Add base profiles, a new type of profile which can store values shared between profiles of other types.
-  - The properties that are currently recognized in a base profile are:
-    - host
-    - port
-    - user
-    - password
-    - rejectUnauthorized
-    - tokenType
-    - tokenValue
-  - To use base profiles in an Imperative-based CLI, define a `baseProfile` schema on your Imperative configuration object.
-  - If the `baseProfile` schema is defined, base profile support will be added to any command that uses profiles.
+    - The properties that are currently recognized in a base profile are:
+        - host
+        - port
+        - user
+        - password
+        - rejectUnauthorized
+        - tokenType
+        - tokenValue
+    - To use base profiles in an Imperative-based CLI, define a `baseProfile` schema on your Imperative configuration object.
+    - If the `baseProfile` schema is defined, base profile support will be added to any command that uses profiles.
 - Due to new options (like tokenValue) help text will change. Plugin developers may have to update any mismatched snapshots in their automated tests.
 - Updated the version of TypeScript from 3.7.4 to 3.8.0.
 - Updated the version of TSLint from 5.x to 6.1.2.
