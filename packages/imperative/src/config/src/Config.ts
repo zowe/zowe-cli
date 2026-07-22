@@ -484,6 +484,18 @@ export class Config {
     public set(propertyPath: string, value: any, opts?: { parseString?: boolean; secure?: boolean }) {
         opts = opts || {};
 
+        // Guard the hand-rolled path walker below against prototype pollution
+        // and malformed paths. A path such as "profiles.__proto__.properties.host"
+        // would otherwise walk onto Object.prototype and assign properties there,
+        // and a path with an empty segment (e.g. "profiles..properties.host")
+        // would silently create a bogus "" key.
+        if (ConfigUtils.hasUnsafeOrEmptyProperty(propertyPath)) {
+            throw new ImperativeError({
+                msg: `Invalid property path '${propertyPath}': path segments may not be empty or use ` +
+                    `the reserved property names ${ConfigUtils.UNSAFE_PROP_NAMES.join(", ")}.`
+            });
+        }
+
         const layer = this.layerActive();
         this.mEnvVarManaged.forEach((value) => {
             if (value.global == layer.global && value.user == layer.user && value.propPath == propertyPath) {
