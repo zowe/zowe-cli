@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Hardened temporary directory handling for partitioned data set copy so the staging directory is scoped per user (co-tenants on a shared temp location no longer conflict) and owner-only access is enforced and re-verified on all platforms. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+
 ## `8.33.1`
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)

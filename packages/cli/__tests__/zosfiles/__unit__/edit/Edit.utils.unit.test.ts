@@ -98,6 +98,13 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
             expect(response).toContain(".txt");
         });
+        it("should use a per-user temp directory name so co-tenants on a shared tmp don't collide", async () => {
+            await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+            const dirArg = (ZosFilesUtils.ensureSafeTempDir as jest.Mock).mock.calls[0][0];
+            // per-user token (cross-platform, hashed) - not a bare shared name
+            expect(dirArg.endsWith(`zowe-edit-ds-${ZosFilesUtils.getUserTempToken()}`)).toBe(true);
+            expect(dirArg).toMatch(/zowe-edit-ds-[0-9a-f]{10}$/);
+        });
     });
     describe("checkForStash()", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
@@ -267,6 +274,26 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFile, false);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
+        });
+
+        it("should restrict the freshly downloaded stash file to the owner (0600) - [useStash = false]", async () => {
+            //TEST SETUP
+            const localFile = cloneDeep(localFileDS);
+            localFile.tempPath = "someStashPath";
+            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
+                return zosResp;
+            }));
+            const chmodSpy = jest.spyOn(fs, "chmodSync").mockImplementation(jest.fn());
+
+            //TEST CONFIRMATION
+            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
+            if (process.platform === "win32") {
+                // chmod mode is a no-op on Windows; the 0700 dir + icacls handle it there
+                expect(chmodSpy).not.toHaveBeenCalled();
+            } else {
+                expect(chmodSpy).toHaveBeenCalledWith("someStashPath", 0o600);
+            }
+            chmodSpy.mockRestore();
         });
 
         it("localDownload should properly pass non-falsy binary option to Download.dataSet", async () => {

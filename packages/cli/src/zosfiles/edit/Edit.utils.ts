@@ -13,7 +13,7 @@ import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions, 
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { existsSync, unlinkSync } from "fs";
+import { chmodSync, existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -64,6 +64,23 @@ export interface ILocalFile {
  */
 export class EditUtilities {
     /**
+     * Build the per-user temp directory for edit files and ensure it is safe to use.
+     * The directory name includes a per-user token so co-tenants on a shared OS temp location get
+     * separate directories. With a shared name the first user to run would own the directory and
+     * {@link ZosFilesUtils.ensureSafeTempDir} would then reject it for everyone else. The token is
+     * derived from the current user (not random) so the path stays stable across runs and the
+     * stash remains re-findable.
+     * @param {EditFileType} fileType - "uss" or "ds"
+     * @returns {string} - absolute path to the ensured, per-user temp directory
+     * @memberof EditUtilities
+     */
+    private static ensureEditTempDir(fileType: EditFileType): string {
+        const dir = path.join(tmpdir(), `zowe-edit-${fileType}-${ZosFilesUtils.getUserTempToken()}`);
+        ZosFilesUtils.ensureSafeTempDir(dir);
+        return dir;
+    }
+
+    /**
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
@@ -83,12 +100,10 @@ export class EditUtilities {
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            const ussDir = path.join(tmpdir(), "zowe-edit-uss");
-            ZosFilesUtils.ensureSafeTempDir(ussDir);
+            const ussDir = this.ensureEditTempDir("uss");
             return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        const dsDir = path.join(tmpdir(), "zowe-edit-ds");
-        ZosFilesUtils.ensureSafeTempDir(dsDir);
+        const dsDir = this.ensureEditTempDir("ds");
         return path.join(dsDir, lfFile.fileName + ext);
     }
 
@@ -169,8 +184,7 @@ export class EditUtilities {
         if (useStash) {
             const crypto = require("crypto");
             const randomNameBytes = 16;
-            const scratchDir = path.join(tmpdir(), `zowe-edit-${lfFile.fileType}`);
-            ZosFilesUtils.ensureSafeTempDir(scratchDir);
+            const scratchDir = this.ensureEditTempDir(lfFile.fileType);
             scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
         }
         const tempPath = useStash ? scratchPath : lfFile.tempPath;
@@ -190,6 +204,17 @@ export class EditUtilities {
             lfFile.encoding = args[2].encoding;
         }else{
             lfFile.zosResp = await Download.dataSet(...args);
+        }
+
+        if (!useStash && tempPath && process.platform !== "win32") {
+            // The stash now holds remote contents; restrict it to the owner (defense-in-depth atop
+            // the 0700 dir). Best-effort: the enclosing directory already blocks other-user access.
+            const ownerReadWrite = 0o600;
+            try {
+                chmodSync(tempPath, ownerReadWrite);
+            } catch (err) {
+                // ignore - the 0700 temp directory is the primary protection
+            }
         }
 
         if (useStash){

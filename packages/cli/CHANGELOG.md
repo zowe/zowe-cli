@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Hardened temporary file handling in the `zowe zos-files edit` command so the etag-refresh step no longer writes to a shared, predictable path in the OS temp directory. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+- BugFix: Hardened temporary file handling for the `zowe zos-files edit` command: the etag-refresh step no longer uses a shared, fixed path; edit temp directories are now scoped per user (so co-tenants on a shared temp location no longer conflict) and owner-only access is enforced on all platforms; and the downloaded working file is restricted to the owner. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
 - BugFix: Updated various dependencies for technical currency. [#2817](https://github.com/zowe/zowe-cli/pull/2817)
 
 ## `8.33.3`

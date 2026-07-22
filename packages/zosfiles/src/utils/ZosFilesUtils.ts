@@ -11,6 +11,8 @@
 
 import * as path from "path";
 import * as fs from "fs";
+import * as crypto from "crypto";
+import { userInfo } from "os";
 import { IO, Logger, IHeaderContent, EncodeUri, AbstractSession, ImperativeExpect, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
@@ -62,11 +64,36 @@ export class ZosFilesUtils {
     }
 
     /**
+     * Returns a short, filesystem-safe token that is unique per OS user, for building per-user
+     * temp directory names. Deriving the name from the user (rather than a random per-run value)
+     * keeps the path stable across invocations - so features like edit stash-resume still work -
+     * while ensuring co-tenants on a shared temp location get separate directories. The username
+     * is hashed so the token is path-safe for any username and works on every platform (numeric
+     * uids aren't available on Windows).
+     * @returns {string} - a hex token derived from the current OS user
+     */
+    public static getUserTempToken(): string {
+        let id = "default";
+        try {
+            id = userInfo().username;
+        } catch (err) {
+            // userInfo() can throw when the current user has no OS account entry; fall back to uid or a constant
+            if (typeof process.getuid === "function") {
+                id = String(process.getuid());
+            }
+        }
+        const tokenLen = 10;
+        return crypto.createHash("sha256").update(id).digest("hex").slice(0, tokenLen);
+    }
+
+    /**
      * Ensures a temp directory exists and is safe to use, creating it if necessary.
-     * On POSIX systems, verifies the directory isn't a pre-existing, loosely-permissioned
-     * directory planted by another local user sharing the same tmp location. On Windows,
-     * os.tmpdir() already resolves to a per-user directory whose ACLs prevent other local
-     * users from writing to it, so that co-tenancy risk doesn't apply and the check is skipped.
+     * When creating, the directory is restricted to the owner (mode 0700 on POSIX; on Windows
+     * `fs.mkdirSync`'s `mode` is a no-op, so an owner-only ACL is set via {@link IO.giveAccessOnlyToOwner}).
+     * When the directory already exists, it is rejected unless it is a real directory whose access is
+     * restricted to the current user - verified the same way on every platform via
+     * {@link IO.hasOwnerOnlyAccess} - so a directory planted by another local user sharing the same
+     * tmp location is refused.
      * @param {string} dir - the temp directory to validate or create
      * @throws {ImperativeError} - when the directory exists but is not safe to use
      */
@@ -78,12 +105,8 @@ export class ZosFilesUtils {
             }
             return;
         }
-        const st = fs.lstatSync(dir);
-        if (!st.isDirectory()) {
-            throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
-        }
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        if (process.platform !== "win32" && ((st.mode & 0o777) !== 0o700 || st.uid !== process.getuid!())) {
+        // Reject a planted symlink/non-directory (lstat does not follow symlinks) before checking access.
+        if (!fs.lstatSync(dir).isDirectory() || !IO.hasOwnerOnlyAccess(dir)) {
             throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
         }
     }

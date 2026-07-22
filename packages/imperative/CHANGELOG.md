@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `IO.hasOwnerOnlyAccess` to check whether a file or directory's access is restricted to the current user only, cross-platform (POSIX mode bits/owner; Windows `icacls` ACL). [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+
 ## `8.34.0`
 
 - Enhancement: Added the `zowe config export-redacted` command to export Zowe configuration layers with sensitive values redacted for troubleshooting and sharing purposes. [#2732](https://github.com/zowe/zowe-cli/pull/2732)
