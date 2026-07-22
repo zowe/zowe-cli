@@ -73,6 +73,9 @@ export class ZosFilesUtils {
     public static ensureSafeTempDir(dir: string): void {
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+            if (process.platform === "win32") {
+                IO.giveAccessOnlyToOwner(dir);
+            }
             return;
         }
         const st = fs.lstatSync(dir);
