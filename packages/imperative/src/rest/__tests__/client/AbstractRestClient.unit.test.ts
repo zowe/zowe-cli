@@ -1532,6 +1532,60 @@ describe("AbstractRestClient tests", () => {
             });
         });
 
+        describe("appendInputHeaders", () => {
+            it("should redact Authorization, Cookie, cert, and key when logging, but not in the returned options", () => {
+                const restClient: any = new RestClient(new Session({hostname: "FakeHostName"}));
+                const traceSpy = jest.spyOn(restClient.log, "trace");
+
+                const options: any = {
+                    headers: {
+                        Authorization: "Basic Auth",
+                        Cookie: "fakeTokenValue",
+                    },
+                    cert: Buffer.from("cert data"),
+                    key: Buffer.from("key data")
+                };
+
+                const result = restClient["appendInputHeaders"](options);
+
+
+                expect(result.headers.Authorization).toEqual("Basic Auth");
+                expect(result.headers.Cookie).toEqual("fakeTokenValue");
+                expect(result.cert).toEqual(options.cert);
+                expect(result.key).toEqual(options.key);
+
+                const loggedOptions = JSON.parse(traceSpy.mock.calls[0][1] as string);
+                expect(loggedOptions.headers.Authorization).toEqual("****");
+                expect(loggedOptions.headers.Cookie).toEqual("****");
+                expect(loggedOptions.cert).toEqual("****");
+                expect(loggedOptions.key).toEqual("****");
+            });
+
+            it("should not log cert or key values when they are not present", () => {
+                const restClient: any = new RestClient(new Session({hostname: "FakeHostName"}));
+                const traceSpy = jest.spyOn(restClient.log, "trace");
+
+                const options: any = {
+                    headers: {"Content-Type": "application/json"}
+                };
+
+                restClient["appendInputHeaders"](options);
+
+                const loggedOptions = JSON.parse(traceSpy.mock.calls[0][1] as string);
+                expect(loggedOptions.cert).toBeUndefined();
+                expect(loggedOptions.key).toBeUndefined();
+            });
+
+            it("should append request headers onto the returned options", () => {
+                const restClient: any = new RestClient(new Session({hostname: "FakeHostName"}));
+
+                const options: any = {headers: {}};
+                const result = restClient["appendInputHeaders"](options, [{"X-Custom-Header": "value"}]);
+
+                expect(result.headers["X-Custom-Header"]).toEqual("value");
+            });
+        });
+
         describe('buildOptions', () => {
             const privateRestClient = new RestClient(
                 new Session({

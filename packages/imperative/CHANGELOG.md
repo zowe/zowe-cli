@@ -5,7 +5,8 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)
-
+- BugFix: Censored certain fields, and redacted token value from logs in `AbstractRestClient`. [#2816](https://github.com/zowe/zowe-cli/pull/2816)
+ 
 ## `5.27.22`
 
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)
