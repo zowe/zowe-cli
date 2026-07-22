@@ -301,12 +301,6 @@ export class Copy {
             if(truncatedMembers.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 const firstTenMembers = truncatedMembers.slice(0, 10);
-                if (!fs.existsSync(downloadDir)) {
-                    fs.mkdirSync(downloadDir, {recursive: true, mode: 0o700});
-                    if (process.platform === "win32") {
-                        IO.giveAccessOnlyToOwner(downloadDir);
-                    }
-                }
                 fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w', mode: 0o600});
                 if (process.platform === "win32") {
                     IO.giveAccessOnlyToOwner(truncatedMembersFile);
