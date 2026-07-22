@@ -238,9 +238,9 @@ describe("SshBaseHandler host key verification", () => {
 
     // Build a handler with persistHostKey stubbed so the config layer is not exercised here.
     function newHandler(persistImpl?: () => Promise<void>): SshBaseHandler {
-        const handler = new (class extends SshBaseHandler {
+        const handler = new class extends SshBaseHandler {
             public async processCmd(): Promise<void> { /* no-op */ }
-        })();
+        }();
         jest.spyOn(handler as any, "persistHostKey").mockImplementation(persistImpl ?? (async () => undefined));
         return handler;
     }
