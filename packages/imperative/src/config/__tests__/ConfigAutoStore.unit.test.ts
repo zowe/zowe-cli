@@ -16,6 +16,7 @@ import { SessConstants } from "../../rest";
 import { ImperativeConfig } from "../../utilities";
 import { ConfigAutoStore } from "../src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
+import { ConfigUtils } from "../src/ConfigUtils";
 
 describe("ConfigAutoStore tests", () => {
     beforeAll(() => {
@@ -551,6 +552,48 @@ describe("ConfigAutoStore tests", () => {
             expect(findActiveProfileSpy).toHaveBeenCalled();
             expect(ImperativeConfig.instance.config.save).not.toHaveBeenCalled();
         });
+    });
+
+    it("should throw a secureSaveError when config.save() fails", async () => {
+        const handlerParams = {
+            arguments: { host: "example.com" },
+            response: {
+                console: { log: jest.fn() }
+            }
+        };
+        await setupConfigToLoad({
+            profiles: {
+                base: {
+                    type: "base",
+                    properties: { host: "example.com" },
+                    secure: ["user", "password"]
+                }
+            },
+            defaults: { base: "base" },
+            autoStore: true
+        });
+
+        const saveError = new Error("Failed to initialize secure credential manager");
+        ImperativeConfig.instance.config.save = jest.fn().mockRejectedValueOnce(saveError);
+
+        const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
+
+        let caughtErr: any;
+        try {
+            await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                hostname: "example.com",
+                type: SessConstants.AUTH_TYPE_BASIC,
+                user: "admin",
+                password: "123456"
+            }, ["user", "password"]);
+        } catch (err) {
+            caughtErr = err;
+        }
+
+        expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+        expect(secureSaveErrorSpy).toHaveBeenCalled();
+        expect(caughtErr).toBeDefined();
+        expect(caughtErr.message).toContain("Unable to securely save credentials");
     });
 
     describe("findActiveProfile", () => {
