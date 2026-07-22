@@ -265,9 +265,8 @@ export class Copy {
                 };
             }
 
-            const safeTmpDir = path.join(tmpdir(), "zowe-copy-pds");
-            ZosFilesUtils.ensureSafeTempDir(safeTmpDir);
-            const downloadDir = path.join(safeTmpDir, fromPds);
+            const downloadDir = path.join(tmpdir(), "zowe-copy-pds", fromPds);
+            ZosFilesUtils.ensureSafeTempDir(downloadDir);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
             const truncatedMembers: string[] = [];
