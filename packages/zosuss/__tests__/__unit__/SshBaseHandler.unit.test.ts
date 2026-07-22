@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ConnectionPropsForSessCfg } from "@zowe/imperative";
+import { IHandlerParameters, ConnectionPropsForSessCfg, ImperativeConfig } from "@zowe/imperative";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { join, normalize } from "path";
 import { Shell } from "../../src/Shell";
@@ -315,5 +315,82 @@ describe("SshBaseHandler host key verification", () => {
 
         expect(trusted).toBe(true);
         expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("Could not save"));
+    });
+});
+
+describe("SshBaseHandler persistHostKey", () => {
+    function realHandler(params: IHandlerParameters): SshBaseHandler {
+        const handler = new class extends SshBaseHandler {
+            public async processCmd(): Promise<void> { /* no-op */ }
+        }();
+        (handler as any).mHandlerParams = params;
+        return handler;
+    }
+
+    function makeParams(): IHandlerParameters {
+        return mockHandlerParameters({
+            arguments: { ...UNIT_TEST_SSH_PROF_OPTS },
+            positionals: ["zos-uss", "issue", "ssh"],
+            definition: {} as any
+        });
+    }
+
+    function mockConfig(overrides: any = {}): { config: any; set: jest.Mock; save: jest.Mock } {
+        const set = jest.fn();
+        const save = jest.fn().mockResolvedValue(undefined);
+        const config = {
+            exists: true,
+            properties: { autoStore: true, defaults: {} },
+            api: {
+                profiles: {
+                    exists: jest.fn().mockReturnValue(true),
+                    getProfilePathFromName: jest.fn().mockReturnValue("profiles.ssh")
+                },
+                layers: {
+                    get: jest.fn().mockReturnValue({ user: false, global: false }),
+                    find: jest.fn().mockReturnValue({ user: false, global: false }),
+                    activate: jest.fn()
+                }
+            },
+            set,
+            save,
+            ...overrides
+        };
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config } as any);
+        return { config, set, save };
+    }
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it("saves the trusted host key to the resolved profile", async () => {
+        const params = makeParams();
+        const { set, save } = mockConfig();
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).toHaveBeenCalledWith("profiles.ssh.properties.hostKey", "keyblob", { secure: false });
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(params.response.console.log).toHaveBeenCalledWith(expect.stringContaining("Saved the trusted host key"));
+    });
+
+    it("does nothing when there is no team config", async () => {
+        const params = makeParams();
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: undefined } as any);
+        await expect((realHandler(params) as any).persistHostKey(params, "keyblob")).resolves.toBeUndefined();
+    });
+
+    it("does nothing when autoStore is disabled", async () => {
+        const params = makeParams();
+        const { set, save } = mockConfig({ properties: { autoStore: false, defaults: {} } });
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).not.toHaveBeenCalled();
+        expect(save).not.toHaveBeenCalled();
+    });
+
+    it("does nothing when the ssh profile does not exist", async () => {
+        const params = makeParams();
+        const { config, set, save } = mockConfig();
+        config.api.profiles.exists.mockReturnValue(false);
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).not.toHaveBeenCalled();
+        expect(save).not.toHaveBeenCalled();
     });
 });
