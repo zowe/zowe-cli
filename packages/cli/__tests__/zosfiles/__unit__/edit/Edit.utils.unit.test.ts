@@ -16,7 +16,7 @@ import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
 import * as fs from "fs";
-import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IZosFilesResponse, Upload, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
@@ -76,6 +76,7 @@ describe("Files Edit Utilities", () => {
 
     beforeEach(async () => {
         jest.resetAllMocks();
+        jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
