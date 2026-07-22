@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- **Next Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending any credentials, protecting against man-in-the-middle attacks. On first connection you are prompted to confirm the server's fingerprint; the accepted key is saved to your ssh profile. Specify the new `--insecure` option (or `ZOWE_OPT_INSECURE=true`) to skip verification and restore the previous behavior, or pin a trusted key with `--host-key`.
+- **Next Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the server's fingerprint and the accepted key is saved to your ssh profile. Use `--insecure` (or `ZOWE_OPT_INSECURE=true`) to skip verification, or pin a key with `--host-key`.
 
 ## `7.29.30`
 
