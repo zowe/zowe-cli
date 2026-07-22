@@ -676,5 +676,99 @@ describe("Create workflow from local file", () => {
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(0);
             expectZosmfResponseFailed(response, error, "Failed to create temporary uss file");
         });
+        it("Should delete temp uss files and still throw the original error when createWorkflow fails", async () => {
+            (Upload.fileToUssFile as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
+            CreateWorkflow.getTempFile = jest.fn(() => {
+                return PRETEND_INPUT_PARMS.workflowDefinitionFile;
+            });
+            (CreateWorkflow.createWorkflow as any) = jest.fn(() => {
+                return new Promise((resolve, reject) => {
+                    process.nextTick(() => {
+                        reject(new ImperativeError({msg: "zosmf failure"}));
+                    });
+                });
+            });
+            (Delete.ussFile as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, varInputFile,
+                    variables, assign, access, deleteJobs);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, "zosmf failure");
+            expect((Delete.ussFile as any)).toHaveBeenCalledTimes(2);
+        });
+        it("Should not delete temp uss files when createWorkflow fails and keepFiles is true", async () => {
+            (Upload.fileToUssFile as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
+            CreateWorkflow.getTempFile = jest.fn(() => {
+                return PRETEND_INPUT_PARMS.workflowDefinitionFile;
+            });
+            (CreateWorkflow.createWorkflow as any) = jest.fn(() => {
+                return new Promise((resolve, reject) => {
+                    process.nextTick(() => {
+                        reject(new ImperativeError({msg: "zosmf failure"}));
+                    });
+                });
+            });
+            (Delete.ussFile as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, varInputFile,
+                    variables, assign, access, deleteJobs, true);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, "zosmf failure");
+            expect((Delete.ussFile as any)).toHaveBeenCalledTimes(0);
+        });
+    });
+});
+
+describe("getTempFile", () => {
+    it("should generate a different remote file name on each call when no customDir is given", () => {
+        const first = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile);
+        const second = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile);
+        expect(first).not.toEqual(second);
+        expect(first).toContain(WorkflowConstants.tempPath);
+        expect(first).toContain(wfOwner);
+    });
+
+    it("should generate a different remote file name on each call when a customDir is given", () => {
+        const customDir = "/u/custom/dir";
+        const first = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile, customDir);
+        const second = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile, customDir);
+        expect(first).not.toEqual(second);
+        expect(first).toContain(customDir);
     });
 });
