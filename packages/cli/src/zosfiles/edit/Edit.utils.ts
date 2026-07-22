@@ -9,7 +9,7 @@
 *
 */
 
-import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
@@ -83,9 +83,13 @@ export class EditUtilities {
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            return path.join(tmpdir(), path.parse(lfFile.fileName).name + '_' + hash + ext);
+            const ussDir = path.join(tmpdir(), "zowe-edit-uss");
+            ZosFilesUtils.ensureSafeTempDir(ussDir);
+            return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        return path.join(tmpdir(), lfFile.fileName + ext);
+        const dsDir = path.join(tmpdir(), "zowe-edit-ds");
+        ZosFilesUtils.ensureSafeTempDir(dsDir);
+        return path.join(dsDir, lfFile.fileName + ext);
     }
 
     /**

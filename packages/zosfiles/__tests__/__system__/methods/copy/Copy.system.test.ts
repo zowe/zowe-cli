@@ -133,7 +133,7 @@ describe("Copy", () => {
                     try {
                         await Delete.dataSet(REAL_SESSION, fromDataSetName);
                         await Delete.dataSet(REAL_SESSION, toDataSetName);
-                        fs.rmSync(join(tmpdir(), 'truncatedMembers.txt'));
+                        fs.rmSync(join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -142,7 +142,8 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+                    const truncatedMembersFile = path.join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt');
+                    fs.mkdirSync(path.dirname(truncatedMembersFile), { recursive: true, mode: 0o700 });
                     fs.writeFileSync(truncatedMembersFile, "");
                     try {
                         response = await Copy.dataSet(
