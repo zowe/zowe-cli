@@ -258,8 +258,21 @@ export abstract class SshBaseHandler implements ICommandHandler {
             return;
         }
         const profileName = ConfigUtils.getActiveProfileName("ssh", commandParameters.arguments);
-        if (profileName == null || !config.api.profiles.exists(profileName)) {
-            return;
+        const profileExisted = config.api.profiles.exists(profileName);
+        if (!profileExisted) {
+            // First connection with no ssh profile: create one bound to this host so the trusted key is
+            // remembered. A host key is host-specific, so the profile records the host it belongs to.
+            config.api.profiles.set(profileName, {
+                type: "ssh",
+                properties: {
+                    host: this.mSession.ISshSession.hostname,
+                    port: this.mSession.ISshSession.port
+                }
+            });
+            // Point the default ssh profile at it (only when none is set) so later connections read the key.
+            if (config.properties.defaults.ssh == null) {
+                config.api.profiles.defaultSet("ssh", profileName);
+            }
         }
         const profilePath = config.api.profiles.getProfilePathFromName(profileName);
 
@@ -273,7 +286,9 @@ export abstract class SshBaseHandler implements ICommandHandler {
         await config.save();
         config.api.layers.activate(beforeLayer.user, beforeLayer.global);
 
-        this.console.log(`Saved the trusted host key to ssh profile '${profileName}'.\n`);
+        this.console.log(profileExisted ?
+            `Saved the trusted host key to ssh profile '${profileName}'.\n` :
+            `Created ssh profile '${profileName}' and saved the trusted host key to it.\n`);
     }
 
     /**
