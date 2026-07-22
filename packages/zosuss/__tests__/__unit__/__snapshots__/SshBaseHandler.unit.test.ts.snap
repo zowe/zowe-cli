@@ -1,5 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SshBaseHandler host key verification should not prompt in a CI environment and should reject with an error 1`] = `
+"Host key verification failed. The SSH server's host key is not trusted, so the connection was rejected before any credentials were sent.
+Server host key fingerprint: SHA256:testfingerprint
+Running in a CI environment, so the host key cannot be confirmed interactively. Pin the trusted key with --host-key (or the 'hostKey' ssh profile property) to proceed, or specify --insecure to connect without verifying the server.
+"
+`;
+
+exports[`SshBaseHandler host key verification should not set a verifier and should warn when --insecure is specified 1`] = `
+"Warning: SSH host key verification is disabled (--insecure). The server's identity is not being verified.
+"
+`;
+
+exports[`SshBaseHandler host key verification should reject a new key when the user declines (no) 1`] = `
+"The authenticity of host 'somewhere.com' can't be established.
+"
+`;
+
+exports[`SshBaseHandler host key verification should still trust the key even if persistence fails 1`] = `
+"The authenticity of host 'somewhere.com' can't be established.
+"
+`;
+
+exports[`SshBaseHandler host key verification should still trust the key even if persistence fails 2`] = `
+"Could not save the accepted host key to your configuration; you may be prompted again next time.
+Details: cannot save
+"
+`;
+
+exports[`SshBaseHandler host key verification should trust a new key on first use and persist it (yes) 1`] = `
+"The authenticity of host 'somewhere.com' can't be established.
+"
+`;
+
+exports[`SshBaseHandler host key verification should warn loudly and still allow trusting a changed key 1`] = `
+"WARNING: THE SSH HOST KEY HAS CHANGED FOR THIS SERVER!
+The server's host key may have changed, or the server may not be the one you previously connected to.
+"
+`;
+
 exports[`issue ssh handler tests should be able to get stdout 1`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should be able to get stdout 2`] = `"TEST OUTPUT"`;
