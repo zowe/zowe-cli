@@ -11,7 +11,7 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
+    TextUtils, IDiffNameOptions, CliUtils, IO } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { existsSync, lstatSync, mkdirSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
@@ -94,23 +94,28 @@ export class EditUtilities {
 
     /**
      * Ensures a temp directory exists and is safe to use, creating it if necessary.
-     * On POSIX systems, verifies the directory isn't a pre-existing, loosely-permissioned
-     * directory planted by another local user sharing the same tmp location. On Windows,
-     * os.tmpdir() already resolves to a per-user directory whose ACLs prevent other local
-     * users from writing to it, so that co-tenancy risk doesn't apply and the check is skipped.
+     * Verifies the directory isn't a pre-existing, loosely-permissioned directory planted
+     * by another local user sharing the same tmp location. On POSIX this checks the mode
+     * bits and owner; on Windows, `fs.mkdirSync`'s mode option has no effect, so ACLs are
+     * actively locked down to the current user via {@link IO.giveAccessOnlyToOwner} instead.
      * @param {string} dir - the temp directory to validate or create
      * @memberof EditUtilities
      */
     private static ensureSafeTempDir(dir: string): void {
         if (!existsSync(dir)) {
             mkdirSync(dir, { recursive: true, mode: 0o700 });
+            if (process.platform === "win32") {
+                IO.giveAccessOnlyToOwner(dir);
+            }
             return;
         }
         const st = lstatSync(dir);
         if (!st.isDirectory()) {
             throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
         }
-        if (process.platform !== "win32" && ((st.mode & 0o777) !== 0o700 || st.uid !== process.getuid!())) {
+        if (process.platform === "win32") {
+            IO.giveAccessOnlyToOwner(dir);
+        } else if ((st.mode & 0o777) !== 0o700 || st.uid !== process.getuid!()) {
             throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
         }
     }
@@ -185,8 +190,18 @@ export class EditUtilities {
      * @returns {ILocalFile}
      */
     public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
-        // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        // account for both useStash|!useStash and uss|ds when downloading.
+        // When only refreshing the etag (useStash), download to a throwaway scratch file with a
+        // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.
+        let scratchPath!: string;
+        if (useStash) {
+            const crypto = require("crypto");
+            const randomNameBytes = 16;
+            const scratchDir = path.join(tmpdir(), `zowe-edit-${lfFile.fileType}`);
+            EditUtilities.ensureSafeTempDir(scratchDir);
+            scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
+        }
+        const tempPath = useStash ? scratchPath : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -206,7 +221,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
+            await this.destroyTempFile(scratchPath);
         }
         return lfFile;
     }

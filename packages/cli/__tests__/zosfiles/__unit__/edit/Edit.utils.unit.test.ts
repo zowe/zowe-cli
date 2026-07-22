@@ -10,12 +10,13 @@
 */
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
+import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, IO, ProcessUtils } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
 import * as fs from "fs";
+import { tmpdir } from "os";
 import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
@@ -403,6 +404,14 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
+
+            //test that the etag refresh downloads to a safe, unique scratch path - not a shared/predictable one
+            const scratchPath = downloadUssFileSpy.mock.calls[0][2]?.file as string;
+            expect(scratchPath).toContain(path.join(tmpdir(), "zowe-edit-uss"));
+            expect(path.basename(scratchPath)).toMatch(/^\.etag-refresh-[0-9a-f]+$/);
+            expect(scratchPath).not.toContain("toDelete.txt");
+            //the unique scratch file (not the stash) is the one destroyed
+            expect(EditUtilities.destroyTempFile).toHaveBeenCalledWith(scratchPath);
         });
 
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {
