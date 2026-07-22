@@ -10,7 +10,7 @@
 */
 
 import { inspect } from "util";
-import { Logger } from "../../../logger";
+import { Logger, LoggerUtils } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
 import * as https from "https";
@@ -593,7 +593,7 @@ export abstract class AbstractRestClient {
             return false;
         }
 
-        this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
+        this.log.trace("Using cookie authentication with token type: %s", this.session.ISession.tokenType);
         const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
         const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
         headerKeys.forEach((property) => {
@@ -976,8 +976,24 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private appendInputHeaders(options: IHTTPSOptions, reqHeaders?: any[]): IHTTPSOptions {
+        const optionsForLogging: any = { ...options };
+
+        if (optionsForLogging.cert) optionsForLogging.cert = LoggerUtils.CENSOR_RESPONSE;
+        if (optionsForLogging.key)  optionsForLogging.key  = LoggerUtils.CENSOR_RESPONSE;
+
+        if (optionsForLogging.headers) {
+            optionsForLogging.headers = { ...optionsForLogging.headers };
+            const sensitiveHeaders = ["authorization", "cookie", "proxy-authorization"];
+            
+            for (const key of Object.keys(optionsForLogging.headers)) {
+                if (sensitiveHeaders.includes(key.toLowerCase())) {
+                    optionsForLogging.headers[key] = LoggerUtils.CENSOR_RESPONSE;
+                }
+            }
+        }
+
         this.log.trace("appendInputHeaders called with options on rest client %s",
-            JSON.stringify(options), this.constructor.name);
+            JSON.stringify(optionsForLogging), this.constructor.name);
         if (reqHeaders && reqHeaders.length > 0) {
             reqHeaders.forEach((reqHeader: any) => {
                 const requestHeaderKeys: string[] = Object.keys(reqHeader);
