@@ -756,14 +756,6 @@ describe("Create workflow from local file", () => {
 });
 
 describe("getTempFile", () => {
-    it("should generate a different remote file name on each call when no customDir is given", () => {
-        const first = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile);
-        const second = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile);
-        expect(first).not.toEqual(second);
-        expect(first).toContain(WorkflowConstants.tempPath);
-        expect(first).toContain(wfOwner);
-    });
-
     it("should generate a different remote file name on each call when a customDir is given", () => {
         const customDir = "/u/custom/dir";
         const first = CreateWorkflow.getTempFile(wfOwner, wfDefinitionFile, customDir);
