@@ -280,6 +280,11 @@ export class ConfigSchema {
         profiles.forEach((profile: { type: string, schema: IProfileSchema }) => {
             andEntries.push({
                 if: {
+                    // `required` is essential: without it the `if` matches vacuously for a
+                    // profile that has no `type` (JSON Schema only validates `properties`
+                    // that are present), so every type's `then` would be applied to a
+                    // typeless profile. Requiring `type` scopes each rule to its own type.
+                    required: ["type"],
                     properties: {
                         type: { const: profile.type }
                     }

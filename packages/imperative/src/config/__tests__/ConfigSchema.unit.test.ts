@@ -120,6 +120,7 @@ describe("Config Schema", () => {
             missingProfileTypeEntry,
             {
                 if: {
+                    required: ["type"],
                     properties: {
                         type: {
                             const: "zosmf"
@@ -154,6 +155,7 @@ describe("Config Schema", () => {
             missingProfileTypeEntry,
             {
                 if: {
+                    required: ["type"],
                     properties: {
                         type: {
                             const: "zosmf"
@@ -178,6 +180,7 @@ describe("Config Schema", () => {
             },
             {
                 if: {
+                    required: ["type"],
                     properties: {
                         type: {
                             const: "base"
@@ -205,6 +208,22 @@ describe("Config Schema", () => {
         expect(returnedSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toEqual(expectedAllOf);
     });
 
+    it("should require the type property in each conditional so type-specific rules are not applied to typeless profiles", () => {
+        // Regression test for #2602 / #2302: a profile with no `type` (e.g. a base
+        // profile) must not inherit another type's property constraints. Without
+        // `required: ["type"]`, JSON Schema treats each `if` as vacuously satisfied
+        // for a typeless profile, so e.g. the rse `protocol: https`-only rule was
+        // wrongly applied and `protocol: http` was flagged as invalid.
+        const testConfig: IProfileTypeConfiguration[] = cloneDeep(testProfileConfiguration);
+        const returnedSchema = schema.buildSchema(testConfig);
+        const allOf: any[] = returnedSchema.properties.profiles.patternProperties["^\\S*$"].allOf;
+        const typeConditionals = allOf.filter((entry: any) => entry.if?.properties?.type?.const != null);
+        expect(typeConditionals.length).toBeGreaterThan(0);
+        for (const entry of typeConditionals) {
+            expect(entry.if.required).toEqual(["type"]);
+        }
+    });
+
     it("should be able to successfully build with a secure single profile type configuration", () => {
         const testConfig: IProfileTypeConfiguration[] = cloneDeep(testProfileConfigurationSecure);
         const returnedSchema = schema.buildSchema(testConfig);
@@ -212,6 +231,7 @@ describe("Config Schema", () => {
             missingProfileTypeEntry,
             {
                 if: {
+                    required: ["type"],
                     properties: {
                         type: {
                             const: "zosmf"
@@ -251,6 +271,7 @@ describe("Config Schema", () => {
             missingProfileTypeEntry,
             {
                 if: {
+                    required: ["type"],
                     properties: {
                         type: {
                             const: "zosmf"
