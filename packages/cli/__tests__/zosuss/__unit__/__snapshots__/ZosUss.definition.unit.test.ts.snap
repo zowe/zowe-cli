@@ -89,6 +89,22 @@ Object {
           "name": "handshakeTimeout",
           "type": "number",
         },
+        Object {
+          "aliases": Array [
+            "hk",
+          ],
+          "description": "The trusted host key of the z/OS SSH server, as the base64-encoded key blob presented by the server. When set, the server's key is verified against it before any credentials are sent.",
+          "group": "z/OS Ssh Connection Options",
+          "name": "host-key",
+          "type": "string",
+        },
+        Object {
+          "defaultValue": false,
+          "description": "Skip verification of the z/OS SSH server's host key, so the server's identity is not confirmed before credentials are sent.",
+          "group": "z/OS Ssh Connection Options",
+          "name": "insecure",
+          "type": "boolean",
+        },
       ],
     },
   ],

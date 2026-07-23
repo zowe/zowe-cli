@@ -133,6 +133,30 @@ export class SshSession {
     };
 
     /**
+     * Option used in profile creation and commands to pin the trusted host key of the z/OS SSH server.
+     */
+    public static SSH_OPTION_HOSTKEY: ICommandOptionDefinition = {
+        name: "host-key",
+        aliases: ["hk"],
+        description: "The trusted host key of the z/OS SSH server, as the base64-encoded key blob presented " +
+            "by the server. When set, the server's key is verified against it before any credentials are sent.",
+        type: "string",
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands to skip host key verification.
+     */
+    public static SSH_OPTION_INSECURE: ICommandOptionDefinition = {
+        name: "insecure",
+        description: "Skip verification of the z/OS SSH server's host key, so the server's identity is " +
+            "not confirmed before credentials are sent.",
+        type: "boolean",
+        defaultValue: false,
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Options related to connecting to z/OS SSH
      * These options can be filled in if the user creates a profile
      */
@@ -143,7 +167,9 @@ export class SshSession {
         SshSession.SSH_OPTION_PASSWORD,
         SshSession.SSH_OPTION_PRIVATEKEY,
         SshSession.SSH_OPTION_KEYPASSPHRASE,
-        SshSession.SSH_OPTION_HANDSHAKETIMEOUT
+        SshSession.SSH_OPTION_HANDSHAKETIMEOUT,
+        SshSession.SSH_OPTION_HOSTKEY,
+        SshSession.SSH_OPTION_INSECURE
     ];
 
     /**
@@ -155,9 +181,23 @@ export class SshSession {
         return {
             privateKey: args.privateKey,
             keyPassphrase: args.keyPassphrase,
-            handshakeTimeout: args.handshakeTimeout
+            handshakeTimeout: args.handshakeTimeout,
+            hostKey: args.hostKey,
+            insecure: args.insecure
         };
     }
+
+    /**
+     * Optional runtime hook, invoked during connection when the server presents a host key that is not
+     * already trusted (no {@link ISshSession.hostKey} pinned, or the presented key differs from it). It
+     * is set by the command handler layer to prompt the user interactively (trust on first use) and is
+     * intentionally not part of the serializable {@link ISshSession} configuration. When unset (e.g. pure
+     * SDK usage with no interactive layer), an untrusted key is rejected.
+     * @param info - the presented key (base64 blob), its human-readable fingerprint, and whether it
+     *               differs from a previously pinned key.
+     * @returns a promise resolving to true to trust the key and continue, or false to reject the connection.
+     */
+    public hostKeyVerifier?: (info: { fingerprint: string; key: string; changed: boolean }) => Promise<boolean>;
 
     /**
      * Creates an instance of AbstractSession.

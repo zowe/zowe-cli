@@ -9,11 +9,13 @@
 *
 */
 
-import { IHandlerParameters, IProfile, CommandProfiles, ConnectionPropsForSessCfg } from "@zowe/imperative";
+import { IHandlerParameters, IProfile, CommandProfiles, ConnectionPropsForSessCfg, ImperativeConfig } from "@zowe/imperative";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { join, normalize } from "path";
 import { Shell } from "../../src/Shell";
 import { SshBaseHandler } from "../../src/SshBaseHandler";
+import { SshSession } from "../../src/SshSession";
+import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
 import * as fs from "fs";
 
 process.env.FORCE_COLOR = "0";
@@ -227,5 +229,218 @@ describe("issue ssh handler tests", () => {
         await handler.process(params);
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
+    });
+});
+
+describe("SshBaseHandler host key verification", () => {
+    const originalCI = process.env.CI;
+    const originalIsTTY = (process.stdin as any).isTTY;
+    const fakeKeyInfo = { fingerprint: "SHA256:testfingerprint", key: "presented-key-base64", changed: false };
+
+    // Build a handler with persistHostKey stubbed so the config layer is not exercised here.
+    function newHandler(persistImpl?: () => Promise<void>): SshBaseHandler {
+        const handler = new class extends SshBaseHandler {
+            public async processCmd(): Promise<void> { /* no-op */ }
+        }();
+        jest.spyOn(handler as any, "persistHostKey").mockImplementation(persistImpl ?? (async () => undefined));
+        return handler;
+    }
+
+    function attach(handler: SshBaseHandler, session: SshSession, params: IHandlerParameters): void {
+        (handler as any).mHandlerParams = params;
+        (handler as any).attachHostKeyVerifier(session, params);
+    }
+
+    function newParams(promptAnswer?: string): IHandlerParameters {
+        const params = mockHandlerParameters({
+            arguments: { ...UNIT_TEST_SSH_PROF_OPTS },
+            positionals: ["zos-uss", "issue", "ssh"],
+            definition: {} as any,
+            profiles: UNIT_TEST_PROFILES_SSH
+        });
+        params.response.console.prompt = jest.fn(async () => promptAnswer ?? null) as any;
+        return params;
+    }
+
+    beforeEach(() => {
+        delete process.env.CI;
+        (process.stdin as any).isTTY = true;
+        jest.restoreAllMocks();
+    });
+
+    afterEach(() => {
+        if (originalCI === undefined) { delete process.env.CI; } else { process.env.CI = originalCI; }
+        (process.stdin as any).isTTY = originalIsTTY;
+        jest.restoreAllMocks();
+    });
+
+    it("should not set a verifier and should warn when --insecure is specified", () => {
+        const handler = newHandler();
+        const params = newParams();
+        const session = new SshSession({ hostname: "somewhere.com", insecure: true });
+        attach(handler, session, params);
+        expect(session.hostKeyVerifier).toBeUndefined();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("verification is disabled"));
+    });
+
+    it("should trust a new key on first use and persist it (yes)", async () => {
+        const handler = newHandler();
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(true);
+        expect(session.ISshSession.hostKey).toBe("presented-key-base64");
+        expect((handler as any).persistHostKey).toHaveBeenCalledWith(params, "presented-key-base64");
+    });
+
+    it("should reject a new key when the user declines (no)", async () => {
+        const handler = newHandler();
+        const params = newParams("no");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(false);
+        expect(session.ISshSession.hostKey).toBeUndefined();
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
+    });
+
+    it("should warn loudly and still allow trusting a changed key", async () => {
+        const handler = newHandler();
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com", hostKey: "old-key" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier({ ...fakeKeyInfo, changed: true });
+
+        expect(trusted).toBe(true);
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("HOST KEY HAS CHANGED"));
+    });
+
+    it("should not prompt in a CI environment and should reject with an error", async () => {
+        process.env.CI = "true";
+        const handler = newHandler();
+        const params = newParams("yes"); // even if a prompt were attempted, it should not be used
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(false);
+        expect(params.response.console.prompt).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(
+            expect.stringContaining(ZosUssMessages.hostKeyVerificationFailed.message));
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
+    });
+
+    it("should not prompt when no interactive terminal is available and should reject", async () => {
+        (process.stdin as any).isTTY = false;
+        const handler = newHandler();
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(false);
+        expect(params.response.console.prompt).not.toHaveBeenCalled();
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
+    });
+
+    it("should still trust the key even if persistence fails", async () => {
+        const handler = newHandler(async () => { throw new Error("cannot save"); });
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier(fakeKeyInfo);
+
+        expect(trusted).toBe(true);
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("Could not save"));
+    });
+});
+
+describe("SshBaseHandler persistHostKey", () => {
+    function realHandler(params: IHandlerParameters): SshBaseHandler {
+        const handler = new class extends SshBaseHandler {
+            public async processCmd(): Promise<void> { /* no-op */ }
+        }();
+        (handler as any).mHandlerParams = params;
+        return handler;
+    }
+
+    function makeParams(): IHandlerParameters {
+        return mockHandlerParameters({
+            arguments: { ...UNIT_TEST_SSH_PROF_OPTS },
+            positionals: ["zos-uss", "issue", "ssh"],
+            definition: {} as any,
+            profiles: UNIT_TEST_PROFILES_SSH
+        });
+    }
+
+    function mockConfig(overrides: any = {}): { config: any; set: jest.Mock; save: jest.Mock } {
+        const set = jest.fn();
+        const save = jest.fn().mockResolvedValue(undefined);
+        const config = {
+            exists: true,
+            properties: { autoStore: true, defaults: {} },
+            api: {
+                profiles: {
+                    exists: jest.fn().mockReturnValue(true),
+                    getProfilePathFromName: jest.fn().mockReturnValue("profiles.ssh")
+                },
+                layers: {
+                    get: jest.fn().mockReturnValue({ user: false, global: false }),
+                    find: jest.fn().mockReturnValue({ user: false, global: false }),
+                    activate: jest.fn()
+                }
+            },
+            set,
+            save,
+            ...overrides
+        };
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config } as any);
+        return { config, set, save };
+    }
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it("saves the trusted host key to the resolved profile", async () => {
+        const params = makeParams();
+        const { set, save } = mockConfig();
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).toHaveBeenCalledWith("profiles.ssh.properties.hostKey", "keyblob", { secure: false });
+        expect(save).toHaveBeenCalledTimes(1);
+        expect(params.response.console.log).toHaveBeenCalledWith(expect.stringContaining("Saved the trusted host key"));
+    });
+
+    it("warns and does not persist when there is no team config", async () => {
+        const params = makeParams();
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: undefined } as any);
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("not saved"));
+    });
+
+    it("warns and does not persist when autoStore is disabled", async () => {
+        const params = makeParams();
+        const { set, save } = mockConfig({ properties: { autoStore: false, defaults: {} } });
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).not.toHaveBeenCalled();
+        expect(save).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("not saved"));
+    });
+
+    it("warns and does not persist when the ssh profile does not exist", async () => {
+        const params = makeParams();
+        const { config, set, save } = mockConfig();
+        config.api.profiles.exists.mockReturnValue(false);
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(set).not.toHaveBeenCalled();
+        expect(save).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("no ssh profile"));
     });
 });
