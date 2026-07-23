@@ -79,6 +79,7 @@ describe("Files Edit Utilities", () => {
 
     beforeEach(async () => {
         jest.resetAllMocks();
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(jest.fn());
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
