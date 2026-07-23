@@ -255,10 +255,14 @@ export abstract class SshBaseHandler implements ICommandHandler {
     private async persistHostKey(commandParameters: IHandlerParameters, hostKey: string): Promise<void> {
         const config = ImperativeConfig.instance.config;
         if (config == null || !config.exists || !config.properties.autoStore) {
+            this.console.error("Host key not saved; you will be prompted again. Pin it with --host-key.\n");
             return;
         }
         const profileName = ConfigUtils.getActiveProfileName("ssh", commandParameters.arguments);
+        // TODO: consider creating an ssh profile here (shared config layer) so the accepted key has somewhere to persist,
+        // instead of only warning
         if (profileName == null || !config.api.profiles.exists(profileName)) {
+            this.console.error("Host key not saved (no ssh profile); you will be prompted again. Pin it with --host-key.\n");
             return;
         }
         const profilePath = config.api.profiles.getProfilePathFromName(profileName);

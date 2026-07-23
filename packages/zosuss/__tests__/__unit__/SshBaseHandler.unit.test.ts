@@ -418,26 +418,29 @@ describe("SshBaseHandler persistHostKey", () => {
         expect(params.response.console.log).toHaveBeenCalledWith(expect.stringContaining("Saved the trusted host key"));
     });
 
-    it("does nothing when there is no team config", async () => {
+    it("warns and does not persist when there is no team config", async () => {
         const params = makeParams();
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config: undefined } as any);
-        await expect((realHandler(params) as any).persistHostKey(params, "keyblob")).resolves.toBeUndefined();
+        await (realHandler(params) as any).persistHostKey(params, "keyblob");
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("not saved"));
     });
 
-    it("does nothing when autoStore is disabled", async () => {
+    it("warns and does not persist when autoStore is disabled", async () => {
         const params = makeParams();
         const { set, save } = mockConfig({ properties: { autoStore: false, defaults: {} } });
         await (realHandler(params) as any).persistHostKey(params, "keyblob");
         expect(set).not.toHaveBeenCalled();
         expect(save).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("not saved"));
     });
 
-    it("does nothing when the ssh profile does not exist", async () => {
+    it("warns and does not persist when the ssh profile does not exist", async () => {
         const params = makeParams();
         const { config, set, save } = mockConfig();
         config.api.profiles.exists.mockReturnValue(false);
         await (realHandler(params) as any).persistHostKey(params, "keyblob");
         expect(set).not.toHaveBeenCalled();
         expect(save).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("no ssh profile"));
     });
 });
