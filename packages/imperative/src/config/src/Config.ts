@@ -183,20 +183,22 @@ export class Config {
      * @throws An ImperativeError if the configuration does not load successfully
      */
     public async reload(opts?: IConfigOpts) {
-        // Normalize projectDir and homeDir for Windows before loading the config
-        if (process.platform === 'win32') {
-            if(opts?.projectDir) {
-                opts.projectDir = fs.realpathSync.native(opts.projectDir);
-            }
-            if(opts?.homeDir) {
-                opts.homeDir = fs.realpathSync.native(opts.homeDir);
-            }
-        }
-
         this.mLayers = [];
         this.mEnvVarManaged = [];
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
         this.mProjectDir = opts?.projectDir ?? process.cwd();
+
+        // Normalize after the directories have been resolved, not just when they were passed in
+        // through `opts`. Windows paths are case insensitive, so `chdir ops` and `cd OPS` reach the
+        // same directory but report differently from `process.cwd()`. The project directory ends up
+        // in the layer path, which is the key the secure credential store is written under, so
+        // without this the same directory produces two separate vault entries.
+        if (typeof this.mHomeDir === "string") {
+            this.mHomeDir = Config.normalizePath(this.mHomeDir);
+        }
+        if (typeof this.mProjectDir === "string") {
+            this.mProjectDir = Config.normalizePath(this.mProjectDir);
+        }
 
         // Populate configuration file layers
         for (const layer of [
@@ -298,6 +300,26 @@ export class Config {
      * @internal
      * @param layer Enum value for config layer
      */
+    /**
+     * Resolve a directory to its real, canonically cased path on Windows.
+     *
+     * Returns the path unchanged on other platforms, and also when it cannot be resolved, which
+     * happens legitimately for a directory that does not exist yet, such as the home directory on
+     * a first run.
+     * @param dir The directory to normalize
+     * @returns The normalized directory
+     */
+    private static normalizePath(dir: string): string {
+        if (process.platform !== "win32") {
+            return dir;
+        }
+        try {
+            return fs.realpathSync.native(dir);
+        } catch (_err) {
+            return dir;
+        }
+    }
+
     private layerPath(layer: Layers): string {
         switch (layer) {
             case Layers.ProjectUser: {
