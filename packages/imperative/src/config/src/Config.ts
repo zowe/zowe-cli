@@ -26,7 +26,7 @@ import { IConfigProfile } from "./doc/IConfigProfile";
 import { IConfigOpts } from "./doc/IConfigOpts";
 import { IConfigSecure } from "./doc/IConfigSecure";
 import { IConfigVault } from "./doc/IConfigVault";
-import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigSecure } from "./api";
+import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigRedact, ConfigSecure } from "./api";
 import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
@@ -117,7 +117,8 @@ export class Config {
         profiles: ConfigProfiles,
         plugins: ConfigPlugins,
         layers: ConfigLayers,
-        secure: ConfigSecure
+        secure: ConfigSecure,
+        redact: ConfigRedact
     };
 
     /**
@@ -327,7 +328,8 @@ export class Config {
                 profiles: new ConfigProfiles(this),
                 plugins: new ConfigPlugins(this),
                 layers: new ConfigLayers(this),
-                secure: new ConfigSecure(this)
+                secure: new ConfigSecure(this),
+                redact: new ConfigRedact(this)
             };
         }
         return this.mApi;
