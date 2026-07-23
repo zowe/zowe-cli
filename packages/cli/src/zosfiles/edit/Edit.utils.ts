@@ -206,17 +206,6 @@ export class EditUtilities {
             lfFile.zosResp = await Download.dataSet(...args);
         }
 
-        if (!useStash && tempPath && process.platform !== "win32") {
-            // The stash now holds remote contents; restrict it to the owner (defense-in-depth atop
-            // the 0700 dir). Best-effort: the enclosing directory already blocks other-user access.
-            const ownerReadWrite = 0o600;
-            try {
-                chmodSync(tempPath, ownerReadWrite);
-            } catch (err) {
-                // ignore - the 0700 temp directory is the primary protection
-            }
-        }
-
         if (useStash){
             await this.destroyTempFile(scratchPath);
         }

@@ -831,9 +831,10 @@ describe("Copy", () => {
         const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
         const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const generateMemName = jest.spyOn(ZosFilesUtils, "generateMemberName");
-        const ensureSafeTempDirSpy = jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
-        const giveAccessOnlyToOwnerSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation();
-        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation();
+        jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation();
+        jest.spyOn(fs, "writeFileSync").mockImplementation();
+        
         const fromDataSetName = "USER.DATA.FROM";
         const toDataSetName = "USER.DATA.TO";
         const readStream = jest.spyOn(IO, "createReadStream");
