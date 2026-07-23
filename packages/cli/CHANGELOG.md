@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- **Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the server's fingerprint and the accepted key is saved to your ssh profile (updating your config); without a profile it cannot be saved and you'll be prompted again. Use `--insecure` (or `ZOWE_OPT_INSECURE=true`) to skip verification, or pin a key with `--host-key`.
 - Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
 - BugFix: Updated various dependencies for technical currency. [#2817](https://github.com/zowe/zowe-cli/pull/2817)
 

@@ -66,4 +66,23 @@ export interface ISshSession {
      */
     handshakeTimeout?: number;
 
+    /**
+     * Trusted host key of the z/OS SSH server, stored as the base64-encoded key blob presented by the
+     * server during the handshake. When set, the server's key is verified against this value before any
+     * credentials are sent. Populated automatically on first connect after the user accepts the key
+     * (trust on first use), or configured manually to pin a known key.
+     * @type {string}
+     * @memberof ISession
+     */
+    hostKey?: string;
+
+    /**
+     * Skip verification of the SSH server's host key. Defaults to false, meaning the server's identity
+     * is verified before any credentials are sent. When true, host key verification is skipped entirely
+     * and credentials are sent without confirming the server's identity.
+     * @type {boolean}
+     * @memberof ISession
+     */
+    insecure?: boolean;
+
 }

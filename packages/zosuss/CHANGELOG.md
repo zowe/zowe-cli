@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking**: SSH connections now verify the z/OS SSH server's host key before sending credentials. On first connect the fingerprint is shown for confirmation (trust on first use) and saved to the `hostKey` ssh profile property; a changed key is rejected. Use `--insecure` (or `ZOWE_OPT_INSECURE=true`, or the `insecure` profile property) to skip verification. Accepting a key updates your team configuration; if no ssh profile is in use it cannot be saved and you'll be prompted again - pin it with `--host-key`.
+
 ## `8.31.0`
 
 - Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)
