@@ -14,6 +14,7 @@ import { AllMembersDefinition } from "./am/AllMembers.definition";
 import { DataSetDefinition } from "./ds/DataSet.definition";
 import { USSFileDefinition } from "./uss/UssFile.definition";
 import { FsDefinition } from "./fs/Fs.definition";
+import { AliasDefinition } from "./alias/Alias.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -34,6 +35,7 @@ export const ListDefinition: ICommandDefinition = {
         AllMembersDefinition,
         DataSetDefinition,
         USSFileDefinition,
-        FsDefinition
+        FsDefinition,
+        AliasDefinition
     ]
 };
