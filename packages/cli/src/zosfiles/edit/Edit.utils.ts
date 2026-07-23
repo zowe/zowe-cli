@@ -13,7 +13,7 @@ import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions, 
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { chmodSync, existsSync, unlinkSync } from "fs";
+import { existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";

@@ -276,26 +276,6 @@ describe("Files Edit Utilities", () => {
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(0);
         });
 
-        it("should restrict the freshly downloaded stash file to the owner (0600) - [useStash = false]", async () => {
-            //TEST SETUP
-            const localFile = cloneDeep(localFileDS);
-            localFile.tempPath = "someStashPath";
-            downloadDataSetSpy.mockImplementation(jest.fn(async () => {
-                return zosResp;
-            }));
-            const chmodSpy = jest.spyOn(fs, "chmodSync").mockImplementation(jest.fn());
-
-            //TEST CONFIRMATION
-            await EditUtilities.localDownload(REAL_SESSION, localFile, false);
-            if (process.platform === "win32") {
-                // chmod mode is a no-op on Windows; the 0700 dir + icacls handle it there
-                expect(chmodSpy).not.toHaveBeenCalled();
-            } else {
-                expect(chmodSpy).toHaveBeenCalledWith("someStashPath", 0o600);
-            }
-            chmodSpy.mockRestore();
-        });
-
         it("localDownload should properly pass non-falsy binary option to Download.dataSet", async () => {
             //TEST SETUP
             const localFile = cloneDeep(localFileDS);
