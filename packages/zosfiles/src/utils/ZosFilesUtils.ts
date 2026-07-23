@@ -61,6 +61,32 @@ export class ZosFilesUtils {
         return localDirectory;
     }
 
+    /**
+     * Ensures a temp directory exists and is safe to use, creating it if necessary.
+     * On POSIX systems, verifies the directory isn't a pre-existing, loosely-permissioned
+     * directory planted by another local user sharing the same tmp location. On Windows,
+     * os.tmpdir() already resolves to a per-user directory whose ACLs prevent other local
+     * users from writing to it, so that co-tenancy risk doesn't apply and the check is skipped.
+     * @param {string} dir - the temp directory to validate or create
+     * @throws {ImperativeError} - when the directory exists but is not safe to use
+     */
+    public static ensureSafeTempDir(dir: string): void {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+            if (process.platform === "win32") {
+                IO.giveAccessOnlyToOwner(dir);
+            }
+            return;
+        }
+        const st = fs.lstatSync(dir);
+        if (!st.isDirectory()) {
+            throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
+        }
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        if (process.platform !== "win32" && ((st.mode & 0o777) !== 0o700 || st.uid !== process.getuid!())) {
+            throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
+        }
+    }
 
     /**
      * Get fullpath name from input path.
