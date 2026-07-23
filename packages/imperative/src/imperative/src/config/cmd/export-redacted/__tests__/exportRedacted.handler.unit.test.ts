@@ -12,7 +12,13 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ImperativeConfig } from "../../../../../..";
+import { ConfigRedact } from "../../../../../../config/src/api/ConfigRedact";
 import ExportRedactedHandler from "../exportRedacted.handler";
+
+function withRedactApi(config: any): any {
+    config.api = { redact: new ConfigRedact(config) };
+    return config;
+}
 
 describe("ExportRedactedHandler", () => {
     let handler: ExportRedactedHandler;
@@ -41,7 +47,7 @@ describe("ExportRedactedHandler", () => {
 
         // Mock ImperativeConfig
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: {
+            config: withRedactApi({
                 exists: true,
                 layers: [
                     {
@@ -51,7 +57,7 @@ describe("ExportRedactedHandler", () => {
                         path: "/mock/config.json"
                     }
                 ]
-            }
+            })
         } as any);
 
         // Mock fs.readFileSync
@@ -251,10 +257,10 @@ describe("ExportRedactedHandler", () => {
         ];
 
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: {
+            config: withRedactApi({
                 exists: true,
                 layers
-            }
+            })
         } as any);
 
         // Mock fs.existsSync & fs.writeFileSync
