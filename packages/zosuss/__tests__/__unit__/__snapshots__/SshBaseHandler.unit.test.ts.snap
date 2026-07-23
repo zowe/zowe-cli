@@ -46,6 +46,26 @@ The server's host key may have changed, or the server may not be the one you pre
 "
 `;
 
+exports[`SshBaseHandler persistHostKey saves the trusted host key to the resolved profile 1`] = `
+"Saved the trusted host key to ssh profile 'ssh'.
+"
+`;
+
+exports[`SshBaseHandler persistHostKey warns and does not persist when autoStore is disabled 1`] = `
+"Host key not saved; you will be prompted again. Pin it with --host-key.
+"
+`;
+
+exports[`SshBaseHandler persistHostKey warns and does not persist when the ssh profile does not exist 1`] = `
+"Host key not saved (no ssh profile); you will be prompted again. Pin it with --host-key.
+"
+`;
+
+exports[`SshBaseHandler persistHostKey warns and does not persist when there is no team config 1`] = `
+"Host key not saved; you will be prompted again. Pin it with --host-key.
+"
+`;
+
 exports[`issue ssh handler tests should be able to get stdout 1`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should be able to get stdout 2`] = `"TEST OUTPUT"`;
