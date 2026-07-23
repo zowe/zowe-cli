@@ -6,6 +6,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)
 - BugFix: Censored certain fields, and redacted token value from logs in `AbstractRestClient`. [#2816](https://github.com/zowe/zowe-cli/pull/2816)
+- BugFix: Added `IO.hasOwnerOnlyAccess` to check whether a file or directory's access is restricted to the current user only, cross-platform (POSIX mode bits/owner; Windows `icacls` ACL). [#2826](https://github.com/zowe/zowe-cli/pull/2826)
  
 ## `5.27.22`
 

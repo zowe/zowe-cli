@@ -655,4 +655,89 @@ describe("IO tests", () => {
             });
         } // end win32
     }); // end giveAccessOnlyToOwner
+
+    describe("hasOwnerOnlyAccess", () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should throw when no file name is provided", () => {
+            let caughtError;
+            try {
+                IO.hasOwnerOnlyAccess("   ");
+            } catch (thrownError) {
+                caughtError = thrownError;
+            }
+            expect(caughtError.message).toContain("Expect Error: Required parameter 'fileName' must not be blank");
+        });
+
+        it("should return false when the path does not exist", () => {
+            jest.spyOn(IO, "existsSync").mockReturnValue(false);
+            expect(IO.hasOwnerOnlyAccess("/no/such/path")).toBe(false);
+        });
+
+        it("should return false when access cannot be read", () => {
+            jest.spyOn(IO, "existsSync").mockReturnValue(true);
+            jest.spyOn(os, "platform").mockReturnValue("linux");
+            jest.spyOn(fs, "statSync").mockImplementation(() => { throw new Error("boom"); });
+            expect(IO.hasOwnerOnlyAccess("/tmp/whatever")).toBe(false);
+        });
+
+        // The POSIX branch reads process.getuid(), which is undefined on Windows; gate to POSIX.
+        if (process.platform !== "win32") {
+            describe("POSIX", () => {
+                beforeEach(() => {
+                    jest.spyOn(IO, "existsSync").mockReturnValue(true);
+                    jest.spyOn(os, "platform").mockReturnValue("linux");
+                });
+                it("should return true for an owner-only path owned by the current user", () => {
+                    jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o700, uid: process.getuid!() } as any);
+                    expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(true);
+                });
+                it("should return false when group or others have any access", () => {
+                    jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o755, uid: process.getuid!() } as any);
+                    expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(false);
+                });
+                it("should return false when owned by a different user", () => {
+                    jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o700, uid: process.getuid!() + 1 } as any);
+                    expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(false);
+                });
+            });
+        }
+
+        describe("Windows", () => {
+            beforeEach(() => {
+                jest.spyOn(IO, "existsSync").mockReturnValue(true);
+                jest.spyOn(os, "platform").mockReturnValue("win32");
+                jest.spyOn(os, "userInfo").mockReturnValue({ username: "fernando" } as any);
+            });
+            it("should return true when icacls shows only the current user", () => {
+                jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
+                    "C:\\Temp\\dir fernando:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                );
+                expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(true);
+            });
+            it("should return true for a domain-qualified current user", () => {
+                jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
+                    "C:\\Temp\\dir MYDOMAIN\\fernando:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                );
+                expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(true);
+            });
+            it("should return false when more than one access entry is present", () => {
+                jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
+                    "C:\\Temp\\dir NT AUTHORITY\\SYSTEM:(F)\r\n" +
+                    "          BUILTIN\\Administrators:(F)\r\n" +
+                    "          fernando:(F)\r\n" +
+                    "Successfully processed 1 files; Failed processing 0 files" as any
+                );
+                expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(false);
+            });
+            it("should return false when the single access entry is a different user", () => {
+                jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
+                    "C:\\Temp\\dir someoneelse:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                );
+                expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(false);
+            });
+        });
+    }); // end hasOwnerOnlyAccess
 });
