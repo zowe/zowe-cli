@@ -13,8 +13,10 @@ jest.mock("log4js");
 jest.mock("fs");
 import * as log4js from "log4js";
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
-import { IConfigLogging, ILog4jsConfig, Logger } from "../../logger";
+import { IConfigLogging, ILog4jsConfig, Logger, LoggerUtils } from "../../logger";
 import { LoggerManager } from "../../logger/src/LoggerManager";
+import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 
 import { ImperativeError } from "../../error";
 
@@ -285,6 +287,100 @@ describe("Logger tests", () => {
         (fs as any).appendFileSync = jest.fn();
         Logger.writeInMemoryMessages("testing.txt");
         expect(fs.appendFileSync).toHaveBeenCalledTimes(expectedSize);
+    });
+
+    describe("Secure data censoring", () => {
+        // Every level of these emits through censorRawData; the list is the invariant under test.
+        const LEVELS = ["trace", "debug", "info", "warn", "error", "fatal", "simple"] as const;
+
+        afterEach(() => {
+            (LoggerManager as any).mInstance = null;
+            jest.restoreAllMocks();
+        });
+
+        it("Should censor a secure config value logged via trace() before it reaches the appender", () => {
+            // Arrange a config with a single non-special secure property whose value must be masked.
+            const secret = "myTopSecretPassword";
+            const secureFields = jest.fn().mockReturnValue(["profiles.lpar1.properties.apiKey"]);
+            const layersGet = jest.fn().mockReturnValue({
+                properties: { profiles: { lpar1: { properties: { apiKey: secret } } } }
+            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: true,
+                    api: { layers: { get: layersGet }, secure: { secureFields } }
+                }
+            } as any);
+            jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ maskOutput: { value: "TRUE" } } as any);
+            // Clear the cached singletons so this test's mocks take effect.
+            (LoggerUtils as any).mConfig = null;
+            (LoggerUtils as any).mSecureFields = null;
+            (LoggerUtils as any).mLayer = null;
+            (LoggerUtils as any).mProfiles = [];
+
+            const config = LoggingConfigurer.configureLogger(fakeHome, { name });
+            const logger = Logger.initLogger(config);
+            (logger as any).logService.trace = jest.fn<string, any>((data: string) => data);
+
+            // Act
+            const returned = logger.trace("connecting with token %s", secret);
+
+            // Assert: the raw secret must not survive in either the return value or what the appender received.
+            const emitted = ((logger as any).logService.trace as jest.Mock).mock.calls[0][0] as string;
+            expect((logger as any).logService.trace).toHaveBeenCalledTimes(1);
+            expect(emitted).toContain(LoggerUtils.CENSOR_RESPONSE);
+            expect(emitted).not.toContain(secret);
+            expect(returned).not.toContain(secret);
+        });
+
+        it("Should censor a secure value logged via trace() on the in-memory queue path (logger not configured)", () => {
+            const secret = "queuedSecretToken";
+            const secureFields = jest.fn().mockReturnValue(["profiles.lpar1.properties.apiKey"]);
+            const layersGet = jest.fn().mockReturnValue({
+                properties: { profiles: { lpar1: { properties: { apiKey: secret } } } }
+            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: true,
+                    api: { layers: { get: layersGet }, secure: { secureFields } }
+                }
+            } as any);
+            jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ maskOutput: { value: "TRUE" } } as any);
+            (LoggerUtils as any).mConfig = null;
+            (LoggerUtils as any).mSecureFields = null;
+            (LoggerUtils as any).mLayer = null;
+            (LoggerUtils as any).mProfiles = [];
+
+            // Logger not initialized -> messages are queued in memory rather than sent to an appender.
+            Logger.setLogInMemory(true);
+            const logger = Logger.getImperativeLogger();
+
+            logger.trace("connecting with token %s", secret);
+
+            const queued = LoggerManager.instance.QueuedMessages[0].message.toString();
+            expect(queued).toContain(LoggerUtils.CENSOR_RESPONSE);
+            expect(queued).not.toContain(secret);
+        });
+
+        it.each(LEVELS)("Should route %s() through LoggerUtils.censorRawData before emitting", (level) => {
+            // Regression guard for the invariant: every Logger emission path must pass its final
+            // formatted string through censorRawData, regardless of level. If a future change drops
+            // the wrapper from any level (as trace() historically lacked it), this fails.
+            const censorSpy = jest.spyOn(LoggerUtils, "censorRawData").mockImplementation((data: string) => data);
+
+            const config = LoggingConfigurer.configureLogger(fakeHome, { name });
+            const logger = Logger.initLogger(config);
+            for (const svc of LEVELS) {
+                // simple() emits via info(); every other level has a matching logService method.
+                const target = svc === "simple" ? "info" : svc;
+                (logger as any).logService[target] = jest.fn<string, any>((data: string) => data);
+            }
+
+            logger[level]("sensitive %s", "value");
+
+            expect(censorSpy).toHaveBeenCalledTimes(1);
+            expect(censorSpy).toHaveBeenCalledWith("sensitive value", (logger as any).category);
+        });
     });
 
 });
