@@ -170,10 +170,8 @@ export class Shell {
                 passphrase: session.ISshSession.keyPassphrase,
                 authHandler: this.authenticationHandler(authsAllowed),
                 hostVerifier: this.hostVerifier(session, connState),
-                // When a host key is pinned, ask the server for that same key type. A server holds one host key
-                // per algorithm, and which one it presents is negotiated; without this, a change in negotiation
-                // (e.g. an ssh2 upgrade reordering its preferences) would present a different - but still
-                // legitimate - key and be misreported as a changed key.
+                // When a host key is pinned, ask the server for that same key type, so a change in negotiation
+                // doesn't present a different but legitimate key that looks like a changed key.
                 ...pinnedAlgorithms != null ? { algorithms: { serverHostKey: pinnedAlgorithms } } : {},
                 readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
                     session.ISshSession.handshakeTimeout : 0
@@ -297,9 +295,8 @@ export class Shell {
             if (algorithm == null) {
                 return undefined;
             }
-            // An RSA host key is stored as "ssh-rsa", but modern servers present that same key
-            // under the SHA-2 names. Request all three so the RSA key is still offered without
-            // forcing the retired SHA-1 "ssh-rsa" negotiation, which most servers no longer allow.
+            // An RSA host key is stored as "ssh-rsa" but modern servers offer it under the SHA-2 names.
+            // Request all three so the RSA key is still offered without the retired SHA-1 negotiation.
             if (algorithm === "ssh-rsa") {
                 return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
             }

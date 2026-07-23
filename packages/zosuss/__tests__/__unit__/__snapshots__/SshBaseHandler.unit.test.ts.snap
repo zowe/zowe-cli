@@ -3,14 +3,14 @@
 exports[`SshBaseHandler host key verification should not prompt in a CI environment and should reject with an error 1`] = `
 "Host key verification failed. The SSH server's host key is not trusted, so the connection was rejected before any credentials were sent.
 Server host key fingerprint: SHA256:testfingerprint
-No interactive terminal is available to confirm the host key. Pin the trusted key with --host-key (or the 'hostKey' ssh profile property) to proceed, or specify --insecure to connect without verifying the server.
+No terminal to confirm the host key. Pin it with --host-key, or use --insecure.
 "
 `;
 
 exports[`SshBaseHandler host key verification should not prompt when no interactive terminal is available and should reject 1`] = `
 "Host key verification failed. The SSH server's host key is not trusted, so the connection was rejected before any credentials were sent.
 Server host key fingerprint: SHA256:testfingerprint
-No interactive terminal is available to confirm the host key. Pin the trusted key with --host-key (or the 'hostKey' ssh profile property) to proceed, or specify --insecure to connect without verifying the server.
+No terminal to confirm the host key. Pin it with --host-key, or use --insecure.
 "
 `;
 
