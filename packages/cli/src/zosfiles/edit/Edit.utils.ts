@@ -13,7 +13,7 @@ import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions }
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffNameOptions, CliUtils, IO } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { chmodSync, existsSync, lstatSync, mkdirSync, unlinkSync } from "fs";
+import { existsSync, lstatSync, mkdirSync, unlinkSync } from "fs";
 import { tmpdir, userInfo } from "os";
 import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -254,17 +254,6 @@ export class EditUtilities {
             lfFile.encoding = args[2].encoding;
         }else{
             lfFile.zosResp = await Download.dataSet(...args);
-        }
-
-        if (!useStash && tempPath && process.platform !== "win32") {
-            // The stash now holds remote contents; restrict it to the owner (defense-in-depth atop
-            // the 0700 dir). Best-effort: the enclosing directory already blocks other-user access.
-            const ownerReadWrite = 0o600;
-            try {
-                chmodSync(tempPath, ownerReadWrite);
-            } catch (err) {
-                // ignore - the 0700 temp directory is the primary protection
-            }
         }
 
         if (useStash){

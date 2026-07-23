@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Hardened temporary file handling for the `zowe zos-files edit` command: the etag-refresh step no longer uses a shared, fixed path; edit temp directories are now scoped per user (so co-tenants on a shared temp location no longer conflict) and owner-only access is enforced on all platforms; and the downloaded working file is restricted to the owner. [#2826](https://github.com/zowe/zowe-cli/pull/2826)
+- BugFix: Hardened temporary file handling for the `zowe zos-files edit` command: the etag-refresh step no longer uses a shared, fixed path, and edit temp directories are now scoped per user (so co-tenants on a shared temp location no longer conflict) with owner-only access enforced on all platforms. [#2826](https://github.com/zowe/zowe-cli/pull/2826)
 - BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. [#2805](https://github.com/zowe/zowe-cli/pull/2805)
 - BugFix: Fixed "Access is denied" error when running CLI commands on Windows if daemon mode is active. [#2808](https://github.com/zowe/zowe-cli/issues/2808)
 - BugFix: Updated the `zowe zos-files uss edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#2815](https://github.com/zowe/zowe-cli/pull/2815)
