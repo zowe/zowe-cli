@@ -265,7 +265,7 @@ export class Shell {
         if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
             authsAllowed.push("password");
         }
-        const pinnedAlgorithm = this.getPinnedHostKeyAlgorithm(session);
+        const pinnedAlgorithms = this.getPinnedHostKeyAlgorithms(session);
         connection.connect({
             host: session.ISshSession.hostname,
             port: session.ISshSession.port,
@@ -280,7 +280,7 @@ export class Shell {
             // per algorithm, and which one it presents is negotiated; without this, a change in negotiation
             // (e.g. an ssh2 upgrade reordering its preferences) would present a different - but still
             // legitimate - key and be misreported as a changed key.
-            ...pinnedAlgorithm != null ? { algorithms: { serverHostKey: [pinnedAlgorithm] } } : {},
+            ...pinnedAlgorithms != null ? { algorithms: { serverHostKey: pinnedAlgorithms } } : {},
             readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
                 session.ISshSession.handshakeTimeout : 0
         } as any);
@@ -394,16 +394,26 @@ export class Shell {
      * Returns undefined when verification is disabled, no key is pinned, or the pinned key cannot be
      * parsed - in which case ssh2's default algorithm negotiation applies.
      * @param session - the SSH session being connected
-     * @returns the algorithm name to pin, or undefined to use the default negotiation
+     * @returns the host key algorithm names to request, or undefined to use the default negotiation
      */
-    private static getPinnedHostKeyAlgorithm(session: SshSession): string | undefined {
+    private static getPinnedHostKeyAlgorithms(session: SshSession): string[] | undefined {
         const pinnedKey = session.ISshSession.hostKey;
         if (session.ISshSession.insecure === true || pinnedKey == null ||
             pinnedKey === "" || pinnedKey === "undefined") {
             return undefined;
         }
         try {
-            return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
+            const algorithm = this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
+            if (algorithm == null) {
+                return undefined;
+            }
+            // An RSA host key is stored as "ssh-rsa", but modern servers present that same key
+            // under the SHA-2 names. Request all three so the RSA key is still offered without
+            // forcing the retired SHA-1 "ssh-rsa" negotiation, which most servers no longer allow.
+            if (algorithm === "ssh-rsa") {
+                return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
+            }
+            return [algorithm];
         } catch {
             return undefined;
         }
