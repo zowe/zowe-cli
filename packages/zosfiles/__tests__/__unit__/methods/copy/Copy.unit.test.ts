@@ -1495,6 +1495,45 @@ describe("Copy", () => {
                         expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                         expect(createDatasetSpy).toHaveBeenCalledTimes(1);
                     });
+
+                    it("should allocate the target in tracks when the source was allocated in cylinders", async () => {
+                        // Regression test for #2623. The z/OSMF list API reports `sizex` in tracks even
+                        // when the source was allocated in cylinders, while `spacu` still reports the
+                        // original unit. Allocating with `spacu` would read the track count as a cylinder
+                        // count and over-allocate the target -- 15 tracks becoming 15 cylinders (225 tracks).
+                        const dataSetPSCyl = {
+                            dsname: psDataSetName,
+                            dsorg: "PS",
+                            spacu: "CYLINDERS",
+                            sizex: "15",
+                            extx: "5"
+                        };
+
+                        listDatasetSpy.mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPSCyl]
+                            }
+                        } as any).mockReturnValueOnce({
+                            apiResponse: {
+                                returnedRows: 0
+                            }
+                        } as any);
+
+                        await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: psDataSetName },
+                            { "from-dataset": { dsn: psDataSetName }},
+                            { },
+                            dummySession
+                        );
+
+                        expect(createDatasetSpy).toHaveBeenCalledTimes(1);
+
+                        const createOptions = createDatasetSpy.mock.calls[0][3];
+                        expect(createOptions.alcunit).toBe("TRK");
+                        expect(createOptions.primary).toBe(15);
+                    });
                 });
 
                 describe("Sequential > Member - create target", () => {
