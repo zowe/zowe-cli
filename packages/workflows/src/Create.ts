@@ -202,9 +202,9 @@ export class CreateWorkflow{
     public static getTempFile(userId: string, localFile: string, customDir?: string): string{
         let remoteFile: string;
         if (customDir){
-            remoteFile = customDir + "/" + randomBytes(16).toString("hex") + basename(localFile);
+            remoteFile = `${customDir}/${randomBytes(16).toString("hex")}-${basename(localFile)}`;
         } else {
-            remoteFile = WorkflowConstants.tempPath + "/" + userId + randomBytes(16).toString("hex") + basename(localFile);
+            remoteFile = `${WorkflowConstants.tempPath}/${userId}-${randomBytes(16).toString("hex")}-${basename(localFile)}`;
         }
         return remoteFile;
     }
