@@ -190,9 +190,8 @@ export abstract class SshBaseHandler implements ICommandHandler {
                 ZosUssMessages.hostKeyChanged.message :
                 ZosUssMessages.hostKeyVerificationFailed.message;
 
-            // Prompt only when a user can actually answer: an interactive terminal, or the Zowe daemon
-            // (which forwards prompts to its client). In CI, cron jobs, services, or with redirected stdin,
-            // keep verification on but fail fast with guidance rather than blocking on an unanswerable prompt.
+            // Prompt only when a user can answer, an interactive terminal or the Zowe daemon. Otherwise
+            // (CI, services, redirected stdin) keep verification on but fail fast instead of blocking.
             const ciEnv = process.env.CI;
             const inCi = ciEnv != null && ciEnv !== "" && ciEnv.toLowerCase() !== "false" && ciEnv !== "0";
             const canPrompt = !inCi &&
@@ -200,9 +199,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
             if (!canPrompt) {
                 this.console.error(`${baseMessage}\n` +
                     `Server host key fingerprint: ${info.fingerprint}\n` +
-                    "No interactive terminal is available to confirm the host key. " +
-                    "Pin the trusted key with --host-key (or the 'hostKey' ssh profile property) to proceed, " +
-                    "or specify --insecure to connect without verifying the server.\n");
+                    "No terminal to confirm the host key. Pin it with --host-key, or use --insecure.\n");
                 return false;
             }
 

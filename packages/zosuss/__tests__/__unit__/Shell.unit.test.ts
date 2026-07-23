@@ -168,6 +168,13 @@ describe("Shell", () => {
                 expect(getConnectConfig().algorithms).toEqual({ serverHostKey: ["ssh-ed25519"] });
             });
 
+            it("should request all RSA variants when the pinned key is ssh-rsa", async () => {
+                const rsaKey = makeKeyBlob("ssh-rsa").toString("base64");
+                const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: rsaKey });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(getConnectConfig().algorithms).toEqual({ serverHostKey: ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"] });
+            });
+
             it("should not pin an algorithm when no host key is pinned", async () => {
                 const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
                 await Shell.executeSsh(session, "commandtest", stdoutHandler);
