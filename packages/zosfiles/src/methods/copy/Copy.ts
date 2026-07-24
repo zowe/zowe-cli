@@ -265,7 +265,12 @@ export class Copy {
                 };
             }
 
-            const downloadDir = path.join(tmpdir(), "zowe-copy-pds", fromPds);
+            // Per-user parent dir so co-tenants on a shared tmp don't collide on a shared,
+            // foreign-owned directory (which ensureSafeTempDir would reject). Validate the parent
+            // (0700, owned by us) before creating the per-PDS staging dir inside it.
+            const copyBaseDir = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`);
+            ZosFilesUtils.ensureSafeTempDir(copyBaseDir);
+            const downloadDir = path.join(copyBaseDir, fromPds);
             ZosFilesUtils.ensureSafeTempDir(downloadDir);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);

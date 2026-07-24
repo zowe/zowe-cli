@@ -9351,8 +9351,8 @@
       "license": "MIT"
     },
     "node_modules/linkify-it": {
-      "version": "5.0.1",
-      "integrity": "sha512-wVoTjP4Q6R0NW5hiZkVJaFZPWgtXfoGF+6LucL3/FtiNjmcHhYjEr5f1Kqjirc1nBW07J/ZuRFumqr2oqccEWg==",
+      "version": "5.0.2",
+      "integrity": "sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q==",
       "funding": [
         {
           "type": "github",

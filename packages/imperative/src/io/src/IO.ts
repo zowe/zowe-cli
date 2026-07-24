@@ -356,8 +356,14 @@ export class IO {
                 const stdout = ExecUtils.spawnAndGetOutput("icacls",
                     [ fileName, "/inheritancelevel:r", "/grant:r", `${os.userInfo().username}:F`, "/c" ],
                     { encoding: "utf8"}
-                );
-                if (!stdout.includes("Successfully processed 1 files; Failed processing 0 files")) {
+                ).toString();
+                // icacls can exit 0 while still failing to process the file, so its summary line
+                // must be checked too. Match the "<n> processed; <n> failed" shape instead of the
+                // English wording (which varies by Windows display language) - the failure count
+                // is always the second number in the semicolon-separated summary.
+                const summaryLine = stdout.split(/\r?\n/).map((line) => line.trim()).find((line) => /\d+[^;]*;[^;]*\d+/.test(line));
+                const failedCount = Number(summaryLine?.match(/\d+/g)?.[1]);
+                if (failedCount !== 0) {
                     throw new Error(`icacls reports that it could not change file access:\n${stdout}`);
                 }
             } else { // we are on Posix
@@ -372,6 +378,50 @@ export class IO {
             }
         } catch(errObj) {
             throw ImperativeError.newImpErrorFromExistingError(errObj, `Failed to restrict access to others on file = ${fileName}`);
+        }
+    }
+
+    /**
+     * Determine whether a file or directory's access is restricted to its owner only.
+     * On POSIX, this means the mode bits grant no permissions to group or others, and
+     * the file is owned by the current user. On Windows, this means `icacls` reports a
+     * single access control entry - restricted to the current user - with inheritance
+     * disabled (i.e. exactly what {@link IO.giveAccessOnlyToOwner} sets up).
+     *
+     * @param  {string} fileName - file or directory to check.
+     * @returns {boolean} - true if only the current user has access, false otherwise
+     *                       (including if the path does not exist or cannot be read).
+     */
+    public static hasOwnerOnlyAccess(fileName: string): boolean {
+        ImperativeExpect.toBeDefinedAndNonBlank(fileName, "fileName");
+        try {
+            if (!IO.existsSync(fileName)) {
+                return false;
+            }
+            if (os.platform() === IO.OS_WIN32) {
+                // On windows, ask icacls for the current ACL and confirm it grants
+                // access to nobody but the current user (mirrors what giveAccessOnlyToOwner sets).
+                const stdout = ExecUtils.spawnAndGetOutput("icacls", [ fileName ], { encoding: "utf8" }).toString();
+                const aces: string[] = stdout.split(/\r?\n/)
+                    .map((line: string) => line.startsWith(fileName) ? line.slice(fileName.length) : line)
+                    .map((line: string) => line.trim())
+                    // Keep only ACE lines (identity followed by a parenthesized permission set, e.g.
+                    // "DESKTOP-XYZ\username:(OI)(CI)(F)"). The localized summary line never has this shape,
+                    // so this drops it without matching its wording, which varies by Windows display language.
+                    .filter((line: string) => line.includes(":(") && line.endsWith(")"));
+                if (aces.length !== 1) {
+                    return false;
+                }
+                const identity = aces[0].split(":")[0].trim().toLowerCase();
+                const username = os.userInfo().username.toLowerCase();
+                return identity === username || identity.endsWith(`\\${username}`);
+            } else { // we are on Posix
+                const stat = fs.statSync(fileName);
+                const noGroupOrOtherAccess = (stat.mode & (fs.constants.S_IRWXG | fs.constants.S_IRWXO)) === 0;
+                return noGroupOrOtherAccess && stat.uid === process.getuid!();
+            }
+        } catch (errObj) {
+            return false;
         }
     }
 

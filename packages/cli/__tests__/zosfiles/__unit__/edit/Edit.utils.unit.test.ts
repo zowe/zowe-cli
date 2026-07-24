@@ -98,6 +98,13 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
             expect(response).toContain(".txt");
         });
+        it("should use a per-user temp directory name so co-tenants on a shared tmp don't collide", async () => {
+            await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+            const dirArg = (ZosFilesUtils.ensureSafeTempDir as jest.Mock).mock.calls[0][0];
+            // per-user token (cross-platform, hashed) - not a bare shared name
+            expect(dirArg.endsWith(`zowe-edit-ds-${ZosFilesUtils.getUserTempToken()}`)).toBe(true);
+            expect(dirArg).toMatch(/zowe-edit-ds-[0-9a-f]{10}$/);
+        });
     });
     describe("checkForStash()", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
@@ -240,6 +247,16 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
+
+            //test that the etag refresh downloads to a safe, unique scratch path - not a shared/predictable one
+            const safeDir = (ZosFilesUtils.ensureSafeTempDir as jest.Mock).mock.calls[0][0];
+            expect(safeDir).toContain("zowe-edit-uss");
+            const scratchPath = downloadUssFileSpy.mock.calls[0][2]?.file as string;
+            expect(scratchPath).toContain(safeDir);
+            expect(path.basename(scratchPath)).toMatch(/^\.etag-refresh-[0-9a-f]+$/);
+            expect(scratchPath).not.toContain("toDelete.txt");
+            //the unique scratch file (not the stash) is the one destroyed
+            expect(EditUtilities.destroyTempFile).toHaveBeenCalledWith(scratchPath);
         });
 
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {

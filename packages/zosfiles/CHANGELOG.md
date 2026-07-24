@@ -5,6 +5,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## Recent Changes
 
 - Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+- BugFix: Hardened temporary directory handling for partitioned data set copy so the staging directory is scoped per user (co-tenants on a shared temp location no longer conflict) and owner-only access is enforced and re-verified on all platforms. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
 
 ## `8.33.1`
 

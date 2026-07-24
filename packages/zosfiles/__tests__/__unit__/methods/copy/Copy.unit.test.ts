@@ -831,6 +831,10 @@ describe("Copy", () => {
         const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
         const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const generateMemName = jest.spyOn(ZosFilesUtils, "generateMemberName");
+        jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation();
+        jest.spyOn(fs, "writeFileSync").mockImplementation();
+        
         const fromDataSetName = "USER.DATA.FROM";
         const toDataSetName = "USER.DATA.TO";
         const readStream = jest.spyOn(IO, "createReadStream");
@@ -965,7 +969,7 @@ describe("Copy", () => {
             });
         });
         it("should handle truncation errors and log them to a file", async () => {
-            const truncatedMembersFilePath = path.join(tmpdir(), "zowe-copy-pds", fromDataSetName, "truncatedMembers.txt");
+            const truncatedMembersFilePath = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, "truncatedMembers.txt");
             let response;
             const sourceResponse = {
                 apiResponse: {
