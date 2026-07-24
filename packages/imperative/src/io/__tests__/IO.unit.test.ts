@@ -517,6 +517,30 @@ describe("IO tests", () => {
             });
         } // end win32
 
+        if (sysInfo.platform === "win32") {
+            it("should restrict file access on Windows when icacls reports its summary in a non-English locale", () => {
+                let caughtError;
+                let spawnSpy: any;
+                try {
+                    // Simulate that the file exists
+                    jest.spyOn(IO, "existsSync").mockReturnValue(true);
+
+                    // the summary line's wording varies by Windows display language; only its
+                    // "<n> processed; <n> failed" shape should matter, not its text content
+                    spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
+                    spawnSpy.mockReturnValue("Número de archivos procesados: 1; Errores encontrados: 0");
+
+                    const testPermFile = __dirname + "/onlyUserAccess.txt";
+                    IO.giveAccessOnlyToOwner(testPermFile);
+                } catch (thrownError) {
+                    caughtError = thrownError;
+                }
+
+                expect(caughtError).toBeUndefined();
+                expect(spawnSpy).toHaveBeenCalledTimes(1);
+            });
+        } // end win32
+
         if (sysInfo.platform !== "win32") {
             it("should restrict file access with execute permission on Posix", () => {
                 const testPermFile = __dirname + "/onlyUserAccess.txt";
@@ -626,17 +650,17 @@ describe("IO tests", () => {
             beforeEach(() => {
                 jest.spyOn(IO, "existsSync").mockReturnValue(true);
                 jest.spyOn(os, "platform").mockReturnValue("win32");
-                jest.spyOn(os, "userInfo").mockReturnValue({ username: "fernando" } as any);
+                jest.spyOn(os, "userInfo").mockReturnValue({ username: "rubyTheDog" } as any);
             });
             it("should return true when icacls shows only the current user", () => {
                 jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
-                    "C:\\Temp\\dir fernando:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                    "C:\\Temp\\dir rubyTheDog:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
                 );
                 expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(true);
             });
             it("should return true for a domain-qualified current user", () => {
                 jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
-                    "C:\\Temp\\dir MYDOMAIN\\fernando:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                    "C:\\Temp\\dir MYDOMAIN\\rubyTheDog:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
                 );
                 expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(true);
             });
@@ -644,16 +668,24 @@ describe("IO tests", () => {
                 jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
                     "C:\\Temp\\dir NT AUTHORITY\\SYSTEM:(F)\r\n" +
                     "          BUILTIN\\Administrators:(F)\r\n" +
-                    "          fernando:(F)\r\n" +
+                    "          rubyTheDog:(F)\r\n" +
                     "Successfully processed 1 files; Failed processing 0 files" as any
                 );
                 expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(false);
             });
             it("should return false when the single access entry is a different user", () => {
                 jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
-                    "C:\\Temp\\dir someoneelse:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
+                    "C:\\Temp\\dir monaTheCat:(F)\r\nSuccessfully processed 1 files; Failed processing 0 files" as any
                 );
                 expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(false);
+            });
+            it("should return true when icacls reports its summary line in a non-English locale", () => {
+                // the summary line's wording varies by Windows display language; only its
+                // shape (no "identity:(perms)" pattern) should matter, not its text content
+                jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(
+                    "C:\\Temp\\dir rubyTheDog:(F)\r\nNúmero de archivos procesados: 1; Errores encontrados: 0" as any
+                );
+                expect(IO.hasOwnerOnlyAccess("C:\\Temp\\dir")).toBe(true);
             });
         });
     }); // end hasOwnerOnlyAccess

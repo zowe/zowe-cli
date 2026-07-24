@@ -356,8 +356,14 @@ export class IO {
                 const stdout = ExecUtils.spawnAndGetOutput("icacls",
                     [ fileName, "/inheritancelevel:r", "/grant:r", `${os.userInfo().username}:F`, "/c" ],
                     { encoding: "utf8"}
-                );
-                if (!stdout.includes("Successfully processed 1 files; Failed processing 0 files")) {
+                ).toString();
+                // icacls can exit 0 while still failing to process the file, so its summary line
+                // must be checked too. Match the "<n> processed; <n> failed" shape instead of the
+                // English wording (which varies by Windows display language) - the failure count
+                // is always the second number in the semicolon-separated summary.
+                const summaryLine = stdout.split(/\r?\n/).map((line) => line.trim()).find((line) => /\d+[^;]*;[^;]*\d+/.test(line));
+                const failedCount = Number(summaryLine?.match(/\d+/g)?.[1]);
+                if (failedCount !== 0) {
                     throw new Error(`icacls reports that it could not change file access:\n${stdout}`);
                 }
             } else { // we are on Posix
@@ -399,7 +405,10 @@ export class IO {
                 const aces: string[] = stdout.split(/\r?\n/)
                     .map((line: string) => line.startsWith(fileName) ? line.slice(fileName.length) : line)
                     .map((line: string) => line.trim())
-                    .filter((line: string) => line.length > 0 && !line.startsWith("Successfully processed"));
+                    // Keep only ACE lines (identity followed by a parenthesized permission set, e.g.
+                    // "DESKTOP-XYZ\username:(OI)(CI)(F)"). The localized summary line never has this shape,
+                    // so this drops it without matching its wording, which varies by Windows display language.
+                    .filter((line: string) => line.includes(":(") && line.endsWith(")"));
                 if (aces.length !== 1) {
                     return false;
                 }
