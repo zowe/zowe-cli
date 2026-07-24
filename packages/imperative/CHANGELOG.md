@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a `ConfigRedact` API, accessible via `Config.api.redact`, with `getRedactedLayers` and `exportToDirectory` methods for programmatically retrieving or writing out Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
+
 ## `8.34.0`
 
 - Enhancement: Added the `zowe config export-redacted` command to export Zowe configuration layers with sensitive values redacted for troubleshooting and sharing purposes. [#2732](https://github.com/zowe/zowe-cli/pull/2732)
