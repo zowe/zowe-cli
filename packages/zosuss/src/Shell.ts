@@ -155,8 +155,13 @@ export class Shell {
                         msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
                     }));
                 } else {
+                    // The handshake can fail before the verifier runs (e.g. host key algorithm negotiation), so
+                    // hostKeyRejected is never set. Name the pinned key type here, as a rotated type surfaces this way.
+                    const pinnedType = Shell.getPinnedHostKeyType(session);
                     reject(new ImperativeError({
-                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+                        msg: pinnedType != null ?
+                            `${ZosUssMessages.pinnedHostKeyConnectFailed.message} (pinned key type: ${pinnedType}).\n` + err.message :
+                            ZosUssMessages.unexpected.message + ":\n" + err.message
                     }));
                 }
             });
@@ -301,6 +306,25 @@ export class Shell {
                 return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
             }
             return [algorithm];
+        } catch {
+            return undefined;
+        }
+    }
+
+    /**
+     * Return the algorithm name of the pinned host key (e.g. "ssh-ed25519", "ssh-rsa"), or undefined when
+     * verification is disabled, no key is pinned, or the pinned key cannot be parsed.
+     * @param session - the SSH session being connected
+     * @returns the pinned host key algorithm name, or undefined
+     */
+    private static getPinnedHostKeyType(session: SshSession): string | undefined {
+        const pinnedKey = session.ISshSession.hostKey;
+        if (session.ISshSession.insecure === true || pinnedKey == null ||
+            pinnedKey === "" || pinnedKey === "undefined") {
+            return undefined;
+        }
+        try {
+            return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
         } catch {
             return undefined;
         }

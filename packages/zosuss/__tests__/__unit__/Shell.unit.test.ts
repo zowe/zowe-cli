@@ -232,6 +232,21 @@ describe("Shell", () => {
             await new Promise(process.nextTick);
             expect(cb).toHaveBeenCalledWith(false);
         });
+
+        it("should surface the pinned key type when the handshake fails before verification", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64 });
+            mockConnect.mockImplementationOnce(() => {
+                mockClient.emit("error", new Error("no matching host key format"));
+            });
+            let caught: any;
+            try {
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            } catch (e) {
+                caught = e;
+            }
+            expect(caught.message).toContain(ZosUssMessages.pinnedHostKeyConnectFailed.message);
+            expect(caught.message).toContain("ssh-ed25519");
+        });
     });
 
     describe("Error handling", () => {
