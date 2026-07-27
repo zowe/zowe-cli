@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added a `ConfigRedact` API, accessible via `Config.api.redact`, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
+- Enhancement: Added a `ConfigRedact` API, accessible via the `Config.api.redact` class instance, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
 
 ## `8.34.0`
 
