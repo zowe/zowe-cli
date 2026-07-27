@@ -226,7 +226,8 @@ export class Shell {
                 session.hostKeyVerifier({
                     fingerprint: this.getHostKeyFingerprint(keyBuf),
                     key: presentedKey,
-                    changed
+                    changed,
+                    pinnedFingerprint: changed ? this.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) : undefined
                 }).then((trusted) => {
                     if (!trusted) {
                         connState.hostKeyRejected = true;
@@ -254,7 +255,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob presented by the server
      * @returns the fingerprint string
      */
-    public static getHostKeyFingerprint(keyBuf: Buffer): string {
+    private static getHostKeyFingerprint(keyBuf: Buffer): string {
         const digest = createHash("sha256").update(keyBuf).digest("base64").replace(/=+$/, "");
         return `SHA256:${digest}`;
     }
@@ -265,7 +266,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob
      * @returns the algorithm name, or undefined if the blob cannot be parsed
      */
-    public static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
+    private static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
         // Need at least the 4-byte length prefix
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         if (keyBuf == null || keyBuf.length < 4) {

@@ -124,7 +124,7 @@ describe("Shell", () => {
         }
 
         it("should compute an OpenSSH-style SHA256 fingerprint", () => {
-            const fingerprint = Shell.getHostKeyFingerprint(fakeKey);
+            const fingerprint = (Shell as any).getHostKeyFingerprint(fakeKey);
             expect(fingerprint).toMatch(/^SHA256:[A-Za-z0-9+/]+$/);
             expect(fingerprint).not.toContain("=");
         });
@@ -139,18 +139,18 @@ describe("Shell", () => {
 
         describe("host key algorithm", () => {
             it("should parse the algorithm name out of a key blob", () => {
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-ed25519"))).toBe("ssh-ed25519");
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-rsa"))).toBe("ssh-rsa");
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ecdsa-sha2-nistp256"))).toBe("ecdsa-sha2-nistp256");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ssh-ed25519"))).toBe("ssh-ed25519");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ssh-rsa"))).toBe("ssh-rsa");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ecdsa-sha2-nistp256"))).toBe("ecdsa-sha2-nistp256");
             });
 
             it("should return undefined for a blob that cannot be parsed", () => {
-                expect(Shell.getHostKeyAlgorithm(Buffer.alloc(0))).toBeUndefined();
-                expect(Shell.getHostKeyAlgorithm(Buffer.from([0, 0]))).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(Buffer.alloc(0))).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(Buffer.from([0, 0]))).toBeUndefined();
                 // Length prefix larger than the buffer
                 const bogus = Buffer.alloc(8);
                 bogus.writeUInt32BE(9999, 0);
-                expect(Shell.getHostKeyAlgorithm(bogus)).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(bogus)).toBeUndefined();
             });
 
             it("should request the pinned key's algorithm so the same key type is presented", async () => {

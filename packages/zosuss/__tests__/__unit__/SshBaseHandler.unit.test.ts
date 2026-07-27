@@ -315,12 +315,13 @@ describe("SshBaseHandler host key verification", () => {
         const session = new SshSession({ hostname: "somewhere.com", hostKey: "old-key" });
         attach(handler, session, params);
 
-        const trusted = await session.hostKeyVerifier({ ...fakeKeyInfo, changed: true });
+        const trusted = await session.hostKeyVerifier({ ...fakeKeyInfo, changed: true, pinnedFingerprint: "SHA256:oldfp" });
 
         expect(trusted).toBe(false);
         expect(params.response.console.prompt).not.toHaveBeenCalled();
         expect(params.response.console.error).toHaveBeenCalledWith(
             expect.stringContaining(ZosUssMessages.hostKeyChanged.message));
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("SHA256:oldfp"));
         expect(session.ISshSession.hostKey).toBe("old-key");
         expect((handler as any).persistHostKey).not.toHaveBeenCalled();
     });

@@ -28,7 +28,6 @@ import {
     IProfile
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
-import { Shell } from "./Shell";
 import { ISshSession } from "./doc/ISshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 import { utils } from "ssh2";
@@ -196,13 +195,12 @@ export abstract class SshBaseHandler implements ICommandHandler {
             return;
         }
 
-        session.hostKeyVerifier = async (info: { fingerprint: string; key: string; changed: boolean }): Promise<boolean> => {
+        session.hostKeyVerifier = async (
+            info: { fingerprint: string; key: string; changed: boolean; pinnedFingerprint?: string }): Promise<boolean> => {
             // A previously trusted host key no longer matches. Refuse instead of offering an interactive
             // overwrite; require removing the pinned key or passing a new --host-key, like the ssh client.
             if (info.changed) {
-                const pinnedKey = session.ISshSession.hostKey;
-                const pinnedFingerprint = pinnedKey != null && pinnedKey !== "" && pinnedKey !== "undefined" ?
-                    Shell.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) : "(unknown)";
+                const pinnedFingerprint = info.pinnedFingerprint ?? "(unknown)";
                 this.console.error(`${ZosUssMessages.hostKeyChanged.message}\n` +
                     `Previously trusted host key fingerprint: ${pinnedFingerprint}\n` +
                     `Host key fingerprint now presented:      ${info.fingerprint}\n` +
