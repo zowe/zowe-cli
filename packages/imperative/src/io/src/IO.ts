@@ -420,7 +420,7 @@ export class IO {
                 const noGroupOrOtherAccess = (stat.mode & (fs.constants.S_IRWXG | fs.constants.S_IRWXO)) === 0;
                 return noGroupOrOtherAccess && stat.uid === process.getuid!();
             }
-        } catch (errObj) {
+        } catch (error_) {
             return false;
         }
     }
