@@ -149,6 +149,7 @@ export class SshSession {
      */
     public static SSH_OPTION_INSECURE: ICommandOptionDefinition = {
         name: "insecure",
+        aliases: ["i"],
         description: "Skip verification of the z/OS SSH server's host key, so the server's identity is " +
             "not confirmed before credentials are sent.",
         type: "boolean",
