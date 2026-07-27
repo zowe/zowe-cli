@@ -11,7 +11,7 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    List } from "../../../../src";
+    List, ZosFilesUtils } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -133,7 +133,7 @@ describe("Copy", () => {
                     try {
                         await Delete.dataSet(REAL_SESSION, fromDataSetName);
                         await Delete.dataSet(REAL_SESSION, toDataSetName);
-                        fs.rmSync(join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt'));
+                        fs.rmSync(join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -142,7 +142,7 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    const truncatedMembersFile = path.join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt');
+                    const truncatedMembersFile = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, 'truncatedMembers.txt');
                     fs.mkdirSync(path.dirname(truncatedMembersFile), { recursive: true, mode: 0o700 });
                     fs.writeFileSync(truncatedMembersFile, "");
                     try {

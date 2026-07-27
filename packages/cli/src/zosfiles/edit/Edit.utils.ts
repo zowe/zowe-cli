@@ -64,6 +64,23 @@ export interface ILocalFile {
  */
 export class EditUtilities {
     /**
+     * Build the per-user temp directory for edit files and ensure it is safe to use.
+     * The directory name includes a per-user token so co-tenants on a shared OS temp location get
+     * separate directories. With a shared name the first user to run would own the directory and
+     * {@link ZosFilesUtils.ensureSafeTempDir} would then reject it for everyone else. The token is
+     * derived from the current user (not random) so the path stays stable across runs and the
+     * stash remains re-findable.
+     * @param {EditFileType} fileType - "uss" or "ds"
+     * @returns {string} - absolute path to the ensured, per-user temp directory
+     * @memberof EditUtilities
+     */
+    private static ensureEditTempDir(fileType: EditFileType): string {
+        const dir = path.join(tmpdir(), `zowe-edit-${fileType}-${ZosFilesUtils.getUserTempToken()}`);
+        ZosFilesUtils.ensureSafeTempDir(dir);
+        return dir;
+    }
+
+    /**
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
@@ -83,12 +100,10 @@ export class EditUtilities {
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            const ussDir = path.join(tmpdir(), "zowe-edit-uss");
-            ZosFilesUtils.ensureSafeTempDir(ussDir);
+            const ussDir = this.ensureEditTempDir("uss");
             return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        const dsDir = path.join(tmpdir(), "zowe-edit-ds");
-        ZosFilesUtils.ensureSafeTempDir(dsDir);
+        const dsDir = this.ensureEditTempDir("ds");
         return path.join(dsDir, lfFile.fileName + ext);
     }
 
@@ -162,8 +177,17 @@ export class EditUtilities {
      * @returns {ILocalFile}
      */
     public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
-        // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        // account for both useStash|!useStash and uss|ds when downloading.
+        // When only refreshing the etag (useStash), download to a throwaway scratch file with a
+        // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.
+        let scratchPath!: string;
+        if (useStash) {
+            const crypto = require("crypto");
+            const randomNameBytes = 16;
+            const scratchDir = this.ensureEditTempDir(lfFile.fileType);
+            scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
+        }
+        const tempPath = useStash ? scratchPath : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -183,7 +207,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
+            await this.destroyTempFile(scratchPath);
         }
         return lfFile;
     }
