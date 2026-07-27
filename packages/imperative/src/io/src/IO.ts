@@ -412,6 +412,7 @@ export class IO {
             } else { // we are on Posix
                 const stat = fs.statSync(fileName);
                 const noGroupOrOtherAccess = (stat.mode & (fs.constants.S_IRWXG | fs.constants.S_IRWXO)) === 0;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return noGroupOrOtherAccess && stat.uid === process.getuid!();
             }
         } catch (error_) {

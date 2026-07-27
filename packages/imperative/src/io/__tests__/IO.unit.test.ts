@@ -715,14 +715,17 @@ describe("IO tests", () => {
                     jest.spyOn(os, "platform").mockReturnValue("linux");
                 });
                 it("should return true for an owner-only path owned by the current user", () => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o700, uid: process.getuid!() } as any);
                     expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(true);
                 });
                 it("should return false when group or others have any access", () => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o755, uid: process.getuid!() } as any);
                     expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(false);
                 });
                 it("should return false when owned by a different user", () => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o700, uid: process.getuid!() + 1 } as any);
                     expect(IO.hasOwnerOnlyAccess("/tmp/dir")).toBe(false);
                 });

@@ -123,10 +123,12 @@ export class WebDiffManager implements IWebDiffManager {
      * @returns A safely-encoded JavaScript string literal
      */
     private encodeForScript(str: string): string {
+        const hex = 16;
         return JSON.stringify(str)
             .replaceAll("<", "\\u003c")
             .replaceAll(">", "\\u003e")
-            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(16));
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(hex));
     }
 
     /**
