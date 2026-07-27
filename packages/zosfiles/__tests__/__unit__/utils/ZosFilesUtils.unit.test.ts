@@ -284,4 +284,78 @@ describe("ZosFilesUtils", () => {
         });
     });
 
+    describe("getUserTempToken", () => {
+        it("should return a stable, filesystem-safe per-user token", () => {
+            const token = ZosFilesUtils.getUserTempToken();
+            // 10-char lowercase hex, safe on any platform/filesystem
+            expect(token).toMatch(/^[0-9a-f]{10}$/);
+            // stable across calls so per-user temp paths stay re-findable
+            expect(ZosFilesUtils.getUserTempToken()).toEqual(token);
+        });
+        it("should fall back to a token when the OS user cannot be determined", () => {
+            const os = require("os");
+            const userInfoSpy = jest.spyOn(os, "userInfo").mockImplementation(() => {
+                throw new Error("no account entry");
+            });
+            const token = ZosFilesUtils.getUserTempToken();
+            expect(token).toMatch(/^[0-9a-f]{10}$/);
+            userInfoSpy.mockRestore();
+        });
+    });
+
+    describe("ensureSafeTempDir", () => {
+        const realPlatform = process.platform;
+        const setPlatform = (value: string) => Object.defineProperty(process, "platform", { value, configurable: true });
+        let existsSyncSpy: jest.SpyInstance;
+        let lstatSyncSpy: jest.SpyInstance;
+        let mkdirSyncSpy: jest.SpyInstance;
+        let giveAccessSpy: jest.SpyInstance;
+        let hasOwnerOnlyAccessSpy: jest.SpyInstance;
+        beforeEach(() => {
+            existsSyncSpy = jest.spyOn(fs, "existsSync");
+            lstatSyncSpy = jest.spyOn(fs, "lstatSync");
+            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn());
+            giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(jest.fn());
+            hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess").mockImplementation(jest.fn());
+        });
+        afterEach(() => {
+            setPlatform(realPlatform);
+            jest.restoreAllMocks();
+        });
+
+        it("should create the directory owner-only when it does not exist (POSIX)", () => {
+            setPlatform("linux");
+            existsSyncSpy.mockReturnValue(false);
+            ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc");
+            expect(mkdirSyncSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc", { recursive: true, mode: 0o700 });
+            expect(giveAccessSpy).not.toHaveBeenCalled();
+            expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
+        });
+        it("should set an owner-only ACL when creating on Windows", () => {
+            setPlatform("win32");
+            existsSyncSpy.mockReturnValue(false);
+            ZosFilesUtils.ensureSafeTempDir("C:\\Temp\\zowe-edit-ds-abc");
+            expect(giveAccessSpy).toHaveBeenCalledWith("C:\\Temp\\zowe-edit-ds-abc");
+        });
+        it("should accept a pre-existing directory whose access is restricted to the current user (any platform)", () => {
+            existsSyncSpy.mockReturnValue(true);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).not.toThrow();
+            expect(hasOwnerOnlyAccessSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc");
+        });
+        it("should reject a pre-existing directory that is not restricted to the current user (any platform)", () => {
+            existsSyncSpy.mockReturnValue(true);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(false);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+        });
+        it("should reject when the path exists but is not a directory (e.g. a planted symlink)", () => {
+            existsSyncSpy.mockReturnValue(true);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => false } as any);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+            expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
+        });
+    });
+
 });

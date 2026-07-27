@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added a `ConfigRedact` API, accessible via the `Config.api.redact` class instance, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
+- Enhancement: Added a `IO.hasOwnerOnlyAccess` utility function to check whether a file or directory's access is restricted to the current user only, cross-platform (POSIX mode bits/owner; Windows `icacls` ACL). [#2823](https://github.com/zowe/zowe-cli/pull/2823)
 
 ## `8.34.0`
 
