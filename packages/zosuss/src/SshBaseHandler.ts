@@ -250,10 +250,11 @@ export abstract class SshBaseHandler implements ICommandHandler {
             this.console.error("Host key not saved; you will be prompted again. Pin it with --host-key.\n");
             return;
         }
+        // getActiveProfileName falls back to the "ssh" profile type, so it never returns null.
         const profileName = ConfigUtils.getActiveProfileName("ssh", commandParameters.arguments);
         // TODO: consider creating an ssh profile here (shared config layer) so the accepted key has somewhere to persist,
         // instead of only warning
-        if (profileName == null || !config.api.profiles.exists(profileName)) {
+        if (!config.api.profiles.exists(profileName)) {
             this.console.error("Host key not saved (no ssh profile); you will be prompted again. Pin it with --host-key.\n");
             return;
         }

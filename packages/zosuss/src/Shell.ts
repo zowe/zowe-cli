@@ -271,11 +271,7 @@ export class Shell {
             pinnedKey === "" || pinnedKey === "undefined") {
             return undefined;
         }
-        try {
-            return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
-        } catch {
-            return undefined;
-        }
+        return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
     }
 
     private static connect(connection: Client, session: SshSession, connState?: IConnectionState) {
@@ -424,20 +420,16 @@ export class Shell {
             pinnedKey === "" || pinnedKey === "undefined") {
             return undefined;
         }
-        try {
-            const algorithm = this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
-            if (algorithm == null) {
-                return undefined;
-            }
-            // An RSA host key is stored as "ssh-rsa" but modern servers offer it under the SHA-2 names.
-            // Request all three so the RSA key is still offered without the retired SHA-1 negotiation.
-            if (algorithm === "ssh-rsa") {
-                return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
-            }
-            return [algorithm];
-        } catch {
+        const algorithm = this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
+        if (algorithm == null) {
             return undefined;
         }
+        // An RSA host key is stored as "ssh-rsa" but modern servers offer it under the SHA-2 names.
+        // Request all three so the RSA key is still offered without the retired SHA-1 negotiation.
+        if (algorithm === "ssh-rsa") {
+            return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
+        }
+        return [algorithm];
     }
 
     public static async executeSshCwd(session: SshSession,
