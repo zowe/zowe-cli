@@ -193,7 +193,8 @@ export class CreateWorkflow{
         if (customDir){
             remoteFile = customDir + "/" + basename(localFile);
         } else {
-            remoteFile = WorkflowConstants.tempPath + "/" + userId + crypto.randomBytes(8).toString('hex') + basename(localFile);
+            const hashLength = 8;
+            remoteFile = WorkflowConstants.tempPath + "/" + userId + crypto.randomBytes(hashLength).toString('hex') + basename(localFile);
         }
         return remoteFile;
     }
