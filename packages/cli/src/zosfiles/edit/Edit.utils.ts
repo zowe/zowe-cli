@@ -11,10 +11,10 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
+    TextUtils, IDiffNameOptions, CliUtils, IO } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { existsSync, lstatSync, mkdirSync, unlinkSync } from "fs";
-import { tmpdir } from "os";
+import { tmpdir, userInfo } from "os";
 import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
@@ -64,6 +64,48 @@ export interface ILocalFile {
  */
 export class EditUtilities {
     /**
+     * Returns a short, filesystem-safe token that is unique per OS user, for building per-user
+     * temp directory names. Deriving the name from the user (rather than a random per-run value)
+     * keeps the path stable across invocations - so features like edit stash-resume still work -
+     * while ensuring co-tenants on a shared temp location get separate directories. The username
+     * is hashed so the token is path-safe for any username and works on every platform (numeric
+     * uids aren't available on Windows).
+     * @returns {string} - a hex token derived from the current OS user
+     * @memberof EditUtilities
+     */
+    private static getUserTempToken(): string {
+        let id = "default";
+        try {
+            id = userInfo().username;
+        } catch (err) {
+            // userInfo() can throw when the current user has no OS account entry; fall back to uid or a constant
+            if (typeof process.getuid === "function") {
+                id = String(process.getuid());
+            }
+        }
+        const crypto = require("crypto");
+        const tokenLen = 10;
+        return crypto.createHash("sha256").update(id).digest("hex").slice(0, tokenLen);
+    }
+
+    /**
+     * Build the per-user temp directory for edit files and ensure it is safe to use.
+     * The directory name includes a per-user token so co-tenants on a shared OS temp location get
+     * separate directories. With a shared name the first user to run would own the directory and
+     * {@link ensureSafeTempDir} would then reject it for everyone else. The token is derived from
+     * the current user (not random) so the path stays stable across runs and the stash remains
+     * re-findable.
+     * @param {EditFileType} fileType - "uss" or "ds"
+     * @returns {string} - absolute path to the ensured, per-user temp directory
+     * @memberof EditUtilities
+     */
+    private static ensureEditTempDir(fileType: EditFileType): string {
+        const dir = path.join(tmpdir(), `zowe-edit-${fileType}-${EditUtilities.getUserTempToken()}`);
+        EditUtilities.ensureSafeTempDir(dir);
+        return dir;
+    }
+
+    /**
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
@@ -83,34 +125,34 @@ export class EditUtilities {
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            const ussDir = path.join(tmpdir(), "zowe-edit-uss");
-            EditUtilities.ensureSafeTempDir(ussDir);
+            const ussDir = EditUtilities.ensureEditTempDir("uss");
             return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        const dsDir = path.join(tmpdir(), "zowe-edit-ds");
-        EditUtilities.ensureSafeTempDir(dsDir);
+        const dsDir = EditUtilities.ensureEditTempDir("ds");
         return path.join(dsDir, lfFile.fileName + ext);
     }
 
     /**
      * Ensures a temp directory exists and is safe to use, creating it if necessary.
-     * On POSIX systems, verifies the directory isn't a pre-existing, loosely-permissioned
-     * directory planted by another local user sharing the same tmp location. On Windows,
-     * os.tmpdir() already resolves to a per-user directory whose ACLs prevent other local
-     * users from writing to it, so that co-tenancy risk doesn't apply and the check is skipped.
+     * When creating, the directory is restricted to the owner (mode 0700 on POSIX; on Windows
+     * `fs.mkdirSync`'s `mode` is a no-op, so an owner-only ACL is set via {@link IO.giveAccessOnlyToOwner}).
+     * When the directory already exists, it is rejected unless it is a real directory whose access is
+     * restricted to the current user - verified the same way on every platform via
+     * {@link IO.hasOwnerOnlyAccess} - so a directory planted by another local user sharing the same
+     * tmp location is refused.
      * @param {string} dir - the temp directory to validate or create
      * @memberof EditUtilities
      */
     private static ensureSafeTempDir(dir: string): void {
         if (!existsSync(dir)) {
             mkdirSync(dir, { recursive: true, mode: 0o700 });
+            if (process.platform === "win32") {
+                IO.giveAccessOnlyToOwner(dir);
+            }
             return;
         }
-        const st = lstatSync(dir);
-        if (!st.isDirectory()) {
-            throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
-        }
-        if (process.platform !== "win32" && ((st.mode & 0o777) !== 0o700 || st.uid !== process.getuid!())) {
+        // Reject a planted symlink/non-directory (lstat does not follow symlinks) before checking access.
+        if (!lstatSync(dir).isDirectory() || !IO.hasOwnerOnlyAccess(dir)) {
             throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
         }
     }
@@ -185,8 +227,17 @@ export class EditUtilities {
      * @returns {ILocalFile}
      */
     public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
-        // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+        // account for both useStash|!useStash and uss|ds when downloading.
+        // When only refreshing the etag (useStash), download to a throwaway scratch file with a
+        // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.
+        let scratchPath!: string;
+        if (useStash) {
+            const crypto = require("crypto");
+            const randomNameBytes = 16;
+            const scratchDir = EditUtilities.ensureEditTempDir(lfFile.fileType);
+            scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
+        }
+        const tempPath = useStash ? scratchPath : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -206,7 +257,7 @@ export class EditUtilities {
         }
 
         if (useStash){
-            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
+            await this.destroyTempFile(scratchPath);
         }
         return lfFile;
     }

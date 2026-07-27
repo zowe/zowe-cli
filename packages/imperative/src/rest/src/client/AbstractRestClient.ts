@@ -984,7 +984,7 @@ export abstract class AbstractRestClient {
         if (optionsForLogging.headers) {
             optionsForLogging.headers = { ...optionsForLogging.headers };
             const sensitiveHeaders = ["authorization", "cookie", "proxy-authorization"];
-            
+
             for (const key of Object.keys(optionsForLogging.headers)) {
                 if (sensitiveHeaders.includes(key.toLowerCase())) {
                     optionsForLogging.headers[key] = LoggerUtils.CENSOR_RESPONSE;
