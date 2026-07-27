@@ -263,16 +263,20 @@ describe("SshBaseHandler host key verification", () => {
         expect((handler as any).persistHostKey).not.toHaveBeenCalled();
     });
 
-    it("should warn loudly and still allow trusting a changed key", async () => {
+    it("should refuse a changed key without prompting or persisting", async () => {
         const handler = newHandler();
-        const params = newParams("yes");
+        const params = newParams("yes"); // any prompt answer would be ignored
         const session = new SshSession({ hostname: "somewhere.com", hostKey: "old-key" });
         attach(handler, session, params);
 
         const trusted = await session.hostKeyVerifier({ ...fakeKeyInfo, changed: true });
 
-        expect(trusted).toBe(true);
-        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("HOST KEY HAS CHANGED"));
+        expect(trusted).toBe(false);
+        expect(params.response.console.prompt).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(
+            expect.stringContaining(ZosUssMessages.hostKeyChanged.message));
+        expect(session.ISshSession.hostKey).toBe("old-key");
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
     });
 
     it("should not prompt in a CI environment and should reject with an error", async () => {
@@ -369,6 +373,14 @@ describe("SshBaseHandler persistHostKey", () => {
         expect(set).toHaveBeenCalledWith("profiles.ssh.properties.hostKey", "keyblob", { secure: false });
         expect(save).toHaveBeenCalledTimes(1);
         expect(params.response.console.log).toHaveBeenCalledWith(expect.stringContaining("Saved the trusted host key"));
+    });
+
+    it("restores the previously active layer even when save throws", async () => {
+        const params = makeParams();
+        const { config, save } = mockConfig();
+        save.mockRejectedValueOnce(new Error("disk full"));
+        await expect((realHandler(params) as any).persistHostKey(params, "keyblob")).rejects.toThrow("disk full");
+        expect(config.api.layers.activate).toHaveBeenLastCalledWith(false, false);
     });
 
     it("warns and does not persist when there is no team config", async () => {

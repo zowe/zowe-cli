@@ -232,6 +232,21 @@ describe("Shell", () => {
             expect(cb).toHaveBeenCalledWith(true);
         });
 
+        it("should surface the pinned key type when the handshake fails before verification", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64 });
+            mockConnect.mockImplementationOnce(() => {
+                mockClient.emit("error", new Error("no matching host key format"));
+            });
+            let caught: any;
+            try {
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            } catch (e) {
+                caught = e;
+            }
+            expect(caught.message).toContain(ZosUssMessages.pinnedHostKeyConnectFailed.message);
+            expect(caught.message).toContain("ssh-ed25519");
+        });
+
         it("should reject when the interactive verifier declines the key", async () => {
             const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
             session.hostKeyVerifier = jest.fn().mockResolvedValue(false);
@@ -265,6 +280,14 @@ describe("Shell", () => {
             });
             const response = await Shell.isConnectionValid(fakeSshSession);
             expect(response).toBe(false);
+        });
+        it("should reject with a host-key error when the host key is not trusted", async () => {
+            mockConnect.mockImplementationOnce((config: any) => {
+                config.hostVerifier(Buffer.from("untrusted-key"), jest.fn());
+                mockClient.emit("error", new Error("handshake"));
+            });
+            await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow(
+                ZosUssMessages.hostKeyVerificationFailed.message);
         });
     });
 

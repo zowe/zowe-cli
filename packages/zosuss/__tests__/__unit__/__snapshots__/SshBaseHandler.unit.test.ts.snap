@@ -19,6 +19,14 @@ exports[`SshBaseHandler host key verification should not set a verifier and shou
 "
 `;
 
+exports[`SshBaseHandler host key verification should refuse a changed key without prompting or persisting 1`] = `
+"Host key verification failed. The SSH server's host key does not match the previously trusted key. The server's host key may have changed, or the server may not be the one you previously connected to. The connection was rejected before any credentials were sent.
+Previously trusted host key fingerprint: SHA256:aYkZwbmnvnlYyciDS+pqTYxraCYZecgU43UYxTEQ1N4
+Host key fingerprint now presented:      SHA256:testfingerprint
+If you trust the new key, remove 'hostKey' from the ssh profile or pass --host-key with the new key, then reconnect.
+"
+`;
+
 exports[`SshBaseHandler host key verification should reject a new key when the user declines (no) 1`] = `
 "The authenticity of host 'somewhere.com' can't be established.
 "
@@ -37,12 +45,6 @@ Details: cannot save
 
 exports[`SshBaseHandler host key verification should trust a new key on first use and persist it (yes) 1`] = `
 "The authenticity of host 'somewhere.com' can't be established.
-"
-`;
-
-exports[`SshBaseHandler host key verification should warn loudly and still allow trusting a changed key 1`] = `
-"WARNING: THE SSH HOST KEY HAS CHANGED FOR THIS SERVER!
-The server's host key may have changed, or the server may not be the one you previously connected to.
 "
 `;
 

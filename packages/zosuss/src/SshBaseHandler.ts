@@ -27,6 +27,7 @@ import {
     SessConstants,
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
+import { Shell } from "./Shell";
 import { ISshSession } from "./doc/ISshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 import { utils } from "ssh2";
@@ -186,9 +187,19 @@ export abstract class SshBaseHandler implements ICommandHandler {
         }
 
         session.hostKeyVerifier = async (info: { fingerprint: string; key: string; changed: boolean }): Promise<boolean> => {
-            const baseMessage = info.changed ?
-                ZosUssMessages.hostKeyChanged.message :
-                ZosUssMessages.hostKeyVerificationFailed.message;
+            // A previously trusted host key no longer matches. Refuse instead of offering an interactive
+            // overwrite; require removing the pinned key or passing a new --host-key, like the ssh client.
+            if (info.changed) {
+                const pinnedKey = session.ISshSession.hostKey;
+                const pinnedFingerprint = pinnedKey != null && pinnedKey !== "" && pinnedKey !== "undefined" ?
+                    Shell.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) : "(unknown)";
+                this.console.error(`${ZosUssMessages.hostKeyChanged.message}\n` +
+                    `Previously trusted host key fingerprint: ${pinnedFingerprint}\n` +
+                    `Host key fingerprint now presented:      ${info.fingerprint}\n` +
+                    "If you trust the new key, remove 'hostKey' from the ssh profile or pass --host-key with the " +
+                    "new key, then reconnect.\n");
+                return false;
+            }
 
             // Prompt only when a user can answer, an interactive terminal or the Zowe daemon. Otherwise
             // (CI, services, redirected stdin) keep verification on but fail fast instead of blocking.
@@ -197,20 +208,14 @@ export abstract class SshBaseHandler implements ICommandHandler {
             const canPrompt = !inCi &&
                 (process.stdin.isTTY === true || ImperativeConfig.instance.daemonContext != null);
             if (!canPrompt) {
-                this.console.error(`${baseMessage}\n` +
+                this.console.error(`${ZosUssMessages.hostKeyVerificationFailed.message}\n` +
                     `Server host key fingerprint: ${info.fingerprint}\n` +
                     "No terminal to confirm the host key. Pin it with --host-key, or use --insecure.\n");
                 return false;
             }
 
-            // Interactive: present the fingerprint and prompt (trust on first use).
-            if (info.changed) {
-                this.console.error("WARNING: THE SSH HOST KEY HAS CHANGED FOR THIS SERVER!\n" +
-                    "The server's host key may have changed, or the server may not be the one you " +
-                    "previously connected to.\n");
-            } else {
-                this.console.log(`The authenticity of host '${session.ISshSession.hostname}' can't be established.\n`);
-            }
+            // Interactive first-use: present the fingerprint and prompt (trust on first use).
+            this.console.log(`The authenticity of host '${session.ISshSession.hostname}' can't be established.\n`);
             const answer = await commandParameters.response.console.prompt(
                 `Host key fingerprint is ${info.fingerprint}.\n` +
                 "Are you sure you want to continue connecting (yes/no)? ");
@@ -254,15 +259,19 @@ export abstract class SshBaseHandler implements ICommandHandler {
         }
         const profilePath = config.api.profiles.getProfilePathFromName(profileName);
 
-        // Write to the layer that actually contains the profile, then restore the previously active layer.
+        // Write to the layer that contains the profile, then always restore the previously active layer,
+        // even if set/save throws, so daemon mode is not left on the wrong layer.
         const beforeLayer = config.api.layers.get();
         const foundLayer = config.api.layers.find(profileName);
-        if (foundLayer != null) {
-            config.api.layers.activate(foundLayer.user, foundLayer.global);
+        try {
+            if (foundLayer != null) {
+                config.api.layers.activate(foundLayer.user, foundLayer.global);
+            }
+            config.set(`${profilePath}.properties.hostKey`, hostKey, { secure: false });
+            await config.save();
+        } finally {
+            config.api.layers.activate(beforeLayer.user, beforeLayer.global);
         }
-        config.set(`${profilePath}.properties.hostKey`, hostKey, { secure: false });
-        await config.save();
-        config.api.layers.activate(beforeLayer.user, beforeLayer.global);
 
         this.console.log(`Saved the trusted host key to ssh profile '${profileName}'.\n`);
     }

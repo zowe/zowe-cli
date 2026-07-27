@@ -127,7 +127,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                this.handleConnectionError(err, hasAuthFailed, reject, connState);
+                this.handleConnectionError(err, hasAuthFailed, reject, session, connState);
             });
             Shell.connect(conn, session, connState);
         });
@@ -190,7 +190,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                this.handleConnectionError(err, hasAuthFailed, reject, connState);
+                this.handleConnectionError(err, hasAuthFailed, reject, session, connState);
             });
             Shell.connect(conn, session, connState);
         });
@@ -224,7 +224,7 @@ export class Shell {
      * @param connState - Optional connection state carrying host key verification results
      */
     private static handleConnectionError(err: Error, hasAuthFailed: boolean, reject: (reason?: any) => void,
-        connState?: IConnectionState): void {
+        session: SshSession, connState?: IConnectionState): void {
         if (connState?.hostKeyRejected) {
             reject(new ImperativeError({
                 msg: connState.hostKeyChanged ?
@@ -248,9 +248,33 @@ export class Shell {
                 msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
             }));
         } else {
+            // The handshake can fail before the verifier runs (e.g. host key algorithm negotiation), so
+            // hostKeyRejected is never set. Name the pinned key type here, as a rotated type surfaces this way.
+            const pinnedType = this.getPinnedHostKeyType(session);
             reject(new ImperativeError({
-                msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+                msg: pinnedType != null ?
+                    `${ZosUssMessages.pinnedHostKeyConnectFailed.message} (pinned key type: ${pinnedType}).\n` + err.message :
+                    ZosUssMessages.unexpected.message + ":\n" + err.message
             }));
+        }
+    }
+
+    /**
+     * Return the algorithm name of the pinned host key (e.g. "ssh-ed25519", "ssh-rsa"), or undefined when
+     * verification is disabled, no key is pinned, or the pinned key cannot be parsed.
+     * @param session - the SSH session being connected
+     * @returns the pinned host key algorithm name, or undefined
+     */
+    private static getPinnedHostKeyType(session: SshSession): string | undefined {
+        const pinnedKey = session.ISshSession.hostKey;
+        if (session.ISshSession.insecure === true || pinnedKey == null ||
+            pinnedKey === "" || pinnedKey === "undefined") {
+            return undefined;
+        }
+        try {
+            return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
+        } catch {
+            return undefined;
         }
     }
 
@@ -433,11 +457,29 @@ export class Shell {
         return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
 
+    /**
+     * Check whether a session can establish a working SSH connection. Resolves true on success, false for
+     * non-host-key failures, and rejects with a host-key {@link ImperativeError} when the key is untrusted
+     * or changed, so callers can tell that apart from bad credentials.
+     * @param session - the SSH session to validate
+     * @returns a promise resolving to true/false, or rejecting with a host-key error
+     */
     public static async isConnectionValid(session: SshSession): Promise<boolean>{
-        return new Promise((resolve, _) => {
+        const connState: IConnectionState = { hostKeyRejected: false, hostKeyChanged: false };
+        return new Promise((resolve, reject) => {
             const conn = new Client();
-            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => resolve(false));
-            Shell.connect(conn, session);
+            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => {
+                if (connState.hostKeyRejected) {
+                    reject(new ImperativeError({
+                        msg: connState.hostKeyChanged ?
+                            ZosUssMessages.hostKeyChanged.message :
+                            ZosUssMessages.hostKeyVerificationFailed.message
+                    }));
+                    return;
+                }
+                resolve(false);
+            });
+            Shell.connect(conn, session, connState);
         });
     }
 
