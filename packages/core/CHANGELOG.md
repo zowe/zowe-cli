@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.35.0`
 
 - BugFix: Improved the handling of APIML service base paths in the `Services.getServicesByConfig` function. [#2819](https://github.com/zowe/zowe-cli/pull/2819)
 

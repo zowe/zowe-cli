@@ -127,7 +127,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                this.handleConnectionError(err, hasAuthFailed, reject, connState);
+                this.handleConnectionError(err, hasAuthFailed, reject, session, connState);
             });
             Shell.connect(conn, session, connState);
         });
@@ -190,7 +190,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                this.handleConnectionError(err, hasAuthFailed, reject, connState);
+                this.handleConnectionError(err, hasAuthFailed, reject, session, connState);
             });
             Shell.connect(conn, session, connState);
         });
@@ -224,7 +224,7 @@ export class Shell {
      * @param connState - Optional connection state carrying host key verification results
      */
     private static handleConnectionError(err: Error, hasAuthFailed: boolean, reject: (reason?: any) => void,
-        connState?: IConnectionState): void {
+        session: SshSession, connState?: IConnectionState): void {
         if (connState?.hostKeyRejected) {
             reject(new ImperativeError({
                 msg: connState.hostKeyChanged ?
@@ -248,10 +248,30 @@ export class Shell {
                 msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
             }));
         } else {
+            // The handshake can fail before the verifier runs (e.g. host key algorithm negotiation), so
+            // hostKeyRejected is never set. Name the pinned key type here, as a rotated type surfaces this way.
+            const pinnedType = this.getPinnedHostKeyType(session);
             reject(new ImperativeError({
-                msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+                msg: pinnedType != null ?
+                    `${ZosUssMessages.pinnedHostKeyConnectFailed.message} (pinned key type: ${pinnedType}).\n` + err.message :
+                    ZosUssMessages.unexpected.message + ":\n" + err.message
             }));
         }
+    }
+
+    /**
+     * Return the algorithm name of the pinned host key (e.g. "ssh-ed25519", "ssh-rsa"), or undefined when
+     * verification is disabled, no key is pinned, or the pinned key cannot be parsed.
+     * @param session - the SSH session being connected
+     * @returns the pinned host key algorithm name, or undefined
+     */
+    private static getPinnedHostKeyType(session: SshSession): string | undefined {
+        const pinnedKey = session.ISshSession.hostKey;
+        if (session.ISshSession.insecure === true || pinnedKey == null ||
+            pinnedKey === "" || pinnedKey === "undefined") {
+            return undefined;
+        }
+        return this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
     }
 
     private static connect(connection: Client, session: SshSession, connState?: IConnectionState) {
@@ -325,7 +345,8 @@ export class Shell {
                 session.hostKeyVerifier({
                     fingerprint: this.getHostKeyFingerprint(keyBuf),
                     key: presentedKey,
-                    changed
+                    changed,
+                    pinnedFingerprint: changed ? this.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) : undefined
                 }).then((trusted) => {
                     if (!trusted) {
                         if (connState != null) {
@@ -359,7 +380,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob presented by the server
      * @returns the fingerprint string
      */
-    public static getHostKeyFingerprint(keyBuf: Buffer): string {
+    private static getHostKeyFingerprint(keyBuf: Buffer): string {
         const digest = createHash("sha256").update(keyBuf).digest("base64").replace(/=+$/, "");
         return `SHA256:${digest}`;
     }
@@ -370,7 +391,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob
      * @returns the algorithm name, or undefined if the blob cannot be parsed
      */
-    public static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
+    private static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
         // Need at least the 4-byte length prefix
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         if (keyBuf == null || keyBuf.length < 4) {
@@ -400,20 +421,16 @@ export class Shell {
             pinnedKey === "" || pinnedKey === "undefined") {
             return undefined;
         }
-        try {
-            const algorithm = this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
-            if (algorithm == null) {
-                return undefined;
-            }
-            // An RSA host key is stored as "ssh-rsa" but modern servers offer it under the SHA-2 names.
-            // Request all three so the RSA key is still offered without the retired SHA-1 negotiation.
-            if (algorithm === "ssh-rsa") {
-                return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
-            }
-            return [algorithm];
-        } catch {
+        const algorithm = this.getHostKeyAlgorithm(Buffer.from(pinnedKey, "base64"));
+        if (algorithm == null) {
             return undefined;
         }
+        // An RSA host key is stored as "ssh-rsa" but modern servers offer it under the SHA-2 names.
+        // Request all three so the RSA key is still offered without the retired SHA-1 negotiation.
+        if (algorithm === "ssh-rsa") {
+            return ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"];
+        }
+        return [algorithm];
     }
 
     public static async executeSshCwd(session: SshSession,
@@ -433,11 +450,29 @@ export class Shell {
         return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
 
+    /**
+     * Check whether a session can establish a working SSH connection. Resolves true on success, false for
+     * non-host-key failures, and rejects with a host-key {@link ImperativeError} when the key is untrusted
+     * or changed, so callers can tell that apart from bad credentials.
+     * @param session - the SSH session to validate
+     * @returns a promise resolving to true/false, or rejecting with a host-key error
+     */
     public static async isConnectionValid(session: SshSession): Promise<boolean>{
-        return new Promise((resolve, _) => {
+        const connState: IConnectionState = { hostKeyRejected: false, hostKeyChanged: false };
+        return new Promise((resolve, reject) => {
             const conn = new Client();
-            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => resolve(false));
-            Shell.connect(conn, session);
+            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => {
+                if (connState.hostKeyRejected) {
+                    reject(new ImperativeError({
+                        msg: connState.hostKeyChanged ?
+                            ZosUssMessages.hostKeyChanged.message :
+                            ZosUssMessages.hostKeyVerificationFailed.message
+                    }));
+                    return;
+                }
+                resolve(false);
+            });
+            Shell.connect(conn, session, connState);
         });
     }
 

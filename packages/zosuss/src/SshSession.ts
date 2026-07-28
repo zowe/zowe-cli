@@ -139,6 +139,7 @@ export class SshSession {
      */
     public static SSH_OPTION_INSECURE: ICommandOptionDefinition = {
         name: "insecure",
+        aliases: ["i"],
         description: "Skip verification of the z/OS SSH server's host key, so the server's identity is " +
             "not confirmed before credentials are sent.",
         type: "boolean",
@@ -183,11 +184,12 @@ export class SshSession {
      * is set by the command handler layer to prompt the user interactively (trust on first use) and is
      * intentionally not part of the serializable {@link ISshSession} configuration. When unset (e.g. pure
      * SDK usage with no interactive layer), an untrusted key is rejected.
-     * @param info - the presented key (base64 blob), its human-readable fingerprint, and whether it
-     *               differs from a previously pinned key.
+     * @param info - the presented key (base64 blob), its fingerprint, whether it differs from a pinned
+     *               key, and the pinned key's fingerprint when it does.
      * @returns a promise resolving to true to trust the key and continue, or false to reject the connection.
      */
-    public hostKeyVerifier?: (info: { fingerprint: string; key: string; changed: boolean }) => Promise<boolean>;
+    public hostKeyVerifier?: (info: { fingerprint: string; key: string; changed: boolean; pinnedFingerprint?: string })
+        => Promise<boolean>;
 
     /**
      * Creates an instance of AbstractSession.

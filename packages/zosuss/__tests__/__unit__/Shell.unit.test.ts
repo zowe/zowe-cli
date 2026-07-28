@@ -133,7 +133,7 @@ describe("Shell", () => {
         }
 
         it("should compute an OpenSSH-style SHA256 fingerprint", () => {
-            const fingerprint = Shell.getHostKeyFingerprint(fakeKey);
+            const fingerprint = (Shell as any).getHostKeyFingerprint(fakeKey);
             expect(fingerprint).toMatch(/^SHA256:[A-Za-z0-9+/]+$/);
             expect(fingerprint).not.toContain("="); // padding stripped
         });
@@ -148,18 +148,18 @@ describe("Shell", () => {
 
         describe("host key algorithm", () => {
             it("should parse the algorithm name out of a key blob", () => {
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-ed25519"))).toBe("ssh-ed25519");
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ssh-rsa"))).toBe("ssh-rsa");
-                expect(Shell.getHostKeyAlgorithm(makeKeyBlob("ecdsa-sha2-nistp256"))).toBe("ecdsa-sha2-nistp256");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ssh-ed25519"))).toBe("ssh-ed25519");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ssh-rsa"))).toBe("ssh-rsa");
+                expect((Shell as any).getHostKeyAlgorithm(makeKeyBlob("ecdsa-sha2-nistp256"))).toBe("ecdsa-sha2-nistp256");
             });
 
             it("should return undefined for a blob that cannot be parsed", () => {
-                expect(Shell.getHostKeyAlgorithm(Buffer.alloc(0))).toBeUndefined();
-                expect(Shell.getHostKeyAlgorithm(Buffer.from([0, 0]))).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(Buffer.alloc(0))).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(Buffer.from([0, 0]))).toBeUndefined();
                 // Length prefix larger than the buffer
                 const bogus = Buffer.alloc(8);
                 bogus.writeUInt32BE(9999, 0);
-                expect(Shell.getHostKeyAlgorithm(bogus)).toBeUndefined();
+                expect((Shell as any).getHostKeyAlgorithm(bogus)).toBeUndefined();
             });
 
             it("should request the pinned key's algorithm so the same key type is presented", async () => {
@@ -232,6 +232,21 @@ describe("Shell", () => {
             expect(cb).toHaveBeenCalledWith(true);
         });
 
+        it("should surface the pinned key type when the handshake fails before verification", async () => {
+            const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64 });
+            mockConnect.mockImplementationOnce(() => {
+                mockClient.emit("error", new Error("no matching host key format"));
+            });
+            let caught: any;
+            try {
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+            } catch (e) {
+                caught = e;
+            }
+            expect(caught.message).toContain(ZosUssMessages.pinnedHostKeyConnectFailed.message);
+            expect(caught.message).toContain("ssh-ed25519");
+        });
+
         it("should reject when the interactive verifier declines the key", async () => {
             const session = new SshSession({ hostname: "localhost", port: 22, user: "", password: "" });
             session.hostKeyVerifier = jest.fn().mockResolvedValue(false);
@@ -265,6 +280,14 @@ describe("Shell", () => {
             });
             const response = await Shell.isConnectionValid(fakeSshSession);
             expect(response).toBe(false);
+        });
+        it("should reject with a host-key error when the host key is not trusted", async () => {
+            mockConnect.mockImplementationOnce((config: any) => {
+                config.hostVerifier(Buffer.from("untrusted-key"), jest.fn());
+                mockClient.emit("error", new Error("handshake"));
+            });
+            await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow(
+                ZosUssMessages.hostKeyVerificationFailed.message);
         });
     });
 
