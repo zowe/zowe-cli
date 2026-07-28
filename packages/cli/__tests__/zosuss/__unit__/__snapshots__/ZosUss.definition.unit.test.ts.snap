@@ -99,6 +99,9 @@ Object {
           "type": "string",
         },
         Object {
+          "aliases": Array [
+            "i",
+          ],
           "defaultValue": false,
           "description": "Skip verification of the z/OS SSH server's host key, so the server's identity is not confirmed before credentials are sent.",
           "group": "z/OS Ssh Connection Options",
