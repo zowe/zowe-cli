@@ -40,7 +40,8 @@
     "watch:webHelp": "cd web-help && npm run watch",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js",
+    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/stageBundledDeps.js link",
+    "postpack": "node ../../scripts/stageBundledDeps.js unlink",
     "clean": "rimraf lib tsconfig.tsbuildinfo",
     "prepublishOnly": "cd web-help && npm run deps:lockfile"
   },

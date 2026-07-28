@@ -43,7 +43,8 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/stageBundledDeps.js link",
+    "postpack": "node ../../scripts/stageBundledDeps.js unlink"
   },
   "dependencies": {
     "lodash": "^4.17.23",

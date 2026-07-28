@@ -43,14 +43,12 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/stageBundledDeps.js link",
+    "postpack": "node ../../scripts/stageBundledDeps.js unlink"
   },
   "dependencies": {
     "@zowe/zos-files-for-zowe-sdk": "8.33.2"
   },
-  "bundledDependencies": [
-    "@zowe/zos-files-for-zowe-sdk"
-  ],
   "devDependencies": {
     "@zowe/cli-test-utils": "8.33.2",
     "@zowe/core-for-zowe-sdk": "8.33.2",
