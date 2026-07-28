@@ -98,8 +98,8 @@ export class TestEnvironment extends BaseTestEnvironment {
             privateKey: defaultSystem.ssh.privateKey,
             keyPassphrase: defaultSystem.ssh.keyPassphrase,
             handshakeTimeout: defaultSystem.ssh.handshakeTimeout,
-            // System tests run against known test LPARs with no terminal to confirm a host key, so skip
-            // verification here (the equivalent of --insecure) rather than pin a key per environment.
+            // System tests have no terminal to confirm a host key, so skip
+            // verification here (the equivalent of --insecure)
             insecure: true
         });
     }
