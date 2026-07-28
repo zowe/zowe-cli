@@ -133,7 +133,7 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
         // Strip any leading non-JSON preamble (e.g. git lock warnings in CI pipelines)
         // before attempting to parse. Both '[' (npm < 12) and '{' (npm >= 12) are valid
         // JSON start characters, so one regex covers both output formats.
-        const jsonStart = execOutput.search(/\n[{\[]/);
+        const jsonStart = execOutput.search(/\n[{[]/);
         if (jsonStart > 0) {
             // we had some text before the JSON output
             Logger.getImperativeLogger().error(
