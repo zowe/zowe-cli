@@ -9,11 +9,13 @@
  */
 
 /**
- * Helper script to link and unlink bundled dependencies in package node_modules
+ * Helper script to copy and clean bundled dependencies in package node_modules
  * before npm pack / npm publish, ensuring that direct third-party dependencies
  * are physically bundled into each SDK package tarball in npm workspace monorepo.
  *
- * Prefers symlinks to the monorepo root node_modules for zero-copy staging speed.
+ * Uses physical dereferenced copying (fs.cpSync) so npm pack creates clean,
+ * non-relative tarball entry headers (package/node_modules/...) and avoids
+ * TAR_ENTRY_ERROR "path contains .." warnings during npm install.
  */
 
 const fs = require("fs");
@@ -25,7 +27,7 @@ function stageBundledDeps(action = process.argv[2]) {
     if (!action || !validActions.includes(action)) {
         console.error("Error: Missing or invalid command argument for stageBundledDeps.js.");
         console.error("Usage: node stageBundledDeps.js <link|unlink>");
-        console.error("  - link: Symlink direct third-party dependencies into local package node_modules.");
+        console.error("  - link: Copy direct third-party dependencies into local package node_modules.");
         console.error("  - unlink: Remove local package node_modules.");
         process.exit(1);
     }
@@ -65,7 +67,7 @@ function stageBundledDeps(action = process.argv[2]) {
     }
 
     // Action: link (or stage)
-    function symlinkPackageRecursive(pkgName, visited = new Set()) {
+    function copyPackageRecursive(pkgName, visited = new Set()) {
         if (visited.has(pkgName) || pkgName.startsWith("@zowe/")) {
             return;
         }
@@ -81,13 +83,7 @@ function stageBundledDeps(action = process.argv[2]) {
         fs.mkdirSync(path.dirname(destDir), { recursive: true });
 
         if (!fs.existsSync(destDir)) {
-            try {
-                const symlinkType = process.platform === "win32" ? "junction" : "dir";
-                fs.symlinkSync(srcDir, destDir, symlinkType);
-            } catch (err) {
-                // Fallback to copy if symlink fails
-                fs.cpSync(srcDir, destDir, { recursive: true, dereference: true });
-            }
+            fs.cpSync(srcDir, destDir, { recursive: true, dereference: true });
         }
 
         const depPkgJsonPath = path.join(srcDir, "package.json");
@@ -96,7 +92,7 @@ function stageBundledDeps(action = process.argv[2]) {
                 const depPkgJson = JSON.parse(fs.readFileSync(depPkgJsonPath, "utf-8"));
                 if (depPkgJson.dependencies) {
                     for (const childDep of Object.keys(depPkgJson.dependencies)) {
-                        symlinkPackageRecursive(childDep, visited);
+                        copyPackageRecursive(childDep, visited);
                     }
                 }
             } catch (e) {
@@ -110,9 +106,9 @@ function stageBundledDeps(action = process.argv[2]) {
         fs.mkdirSync(targetNm, { recursive: true });
         const visited = new Set();
         for (const dep of filterBundled) {
-            symlinkPackageRecursive(dep, visited);
+            copyPackageRecursive(dep, visited);
         }
-        console.log(`[stageBundledDeps] Linked ${visited.size} symlinked packages into ${targetNm} for ${pkgJson.name}`);
+        console.log(`[stageBundledDeps] Staged ${visited.size} copied packages into ${targetNm} for ${pkgJson.name}`);
     }
 }
 
