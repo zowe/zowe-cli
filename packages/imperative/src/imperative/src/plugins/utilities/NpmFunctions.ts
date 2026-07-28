@@ -33,6 +33,23 @@ export function findNpmOnPath(): string {
     return which.sync("npm");
 }
 
+/** Cached npm major version — populated on first call to {@link getNpmMajorVersion}. */
+let _npmMajorVersion: number | undefined;
+
+/**
+ * Returns the major version of the npm CLI currently on the PATH.
+ * Result is cached so the `npm --version` subprocess is only spawned once per process.
+ *
+ * @internal
+ */
+function getNpmMajorVersion(): number {
+    if (_npmMajorVersion == null) {
+        const raw = ExecUtils.spawnAndGetOutput(npmCmd, ["--version"]).toString().trim();
+        _npmMajorVersion = parseInt(raw.split(".")[0], 10);
+    }
+    return _npmMajorVersion;
+}
+
 /**
  * Common function that installs a npm package using the local npm cli.
  * @param {string} prefix Path where to install npm the npm package.
@@ -113,26 +130,34 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
         //      "warning: unable to access '.git/config': Permission denied"
         //
         // JSON.parse() fails to parse the output because of that error message.
-        // A successful 'npm pack' command always displays its results in an array.
-        // The following code looks for the start of an array and removes any text
-        // that occurs before the array of valid JSON. This allows
-        // the JSON to be successfully parsed. Any removed text is logged.
-        let startOfJsonInx = execOutput.indexOf("\n[");
-        if (startOfJsonInx > 0) {
-            // we had some text before a JSON array
+        // Strip any leading non-JSON preamble (e.g. git lock warnings in CI pipelines)
+        // before attempting to parse. Both '[' (npm < 12) and '{' (npm >= 12) are valid
+        // JSON start characters, so one regex covers both output formats.
+        const jsonStart = execOutput.search(/\n[{\[]/);
+        if (jsonStart > 0) {
+            // we had some text before the JSON output
             Logger.getImperativeLogger().error(
                 "The following errors were displayed by 'npm pack' before its JSON output:\n" +
-                execOutput.substring(0, startOfJsonInx)
+                execOutput.substring(0, jsonStart)
             );
 
-            // discard the errors, and keep the JSON array
-            startOfJsonInx++;
-            execOutput = execOutput.substring(startOfJsonInx);
+            // discard the errors, and keep the JSON
+            execOutput = execOutput.substring(jsonStart + 1);
         }
 
         // parse the json output of the npm pack command
+        // npm < 12:  [{name: "...", version: "...", ...}]
+        // npm >= 12: {"@scope/pkg": {id: "@scope/pkg@version", ...}}
+        // Branch on the npm major version rather than inferring it from the JSON shape —
+        // shape inference is fragile if npm changes the structure again in a future release.
         try {
-            packageName = JSON.parse(execOutput)[0].name;
+            const parsedOutput = JSON.parse(execOutput);
+            if (getNpmMajorVersion() < 12) {
+                packageName = parsedOutput[0].name;
+            } else {
+                // npm >= 12: top-level object keyed by package name; first key is the name
+                packageName = Object.keys(parsedOutput)[0];
+            }
         } catch (err) {
             if (execOutput.length < maxOutputInx) {
                 truncationMsg = "";
