@@ -7,13 +7,14 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)
 - BugFix: Censored certain fields, and redacted token value from logs in `AbstractRestClient`. [#2816](https://github.com/zowe/zowe-cli/pull/2816)
 - BugFix: Added a `IO.hasOwnerOnlyAccess` utility function to check whether a file or directory's access is restricted to the current user only, cross-platform (POSIX mode bits/owner; Windows `icacls` ACL). [#2826](https://github.com/zowe/zowe-cli/pull/2826)
+- BugFix: Replaced `token` property with new `nonce` and `clientProof` properties to the `IDaemonResponse` interface, used for a mutual identity handshake between the daemon client and daemon: the client sends a nonce first, the daemon proves it holds the secret token from the owner-only daemon PID file before the client sends anything else, and the client then proves the same back with a keyed proof (derived from that same token) on its request. The raw token itself is never sent on the wire. [#2832](https://github.com/zowe/zowe-cli/pull/2832)
  
 ## `5.27.22`
 
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)
 - BugFix: The `Config.set` function, `ConfigProfiles.set` function, and the `ConfigSecure` property walkers now reject dotted paths whose segments are empty or use reserved property names. [#2806](https://github.com/zowe/zowe-cli/pull/2806)
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2804](https://github.com/zowe/zowe-cli/pull/2804)
-- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#TBD](https://github.com/zowe/zowe-cli/pull/TBD)
+- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2805](https://github.com/zowe/zowe-cli/pull/2805)
 
 ## `5.27.21`
 
