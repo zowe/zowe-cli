@@ -88,22 +88,22 @@ export class ZosFilesUtils {
 
     /**
      * Ensures a temp directory exists and is safe to use, creating it if necessary.
-     * When creating, the directory is restricted to the owner (mode 0700 on POSIX; on Windows
-     * `fs.mkdirSync`'s `mode` is a no-op, so an owner-only ACL is set via {@link IO.giveAccessOnlyToOwner}).
-     * When the directory already exists, it is rejected unless it is a real directory whose access is
-     * restricted to the current user - verified the same way on every platform via
-     * {@link IO.hasOwnerOnlyAccess} - so a directory planted by another local user sharing the same
-     * tmp location is refused.
+     * Ownership and permissions are always verified after the creation attempt, whether or not the
+     * directory already existed, so a directory planted by another local user sharing the same tmp
+     * location is rejected.
      * @param {string} dir - the temp directory to validate or create
      * @throws {ImperativeError} - when the directory exists but is not safe to use
      */
     public static ensureSafeTempDir(dir: string): void {
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+        try {
+            fs.mkdirSync(dir, { recursive: false, mode: 0o700 });
             if (process.platform === "win32") {
                 IO.giveAccessOnlyToOwner(dir);
             }
-            return;
+        } catch (err) {
+            if (err.code !== "EEXIST") {
+                throw err;
+            }
         }
         // Reject a planted symlink/non-directory (lstat does not follow symlinks) before checking access.
         if (!fs.lstatSync(dir).isDirectory() || !IO.hasOwnerOnlyAccess(dir)) {

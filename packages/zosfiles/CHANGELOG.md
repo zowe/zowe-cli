@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking:** The `ZosFilesUtils.ensureSafeTempDir` function no longer creates missing parent directories recursively; the temp directory's immediate parent must already exist. This avoids a race condition where a recursive `mkdir` function call could create part of the path before the safety checks ran. [#2831](https://github.com/zowe/zowe-cli/pull/2831)
+
 ## `8.35.0`
 
 - Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
