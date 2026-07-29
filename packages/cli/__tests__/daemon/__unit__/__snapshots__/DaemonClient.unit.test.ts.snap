@@ -1,26 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DaemonClient tests should process data when a valid token is supplied 1`] = `
+exports[`DaemonClient tests should process data when a valid client proof is supplied 1`] = `
 Array [
   "feed",
   "🐶",
 ]
 `;
 
-exports[`DaemonClient tests should process data when a valid token is supplied 2`] = `
+exports[`DaemonClient tests should process data when a valid client proof is supplied 2`] = `
 Object {
   "response": Object {
     "argv": Array [
       "feed",
       "🐶",
     ],
+    "clientProof": undefined,
     "cwd": "fake",
     "env": Object {
       "FORCE_COLOR": "0",
     },
     "stdin": null,
     "stdinLength": 0,
-    "token": undefined,
     "user": "ZmFrZQ==",
   },
   "stream": Object {
@@ -74,13 +74,13 @@ Object {
       "feed",
       "🐶",
     ],
+    "clientProof": undefined,
     "cwd": "fake",
     "env": Object {
       "FORCE_COLOR": "0",
     },
     "stdin": null,
     "stdinLength": 0,
-    "token": undefined,
     "user": "ZmFrZQ==",
   },
   "stream": Object {
@@ -134,11 +134,11 @@ Object {
       "feed",
       "🐱",
     ],
+    "clientProof": undefined,
     "cwd": "fake",
     "env": Object {},
     "stdin": null,
     "stdinLength": 1024,
-    "token": undefined,
     "user": "ZmFrZQ==",
   },
   "stdinStream": Promise {},
