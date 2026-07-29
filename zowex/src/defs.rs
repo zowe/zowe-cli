@@ -31,6 +31,7 @@ pub const EXIT_CODE_COMM_IO_ERROR: i32 = 110;
 pub const EXIT_CODE_FILE_IO_ERROR: i32 = 111;
 pub const EXIT_CODE_ENV_ERROR: i32 = 112;
 pub const EXIT_CODE_CANT_CONVERT_JSON: i32 = 113;
+pub const EXIT_CODE_DAEMON_IDENTITY_NOT_VERIFIED: i32 = 114;
 
 pub const LAUNCH_DAEMON_OPTION: &str = "--daemon";
 pub const SHUTDOWN_REQUEST: &str = "shutdown";
@@ -64,9 +65,11 @@ pub struct DaemonResponse {
     pub stdinLength: Option<i32>,
     pub stdin: Option<String>,
     pub user: Option<String>,
-    // Secret token read from the owner-only daemon pid file. Echoing it back
-    // proves to the daemon that we are the user that owns it.
-    pub token: Option<String>,
+    // Keyed proof (HMAC-SHA256 of the secret pid-file token, bound to the
+    // server's handshake nonce) that we hold the same secret as the
+    // owner-only pid file. The raw token itself is never sent on the wire;
+    // see comm::comm_handshake.
+    pub clientProof: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -77,6 +80,17 @@ pub struct DaemonPidForUser {
     // daemons do not write this field, so it defaults to None when absent.
     #[serde(default)]
     pub token: Option<String>,
+}
+
+/**
+ * Reply sent by the daemon to the initial handshake "hello" frame, proving
+ * that the daemon knows the secret token stored in the owner-only pid file.
+ */
+#[derive(Deserialize)]
+#[allow(non_snake_case)]
+pub struct DaemonHandshakeReply {
+    pub nonce: String,
+    pub serverProof: String,
 }
 
 pub enum CmdShell {
