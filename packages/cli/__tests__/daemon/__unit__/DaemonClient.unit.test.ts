@@ -11,11 +11,34 @@
 
 jest.mock("net");
 jest.mock("@zowe/imperative");
+import * as crypto from "crypto";
 import * as net from "net";
 import * as stream from "stream";
 import { text } from "stream/consumers";
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
 import { IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+
+/**
+ * Compute the HMAC-SHA256 proof for `context` + `nonce`, keyed by `token`,
+ * matching DaemonClient's private `computeProof` method. `context` is
+ * "srv:" for the daemon's proof of itself, or "cli:" for the client's proof.
+ */
+function computeExpectedProof(context: "srv:" | "cli:", token: string, nonce: string): string {
+    return crypto.createHmac("sha256", token).update(context).update(nonce).digest("base64");
+}
+
+/**
+ * Simulate a completed identity handshake on `daemonClient` (as if a prior
+ * hello/proof exchange already happened on this connection), and return the
+ * client proof to attach to a request so it passes `isValidClientProof`.
+ * Lets tests that are not specifically about the handshake itself skip
+ * performing a literal round trip.
+ */
+function primeHandshake(daemonClient: DaemonClient, token: string, serverNonce = "test-server-nonce"): string {
+    (daemonClient as any).mHandshakeDone = true;
+    (daemonClient as any).mServerNonce = serverNonce;
+    return computeExpectedProof("cli:", token, serverNonce);
+}
 
 describe("DaemonClient tests", () => {
     beforeEach(() => {
@@ -53,6 +76,8 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -60,10 +85,9 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64'),
-            token: fakeToken
+            clientProof
         };
 
-        daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse);
@@ -105,6 +129,8 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         const stdinData = String.fromCharCode(...Array(1024).keys());
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐱"],
@@ -113,11 +139,10 @@ describe("DaemonClient tests", () => {
             stdinLength: stdinData.length,
             stdin: null,
             user: Buffer.from("fake").toString('base64'),
-            token: fakeToken
+            clientProof
         };
         const createStdinStreamSpy = jest.spyOn(daemonClient as any, "createStdinStream").mockResolvedValueOnce(undefined);
 
-        daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse) + "\f" + stdinData;
@@ -204,9 +229,10 @@ describe("DaemonClient tests", () => {
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
 
         daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64'), token: fakeToken };
+        const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64'), clientProof };
         const stringData = JSON.stringify(promptResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
@@ -270,9 +296,10 @@ describe("DaemonClient tests", () => {
 
         // call our function that will do the shutdown
         daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
 
         // force `data` call and verify write method is called with termination message
-        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64'), token: fakeToken };
+        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64'), clientProof };
         const stringData = JSON.stringify(shutdownResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
@@ -377,6 +404,8 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -384,10 +413,9 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("ekaf").toString('base64'),
-            token: fakeToken
+            clientProof
         };
 
-        daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse);
@@ -430,16 +458,17 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
             stdin: null,
-            token: fakeToken
+            clientProof
         };
 
-        daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse);
@@ -482,6 +511,8 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -489,10 +520,9 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: "ekaf",
-            token: fakeToken
+            clientProof
         };
 
-        daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse);
@@ -525,7 +555,7 @@ describe("DaemonClient tests", () => {
         expect(ImperativeError).toHaveBeenLastCalledWith({ msg: errorMsg });
     });
 
-    it("should process data when a valid token is supplied", () => {
+    it("should process data when a valid client proof is supplied", () => {
 
         const log = jest.fn(() => {
             // do nothing
@@ -557,6 +587,8 @@ describe("DaemonClient tests", () => {
 
         const daemonToken = "a".repeat(64);
         const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+        const clientProof = primeHandshake(daemonClient, daemonToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -564,10 +596,9 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64'),
-            token: daemonToken
+            clientProof
         };
 
-        daemonClient.run();
         const stringData = JSON.stringify(daemonResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
@@ -576,7 +607,7 @@ describe("DaemonClient tests", () => {
         expect(client.end).not.toHaveBeenCalled();
     });
 
-    it("should not process data when the token is missing", () => {
+    it("should not process data when the client proof is missing", () => {
 
         const log = jest.fn(() => {
             // do nothing
@@ -603,7 +634,10 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+        primeHandshake(daemonClient, daemonToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -611,19 +645,18 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64')
-            // no token supplied
+            // no clientProof supplied
         };
 
-        daemonClient.run();
         const stringData = JSON.stringify(daemonResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
-        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon token.");
+        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon proof.");
         expect(parse).not.toHaveBeenCalled();
         expect(client.end).toHaveBeenCalled();
     });
 
-    it("should not process data when the token is invalid", () => {
+    it("should not process data when the client proof is invalid", () => {
 
         const log = jest.fn(() => {
             // do nothing
@@ -650,7 +683,10 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+        primeHandshake(daemonClient, daemonToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -658,20 +694,19 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64'),
-            // a forged token of a different value (and different length)
-            token: "b".repeat(32)
+            // a forged proof of a different value (and different length)
+            clientProof: "b".repeat(32)
         };
 
-        daemonClient.run();
         const stringData = JSON.stringify(daemonResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
-        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon token.");
+        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon proof.");
         expect(parse).not.toHaveBeenCalled();
         expect(client.end).toHaveBeenCalled();
     });
 
-    it("should not process data when a valid user supplies a wrong same-length token", () => {
+    it("should not process data when a valid user supplies a wrong same-length client proof", () => {
         // Guards against the most likely real attack: another local user who can
         // open the pipe and knows our user name, but cannot read the token. Use a
         // same-length token so the timing-safe comparison itself is exercised.
@@ -687,7 +722,10 @@ describe("DaemonClient tests", () => {
         const server: net.Server = undefined;
         const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+        const correctProof = primeHandshake(daemonClient, daemonToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
@@ -695,10 +733,133 @@ describe("DaemonClient tests", () => {
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64'),
-            token: "c".repeat(64)
+            clientProof: "c".repeat(correctProof.length)
         };
 
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should respond to a hello frame with a keyed proof and not treat it as a command", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const write = jest.fn();
+        const client = { on: jest.fn(), write, end: jest.fn() };
+
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
         daemonClient.run();
+
+        const clientNonce = "client-chosen-nonce";
+        (daemonClient as any).data(Buffer.from(JSON.stringify({ nonce: clientNonce })));
+
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).not.toHaveBeenCalled();
+        expect(write).toHaveBeenCalledTimes(1);
+
+        const reply = JSON.parse((write.mock.calls[0][0] as string).replace(/\f$/, ""));
+        expect(typeof reply.nonce).toBe("string");
+        expect(reply.nonce.length).toBeGreaterThan(0);
+        expect(reply.serverProof).toBe(computeExpectedProof("srv:", daemonToken, clientNonce));
+    });
+
+    it("should reject a hello frame with a missing or empty nonce", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        daemonClient.run();
+
+        (daemonClient as any).data(Buffer.from(JSON.stringify({})));
+
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should reject a real request that arrives before any handshake has completed", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
+
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+
+        // A real request, with a well-formed (but unbound) clientProof, sent
+        // without ever performing the hello/proof handshake first.
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64'),
+            clientProof: computeExpectedProof("cli:", daemonToken, "some-nonce")
+        };
+
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should reject a client proof that does not match the handshake's server nonce", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
+
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        daemonClient.run();
+        primeHandshake(daemonClient, daemonToken, "the-real-server-nonce");
+
+        // A proof correctly derived from the token, but bound to the wrong
+        // nonce (as if replayed from a different connection).
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64'),
+            clientProof: computeExpectedProof("cli:", daemonToken, "a-different-server-nonce")
+        };
+
         (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
 
         expect(parse).not.toHaveBeenCalled();
