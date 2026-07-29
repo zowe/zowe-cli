@@ -19,7 +19,11 @@ use std::time::Duration;
 #[cfg(target_family = "unix")]
 use home::home_dir;
 
+extern crate base64;
+use base64::prelude::*;
+
 // Zowe daemon executable modules
+use crate::comm::*;
 use crate::defs::*;
 use crate::proc::*;
 use crate::run::*;
@@ -93,7 +97,10 @@ fn unit_test_util_get_socket_string() {
     // expect to override socket string with env on Linux
     #[cfg(target_family = "unix")]
     {
-        env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
+        env::set_var(
+            "ZOWE_DAEMON_DIR",
+            format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()),
+        );
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));
@@ -145,6 +152,135 @@ fn unit_test_util_get_daemon_token_from_dir() {
 
     // cleanup
     let _ = fs::remove_dir_all(&token_test_dir);
+}
+
+#[test]
+fn unit_test_comm_hmac_proof_roundtrip() {
+    let token = "abc123";
+    let nonce = "some-nonce";
+    let proof = comm_hmac_proof(token, "srv:", nonce);
+
+    assert!(comm_verify_hmac_proof(token, "srv:", nonce, &proof));
+
+    // a proof computed for the other direction's context must not verify
+    assert!(!comm_verify_hmac_proof(token, "cli:", nonce, &proof));
+    // a proof computed with a different token must not verify
+    assert!(!comm_verify_hmac_proof(
+        "a-different-token",
+        "srv:",
+        nonce,
+        &proof
+    ));
+    // a proof computed for a different nonce must not verify
+    assert!(!comm_verify_hmac_proof(
+        token,
+        "srv:",
+        "other-nonce",
+        &proof
+    ));
+    // a malformed (non-base64) candidate must not verify, and must not panic
+    assert!(!comm_verify_hmac_proof(
+        token,
+        "srv:",
+        nonce,
+        "not valid base64!!"
+    ));
+}
+
+#[test]
+fn unit_test_comm_generate_nonce_is_random_and_well_formed() {
+    let first = comm_generate_nonce();
+    let second = comm_generate_nonce();
+    assert_ne!(first, second, "two generated nonces should not collide");
+
+    let decoded = BASE64_STANDARD
+        .decode(&first)
+        .expect("nonce should be valid base64");
+    assert_eq!(decoded.len(), 16, "nonce should be 16 random bytes");
+}
+
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn integration_test_comm_handshake_accepts_valid_daemon_proof() {
+    use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+    use tokio::net::UnixStream;
+
+    let (mut client_stream, server_stream) = UnixStream::pair().unwrap();
+    let token = "shared-secret-token".to_string();
+
+    let server_token = token.clone();
+    let server_task = tokio::spawn(async move {
+        // Play the daemon's side of the handshake: read the client's hello,
+        // then prove we know the shared token.
+        let mut server_reader = BufReader::new(server_stream);
+        let mut buf: Vec<u8> = Vec::new();
+        server_reader.read_until(0xC, &mut buf).await.unwrap();
+        buf.pop(); // remove the trailing form feed
+        let hello: serde_json::Value = serde_json::from_slice(&buf).unwrap();
+        let client_nonce = hello["nonce"].as_str().unwrap().to_string();
+
+        let server_nonce = comm_generate_nonce();
+        let server_proof = comm_hmac_proof(&server_token, "srv:", &client_nonce);
+        let reply = serde_json::json!({ "nonce": server_nonce, "serverProof": server_proof });
+        let mut reply_bytes = reply.to_string().into_bytes();
+        reply_bytes.push(0xC);
+        server_reader
+            .get_mut()
+            .write_all(&reply_bytes)
+            .await
+            .unwrap();
+
+        server_nonce
+    });
+
+    let result = comm_handshake(&mut client_stream, &token).await;
+    let server_nonce = server_task.await.unwrap();
+
+    let client_proof =
+        result.expect("handshake should succeed when the daemon proves the correct token");
+    assert_eq!(client_proof, comm_hmac_proof(&token, "cli:", &server_nonce));
+}
+
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn integration_test_comm_handshake_rejects_wrong_daemon_proof() {
+    use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+    use tokio::net::UnixStream;
+
+    let (mut client_stream, server_stream) = UnixStream::pair().unwrap();
+    let token = "shared-secret-token".to_string();
+
+    // Spawn the impostor concurrently with (not before) the client's
+    // handshake attempt below: it must be waiting to read the client's hello
+    // when the client sends it, not the other way around.
+    let server_task = tokio::spawn(async move {
+        // Play an impostor that squatted our communication channel: it can
+        // read our hello, but does not know our real secret token, so it
+        // cannot produce a proof that will verify.
+        let mut server_reader = BufReader::new(server_stream);
+        let mut buf: Vec<u8> = Vec::new();
+        server_reader.read_until(0xC, &mut buf).await.unwrap();
+        buf.pop();
+        let hello: serde_json::Value = serde_json::from_slice(&buf).unwrap();
+        let client_nonce = hello["nonce"].as_str().unwrap().to_string();
+
+        let bad_proof = comm_hmac_proof("not-the-real-token", "srv:", &client_nonce);
+        let reply = serde_json::json!({ "nonce": comm_generate_nonce(), "serverProof": bad_proof });
+        let mut reply_bytes = reply.to_string().into_bytes();
+        reply_bytes.push(0xC);
+        server_reader
+            .get_mut()
+            .write_all(&reply_bytes)
+            .await
+            .unwrap();
+    });
+
+    let result = comm_handshake(&mut client_stream, &token).await;
+    server_task.await.unwrap();
+    assert!(
+        result.is_err(),
+        "handshake should fail when the daemon cannot prove the correct token"
+    );
 }
 
 #[test]
@@ -227,7 +363,10 @@ fn unit_test_util_restrict_zowe_bin_to_owner() {
     util_restrict_zowe_bin_to_owner();
 
     let my_exe = env::current_exe().expect("should be able to get current exe path");
-    assert!(my_exe.exists(), "the executable should still exist after restriction");
+    assert!(
+        my_exe.exists(),
+        "the executable should still exist after restriction"
+    );
     assert!(
         my_exe.parent().unwrap().exists(),
         "the bin directory should still exist after restriction"
