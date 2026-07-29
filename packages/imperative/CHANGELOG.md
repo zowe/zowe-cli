@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Replaced the `token` property with new `nonce` and `clientProof` properties on the `IDaemonResponse` interface, used for a mutual identity handshake between the daemon client and daemon: the client sends a nonce first, the daemon proves it holds the secret token from the owner-only daemon PID file before the client sends anything else, and the client then proves the same back with a keyed proof (derived from that same token) on its request. The raw token itself is never sent on the wire. [#2833](https://github.com/zowe/zowe-cli/pull/2833)
+
 ## `8.35.0`
 
 - Enhancement: Added a `ConfigRedact` API, accessible via the `Config.api.redact` class instance, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)

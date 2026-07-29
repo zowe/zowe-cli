@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Hardened daemon client authentication by adding a mutual identity handshake so the daemon must prove its own identity to the client before the client sends argv/cwd/env. [#2833](https://github.com/zowe/zowe-cli/pull/2833)
+
 ## `8.35.0`
 
 - Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
