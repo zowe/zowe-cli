@@ -15,6 +15,7 @@ import * as path from "path";
 import { PassThrough, Readable } from "stream";
 import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
 import { DaemonUtil } from "./DaemonUtil";
+import { IDaemonHandshakeReply } from "./doc/IDaemonHandshakeReply";
 
 /**
  * Class for handling client connections to our persistent service (e.g. daemon mode)
@@ -29,17 +30,39 @@ export class DaemonClient {
     public static readonly CTRL_C_CHAR = "\x03";
 
     /**
+     * Number of random bytes in a handshake nonce.
+     * @internal
+     */
+    private static readonly NONCE_LENGTH = 16;
+
+    /**
      * The number of stdin bytes remaining to read from the daemon client.
      */
     private stdinBytesRemaining = 0;
+
+    /**
+     * The nonce we generated for the client during the identity handshake.
+     * Undefined until the handshake has taken place on this connection.
+     * @private
+     */
+    private mServerNonce?: string;
+
+    /**
+     * Whether the identity handshake has completed on this connection. Until
+     * this is true, the only message we will process is the client's hello.
+     * @private
+     */
+    private mHandshakeDone = false;
 
     /**
      * Creates an instance of DaemonClient.
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
      * @param {string} mOwner
-     * @param {string} mDaemonToken Secret token that the client must echo back to
-     *      prove it could read the owner-only PID file.
+     * @param {string} mDaemonToken Secret token, known only to this daemon and
+     *      to whoever can read the owner-only PID file, used to derive the
+     *      keyed proofs exchanged during the identity handshake. Never sent
+     *      on the wire itself.
      * @memberof DaemonClient
      */
     constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private readonly mDaemonToken: string) {
@@ -197,16 +220,11 @@ export class DaemonClient {
             return;
         }
 
-        // The user comparison above is advisory only: the client asserts its own
-        // user name, which any local process can forge. The real authentication is
-        // the token below. Because the token is stored in the owner-only PID file,
-        // a client that echoes it back has proven it could read that file, and is
-        // therefore the owner. This is what protects the daemon on Windows, where
-        // the named pipe can be opened by local users other than the owner.
-        if (!this.isValidToken(jsonData.token)) {
-            Imperative.api.appLogger.warn("A connection was attempted with a missing or invalid daemon token.");
+        // The proof can only be produced by reading the secret token from the owner-only PID file. 
+        if (!this.isValidClientProof(jsonData.clientProof)) {
+            Imperative.api.appLogger.warn("A connection was attempted with a missing or invalid daemon proof.");
             const responsePayload: string = DaemonRequest.create({
-                stderr: "The daemon client did not supply a valid daemon token. " +
+                stderr: "The daemon client did not supply a valid daemon proof. " +
                     "Try restarting the daemon with 'zowe daemon restart'.\n",
                 exitCode: 1
             });
@@ -214,9 +232,8 @@ export class DaemonClient {
             this.mClient.end();
             return;
         }
-        // Token is only used for authenticating the request; clear it so it is not
-        // accidentally logged or forwarded to command handlers.
-        jsonData.token = undefined;
+        // The proof is only used for authenticating the request; clear it so it is not logged or forwarded.
+        jsonData.clientProof = undefined;
 
         if (jsonData.stdin != null) {
             if (jsonData.stdin !== DaemonClient.CTRL_C_CHAR) {
@@ -238,24 +255,69 @@ export class DaemonClient {
     }
 
     /**
-     * Determine whether the token supplied by the daemon client matches the
-     * secret token that this daemon stored in its owner-only PID file.
-     *
-     * The comparison is performed in constant time to avoid leaking how much of
-     * the token matched via timing differences.
+     * Handle the first message on a connection, which must be a "hello"
+     * containing only a client-chosen nonce. We prove that we hold the secret
+     * daemon token by responding with a keyed proof bound to that nonce,
+     * before accepting any other request on this connection.
      *
      * @private
-     * @param {string} requestToken The token supplied by the daemon client.
-     * @returns {boolean} True if the token is present and matches our token.
+     * @param {IDaemonResponse} jsonData The parsed first message on this connection.
      * @memberof DaemonClient
      */
-    private isValidToken(requestToken: string): boolean {
-        if (this.mDaemonToken == null || typeof requestToken !== "string" || requestToken.length === 0) {
+    private handleHandshake(jsonData: IDaemonResponse) {
+        if (typeof jsonData.nonce !== "string" || jsonData.nonce.length === 0) {
+            Imperative.api.appLogger.warn("A connection was attempted without completing the identity handshake.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The daemon client did not begin the connection with a valid handshake.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        }
+
+        this.mServerNonce = crypto.randomBytes(DaemonClient.NONCE_LENGTH).toString("base64");
+        const reply: IDaemonHandshakeReply = {
+            nonce: this.mServerNonce,
+            serverProof: this.computeProof("srv:", jsonData.nonce)
+        };
+        this.mHandshakeDone = true;
+        this.mClient.write(JSON.stringify(reply) + DaemonRequest.EOW_DELIMITER);
+    }
+
+    /**
+     * Compute the base64-encoded HMAC-SHA256 of `context` + `nonce`, keyed by
+     * our secret daemon token. Used for both directions of the handshake: we
+     * prove ourselves with context "srv:", and verify the client's proof with
+     * context "cli:". The raw token itself is never sent on the wire.
+     *
+     * @private
+     * @param {string} context Either "srv:" or "cli:".
+     * @param {string} nonce The nonce that this proof is bound to.
+     * @returns {string} The base64-encoded proof.
+     * @memberof DaemonClient
+     */
+    private computeProof(context: string, nonce: string): string {
+        return crypto.createHmac("sha256", this.mDaemonToken).update(context).update(nonce).digest("base64");
+    }
+
+    /**
+     * Determine whether the proof supplied by the daemon client matches the
+     * proof we expect, given the server nonce established during the identity
+     * handshake on this connection.
+     *
+     * @private
+     * @param {string} candidate The proof supplied by the daemon client.
+     * @returns {boolean} True if the proof is present and matches our expectation.
+     * @memberof DaemonClient
+     */
+    private isValidClientProof(candidate: string): boolean {
+        if (this.mServerNonce == null || typeof candidate !== "string" || candidate.length === 0) {
             return false;
         }
 
-        const expected = Buffer.from(this.mDaemonToken);
-        const actual = Buffer.from(requestToken);
+        const expected = Buffer.from(this.computeProof("cli:", this.mServerNonce));
+        const actual = Buffer.from(candidate);
 
         // timingSafeEqual requires equal-length buffers, so a length mismatch is
         // an immediate (and safe) rejection.
