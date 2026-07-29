@@ -306,13 +306,12 @@ describe("ZosFilesUtils", () => {
     describe("ensureSafeTempDir", () => {
         const realPlatform = process.platform;
         const setPlatform = (value: string) => Object.defineProperty(process, "platform", { value, configurable: true });
-        let existsSyncSpy: jest.SpyInstance;
         let lstatSyncSpy: jest.SpyInstance;
         let mkdirSyncSpy: jest.SpyInstance;
         let giveAccessSpy: jest.SpyInstance;
         let hasOwnerOnlyAccessSpy: jest.SpyInstance;
+        const eexist = () => { const err: any = new Error("EEXIST"); err.code = "EEXIST"; throw err; };
         beforeEach(() => {
-            existsSyncSpy = jest.spyOn(fs, "existsSync");
             lstatSyncSpy = jest.spyOn(fs, "lstatSync");
             mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn());
             giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(jest.fn());
@@ -325,36 +324,53 @@ describe("ZosFilesUtils", () => {
 
         it("should create the directory owner-only when it does not exist (POSIX)", () => {
             setPlatform("linux");
-            existsSyncSpy.mockReturnValue(false);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
             ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc");
-            expect(mkdirSyncSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc", { recursive: true, mode: 0o700 });
+            expect(mkdirSyncSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc", { recursive: false, mode: 0o700 });
             expect(giveAccessSpy).not.toHaveBeenCalled();
-            expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
+            expect(hasOwnerOnlyAccessSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc");
         });
         it("should set an owner-only ACL when creating on Windows", () => {
             setPlatform("win32");
-            existsSyncSpy.mockReturnValue(false);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
             ZosFilesUtils.ensureSafeTempDir("C:\\Temp\\zowe-edit-ds-abc");
             expect(giveAccessSpy).toHaveBeenCalledWith("C:\\Temp\\zowe-edit-ds-abc");
         });
         it("should accept a pre-existing directory whose access is restricted to the current user (any platform)", () => {
-            existsSyncSpy.mockReturnValue(true);
+            mkdirSyncSpy.mockImplementation(eexist);
             lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
             hasOwnerOnlyAccessSpy.mockReturnValue(true);
             expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).not.toThrow();
             expect(hasOwnerOnlyAccessSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc");
         });
         it("should reject a pre-existing directory that is not restricted to the current user (any platform)", () => {
-            existsSyncSpy.mockReturnValue(true);
+            mkdirSyncSpy.mockImplementation(eexist);
             lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
             hasOwnerOnlyAccessSpy.mockReturnValue(false);
             expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
         });
         it("should reject when the path exists but is not a directory (e.g. a planted symlink)", () => {
-            existsSyncSpy.mockReturnValue(true);
+            mkdirSyncSpy.mockImplementation(eexist);
             lstatSyncSpy.mockReturnValue({ isDirectory: () => false } as any);
             expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
             expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
+        });
+        it("should reject a directory planted mid-race between a hypothetical existence check and creation", () => {
+            // Even though nothing "existed" beforehand from the caller's point of view, mkdirSync throwing
+            // EEXIST means something is there now - the safety check below must still run unconditionally.
+            mkdirSyncSpy.mockImplementation(eexist);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(false);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+            expect(giveAccessSpy).not.toHaveBeenCalled();
+        });
+        it("should rethrow non-EEXIST errors from mkdirSync", () => {
+            const err: any = new Error("EACCES");
+            err.code = "EACCES";
+            mkdirSyncSpy.mockImplementation(() => { throw err; });
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(err);
         });
     });
 
