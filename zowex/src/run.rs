@@ -274,9 +274,9 @@ pub async fn run_daemon_command(
 
     let executor = util_get_username();
 
-    // create the response structure for this message. The token is filled in
-    // later, once we have a connection and know the daemon has written its pid
-    // file (which contains the token).
+    // create the response structure for this message. clientProof is filled in
+    // later, once we have a connection and have completed the identity
+    // handshake with the daemon on that connection.
     let mut response: DaemonResponse =
         if !zowe_cmd_args.is_empty() && zowe_cmd_args[0] == SHUTDOWN_REQUEST {
             // Sending Control-C shutdown request
@@ -288,7 +288,7 @@ pub async fn run_daemon_command(
                 stdinLength: Some(0),
                 stdin: Some(control_c),
                 user: Some(BASE64_STANDARD.encode(&executor)),
-                token: None,
+                clientProof: None,
             }
         } else {
             DaemonResponse {
@@ -298,7 +298,7 @@ pub async fn run_daemon_command(
                 stdinLength: Some(stdin.len() as i32),
                 stdin: None,
                 user: Some(BASE64_STANDARD.encode(&executor)),
-                token: None,
+                clientProof: None,
             }
         };
 
@@ -360,11 +360,36 @@ pub async fn run_daemon_command(
             }
         }
 
-        // Now that the daemon is running and we are connected, read the secret
-        // token from the owner-only pid file and include it in our request. We
-        // (re)read and (re)serialize on every attempt so that a daemon restart
+        // Now that we are connected, read the secret token from the owner-only
+        // pid file. We (re)read it on every attempt so that a daemon restart
         // between retries still gets the correct token.
-        response.token = util_get_daemon_token_from_dir(&daemon_dir);
+        let token = match util_get_daemon_token_from_dir(&daemon_dir) {
+            Some(ok_val) => ok_val,
+            None => {
+                eprintln!(
+                    "Unable to read the Zowe daemon's authentication token. \
+                     Try restarting the daemon with 'zowe daemon restart'."
+                );
+                return Err(EXIT_CODE_DAEMON_IDENTITY_NOT_VERIFIED);
+            }
+        };
+
+        // Before sending anything sensitive (argv/cwd/env), require the far end
+        // to prove it knows that same secret token. This is what protects us
+        // against a hostile process squatting our communication channel, since
+        // merely being able to connect is not enough to be trusted.
+        let client_proof = match comm_handshake(&mut stream, &token).await {
+            Ok(ok_val) => ok_val,
+            Err(err_val) => {
+                eprintln!(
+                    "Unable to establish a trusted connection with the Zowe daemon.\nDetails = {}",
+                    err_val
+                );
+                return Err(EXIT_CODE_DAEMON_IDENTITY_NOT_VERIFIED);
+            }
+        };
+
+        response.clientProof = Some(client_proof.clone());
         let mut request_bytes: Vec<u8> = match serde_json::to_vec(&response) {
             Ok(ok_val) => ok_val,
             Err(err_val) => {
@@ -377,7 +402,7 @@ pub async fn run_daemon_command(
             request_bytes.extend_from_slice(&stdin);
         }
 
-        match comm_talk(&request_bytes, &mut stream).await {
+        match comm_talk(&request_bytes, &mut stream, &client_proof).await {
             Ok(ok_val) => {
                 return Ok(ok_val);
             }
