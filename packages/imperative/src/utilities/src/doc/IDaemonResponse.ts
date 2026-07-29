@@ -49,14 +49,21 @@ export interface IDaemonResponse {
     user?: string;
 
     /**
-     * Secret token that proves the daemon client could read the owner-only
-     * daemon PID file (and is therefore the user that owns this daemon).
-     * The daemon generates this token at startup and stores it in the
-     * owner-restricted `daemon_pid.json` file. The client echoes it back on
-     * every request. This is the authoritative authentication check, since
-     * the `user` field above is self-asserted and can be spoofed by another
-     * local user (most relevant on Windows, where the named pipe can be
-     * opened by users other than the owner).
+     * A fresh nonce chosen by the client, sent alone (with no other fields
+     * populated) as the very first message on a new connection. This starts
+     * the identity handshake: the daemon must prove it knows the secret
+     * token from the owner-only PID file (bound to this nonce) before the
+     * client will send anything else.
      */
-    token?: string;
+    nonce?: string;
+
+    /**
+     * Keyed proof that the daemon client could read the owner-only daemon
+     * PID file (and is therefore the user that owns this daemon): an
+     * HMAC-SHA256 of the secret token, bound to the server nonce received
+     * during the handshake. The client sends this on every request. This is
+     * the authoritative authentication check. The raw
+     * token itself is never sent on the wire; see `DaemonClient`.
+     */
+    clientProof?: string;
 }
