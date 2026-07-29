@@ -189,6 +189,11 @@ export class DaemonClient {
             return;
         }
 
+        if (!this.mHandshakeDone) {
+            this.handleHandshake(jsonData);
+            return;
+        }
+
         let requestUser: string = undefined;
         if (jsonData.user != null) {
             try {
@@ -305,6 +310,9 @@ export class DaemonClient {
      * Determine whether the proof supplied by the daemon client matches the
      * proof we expect, given the server nonce established during the identity
      * handshake on this connection.
+     *
+     * The comparison is performed in constant time to avoid leaking how much of
+     * the proof matched via timing differences.
      *
      * @private
      * @param {string} candidate The proof supplied by the daemon client.
