@@ -17,6 +17,8 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 use tokio::io::AsyncBufReadExt;
+use tokio::io::AsyncRead;
+use tokio::io::AsyncWrite;
 use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
@@ -38,6 +40,15 @@ use windows_sys::Win32::System::Threading::{
 extern crate base64;
 use base64::prelude::*;
 
+extern crate hmac;
+use hmac::{Hmac, Mac};
+
+extern crate sha2;
+use sha2::Sha256;
+
+extern crate rand;
+use rand::RngCore;
+
 extern crate is_terminal;
 use is_terminal::IsTerminal;
 
@@ -47,7 +58,9 @@ use rpassword::read_password;
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::proc::*;
-use crate::util::{util_get_daemon_dir, util_get_daemon_token_from_dir, util_get_username};
+use crate::util::util_get_username;
+
+type HmacSha256 = Hmac<Sha256>;
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
@@ -299,12 +312,21 @@ unsafe fn windows_process_user_sid(process_handle: HANDLE) -> Option<Vec<u8>> {
  * @param stream
  *      A stream over which we perform our communication to the server.
  *
+ * @param client_proof
+ *      The proof (from a prior call to comm_handshake on this same
+ *      connection) to attach to any follow-up messages we send, such as
+ *      prompt replies.
+ *
  * @returns
  *      On success, a Result containing the exit code of the command
  *      run by the daemon.
  *      On failure, an error result.
  */
-pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
+pub async fn comm_talk(
+    message: &[u8],
+    stream: &mut DaemonClient,
+    client_proof: &str,
+) -> io::Result<i32> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
@@ -319,14 +341,6 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
 
     let mut exit_code = EXIT_CODE_SUCCESS;
     let mut _progress = false;
-
-    // get the daemon directory so we can read the token from its pid file later on
-    let daemon_dir = util_get_daemon_dir().map_err(|exit_code| {
-        io::Error::new(
-            io::ErrorKind::Other,
-            format!("Unable to get the zowe daemon directory (exit code {exit_code})"),
-        )
-    })?;
 
     loop {
         let mut reply: Option<String> = None;
@@ -398,10 +412,10 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             stdinLength: None,
                             stdin: Some(s),
                             user: Some(BASE64_STANDARD.encode(executor)),
-                            // We are already connected, so the pid file (and its
-                            // token) is present. Echo the token back so the daemon
-                            // accepts our prompt reply.
-                            token: util_get_daemon_token_from_dir(&daemon_dir),
+                            // Reuse the proof established during the handshake at
+                            // the start of this connection so the daemon accepts
+                            // our prompt reply.
+                            clientProof: Some(client_proof.to_string()),
                         };
                         let v = serde_json::to_string(&response)?;
                         reader.get_mut().write_all(v.as_bytes()).await?;
