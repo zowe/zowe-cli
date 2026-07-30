@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.32`
 
 - **Breaking**: `SshSession` now verifies the server's host key before sending credentials, using the `hostKey` and `insecure` session properties and an optional interactive `hostVerifier` hook; an unknown or changed key is rejected. [#2812](https://github.com/zowe/zowe-cli/pull/2812)
 
