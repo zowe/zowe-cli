@@ -13533,7 +13533,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.35.0",
+      "version": "8.35.1",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -13541,12 +13541,12 @@
         "@zowe/imperative": "8.35.0",
         "@zowe/provisioning-for-zowe-sdk": "8.35.0",
         "@zowe/zos-console-for-zowe-sdk": "8.35.0",
-        "@zowe/zos-files-for-zowe-sdk": "8.35.0",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.35.0",
+        "@zowe/zos-files-for-zowe-sdk": "8.35.1",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.35.1",
         "@zowe/zos-logs-for-zowe-sdk": "8.35.0",
         "@zowe/zos-tso-for-zowe-sdk": "8.35.0",
-        "@zowe/zos-uss-for-zowe-sdk": "8.35.0",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.35.0",
+        "@zowe/zos-uss-for-zowe-sdk": "8.35.1",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.35.1",
         "@zowe/zosmf-for-zowe-sdk": "8.35.0",
         "find-process": "^1.4.7",
         "lodash": "^4.17.23",
@@ -13791,10 +13791,10 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.35.0",
+      "version": "8.35.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.35.0"
+        "@zowe/zos-files-for-zowe-sdk": "8.35.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "8.35.0",
@@ -13828,7 +13828,7 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.35.0",
+      "version": "8.35.1",
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.23",
@@ -13838,7 +13838,7 @@
         "@zowe/cli-test-utils": "8.35.0",
         "@zowe/core-for-zowe-sdk": "8.35.0",
         "@zowe/imperative": "8.35.0",
-        "@zowe/zos-uss-for-zowe-sdk": "8.35.0"
+        "@zowe/zos-uss-for-zowe-sdk": "8.35.1"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -13882,10 +13882,10 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.35.0",
+      "version": "8.35.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.35.0"
+        "@zowe/zos-files-for-zowe-sdk": "8.35.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "8.35.0",
@@ -13956,7 +13956,7 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.35.0",
+      "version": "8.35.1",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
