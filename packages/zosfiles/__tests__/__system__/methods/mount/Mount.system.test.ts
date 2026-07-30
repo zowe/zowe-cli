@@ -55,7 +55,9 @@ describe("Mount and unmount a file system", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password
+            password:defaultSystem.ssh.password,
+            // No terminal here to confirm a host key, same as TestEnvironment.createSshSession
+            insecure:true
         });
         volume = defaultSystem.datasets.vol;
 
@@ -70,8 +72,10 @@ describe("Mount and unmount a file system", () => {
         try {
             await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
         } catch (err) {
+            // Without the mount point, Mount.fs below fails with a misleading z/OSMF error
             error = err;
             Imperative.console.info("Error: " + inspect(error));
+            throw err;
         }
 
         // Create a ZFS
@@ -84,8 +88,10 @@ describe("Mount and unmount a file system", () => {
         try {
             await Create.zfs(REAL_SESSION, fsname, zfsOptions);
         } catch (err) {
+            // A missing file system is reported later as a generic mount() error
             error = err;
             Imperative.console.info("Error: " + inspect(error));
+            throw err;
         }
     });
 
@@ -95,7 +101,9 @@ describe("Mount and unmount a file system", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password
+            password:defaultSystem.ssh.password,
+            // No terminal here to confirm a host key, same as TestEnvironment.createSshSession
+            insecure:true
         });
 
         // Delete the ZFS
@@ -257,7 +265,9 @@ describe("Mount and unmount a file system - encoded", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password
+            password:defaultSystem.ssh.password,
+            // No terminal here to confirm a host key, same as TestEnvironment.createSshSession
+            insecure:true
         });
         volume = defaultSystem.datasets.vol;
 
@@ -272,8 +282,10 @@ describe("Mount and unmount a file system - encoded", () => {
         try {
             await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
         } catch (err) {
+            // Without the mount point, Mount.fs below fails with a misleading z/OSMF error
             error = err;
             Imperative.console.info("Error: " + inspect(error));
+            throw err;
         }
 
         // Create a ZFS
@@ -286,8 +298,10 @@ describe("Mount and unmount a file system - encoded", () => {
         try {
             await Create.zfs(REAL_SESSION, fsname, zfsOptions);
         } catch (err) {
+            // A missing file system is reported later as a generic mount() error
             error = err;
             Imperative.console.info("Error: " + inspect(error));
+            throw err;
         }
     });
 
@@ -297,7 +311,9 @@ describe("Mount and unmount a file system - encoded", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password
+            password:defaultSystem.ssh.password,
+            // No terminal here to confirm a host key, same as TestEnvironment.createSshSession
+            insecure:true
         });
 
         // Delete the ZFS

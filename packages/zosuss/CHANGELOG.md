@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking**: `SshSession` now verifies the server's host key before sending credentials, using the `hostKey` and `insecure` session properties and an optional interactive `hostVerifier` hook; an unknown or changed key is rejected. [#2813](https://github.com/zowe/zowe-cli/pull/2813)
+- **Breaking**: `Shell.isConnectionValid` now rejects with a host key error when the host key is untrusted or changed, instead of returning `false`. [#2813](https://github.com/zowe/zowe-cli/pull/2813)
+
 ## `8.31.0`
 
 - Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)

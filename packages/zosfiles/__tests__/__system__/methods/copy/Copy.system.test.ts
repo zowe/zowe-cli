@@ -84,7 +84,9 @@ describe("Copy", () => {
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
+                        // Setup must succeed, otherwise the test asserts against the wrong copy path
                         Imperative.console.info(`Error: ${inspect(err)}`);
+                        throw err;
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -111,7 +113,9 @@ describe("Copy", () => {
 
                     expect(response).toBeTruthy();
                     expect(response.success).toBe(true);
-                    expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCopiedIntoNew.message.replace("%s", toDataSetName));
+                    // The target is created in beforeEach, so this copies into an existing
+                    // data set rather than a new one
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
 
                     expect(contents1).toBeTruthy();
                     expect(contents2).toBeTruthy();
