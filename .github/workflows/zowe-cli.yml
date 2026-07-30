@@ -60,7 +60,9 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Checkout zowex
-      run: git checkout ${{ env.ZOWEX_REF }} -- zowex
+      run: |
+        git fetch origin ${{ env.ZOWEX_REF }}
+        git checkout ${{ env.ZOWEX_REF }} -- zowex
       env:
         ZOWEX_REF: c6b4247e285e02167129a689967a34fc01240d7d # native-v1.2.6
 
