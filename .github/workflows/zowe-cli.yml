@@ -64,7 +64,7 @@ jobs:
         git fetch origin ${{ env.ZOWEX_REF }}
         git checkout ${{ env.ZOWEX_REF }} -- zowex
       env:
-        ZOWEX_REF: c6b4247e285e02167129a689967a34fc01240d7d # native-v1.2.6
+        ZOWEX_REF: bf84126f0c8368d184a8cbef983823445adcba9b # native-v1.2.7
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
