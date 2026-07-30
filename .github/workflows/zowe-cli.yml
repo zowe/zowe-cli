@@ -58,6 +58,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    
+    - name: Checkout zowex
+      uses: actions/checkout@v4
+      with:
+        ref: c6b4247e285e02167129a689967a34fc01240d7d # native-v1.2.6
+        filter: zowex
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
