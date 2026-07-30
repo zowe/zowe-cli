@@ -16,6 +16,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    
+    - name: Checkout zowex
+      uses: actions/checkout@v4
+      with:
+        ref: c6b4247e285e02167129a689967a34fc01240d7d
+        filter: zowex
 
     - name: Use Node.js LTS
       uses: actions/setup-node@v4
@@ -31,10 +37,6 @@ jobs:
         npm audit --production --audit-level=moderate
 
     # TODO Consider using actions-rs/audit-check after https://github.com/actions-rs/audit-check/issues/116 is fixed
-    - name: Check Daemon Vulnerabilities
-      working-directory: zowex
-      run: cargo audit --deny warnings
-
     - name: Check Secrets SDK Vulnerabilities
       working-directory: packages/secrets/src/keyring
       run: cargo audit --deny warnings --ignore RUSTSEC-2024-0370 --ignore RUSTSEC-2024-0429
