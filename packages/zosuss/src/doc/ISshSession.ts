@@ -19,7 +19,7 @@ export interface ISshSession {
     /**
      * Host to connect ssh to
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     hostname?: string;
 
@@ -27,43 +27,62 @@ export interface ISshSession {
      * Port to obtain data from
      * 22 is the default for ssh
      * @type {number}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     port?: number;
 
     /**
      * User name for logging in
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     user?: string;
 
     /**
      * Password
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     password?: string;
 
     /**
      * Path to a private key that matches with a public key stored in the server for authentication
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     privateKey?: string;
 
     /**
      * password to unlock the private key.
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     keyPassphrase?: string;
 
     /**
      * How long in milliseconds to wait for the SSH handshake to complete. If unset, defaults to 0 - no timeout.
      * @type {string}
-     * @memberof ISession
+     * @memberof ISshSession
      */
     handshakeTimeout?: number;
+
+    /**
+     * Trusted host key of the z/OS SSH server, stored as the base64-encoded key blob presented by the
+     * server during the handshake. When set, the server's key is verified against this value before any
+     * credentials are sent. Populated automatically on first connect after the user accepts the key
+     * (trust on first use), or configured manually to pin a known key.
+     * @type {string}
+     * @memberof ISshSession
+     */
+    hostKey?: string;
+
+    /**
+     * Skip verification of the SSH server's host key. Defaults to false, meaning the server's identity
+     * is verified before any credentials are sent. When true, host key verification is skipped entirely
+     * and credentials are sent without confirming the server's identity.
+     * @type {boolean}
+     * @memberof ISshSession
+     */
+    insecure?: boolean;
 
 }

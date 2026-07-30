@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- **Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the fingerprint and the key is saved to your ssh profile; a changed key is rejected. Use `--insecure` to skip verification or `--host-key` to pin a key. [#2812](https://github.com/zowe/zowe-cli/pull/2812)
 - BugFix: Hardened temporary file handling for the `zowe zos-files edit` command: the etag-refresh step no longer uses a shared, fixed path, and edit temp directories are now scoped per user (so co-tenants on a shared temp location no longer conflict) with owner-only access enforced on all platforms. [#2826](https://github.com/zowe/zowe-cli/pull/2826)
 - BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. [#2805](https://github.com/zowe/zowe-cli/pull/2805)
 - BugFix: Fixed "Access is denied" error when running CLI commands on Windows if daemon mode is active. [#2808](https://github.com/zowe/zowe-cli/issues/2808)
