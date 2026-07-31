@@ -11,7 +11,7 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    List } from "../../../../src";
+    List, ZosFilesUtils } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -84,7 +84,9 @@ describe("Copy", () => {
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
                         await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
+                        // Setup must succeed, otherwise the test asserts against the wrong copy path
                         Imperative.console.info(`Error: ${inspect(err)}`);
+                        throw err;
                     }
                 });
                 it("Should copy a data set", async () => {
@@ -111,7 +113,9 @@ describe("Copy", () => {
 
                     expect(response).toBeTruthy();
                     expect(response.success).toBe(true);
-                    expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCopiedIntoNew.message.replace("%s", toDataSetName));
+                    // The target is created in beforeEach, so this copies into an existing
+                    // data set rather than a new one
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
 
                     expect(contents1).toBeTruthy();
                     expect(contents2).toBeTruthy();
@@ -133,7 +137,7 @@ describe("Copy", () => {
                     try {
                         await Delete.dataSet(REAL_SESSION, fromDataSetName);
                         await Delete.dataSet(REAL_SESSION, toDataSetName);
-                        fs.rmSync(join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt'));
+                        fs.rmSync(join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -142,7 +146,7 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    const truncatedMembersFile = path.join(tmpdir(), 'zowe-copy-pds', fromDataSetName, 'truncatedMembers.txt');
+                    const truncatedMembersFile = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, 'truncatedMembers.txt');
                     fs.mkdirSync(path.dirname(truncatedMembersFile), { recursive: true, mode: 0o700 });
                     fs.writeFileSync(truncatedMembersFile, "");
                     try {

@@ -4,8 +4,16 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
 - BugFix: Fixed an issue where copying a data set to another LPAR over-allocated the target when the source was allocated in cylinders. The target is now always allocated in tracks, matching the size that z/OSMF reports, so a 15-track source no longer becomes a 225-track target. [#2623](https://github.com/zowe/zowe-cli/issues/2623)
+
+## `8.35.1`
+
+- **Breaking:** The `ZosFilesUtils.ensureSafeTempDir` function no longer creates missing parent directories recursively; the temp directory's immediate parent must already exist. This avoids a race condition where a recursive `mkdir` function call could create part of the path before the safety checks ran. [#2831](https://github.com/zowe/zowe-cli/pull/2831)
+
+## `8.35.0`
+
+- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+- BugFix: Hardened temporary directory handling for partitioned data set copy so the staging directory is scoped per user (co-tenants on a shared temp location no longer conflict) and owner-only access is enforced and re-verified on all platforms. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
 
 ## `8.33.1`
 

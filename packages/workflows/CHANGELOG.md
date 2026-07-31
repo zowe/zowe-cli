@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
-## Recent Changes
+## `8.35.0`
 
 - BugFix: Improved handling of temporary files created when uploading local workflow definitions. [#2824](https://github.com/zowe/zowe-cli/pull/2824)
 

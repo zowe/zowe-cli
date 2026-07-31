@@ -55,6 +55,14 @@ export const ZosUssProfile: ICommandProfileTypeConfiguration = {
             handshakeTimeout: {
                 type: "number",
                 optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT
+            },
+            hostKey: {
+                type: "string",
+                optionDefinition: SshSession.SSH_OPTION_HOSTKEY
+            },
+            insecure: {
+                type: "boolean",
+                optionDefinition: SshSession.SSH_OPTION_INSECURE
             }
         },
         required: []
