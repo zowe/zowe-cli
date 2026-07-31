@@ -62,7 +62,7 @@ jobs:
     - name: Checkout zowex
       run: |
         git fetch origin ${{ env.ZOWEX_REF }}
-        git checkout ${{ env.ZOWEX_REF }} -- zowex
+        git restore --source=${{ env.ZOWEX_REF }} zowex
       env:
         ZOWEX_REF: bf84126f0c8368d184a8cbef983823445adcba9b # native-v1.2.7
 

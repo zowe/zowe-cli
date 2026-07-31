@@ -122,3 +122,6 @@ packages/imperative/web-help/dist/js/
 
 jest-stare/
 jest.user.config.js
+
+# Daemon sourced in V3
+zowex

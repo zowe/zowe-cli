@@ -80,8 +80,9 @@ When you update `package.json` to include new dependencies, or when you pull cha
 npm update
 ```
 
-**Tip:** 
+**Tips:** 
 - When necessary, you can run the install command again to update dependencies changed in `package.json`.
+- The source for the native daemon binary is not included in the `zowe-v2-lts` branch. If you need to build the daemon, copy the `zowex` folder from the main branch: `git restore --source=master zowex`
 
 <br/>
 
