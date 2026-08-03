@@ -13533,7 +13533,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.35.1",
+      "version": "8.35.2",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
