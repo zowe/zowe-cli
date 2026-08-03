@@ -11,9 +11,7 @@
   "scripts": {
     "build": "lerna run build && node scripts/updateLicenses.js && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "postbuild": "node scripts/sampleCliTool.js build",
-    "build:exe": "cd zowex && cargo build && cargo clippy && cargo test",
     "clean": "lerna run --parallel clean",
-    "clean:exe": "cd zowex && cargo clean",
     "installWithBuild": "npm install && npm run build",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck --  --warning --no-spinner",
@@ -31,7 +29,6 @@
     "test:system": "env-cmd -f __tests__/__resources__/env/system.env --no-override jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts$\" --coverage false",
     "test:unit": "env-cmd -f __tests__/__resources__/env/unit.env --no-override jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts$\" --coverage",
     "watch": "lerna run --parallel watch",
-    "watch:exe": "cd zowex && cargo install cargo-watch && cargo watch -x build -x clippy -x test",
     "watch:test": "jest --watch",
     "generateCleanTypedoc": "npm run typedoc",
     "typedoc": "typedoc",
