@@ -152,6 +152,8 @@ jobs:
     - name: Package CLI
       id: package
       if: ${{ always() && steps.build.outcome == 'success' && env.PACKAGE_CLI == 'true' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: npm run package
 
     - name: Archive CLI Package
