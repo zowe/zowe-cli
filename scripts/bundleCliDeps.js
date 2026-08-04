@@ -94,13 +94,27 @@ function prepack() {
         ])
     );
     fs.writeFileSync(symlinksFile, JSON.stringify(relative, null, 2));
+
+    // Set at pack time only - npm skips installing a workspace's bundled deps that cannot hoist to the
+    // repo root, so committing this to package.json would break "npm ci".
+    pkgJson.bundleDependencies = true;
+    writePkgJson(pkgJson);
 }
 
 function postpack() {
+    const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
+    delete pkgJson.bundleDependencies;
+    writePkgJson(pkgJson);
+
     for (const targetPath of Object.keys(JSON.parse(fs.readFileSync(symlinksFile, "utf-8")))) {
         fs.unlinkSync(path.resolve(process.cwd(), targetPath));
     }
     fs.unlinkSync(symlinksFile);
+}
+
+// Matches how npm formats package.json, so adding and removing the key above leaves the file unchanged.
+function writePkgJson(pkgJson) {
+    fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
 // Resolves each symlink's archive path from realDir alone (see remap() for why this is needed): an

@@ -84,7 +84,6 @@
   "optionalDependencies": {
     "@zowe/secrets-for-zowe-sdk": "8.33.4"
   },
-  "bundleDependencies": true,
   "engines": {
     "node": ">=20.9.0"
   }
