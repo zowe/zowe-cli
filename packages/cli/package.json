@@ -31,7 +31,6 @@
     "lib",
     "prebuilds",
     "scripts",
-    "npm-shrinkwrap.json",
     "web-help-logo.png"
   ],
   "publishConfig": {
@@ -53,9 +52,9 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js",
-    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh",
-    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
+    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/bundleCliDeps.js prepack",
+    "postpack": "node ../../scripts/bundleCliDeps.js postpack",
+    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "8.35.0",
@@ -85,6 +84,7 @@
   "optionalDependencies": {
     "@zowe/secrets-for-zowe-sdk": "8.33.4"
   },
+  "bundleDependencies": true,
   "engines": {
     "node": ">=20.9.0"
   }

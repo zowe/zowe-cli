@@ -32,7 +32,7 @@ module.exports = {
             aliasTags: {
                 "latest": ["zowe-v3-lts"]
             },
-            pruneShrinkwrap: ["@zowe/cli"],
+            // pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true
         }],
         ["@octorelease/github", {
