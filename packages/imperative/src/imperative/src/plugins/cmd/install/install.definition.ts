@@ -64,6 +64,19 @@ const verboseDescription =
     "Specifies that verbose output is printed for npm install.\n" +
     "This may be useful for debugging errors during plugin installation.";
 
+const allowScriptsDescription =
+    "A comma-separated list of package names that are allowed to run their npm install scripts " +
+    "(preinstall, install, postinstall, and prepare). The names must match exactly. Zowe passes " +
+    "this list to npm as its own --allow-scripts option.\n" +
+    "\n" +
+    "npm 12 blocks these scripts unless the package is in the list. This breaks plug-ins that " +
+    "have a dependency that must be built during install, such as the Db2 plug-in and its " +
+    "ibm_db dependency. Older versions of npm do not know this option and ignore it, so using " +
+    "this option does not change how they work. If you do not use this option, Zowe does not " +
+    "pass anything to npm, and npm decides what to do.\n" +
+    "\n" +
+    "Only list packages that you trust. Install scripts can run any code on your machine.";
+
 /**
  * Definition of the install command.
  * @type {ICommandDefinition}
@@ -108,6 +121,12 @@ export const installDefinition: ICommandDefinition = {
             type: "boolean",
             description: verboseDescription,
             required: false
+        },
+        {
+            name: "allow-scripts",
+            type: "string",
+            description: allowScriptsDescription,
+            required: false
         }
     ],
     examples: [
@@ -139,6 +158,10 @@ export const installDefinition: ICommandDefinition = {
             description: "Install a remote plug-in from the registry which requires authorization" +
             "(don't need to use this flag if you have already logged in before)",
             options: "my-plugin --registry https://registry.npmjs.org/ --login"
+        },
+        {
+            description: "Install a remote plug-in and let one of its dependencies run its npm install scripts",
+            options: "my-plugin --allow-scripts=\"ibm_db\""
         }
     ]
 };
