@@ -472,9 +472,6 @@ Object {
                     "const": "base",
                   },
                 },
-                "required": Array [
-                  "type",
-                ],
               },
               "then": Object {
                 "properties": Object {

@@ -278,17 +278,23 @@ export class ConfigSchema {
         const andEntries: any[] = [];
         const defaultProperties: { [key: string]: any } = {};
         profiles.forEach((profile: { type: string, schema: IProfileSchema }) => {
+            const ifClause: any = {
+                properties: {
+                    type: { const: profile.type }
+                }
+            };
+            // `required: ["type"]` scopes a type-specific rule to profiles that actually
+            // declare that `type`. Without it the `if` matches vacuously for a typeless
+            // profile (JSON Schema only validates `properties` that are present), so every
+            // type's `then` would be applied to it. The `base` profile is exempt on
+            // purpose: its properties are shared defaults meant to apply to every profile
+            // regardless of `type`, so gating them behind `required` would drop them for
+            // typeless profiles (and forces the profiles to be reordered). See #2792.
+            if (profile.type !== "base") {
+                ifClause.required = ["type"];
+            }
             andEntries.push({
-                if: {
-                    // `required` is essential: without it the `if` matches vacuously for a
-                    // profile that has no `type` (JSON Schema only validates `properties`
-                    // that are present), so every type's `then` would be applied to a
-                    // typeless profile. Requiring `type` scopes each rule to its own type.
-                    required: ["type"],
-                    properties: {
-                        type: { const: profile.type }
-                    }
-                },
+                if: ifClause,
                 then: {
                     properties: this.generateSchema(profile.schema)
                 }

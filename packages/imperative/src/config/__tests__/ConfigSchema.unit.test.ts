@@ -180,7 +180,6 @@ describe("Config Schema", () => {
             },
             {
                 if: {
-                    required: ["type"],
                     properties: {
                         type: {
                             const: "base"
@@ -208,19 +207,25 @@ describe("Config Schema", () => {
         expect(returnedSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toEqual(expectedAllOf);
     });
 
-    it("should require the type property in each conditional so type-specific rules are not applied to typeless profiles", () => {
+    it("should require the type property in each type-specific conditional so those rules are not applied to typeless profiles", () => {
         // Regression test for #2602 / #2302: a profile with no `type` (e.g. a base
         // profile) must not inherit another type's property constraints. Without
         // `required: ["type"]`, JSON Schema treats each `if` as vacuously satisfied
         // for a typeless profile, so e.g. the rse `protocol: https`-only rule was
-        // wrongly applied and `protocol: http` was flagged as invalid.
+        // wrongly applied and `protocol: http` was flagged as invalid. The `base`
+        // conditional is intentionally exempt: its shared-default properties must
+        // apply to every profile regardless of `type`.
         const testConfig: IProfileTypeConfiguration[] = cloneDeep(testProfileConfiguration);
         const returnedSchema = schema.buildSchema(testConfig);
         const allOf: any[] = returnedSchema.properties.profiles.patternProperties["^\\S*$"].allOf;
         const typeConditionals = allOf.filter((entry: any) => entry.if?.properties?.type?.const != null);
         expect(typeConditionals.length).toBeGreaterThan(0);
         for (const entry of typeConditionals) {
-            expect(entry.if.required).toEqual(["type"]);
+            if (entry.if.properties.type.const === "base") {
+                expect(entry.if.required).toBeUndefined();
+            } else {
+                expect(entry.if.required).toEqual(["type"]);
+            }
         }
     });
 
