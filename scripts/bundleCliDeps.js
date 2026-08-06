@@ -9,220 +9,164 @@
 *
 */
 
-const childProcess = require("child_process");
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
-const tar = require("tar");
-
-// Captured before the chdir below - fixBundledTarball needs it to locate the tarball npm produced.
-const packageCwd = process.cwd();
+const Arborist = require("@npmcli/arborist");
+const packlist = require("npm-packlist");
 
 // Workaround for https://github.com/npm/cli/issues/3466
 process.chdir(__dirname + "/..");
-const cliPkgDir = path.join(process.cwd(), "packages", "cli");
+const repoRoot = process.cwd();
+const cliPkgDir = path.join(repoRoot, "packages", "cli");
+const cliNodeModules = path.join(cliPkgDir, "node_modules");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
-const symlinksFile = path.join(cliPkgDir, ".bundle-symlinks.json");
+// Inside node_modules so it is already ignored by git, and never picked up by npm pack.
+const stateFile = path.join(cliNodeModules, ".bundle-deps-state.json");
 
-const command = process.argv[2];
-if (command === "prepack") {
-    prepack();
-} else if (command === "postpack") {
-    // Must finish before postpack removes the symlinks it reads; errors here should fail the build,
-    // not ship a broken tarball silently.
-    fixBundledTarball()
-        .then(postpack)
-        .catch((err) => {
-            console.error(err);
-            process.exit(1);
-        });
-} else {
-    console.error(`Usage: node ${path.basename(__filename)} <prepack|postpack>`);
-    process.exit(1);
-}
-
-// "npm ls --long" merges devDependencies into local workspace packages' trees; filter using each
-// package's own package.json so dev/test tooling doesn't get bundled.
-function prodDependenciesOf(node, realDir) {
-    if (!node.resolved?.startsWith("file:")) return node.dependencies ?? {};
-    const localPkgJson = JSON.parse(fs.readFileSync(path.join(realDir, "package.json"), "utf-8"));
-    const prodNames = new Set([...Object.keys(localPkgJson.dependencies ?? {}), ...Object.keys(localPkgJson.optionalDependencies ?? {})]);
-    return Object.fromEntries(Object.entries(node.dependencies ?? {}).filter(([depName]) => prodNames.has(depName)));
-}
-
-// Recursively symlinks `name` into `targetParentDir/name`. node.path is undefined for an unresolved
-// optional/peer dependency - nothing to link. A name can recur at different versions, each nested.
-function symlinkDependency(name, node, targetParentDir, symlinks, topLevelDir) {
-    if (!node.path) return;
-
-    // @zowe packages are direct deps of packages/cli, so one top-level copy is enough - Node resolves
-    // it from any depth by walking up, and most SDKs depend on each other.
-    if (name.startsWith("@zowe/") && targetParentDir !== topLevelDir) return;
-
-    const realDir = fs.realpathSync(node.path);
-    const targetPath = path.join(targetParentDir, ...name.split("/"));
-    if (!fs.existsSync(targetPath)) {
-        fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-        fs.symlinkSync(path.relative(path.dirname(targetPath), realDir), targetPath);
-        symlinks[targetPath] = realDir;
-    }
-
-    for (const [depName, depNode] of Object.entries(prodDependenciesOf(node, realDir))) {
-        symlinkDependency(depName, depNode, path.join(realDir, "node_modules"), symlinks, topLevelDir);
-    }
-}
-
-function prepack() {
+// Rewrites package.json the way npm formats it, so toggling bundleDependencies leaves it untouched.
+function updatePkgJson(update) {
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
-    // --omit=dev drops packages/cli's own devDependencies; prodDependenciesOf handles the same for
-    // nested workspace packages. --long adds the "path" field this script relies on throughout.
-    const tree = JSON.parse(
-        childProcess.execSync("npm ls --all --omit=dev --long --json", { cwd: cliPkgDir, maxBuffer: 1024 * 1024 * 40 }).toString()
-    );
-    const cliNode = tree.dependencies[pkgJson.name];
-
-    const symlinks = {}; // targetPath -> realDir
-    const cliNodeModules = path.join(cliPkgDir, "node_modules");
-    for (const [name, node] of Object.entries(cliNode.dependencies)) {
-        symlinkDependency(name, node, cliNodeModules, symlinks, cliNodeModules);
-    }
-    // Paths are stored relative to the repo root so the file doesn't embed a machine-specific path.
-    const relative = Object.fromEntries(
-        Object.entries(symlinks).map(([targetPath, realDir]) => [
-            path.relative(process.cwd(), targetPath),
-            path.relative(process.cwd(), realDir),
-        ])
-    );
-    fs.writeFileSync(symlinksFile, JSON.stringify(relative, null, 2));
-
-    // Set at pack time only - npm skips installing a workspace's bundled deps that cannot hoist to the
-    // repo root, so committing this to package.json would break "npm ci".
-    pkgJson.bundleDependencies = true;
-    writePkgJson(pkgJson);
-}
-
-function postpack() {
-    const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
-    delete pkgJson.bundleDependencies;
-    writePkgJson(pkgJson);
-
-    for (const targetPath of Object.keys(JSON.parse(fs.readFileSync(symlinksFile, "utf-8")))) {
-        fs.unlinkSync(path.resolve(process.cwd(), targetPath));
-    }
-    fs.unlinkSync(symlinksFile);
-}
-
-// Matches how npm formats package.json, so adding and removing the key above leaves the file unchanged.
-function writePkgJson(pkgJson) {
+    update(pkgJson);
     fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
-// Resolves each symlink's archive path from realDir alone (see remap() for why this is needed): an
-// entry nested under another's realDir inherits that entry's archive path, recursively.
-function computeArchivePaths(symlinks) {
-    const resolved = new Map(); // targetPath -> archivePath
-    const cliNodeModules = path.join(cliPkgDir, "node_modules");
-
-    function resolveArchivePath(entry) {
-        if (resolved.has(entry.targetPath)) return resolved.get(entry.targetPath);
-        let archivePath;
-        if (entry.targetPath === cliNodeModules || entry.targetPath.startsWith(cliNodeModules + path.sep)) {
-            archivePath = path.relative(cliPkgDir, entry.targetPath);
-        } else {
-            // Longest matching realDir wins, so a nested override's own entry is preferred over a
-            // coarser ancestor further up the same chain.
-            let ancestor = null;
-            for (const other of symlinks) {
-                if (other === entry) continue;
-                if (entry.targetPath === other.realDir || entry.targetPath.startsWith(other.realDir + path.sep)) {
-                    if (!ancestor || other.realDir.length > ancestor.realDir.length) ancestor = other;
-                }
+// Nodes reachable from packages/cli through prod and optional edges only - 201 of the monorepo tree's
+// 1355. Filtering on each node's own dev flag instead would additionally bundle rimraf, its subtree and
+// cli-test-utils, since npm computes dev-ness against the whole workspace, not one member of it.
+function prodClosureOf(cliNode) {
+    const reachable = new Set();
+    const queue = [cliNode];
+    while (queue.length > 0) {
+        for (const edge of queue.shift().edgesOut.values()) {
+            if ((edge.type !== "prod" && edge.type !== "optional") || edge.to == null) continue;
+            const node = edge.to.isLink ? edge.to.target : edge.to;
+            if (!reachable.has(node)) {
+                reachable.add(node);
+                queue.push(node);
             }
-            if (!ancestor) {
-                throw new Error(`bundleCliDeps: no ancestor found to place "${entry.targetPath}" in the archive`);
-            }
-            archivePath = path.join(resolveArchivePath(ancestor), path.relative(ancestor.realDir, entry.targetPath));
-        }
-        resolved.set(entry.targetPath, archivePath);
-        return archivePath;
-    }
-
-    const mappings = symlinks.map((entry) => ({ archivePath: resolveArchivePath(entry), realDir: entry.realDir }));
-    return mappings.sort((a, b) => b.realDir.length - a.realDir.length); // longest realDir matches first
-}
-
-// npm's tar step names content nested inside a symlinked, overridden dependency by real disk location
-// instead of archive path, producing broken entries like "package/../imperative/node_modules/which/...".
-function remap(entryPath, mappings) {
-    const rel = entryPath.replace(/^package\//, "");
-    if (!rel.includes("..")) return entryPath;
-
-    const absolute = path.resolve(cliPkgDir, rel);
-    for (const { archivePath, realDir } of mappings) {
-        if (absolute === realDir || absolute.startsWith(realDir + path.sep)) {
-            return path.join("package", archivePath, path.relative(realDir, absolute));
         }
     }
-    throw new Error(`bundleCliDeps: no mapping found for backtracked tarball entry "${entryPath}" (resolved to ${absolute})`);
+    return reachable;
 }
 
-// npm doesn't pass the tarball's path to lifecycle scripts directly. --pack-destination shows up as
-// an env var; otherwise npm writes it to the cwd the script started in (captured above as packageCwd).
-function findTarball() {
-    const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
-    const fileName = `${pkgJson.name.replace(/^@/, "").replace("/", "-")}-${pkgJson.version}.tgz`;
-    const tarballPath = path.join(process.env.npm_config_pack_destination || packageCwd, fileName);
-    return fs.existsSync(tarballPath) ? tarballPath : null;
-}
+// The monorepo tree is npm's own hoisted, deduped layout, so it transfers over as-is; only workspace
+// paths are rewritten, from "packages/imperative/..." to "node_modules/@zowe/imperative/...".
+function archiveLocationOf(location, linkLocationByWorkspace) {
+    if (location.startsWith("packages/cli/")) return location.slice("packages/cli/".length);
+    if (location.startsWith("node_modules/")) return location;
 
-async function fixBundledTarball() {
-    const tarballPath = findTarball();
-    if (!tarballPath) {
-        console.log("bundleCliDeps: no tarball found to check for backtracked paths, skipping");
-        return;
+    for (const [workspace, linkLocation] of linkLocationByWorkspace) {
+        if (location === workspace) return linkLocation;
+        if (location.startsWith(workspace + "/")) return linkLocation + location.slice(workspace.length);
     }
+    throw new Error(`bundleCliDeps: cannot place "${location}" inside the packed CLI`);
+}
 
-    const symlinks = Object.entries(JSON.parse(fs.readFileSync(symlinksFile, "utf-8"))).map(([targetPath, realDir]) => ({
-        targetPath: path.resolve(process.cwd(), targetPath),
-        realDir: path.resolve(process.cwd(), realDir),
-    }));
-    const mappings = computeArchivePaths(symlinks);
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "bundle-cli-deps-"));
-    try {
-        let fixed = 0;
-        let total = 0;
-        await tar.t({
-            file: tarballPath,
-            onReadEntry: (entry) => {
-                total++;
-                const correctedPath = remap(entry.path, mappings);
-                if (correctedPath !== entry.path) fixed++;
-                const dest = path.join(tempDir, correctedPath.replace(/^package\//, ""));
-
-                if (entry.type === "Directory") {
-                    fs.mkdirSync(dest, { recursive: true });
-                } else if (entry.type === "SymbolicLink") {
-                    fs.mkdirSync(path.dirname(dest), { recursive: true });
-                    fs.symlinkSync(entry.linkpath, dest);
-                } else if (entry.type === "File") {
-                    fs.mkdirSync(path.dirname(dest), { recursive: true });
-                    entry.pipe(fs.createWriteStream(dest, { mode: entry.mode }));
-                } else {
-                    console.log(`bundleCliDeps: skipping unsupported tarball entry type ${entry.type} at ${entry.path}`);
-                    entry.resume();
-                }
-            },
-        });
-
-        if (fixed === 0) {
-            console.log("bundleCliDeps: no backtracked paths found in tarball, nothing to fix");
-            return;
+// Every file under a directory, relative to it, with symlinks resolved.
+function filesUnder(dir, prefix = "") {
+    const files = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const entryPath = path.join(dir, entry.name);
+        let stats;
+        try {
+            stats = fs.statSync(entryPath);
+        } catch {
+            continue; // broken symlink
         }
-
-        fs.rmSync(tarballPath, { force: true });
-        await tar.c({ file: tarballPath, gzip: true, cwd: tempDir, prefix: "package", portable: true }, ["."]);
-        console.log(`bundleCliDeps: repaired ${fixed} of ${total} tarball entries with backtracked paths`);
-    } finally {
-        fs.rmSync(tempDir, { recursive: true, force: true });
+        if (stats.isDirectory()) files.push(...filesUnder(entryPath, prefix + entry.name + "/"));
+        else if (stats.isFile()) files.push(prefix + entry.name);
     }
+    return files;
 }
+
+// Only what a workspace package would publish; its source directory also holds gigabytes of build
+// output. The detached stand-in stops packlist walking bundled deps (it throws on uninstalled optional).
+function publishedFilesOf(node) {
+    const pkg = { ...node.package };
+    delete pkg.bundleDependencies;
+    delete pkg.bundledDependencies;
+    return packlist({ path: node.realpath, package: pkg, isProjectRoot: true, edgesOut: new Map() });
+}
+
+async function prepack() {
+    // loadVirtual reads only the committed lockfile, so every node is a version already pinned and
+    // installed; buildIdealTree would re-resolve ranges into versions that aren't on disk.
+    const tree = await new Arborist({ path: repoRoot }).loadVirtual();
+    const cliLink = tree.children.get(JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8")).name);
+
+    const linkLocationByWorkspace = new Map();
+    for (const node of tree.inventory.values()) {
+        if (node.isLink && node.target != null && node !== cliLink) {
+            linkLocationByWorkspace.set(node.target.location, node.location);
+        }
+    }
+
+    // Shallowest first, so a package is always in place before anything nested inside it.
+    const placements = [...prodClosureOf(cliLink.target)]
+        .filter((node) => !node.isLink)
+        .map((node) => ({ node, archiveLocation: archiveLocationOf(node.location, linkLocationByWorkspace) }))
+        .sort((a, b) => a.archiveLocation.split("/").length - b.archiveLocation.split("/").length);
+
+    const created = []; // repo-root-relative paths added here, to remove again in postpack
+    const bundled = [];
+    const skipped = [];
+
+    for (const { node, archiveLocation } of placements) {
+        // Missing means an optional dependency npm skipped on this platform, which a real install here
+        // would leave out too - so it is left out of bundleDependencies as well.
+        if (!fs.existsSync(node.realpath)) {
+            skipped.push(`${node.name}@${node.version}`);
+            continue;
+        }
+        if (!archiveLocation.includes("/node_modules/")) bundled.push(archiveLocation.slice("node_modules/".length));
+
+        // Nested entries mostly exist already, via the package they sit inside.
+        const targetPath = path.join(cliPkgDir, archiveLocation);
+        if (fs.existsSync(targetPath)) continue;
+
+        // Hard links share data without symlinks, which npm's tar step would name by on-disk path,
+        // emitting entries that backtrack out of the package root. realpathSync: link(2) follows only on macOS.
+        const files = linkLocationByWorkspace.has(node.location) ? await publishedFilesOf(node) : filesUnder(node.realpath);
+        for (const file of files) {
+            const targetFile = path.join(targetPath, file);
+            fs.mkdirSync(path.dirname(targetFile), { recursive: true });
+            fs.linkSync(fs.realpathSync(path.join(node.realpath, file)), targetFile);
+        }
+        created.push(path.relative(repoRoot, targetPath));
+    }
+
+    fs.mkdirSync(cliNodeModules, { recursive: true });
+    fs.writeFileSync(stateFile, JSON.stringify(created, null, 2));
+    if (skipped.length > 0) {
+        console.log(`bundleCliDeps: skipped ${skipped.length} optional dependencies not installed here: ${skipped.join(", ")}`);
+    }
+    console.log(`bundleCliDeps: staged ${bundled.length} bundled dependencies (${created.length} added, rest already in place)`);
+
+    // Pack time only: "true" would bundle just the declared deps, dropping the hoisted transitive ones,
+    // and committing either form breaks "npm ci", which cannot hoist a workspace's bundled deps.
+    updatePkgJson((pkgJson) => (pkgJson.bundleDependencies = bundled.sort()));
+}
+
+async function postpack() {
+    for (const relativePath of JSON.parse(fs.readFileSync(stateFile, "utf-8"))) {
+        fs.rmSync(path.resolve(repoRoot, relativePath), { recursive: true, force: true });
+    }
+    fs.rmSync(stateFile, { force: true });
+
+    // Scope directories (e.g. node_modules/@zowe) are left behind by the removals above.
+    for (const entry of fs.readdirSync(cliNodeModules)) {
+        const entryPath = path.join(cliNodeModules, entry);
+        if (entry.startsWith("@") && fs.readdirSync(entryPath).length === 0) fs.rmdirSync(entryPath);
+    }
+    updatePkgJson((pkgJson) => delete pkgJson.bundleDependencies);
+}
+
+const run = { prepack, postpack }[process.argv[2]];
+if (run == null) {
+    console.error(`Usage: node ${path.basename(__filename)} <prepack|postpack>`);
+    process.exit(1);
+}
+run().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
