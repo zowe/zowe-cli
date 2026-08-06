@@ -113,6 +113,24 @@ describe("NpmFunctions", () => {
             );
         });
 
+        it("should extract package name from array format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name)
+            );
+        });
+
+        it("should extract package name from object format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify({ [expectedInfo.name]: expectedInfo }));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name)
+            );
+        });
+
         it("should fetch info for package installed from local TGZ", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");

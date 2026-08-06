@@ -132,7 +132,8 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
 
         // parse the json output of the npm pack command
         try {
-            packageName = JSON.parse(execOutput)[0].name;
+            const parsedOutput = JSON.parse(execOutput);
+            packageName = Array.isArray(parsedOutput) ? parsedOutput[0].name : Object.keys(parsedOutput)[0];
         } catch (err) {
             if (execOutput.length < maxOutputInx) {
                 truncationMsg = "";
