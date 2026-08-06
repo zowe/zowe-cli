@@ -309,6 +309,21 @@ describe("PMF: Install Interface", () => {
             expect(mocks.writeFileSync).toHaveBeenCalled();
         });
 
+        it("should pass allowScripts through to installPackages", async () => {
+            jest.spyOn(path, "isAbsolute").mockReturnValueOnce(false);
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isSymbolicLink: jest.fn().mockReturnValue(true)
+            } as any);
+
+            setResolve(packageName);
+            await install(packageName, registryInfo, false, false, "ibm_db");
+
+            expect(mocks.installPackages).toHaveBeenCalledWith(packageName,
+                { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: packageRegistry, allowScripts: "ibm_db" }, false);
+        });
+
         it("should accept semver properly", async () => {
             const semverVersion = "^1.5.2";
             const semverPackage = `${packageName}@${semverVersion}`;
