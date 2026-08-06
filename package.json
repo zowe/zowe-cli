@@ -47,7 +47,6 @@
     "@lerna-lite/list": "^4.11.0",
     "@lerna-lite/run": "^4.11.0",
     "@lerna-lite/version": "^4.11.0",
-    "@npmcli/arborist": "^8.0.5",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.0.0",
     "@types/which": "^3.0.4",

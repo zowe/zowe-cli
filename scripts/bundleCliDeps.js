@@ -11,7 +11,6 @@
 
 const fs = require("fs");
 const path = require("path");
-const Arborist = require("@npmcli/arborist");
 const packlist = require("npm-packlist");
 
 // Workaround for https://github.com/npm/cli/issues/3466
@@ -22,100 +21,107 @@ const cliNodeModules = path.join(cliPkgDir, "node_modules");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 // Inside node_modules so it is already ignored by git, and never picked up by npm pack.
 const stateFile = path.join(cliNodeModules, ".bundle-deps-state.json");
+const cliLockPath = "packages/cli";
 
-// Rewrites package.json the way npm formats it, so toggling bundleDependencies leaves it untouched.
+// Matches how npm formats package.json, so adding and removing bundleDependencies leaves it unchanged.
 function updatePkgJson(update) {
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
     update(pkgJson);
     fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
-// Nodes reachable from packages/cli through prod and optional edges only - 201 of the monorepo tree's
-// 1355. Filtering on each node's own dev flag instead would additionally bundle rimraf, its subtree and
-// cli-test-utils, since npm computes dev-ness against the whole workspace, not one member of it.
-function prodClosureOf(cliNode) {
-    const reachable = new Set();
-    const queue = [cliNode];
+// Node's resolution over lockfile keys: try <dir>/node_modules/<name>, walk up, follow workspace links.
+function resolveDep(packages, fromPath, name) {
+    for (let dir = fromPath; ; ) {
+        const key = (dir === "" ? "" : dir + "/") + "node_modules/" + name;
+        const entry = packages[key];
+        if (entry != null) {
+            return entry.link ? { lockPath: entry.resolved, entry: packages[entry.resolved] } : { lockPath: key, entry };
+        }
+        if (dir === "") return null;
+        const nested = dir.lastIndexOf("/node_modules/");
+        dir = nested === -1 ? "" : dir.slice(0, nested);
+    }
+}
+
+// What packages/cli needs at runtime, at lockfile-pinned versions. Prod/optional edges, not npm's dev flags.
+function prodClosureOf(packages) {
+    const closure = new Map(); // lockfile key -> lockfile entry
+    const queue = [[cliLockPath, packages[cliLockPath]]];
     while (queue.length > 0) {
-        for (const edge of queue.shift().edgesOut.values()) {
-            if ((edge.type !== "prod" && edge.type !== "optional") || edge.to == null) continue;
-            const node = edge.to.isLink ? edge.to.target : edge.to;
-            if (!reachable.has(node)) {
-                reachable.add(node);
-                queue.push(node);
+        const [fromPath, entry] = queue.shift();
+        const optional = new Set(Object.keys(entry.optionalDependencies ?? {}));
+        for (const name of new Set([...Object.keys(entry.dependencies ?? {}), ...optional])) {
+            const found = resolveDep(packages, fromPath, name);
+            if (found == null) {
+                // A missing optional dep is normal; anything else means a stale lockfile and a short bundle.
+                if (optional.has(name)) continue;
+                throw new Error(`bundleCliDeps: "${fromPath}" depends on "${name}", which the lockfile does not resolve`);
             }
+            if (closure.has(found.lockPath)) continue;
+            closure.set(found.lockPath, found.entry);
+            queue.push([found.lockPath, found.entry]);
         }
     }
-    return reachable;
+    return closure;
 }
 
-// The monorepo tree is npm's own hoisted, deduped layout, so it transfers over as-is; only workspace
-// paths are rewritten, from "packages/imperative/..." to "node_modules/@zowe/imperative/...".
-function archiveLocationOf(location, linkLocationByWorkspace) {
-    if (location.startsWith("packages/cli/")) return location.slice("packages/cli/".length);
-    if (location.startsWith("node_modules/")) return location;
+// Where an entry belongs in the packed CLI: npm's own hoisted layout, with workspace paths rewritten.
+function archiveLocationOf(lockPath, linkPathByWorkspace) {
+    if (lockPath.startsWith(cliLockPath + "/")) return lockPath.slice(cliLockPath.length + 1);
+    if (lockPath.startsWith("node_modules/")) return lockPath;
 
-    for (const [workspace, linkLocation] of linkLocationByWorkspace) {
-        if (location === workspace) return linkLocation;
-        if (location.startsWith(workspace + "/")) return linkLocation + location.slice(workspace.length);
+    for (const [workspace, linkPath] of linkPathByWorkspace) {
+        if (lockPath === workspace) return linkPath;
+        if (lockPath.startsWith(workspace + "/")) return linkPath + lockPath.slice(workspace.length);
     }
-    throw new Error(`bundleCliDeps: cannot place "${location}" inside the packed CLI`);
+    throw new Error(`bundleCliDeps: cannot place "${lockPath}" inside the packed CLI`);
 }
 
-// Every file under a directory, relative to it, with symlinks resolved.
-function filesUnder(dir, prefix = "") {
-    const files = [];
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const entryPath = path.join(dir, entry.name);
-        let stats;
+// Every file under a directory, relative to it. statSync also filters out broken symlinks.
+function filesUnder(dir) {
+    return fs.readdirSync(dir, { recursive: true }).filter((file) => {
         try {
-            stats = fs.statSync(entryPath);
+            return fs.statSync(path.join(dir, file)).isFile();
         } catch {
-            continue; // broken symlink
+            return false;
         }
-        if (stats.isDirectory()) files.push(...filesUnder(entryPath, prefix + entry.name + "/"));
-        else if (stats.isFile()) files.push(prefix + entry.name);
-    }
-    return files;
+    });
 }
 
-// Only what a workspace package would publish; its source directory also holds gigabytes of build
-// output. The detached stand-in stops packlist walking bundled deps (it throws on uninstalled optional).
-function publishedFilesOf(node) {
-    const pkg = { ...node.package };
+// Only what a workspace package publishes; detached so packlist skips bundled deps (it throws on missing ones).
+function publishedFilesOf(sourceDir) {
+    const pkg = JSON.parse(fs.readFileSync(path.join(sourceDir, "package.json"), "utf-8"));
     delete pkg.bundleDependencies;
     delete pkg.bundledDependencies;
-    return packlist({ path: node.realpath, package: pkg, isProjectRoot: true, edgesOut: new Map() });
+    return packlist({ path: sourceDir, package: pkg, isProjectRoot: true, edgesOut: new Map() });
 }
 
 async function prepack() {
-    // loadVirtual reads only the committed lockfile, so every node is a version already pinned and
-    // installed; buildIdealTree would re-resolve ranges into versions that aren't on disk.
-    const tree = await new Arborist({ path: repoRoot }).loadVirtual();
-    const cliLink = tree.children.get(JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8")).name);
+    const { packages } = JSON.parse(fs.readFileSync(path.join(repoRoot, "package-lock.json"), "utf-8"));
 
-    const linkLocationByWorkspace = new Map();
-    for (const node of tree.inventory.values()) {
-        if (node.isLink && node.target != null && node !== cliLink) {
-            linkLocationByWorkspace.set(node.target.location, node.location);
+    // Workspace packages appear twice: as a "link" under node_modules and as the directory it points at.
+    const linkPathByWorkspace = new Map();
+    for (const [key, entry] of Object.entries(packages)) {
+        if (entry.link && key.startsWith("node_modules/") && entry.resolved !== cliLockPath) {
+            linkPathByWorkspace.set(entry.resolved, key);
         }
     }
 
     // Shallowest first, so a package is always in place before anything nested inside it.
-    const placements = [...prodClosureOf(cliLink.target)]
-        .filter((node) => !node.isLink)
-        .map((node) => ({ node, archiveLocation: archiveLocationOf(node.location, linkLocationByWorkspace) }))
+    const placements = [...prodClosureOf(packages).keys()]
+        .map((lockPath) => ({ lockPath, archiveLocation: archiveLocationOf(lockPath, linkPathByWorkspace) }))
         .sort((a, b) => a.archiveLocation.split("/").length - b.archiveLocation.split("/").length);
 
     const created = []; // repo-root-relative paths added here, to remove again in postpack
     const bundled = [];
     const skipped = [];
 
-    for (const { node, archiveLocation } of placements) {
-        // Missing means an optional dependency npm skipped on this platform, which a real install here
-        // would leave out too - so it is left out of bundleDependencies as well.
-        if (!fs.existsSync(node.realpath)) {
-            skipped.push(`${node.name}@${node.version}`);
+    for (const { lockPath, archiveLocation } of placements) {
+        // Missing = an optional dep npm skipped here, so keep it out of the bundle and bundleDependencies.
+        const sourceDir = path.join(repoRoot, lockPath);
+        if (!fs.existsSync(sourceDir)) {
+            skipped.push(lockPath);
             continue;
         }
         if (!archiveLocation.includes("/node_modules/")) bundled.push(archiveLocation.slice("node_modules/".length));
@@ -126,11 +132,11 @@ async function prepack() {
 
         // Hard links share data without symlinks, which npm's tar step would name by on-disk path,
         // emitting entries that backtrack out of the package root. realpathSync: link(2) follows only on macOS.
-        const files = linkLocationByWorkspace.has(node.location) ? await publishedFilesOf(node) : filesUnder(node.realpath);
+        const files = linkPathByWorkspace.has(lockPath) ? await publishedFilesOf(sourceDir) : filesUnder(sourceDir);
         for (const file of files) {
             const targetFile = path.join(targetPath, file);
             fs.mkdirSync(path.dirname(targetFile), { recursive: true });
-            fs.linkSync(fs.realpathSync(path.join(node.realpath, file)), targetFile);
+            fs.linkSync(fs.realpathSync(path.join(sourceDir, file)), targetFile);
         }
         created.push(path.relative(repoRoot, targetPath));
     }
@@ -142,8 +148,7 @@ async function prepack() {
     }
     console.log(`bundleCliDeps: staged ${bundled.length} bundled dependencies (${created.length} added, rest already in place)`);
 
-    // Pack time only: "true" would bundle just the declared deps, dropping the hoisted transitive ones,
-    // and committing either form breaks "npm ci", which cannot hoist a workspace's bundled deps.
+    // Pack time only: "true" would drop the hoisted transitive deps, and committing either form breaks "npm ci".
     updatePkgJson((pkgJson) => (pkgJson.bundleDependencies = bundled.sort()));
 }
 
