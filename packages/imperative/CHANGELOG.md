@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an `--allow-scripts` option to the `zowe plugins install` and `zowe plugins update` commands. [#2839](https://github.com/zowe/zowe-cli/issues/2839)
+
 ## `8.35.0`
 
 - Enhancement: Added a `ConfigRedact` API, accessible via the `Config.api.redact` class instance, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
