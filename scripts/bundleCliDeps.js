@@ -9,11 +9,19 @@
 *
 */
 
+/*
+This script works around npm bugs related to bundling deps in workspaces:
+ 1. Deps located in root node_modules are not bundled:
+    https://github.com/npm/cli/issues/3466
+ 2. Symlinked node_modules result in paths with backtracking in TGZ
+ 3. Installing CLI deps fails in CI when bundleDependencies is true
+ 4. Copying lockfile into CLI package dir may not resolve all deps correctly
+*/
+
 const fs = require("fs");
 const path = require("path");
 const packlist = require("npm-packlist");
 
-// Workaround for https://github.com/npm/cli/issues/3466
 process.chdir(__dirname + "/..");
 const repoRoot = process.cwd();
 const cliPkgDir = path.join(repoRoot, "packages", "cli");
