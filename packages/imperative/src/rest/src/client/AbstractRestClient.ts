@@ -52,6 +52,16 @@ export type RestClientResolve = (data: string) => void;
 export abstract class AbstractRestClient {
 
     /**
+     * Default number of milliseconds to wait for a REST request to complete when no
+     * explicit requestCompletionTimeout was set on the session or via environment variable
+     * @private
+     * @static
+     * @type {number}
+     * @memberof AbstractRestClient
+     */
+    private static readonly DEFAULT_REQUEST_COMPLETION_TIMEOUT: number = 30 * 60 * 1000;
+
+    /**
      * Contains REST chucks
      * @private
      * @type {Buffer[]}
@@ -573,11 +583,14 @@ export abstract class AbstractRestClient {
             }
 
             this.session.ISession.requestCompletionTimeout ??= isNaN(Number(requestCompletionTimeout)) ? undefined : Number(requestCompletionTimeout);
-            if (this.session.ISession.requestCompletionTimeout != null) {
-                Logger.getImperativeLogger().info(
-                    "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
-                );
-            }
+        }
+
+        // Default to a 30 minute request completion timeout if one was not set via session options or environment variable
+        this.session.ISession.requestCompletionTimeout ??= AbstractRestClient.DEFAULT_REQUEST_COMPLETION_TIMEOUT;
+        if (this.session.ISession.requestCompletionTimeout != null) {
+            Logger.getImperativeLogger().info(
+                "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+            );
         }
 
         /**
