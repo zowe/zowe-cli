@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 
 ## Recent Changes
 
-- BugFix: Added a default timeout while collecting TSO responses, and a 100ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)
+- BugFix: Added a default timeout while collecting TSO responses, and a 100 ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)
 
 ## `8.33.0`
 
