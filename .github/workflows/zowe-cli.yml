@@ -48,6 +48,11 @@ jobs:
       OS: ${{ matrix.os }}
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
+      PACKAGE_CLI: ${{ matrix.os == 'ubuntu-22.04' && matrix.node-version == '22.x' }}
+
+    permissions:
+      contents: read
+      pull-requests: write
 
     timeout-minutes: 90
 
@@ -143,6 +148,39 @@ jobs:
       with:
         env_vars: OS,NODE
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Package CLI
+      id: package
+      if: ${{ always() && steps.build.outcome == 'success' && env.PACKAGE_CLI == 'true' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm run package
+
+    - name: Archive CLI Package
+      id: cli-artifact-upload
+      if: ${{ always() && steps.package.outcome == 'success' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: zowe-cli
+        path: packages/cli/zowe-cli-*.tgz
+
+    # This job runs on "push" rather than "pull_request" for branches in this repo, so the PR must be looked up
+    - name: Find PR for Branch
+      id: find-pr
+      if: ${{ always() && github.event_name == 'push' && steps.cli-artifact-upload.outcome == 'success' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: echo "number=$(gh pr list --head '${{ github.ref_name }}' --state open --json number --jq '.[0].number // empty')" >> $GITHUB_OUTPUT
+
+    - name: Comment on PR
+      if: ${{ always() && steps.find-pr.outputs.number != '' }}
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: Client artifacts
+        number: ${{ steps.find-pr.outputs.number }}
+        message: |
+          Client artifacts:
+           - CLI: ${{ steps.cli-artifact-upload.outputs.artifact-url }}
 
   release:
     if: github.event_name == 'push' && github.ref_protected

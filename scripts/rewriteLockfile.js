@@ -13,19 +13,19 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const chalk = require("chalk");
 
-const rootShrinkwrapFile = __dirname + "/../npm-shrinkwrap.json";
-const newShrinkwrapFile = process.cwd() + "/" + (process.argv[2] ?? "npm-shrinkwrap.json");
+const rootLockfilePath = __dirname + "/../package-lock.json";
+const newLockfilePath = process.cwd() + "/" + (process.argv[2] ?? "package-lock.json");
 
-// Remove "file:" links from shrinkwrap
-const shrinkwrap = JSON.parse(fs.readFileSync(rootShrinkwrapFile, "utf-8"));
-for (const [k, v] of Object.entries(shrinkwrap.packages)) {
+// Remove "file:" links from lock file
+const lockFile = JSON.parse(fs.readFileSync(rootLockfilePath, "utf-8"));
+for (const [k, v] of Object.entries(lockFile.packages)) {
     if (v.link) {
-        delete shrinkwrap.packages[k];
+        delete lockFile.packages[k];
     }
 }
-fs.writeFileSync(newShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
+fs.writeFileSync(newLockfilePath, JSON.stringify(lockFile, null, 2));
 
-// Build deduped shrinkwrap for subpackage (@zowe/cli or web-help)
+// Build deduped lock file for subpackage (e.g. @zowe/cli or web-help)
 const zoweRegistry = require("../lerna.json").command.publish.registry;
 const npmArgs = ["--ignore-scripts", "--no-audit", "--package-lock-only", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
 childProcess.exec(`npm install ${npmArgs.join(" ")}`, (err) => {
