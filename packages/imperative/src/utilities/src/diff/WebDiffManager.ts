@@ -11,7 +11,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import sanitize = require("sanitize-html");
 
 import { Constants } from "../../../constants/src/Constants";
 import { ProcessUtils, GuiResult } from "../../../utilities/src/ProcessUtils";
@@ -56,6 +55,8 @@ export class WebDiffManager implements IWebDiffManager {
      * @memberof WebDiffManager
      */
     public async openDiffs(patchDiff: string) {
+        // Lazy load this package since it requires ESM and importing at top of file can break CJS
+        const sanitize = await import("sanitize-html") as unknown as typeof import("sanitize-html");
         const sanitizedPatchDiff = sanitize(patchDiff);
         const doWeHaveGui = ProcessUtils.isGuiAvailable();
         if (doWeHaveGui !== GuiResult.GUI_AVAILABLE) {
