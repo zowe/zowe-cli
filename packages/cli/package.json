@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "8.35.2",
+  "version": "8.35.3",
   "zoweVersion": "v3.6.0",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Zowe",
@@ -31,7 +31,6 @@
     "lib",
     "prebuilds",
     "scripts",
-    "npm-shrinkwrap.json",
     "web-help-logo.png"
   ],
   "publishConfig": {
@@ -53,22 +52,22 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js",
-    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh",
-    "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
+    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/bundleCliDeps.js prepack",
+    "postpack": "node ../../scripts/bundleCliDeps.js postpack",
+    "prepublishOnly": "bash ../../scripts/bundleDaemon.sh"
   },
   "dependencies": {
-    "@zowe/core-for-zowe-sdk": "8.35.0",
-    "@zowe/imperative": "8.35.0",
-    "@zowe/provisioning-for-zowe-sdk": "8.35.0",
-    "@zowe/zos-console-for-zowe-sdk": "8.35.0",
-    "@zowe/zos-files-for-zowe-sdk": "8.35.1",
-    "@zowe/zos-jobs-for-zowe-sdk": "8.35.1",
-    "@zowe/zos-logs-for-zowe-sdk": "8.35.0",
-    "@zowe/zos-tso-for-zowe-sdk": "8.35.0",
-    "@zowe/zos-uss-for-zowe-sdk": "8.35.1",
-    "@zowe/zos-workflows-for-zowe-sdk": "8.35.1",
-    "@zowe/zosmf-for-zowe-sdk": "8.35.0",
+    "@zowe/core-for-zowe-sdk": "8.35.3",
+    "@zowe/imperative": "8.35.3",
+    "@zowe/provisioning-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-console-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-files-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-jobs-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-logs-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-tso-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-uss-for-zowe-sdk": "8.35.3",
+    "@zowe/zos-workflows-for-zowe-sdk": "8.35.3",
+    "@zowe/zosmf-for-zowe-sdk": "8.35.3",
     "find-process": "^1.4.7",
     "lodash": "^4.17.23",
     "minimatch": "^10.2.3",
@@ -77,13 +76,13 @@
   "devDependencies": {
     "@types/diff": "^5.0.9",
     "@types/lodash": "^4.17.6",
-    "@zowe/cli-test-utils": "8.35.0",
+    "@zowe/cli-test-utils": "8.35.3",
     "comment-json": "^4.2.3",
     "strip-ansi": "^6.0.1",
     "which": "^4.0.0"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "8.33.4"
+    "@zowe/secrets-for-zowe-sdk": "8.35.3"
   },
   "engines": {
     "node": ">=20.9.0"
