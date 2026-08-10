@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed top level import of an ESM dependency (`sanitize-html`) for better compatibility with dev tools like Jest. [#2841](https://github.com/zowe/zowe-cli/pull/2841)
+
 ## `8.35.0`
 
 - Enhancement: Added a `ConfigRedact` API, accessible via the `Config.api.redact` class instance, with methods for programmatically retrieving Zowe configuration layers with sensitive values redacted. [#2827](https://github.com/zowe/zowe-cli/pull/2827)
