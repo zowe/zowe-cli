@@ -119,7 +119,7 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             npmFunctions.getPackageInfo(pkgSpec);
             expect(jsonfile.readFileSync).toHaveBeenCalledWith(
-                expect.stringContaining(path.join(expectedInfo.name))
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
             );
         });
 
@@ -128,7 +128,7 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify({ [expectedInfo.name]: expectedInfo }));
             npmFunctions.getPackageInfo(pkgSpec);
             expect(jsonfile.readFileSync).toHaveBeenCalledWith(
-                expect.stringContaining(path.join(expectedInfo.name))
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
             );
         });
 
