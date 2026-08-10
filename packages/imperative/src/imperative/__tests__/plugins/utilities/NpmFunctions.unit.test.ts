@@ -9,6 +9,7 @@
 *
 */
 
+import * as path from "path";
 import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
@@ -118,7 +119,7 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             npmFunctions.getPackageInfo(pkgSpec);
             expect(jsonfile.readFileSync).toHaveBeenCalledWith(
-                expect.stringContaining(expectedInfo.name)
+                expect.stringContaining(path.join(expectedInfo.name))
             );
         });
 
@@ -127,7 +128,7 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify({ [expectedInfo.name]: expectedInfo }));
             npmFunctions.getPackageInfo(pkgSpec);
             expect(jsonfile.readFileSync).toHaveBeenCalledWith(
-                expect.stringContaining(expectedInfo.name)
+                expect.stringContaining(path.join(expectedInfo.name))
             );
         });
 
