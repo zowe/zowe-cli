@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added a default timeout while collecting TSO responses, and a 100ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)
+
 ## `8.33.0`
 
 - Enhancement: Added a new optional boolean field `useLegacyApi` to the `IIssueTsoCmdOpts` interface used to call the `IssueTso.issueTsoCmd` method. For more details, see [the CLI changelog](../cli/CHANGELOG.md). [#2738](https://github.com/zowe/zowe-cli/issues/2738)

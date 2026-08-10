@@ -59,6 +59,7 @@ export abstract class AbstractRestClient {
      * @type {number}
      * @memberof AbstractRestClient
      */
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly DEFAULT_REQUEST_COMPLETION_TIMEOUT: number = 30 * 60 * 1000;
 
     /**

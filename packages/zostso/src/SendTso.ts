@@ -95,12 +95,9 @@ export class SendTso {
                 tso.tsoData.forEach((data) => {
                     if (data[TsoConstants.TSO_MESSAGE]) {
                         messages += data[TsoConstants.TSO_MESSAGE].DATA + "\n";
-                    } else if (data[TsoConstants.TSO_PROMPT]) {
-                        // handle case where we get a PROMPT but no data has been accumulated yet
-                        if (messages !== "") {
-                            done = true;
-                        } else {
-                        }
+                    } else if (data[TsoConstants.TSO_PROMPT] && messages !== "") {
+                        // ignore a PROMPT reached before any data has been accumulated yet
+                        done = true;
                     }
                 });
             } else {

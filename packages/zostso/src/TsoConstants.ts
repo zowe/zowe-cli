@@ -174,6 +174,7 @@ export class TsoConstants {
      * @type {number}
      * @memberof TsoConstants
      */
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     public static readonly DEFAULT_PROMPT_TIMEOUT: number = 30 * 60 * 1000;
 
     /**
