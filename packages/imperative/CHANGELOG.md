@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Addressed an issue that caused the `npm pack` command to fail, since `npm` v12 changed the command's JSON output from an array to an object. [#2840](https://github.com/zowe/zowe-cli/pull/2840)
+
 ## `8.35.3`
 
 - BugFix: Added a default request completion timeout to the `AbstractRestClient` class. [#2842](https://github.com/zowe/zowe-cli/pull/2842)

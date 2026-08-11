@@ -9,6 +9,7 @@
 *
 */
 
+import * as path from "path";
 import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
@@ -110,6 +111,24 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
                 expect.arrayContaining(["pack", pkgSpec]),
                 expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
+        });
+
+        it("should extract package name from array format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
+            );
+        });
+
+        it("should extract package name from object format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify({ [expectedInfo.name]: expectedInfo }));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
             );
         });
 
