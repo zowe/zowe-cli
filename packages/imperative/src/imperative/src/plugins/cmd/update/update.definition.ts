@@ -11,39 +11,7 @@
 
 import { ICommandDefinition } from "../../../../../cmd";
 import { join } from "path";
-
-const pluginDescription =
-  "The name of the plug-in to update.\n\n" +
-  "If the plug-in argument is omitted, no action is taken.";
-
-const registryDescription =
-  "The npm registry that is used when installing remote packages. When this value is omitted, the " +
-  "value returned by `npm config get registry` is used.\n" +
-  "\n" +
-  "For more information about npm registries, see: " +
-  "https://docs.npmjs.com/misc/registry";
-
-const loginDescription =
-    "The flag to add a registry user account to install from secure registry. It saves credentials " +
-    "to the .npmrc file using `npm login`. When this value is omitted, credentials from .npmrc file is used. " +
-    "If you used this flag once for specific registry, you don't have to use it again, it uses credentials from .npmrc file.\n" +
-    "\n" +
-    "For more information about npm registries, see: \n" +
-    "https://docs.npmjs.com/cli/login for NPM >= 9\n" +
-    "https://docs.npmjs.com/cli/adduser for NPM < 9";
-
-const allowScriptsDescription =
-    "A comma-separated list of package names that are allowed to run their npm install scripts " +
-    "(preinstall, install, postinstall, and prepare). The names must match exactly. Zowe passes " +
-    "this list to npm as its own --allow-scripts option.\n" +
-    "\n" +
-    "npm 12 blocks these scripts unless the package is in the list. This breaks plug-ins that " +
-    "have a dependency that must be built during install, such as the Db2 plug-in and its " +
-    "ibm_db dependency. Older versions of npm do not know this option and ignore it, so using " +
-    "this option does not change how they work. If you do not use this option, Zowe does not " +
-    "pass anything to npm, and npm decides what to do.\n" +
-    "\n" +
-    "Only list packages that you trust. Install scripts can run any code on your machine.";
+import { PluginCmdConstants } from "../PluginCmdConstants";
 
 /**
  * Definition of the update command.
@@ -59,7 +27,7 @@ export const updateDefinition: ICommandDefinition = {
         {
             name: "plugin...",
             type: "string",
-            description: pluginDescription,
+            description: PluginCmdConstants.UPDATE_PLUGIN_DESCRIPTION,
             required: false
         }
     ],
@@ -67,20 +35,20 @@ export const updateDefinition: ICommandDefinition = {
         {
             name: "registry",
             type: "string",
-            description: registryDescription,
+            description: PluginCmdConstants.REGISTRY_DESCRIPTION,
             required: false
         },
         {
             name: "login",
             type: "boolean",
-            description: loginDescription,
+            description: PluginCmdConstants.LOGIN_DESCRIPTION,
             required: false,
             implies: ["registry"]
         },
         {
             name: "allow-scripts",
             type: "string",
-            description: allowScriptsDescription,
+            description: PluginCmdConstants.ALLOW_SCRIPTS_DESCRIPTION,
             required: false
         }
     ],
