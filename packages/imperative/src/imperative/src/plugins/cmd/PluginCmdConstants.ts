@@ -74,11 +74,12 @@ export class PluginCmdConstants {
         "(preinstall, install, postinstall, and prepare). The names must match. Zowe passes " +
         "this list to npm as its own --allow-scripts option.\n" +
         "\n" +
-        "npm 12 blocks these scripts unless the package is in the list. This breaks plug-ins that " +
+        "NPM 12 blocks these scripts unless the package is in the list. This breaks plug-ins that " +
         "have a dependency that must be built during install, such as the Db2 plug-in and its " +
         "ibm_db dependency. Older versions of npm do not know this option and ignore it, so using " +
-        "this option does not change how they work. If you do not use this option, Zowe does not " +
-        "pass anything to npm, and npm decides what to do.\n" +
+        "this option does not change how they work. Older versions of npm may show a warning about " +
+        "the --allow-scripts option being unknown, those warnings can be safely ignored. If you do not " +
+        " use this option, Zowe does not pass anything to npm, and npm decides what to do.\n" +
         "\n" +
         "Only list packages that you trust. Install scripts can run any code on your machine.";
 }
