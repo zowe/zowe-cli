@@ -168,6 +168,23 @@ export class TsoConstants {
      */
     public static readonly TSO_MESSAGE = "TSO MESSAGE";
 
+    /**
+     * Default number of milliseconds to wait for a TSO PROMPT while collecting responses before giving up
+     * @static
+     * @type {number}
+     * @memberof TsoConstants
+     */
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    public static readonly DEFAULT_PROMPT_TIMEOUT: number = 30 * 60 * 1000;
+
+    /**
+     * Default number of milliseconds to wait before polling again when no TSO data was returned
+     * @static
+     * @type {number}
+     * @memberof TsoConstants
+     */
+    public static readonly DEFAULT_NO_DATA_DEBOUNCE: number = 100;
+
 }
 
 /**
@@ -268,5 +285,15 @@ export const noDataInput: IMessageDefinition = {
  */
 export const noCommandInput: IMessageDefinition = {
     message: apiErrorHeader.message + ` No command text was provided.`
+};
+
+/**
+ * Timed out waiting for a TSO PROMPT error message
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof TsoConstants
+ */
+export const tsoPromptTimeout: IMessageDefinition = {
+    message: apiErrorHeader.message + ` Timed out waiting for a TSO PROMPT response.`
 };
 
