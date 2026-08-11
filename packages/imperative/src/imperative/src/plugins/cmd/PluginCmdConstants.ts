@@ -22,31 +22,29 @@ export class PluginCmdConstants {
     public static readonly INSTALL_PLUGIN_DESCRIPTION: string =
         "A space-separated list of plug-ins to install. A plug-in can be " +
         "any format that is accepted by the `npm install` command (local directory, " +
-        "TAR file, git URL, public package, private package, etc...).\n" +
+        "TAR file, git URL, public package, private package, etc.).\n" +
         "\n" +
         "To use a relative local directory, at least one '/' or '\\' must exist in " +
-        "the plug-in path. For example, you have a local plug-in in a folder called " +
-        "'test-plugin' that you want to install. Specify the relative local directory " +
-        "by issuing the following command:\n\n" +
+        "the plug-in path. For example, there is a local plug-in in folder 'test-plugin' " +
+        "that you want to install. Specify the relative local directory by issuing the following command:\n\n" +
         `${cliCmdName} plugins install ./test-plugin\n\n` +
-        "If you omit the './', then the install command looks for 'test-plugin' in an " +
-        "npm registry.\n" +
+        "If you omit the './', the install command looks for 'test-plugin' in an npm registry.\n" +
         "\n" +
-        "If the plugin argument is omitted, the plugins.json file will determine which " +
-        "plug-ins are installed. For more information on the plugins.json file, see the --file option.";
+        "If the plugin argument is omitted, the plugins.json file determines which " +
+        "plug-ins are installed. For more information on the plugins.json file, see the --file entry in the Options section.";
 
     public static readonly UPDATE_PLUGIN_DESCRIPTION: string =
         "The name of the plug-in to update.\n\n" +
-        "If the plug-in argument is omitted, no action is taken.";
+        "If omitted, no action is taken.";
 
     public static readonly FILE_DESCRIPTION: string =
-        "Specifies the location of a plugins.json file that contains the plug-ins you want to install.\n" +
+        "The location of a plugins.json file that contains the plug-ins you want to install.\n" +
         "\n" +
-        "All plug-ins specified in plugins.json will be installed to the base CLI and " +
-        `the contents will be placed into ${PMFConstants.instance.PLUGIN_JSON}.\n` +
+        "All plug-ins specified in plugins.json are installed to the base CLI and " +
+        `the contents are placed into ${PMFConstants.instance.PLUGIN_JSON}.\n` +
         "\n" +
         "If you do not specify a plugins.json file and do not specify a plug-in, the default " +
-        `plugin.json file (${PMFConstants.instance.PLUGIN_JSON}) will be used. This provides a ` +
+        `plugin.json file (${PMFConstants.instance.PLUGIN_JSON}) is used. This provides a ` +
         "way to install plug-ins that were lost or corrupted after " +
         `reinstalling or updating ${ImperativeConfig.instance.loadedConfig.productDisplayName}.`;
 
@@ -59,15 +57,16 @@ export class PluginCmdConstants {
 
     public static readonly LOGIN_DESCRIPTION: string =
         "The flag to add a registry user account to install from secure registry. It saves credentials " +
-        "to the .npmrc file using `npm login`. When this value is omitted, credentials from .npmrc file is used. " +
-        "If you used this flag once for specific registry, you don't have to use it again, it uses credentials from .npmrc file.\n" +
+        "to the .npmrc file using `npm login`.\n\n" +
+        "When omitted, credentials from .npmrc file are used. " +
+        "If you used this flag once for specific registry, you do not have to use it again, it uses credentials from .npmrc file.\n" +
         "\n" +
         "For more information about npm registries, see: \n" +
         "  https://docs.npmjs.com/cli/login";
 
     public static readonly VERBOSE_DESCRIPTION: string =
-        "Specifies that verbose output is printed for npm install.\n" +
-        "This may be useful for debugging errors during plugin installation.";
+        "Verbose output is printed for npm install.\n" +
+        "This can be useful for debugging errors during plug-in installation.";
 
     public static readonly ALLOW_SCRIPTS_DESCRIPTION: string =
         "A comma-separated list of package names that are allowed to run their npm install scripts " +
@@ -78,7 +77,7 @@ export class PluginCmdConstants {
         "have a dependency that must be built during install, such as the Db2 plug-in and its " +
         "ibm_db dependency. Older versions of npm do not know this option and ignore it, so using " +
         "this option does not change how they work. Older versions of npm may show a warning about " +
-        "the --allow-scripts option being unknown, those warnings can be safely ignored. If you do not " +
+        "the --allow-scripts option being unknown. This warning can be safely ignored. If you do not " +
         " use this option, Zowe does not pass anything to npm, and npm decides what to do.\n" +
         "\n" +
         "Only list packages that you trust. Install scripts can run any code on your machine.";
