@@ -69,11 +69,14 @@ describe("NpmFunctions", () => {
     it("installPackages should not pass --allow-scripts when allowScripts has no package names", () => {
         jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
         const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0, stdout: Buffer.from("install output") } as any);
+        const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
 
         const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", allowScripts: "  , ," });
 
         expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
         expect(spawnSyncSpy.mock.calls[0][1].join(" ")).not.toContain("--allow-scripts");
+        // The user gets a warning explaining why the option had no effect, instead of a silent no-op
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("--allow-scripts option was specified without any package names"));
         expect(result).toBe("install output");
     });
 

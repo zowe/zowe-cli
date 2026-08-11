@@ -620,6 +620,26 @@ describe("Plugin Management Facility install handler", () => {
         wasInstallSuccessful(params);
     });
 
+    it("should install multiple packages with allow-scripts option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1", "sample2"];
+        params.arguments.allowScripts = "pkg1,pkg2,ibm_db";
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the install
+        wasGetRegistryCalled();
+
+        // Validate that install was called with the same allow-scripts list for each package
+        expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry, false, undefined, {}, "pkg1,pkg2,ibm_db");
+        wasInstallCallValid(params.arguments.plugin[1], packageRegistry, false, undefined, {}, "pkg1,pkg2,ibm_db");
+
+        wasInstallSuccessful(params);
+    });
+
     it("should install from JSON file with allow-scripts option", async () => {
         const fileJson: IPluginJson = {
             a: {

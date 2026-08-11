@@ -74,6 +74,10 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
             // ignore it, so they keep working the same way. We add nothing to the command when
             // the user did not name any package.
             args.push(`--allow-scripts=${allowedPackages.join(",")}`);
+        } else {
+            Logger.getImperativeLogger().warn(
+                "The --allow-scripts option was specified without any package names, so it will be ignored."
+            );
         }
     }
     let execOutput = "";
