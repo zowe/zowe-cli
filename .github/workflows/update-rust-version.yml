@@ -1,0 +1,93 @@
+name: Update Rust Version
+
+# Keeps `rust-version` in zowex/Cargo.toml in sync with what our dependency
+# tree actually requires: the highest `rust-version` declared by any crate
+# (direct or transitive) in the resolved dependency graph.
+
+on:
+  schedule:
+    # 06:00 UTC every Monday
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-rust-version:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Get current rust-version
+        id: current
+        run: |
+          VERSION=$(grep -m1 '^rust-version' zowex/Cargo.toml | sed -E 's/rust-version = "(.*)"/\1/')
+          echo "Current rust-version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Compute dependency floor
+        id: deps_floor
+        run: |
+          # Highest rust-version declared anywhere in the resolved dependency
+          # tree (direct and transitive). `cargo metadata`'s package list is
+          # already the fully resolved graph, so no graph walk is needed.
+          cargo metadata --manifest-path zowex/Cargo.toml --format-version 1 > /tmp/metadata.json
+          ROOT=$(jq -r '.resolve.root' /tmp/metadata.json)
+          FLOOR=$(jq -r --arg root "$ROOT" '
+            .packages[] | select(.id != $root) | .rust_version // empty
+          ' /tmp/metadata.json | sort -V | tail -1)
+          echo "Dependency floor: ${FLOOR:-none declared}"
+          echo "version=$FLOOR" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether an update is needed
+        id: check
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          TARGET="${{ steps.deps_floor.outputs.version }}"
+          if [ -n "$TARGET" ] && [ "$TARGET" != "$CURRENT" ] && [ "$(printf '%s\n%s\n' "$CURRENT" "$TARGET" | sort -V | tail -1)" = "$TARGET" ]; then
+            echo "needs-update=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs-update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update Cargo.toml
+        if: steps.check.outputs.needs-update == 'true'
+        run: sed -i "s/^rust-version = \".*\"/rust-version = \"${{ steps.deps_floor.outputs.version }}\"/" zowex/Cargo.toml
+
+      - name: Install target Rust toolchain
+        if: steps.check.outputs.needs-update == 'true'
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ steps.deps_floor.outputs.version }}
+
+      - name: Verify build with target toolchain
+        if: steps.check.outputs.needs-update == 'true'
+        working-directory: zowex
+        run: cargo check --locked
+
+      - name: Create Pull Request
+        if: steps.check.outputs.needs-update == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
+          committer: ${{ secrets.ZOWE_ROBOT_USER }} <${{ secrets.ZOWE_ROBOT_EMAIL }}>
+          author: ${{ secrets.ZOWE_ROBOT_USER }} <${{ secrets.ZOWE_ROBOT_EMAIL }}>
+          signoff: true
+          branch: chore/update-rust-version
+          delete-branch: true
+          commit-message: "chore(zowex): bump rust-version to ${{ steps.deps_floor.outputs.version }}"
+          title: "chore(zowex): bump rust-version to ${{ steps.deps_floor.outputs.version }}"
+          labels: no-changelog,dependencies
+          body: |
+            Automated update of the minimum Rust version declared in `zowex/Cargo.toml`,
+            to match the highest `rust-version` declared anywhere in the resolved
+            dependency tree (direct or transitive).
+
+            - Previous: `${{ steps.current.outputs.version }}`
+            - New: `${{ steps.deps_floor.outputs.version }}`
