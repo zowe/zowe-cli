@@ -563,6 +563,17 @@ export default {
                     EX2: "To list filesystems mounted to a specific path",
                     EX3: "To list filesystems mounted with a specific name"
                 }
+            },
+            ALIAS: {
+                SUMMARY: "Resolve a data set alias",
+                DESCRIPTION: "Resolve a data set alias to find the target data set it points to. " +
+                    "Uses IDCAMS LISTCAT to look up the alias in the catalog and return the associated data set name.",
+                POSITIONALS: {
+                    ALIASNAME: "The name of the data set alias that you want to resolve"
+                },
+                EXAMPLES: {
+                    EX1: `Resolve the alias "SHARE.ALIAS.NAME" to find its target data set`
+                }
             }
         },
         OPTIONS: {

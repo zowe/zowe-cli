@@ -20,11 +20,13 @@ import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sd
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 import { IDsmListOptions } from "./doc/IDsmListOptions";
+import { Invoke } from "../invoke/Invoke";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -522,6 +524,88 @@ export class List {
             commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, zosmfResponses.length),
             apiResponse: zosmfResponses
         };
+    }
+
+    /**
+     * Resolve a data set alias to its target data set name
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {string}           aliasName    - the alias name to resolve
+     * @param {IZosFilesOptions} [options]    - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response containing the target data set name
+     *
+     * @throws {ImperativeError} alias name must be set
+     * @throws {ImperativeError} if the alias target cannot be determined
+     * @throws {Error} When the {@link Invoke} AMS call throws an error
+     */
+    public static async resolveAlias(
+        session: AbstractSession,
+        aliasName: string,
+        options?: IZosFilesOptions
+    ): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(aliasName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(aliasName, "", ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            const listcatStmt = `LISTCAT ENTRIES('${aliasName.toUpperCase()}') ALL`;
+            this.log.debug(`Resolving alias with AMS statement: ${listcatStmt}`);
+
+            const amsResponse = await Invoke.ams(session, [listcatStmt], options);
+
+            // Parse the AMS output to find the target data set name
+            // LISTCAT output contains lines like:
+            //   ASSOCIATIONS
+            //     NONVSAM--- REAL.DATASET.NAME
+            // or  VSAM--- REAL.DATASET.NAME
+            const outputLines: string[] = amsResponse.apiResponse?.output ?? [];
+            let targetDsn: string | undefined;
+
+            let symbolicValue: string | undefined;
+
+            for (const line of outputLines) {
+                // Check for standard aliases (NONVSAM/VSAM)
+                let match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
+                if (match && match[2]) {
+                    targetDsn = match[2].trim();
+                    break;
+                }
+
+                // Capture the symbolic value for comparison
+                match = line.match(/SYMBOLIC-(.+)/i);
+                if (match && match[1]) {
+                    symbolicValue = match[1].trim();
+                    continue;
+                }
+
+                // Check for resolved value and compare against symbolic
+                match = line.match(/RESOLVED-(.+)/i);
+                if (match && match[1]) {
+                    const resolvedValue = match[1].trim();
+                    if (symbolicValue && resolvedValue === symbolicValue) {
+                        // Symbolic variable was not resolved — skip
+                        continue;
+                    }
+                    targetDsn = resolvedValue;
+                    break;
+                }
+            }
+
+            if (!targetDsn) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.aliasTargetNotFound.message
+                });
+            }
+
+            return {
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.aliasResolvedSuccessfully.message, aliasName, targetDsn),
+                apiResponse: { alias: aliasName, targetDsn }
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
     }
 
     private static get log() {

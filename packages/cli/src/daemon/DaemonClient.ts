@@ -9,6 +9,7 @@
 *
 */
 
+import * as crypto from "crypto";
 import * as net from "net";
 import * as path from "path";
 import { PassThrough, Readable } from "stream";
@@ -37,9 +38,14 @@ export class DaemonClient {
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
      * @param {string} mOwner
+     * @param {string} mDaemonToken Secret token that the client must echo back to
+     *      prove it could read the owner-only PID file.
      * @memberof DaemonClient
      */
-    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string) {
+    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private readonly mDaemonToken: string) {
+        if (!this.mDaemonToken) {
+            throw new ImperativeError({msg: "Unable to initialize the Daemon Client without a proper token"});
+        }
     }
 
     /**
@@ -191,6 +197,27 @@ export class DaemonClient {
             return;
         }
 
+        // The user comparison above is advisory only: the client asserts its own
+        // user name, which any local process can forge. The real authentication is
+        // the token below. Because the token is stored in the owner-only PID file,
+        // a client that echoes it back has proven it could read that file, and is
+        // therefore the owner. This is what protects the daemon on Windows, where
+        // the named pipe can be opened by local users other than the owner.
+        if (!this.isValidToken(jsonData.token)) {
+            Imperative.api.appLogger.warn("A connection was attempted with a missing or invalid daemon token.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The daemon client did not supply a valid daemon token. " +
+                    "Try restarting the daemon with 'zowe daemon restart'.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        }
+        // Token is only used for authenticating the request; clear it so it is not
+        // accidentally logged or forwarded to command handlers.
+        jsonData.token = undefined;
+
         if (jsonData.stdin != null) {
             if (jsonData.stdin !== DaemonClient.CTRL_C_CHAR) {
                 // This data is related to a prompt reply so we ignore it
@@ -208,5 +235,34 @@ export class DaemonClient {
             }
             Imperative.parse(jsonData.argv, context);
         }
+    }
+
+    /**
+     * Determine whether the token supplied by the daemon client matches the
+     * secret token that this daemon stored in its owner-only PID file.
+     *
+     * The comparison is performed in constant time to avoid leaking how much of
+     * the token matched via timing differences.
+     *
+     * @private
+     * @param {string} requestToken The token supplied by the daemon client.
+     * @returns {boolean} True if the token is present and matches our token.
+     * @memberof DaemonClient
+     */
+    private isValidToken(requestToken: string): boolean {
+        if (this.mDaemonToken == null || typeof requestToken !== "string" || requestToken.length === 0) {
+            return false;
+        }
+
+        const expected = Buffer.from(this.mDaemonToken);
+        const actual = Buffer.from(requestToken);
+
+        // timingSafeEqual requires equal-length buffers, so a length mismatch is
+        // an immediate (and safe) rejection.
+        if (expected.length !== actual.length) {
+            return false;
+        }
+
+        return crypto.timingSafeEqual(expected, actual);
     }
 }

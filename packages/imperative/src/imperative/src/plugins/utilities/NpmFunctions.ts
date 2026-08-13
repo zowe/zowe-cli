@@ -132,7 +132,12 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
 
         // parse the json output of the npm pack command
         try {
-            packageName = JSON.parse(execOutput)[0].name;
+            const parsedOutput = JSON.parse(execOutput);
+            // npm v12 changed `npm pack --json`'s output from an array of package objects to a
+            // single object keyed by package name. Branched based off the output (rather than
+            // checking the installed npm version) to avoid an extra command invocation, which can
+            // be slow in some environments to determine the npm version
+            packageName = Array.isArray(parsedOutput) ? parsedOutput[0].name : Object.keys(parsedOutput)[0];
         } catch (err) {
             if (execOutput.length < maxOutputInx) {
                 truncationMsg = "";

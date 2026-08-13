@@ -57,6 +57,24 @@ describe("TextUtils", () => {
         expect(table).toMatchSnapshot();
     });
 
+    it("should render falsy-but-meaningful values such as 0 and false", () => {
+        TextUtils.chalk.level = 0; // turn off color
+        const objects = [{ count: 0, enabled: false, name: "row1" }];
+        const table = TextUtils.getTable(objects, "yellow", Infinity, false);
+        expect(table).toContain("0");
+        expect(table).toContain("false");
+        expect(table).toContain("row1");
+    });
+
+    it("should render an empty cell for null and undefined values", () => {
+        TextUtils.chalk.level = 0; // turn off color
+        const objects = [{ absent: null as any, missing: undefined as any, name: "row1" }];
+        const table = TextUtils.getTable(objects, "yellow", Infinity, false);
+        expect(table).not.toContain("null");
+        expect(table).not.toContain("undefined");
+        expect(table).toContain("row1");
+    });
+
     it(".wordWrap should properly wrap any given text", () => {
         TextUtils.chalk.level = 0; // turn off color
         const text = "testing can be interesting";

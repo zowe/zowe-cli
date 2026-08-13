@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files list alias command definition should not have changed 1`] = `Array []`;
+
+exports[`zos-files list alias command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Resolve the alias \\"SHARE.ALIAS.NAME\\" to find its target data set",
+    "options": "\\"SHARE.ALIAS.NAME\\"",
+  },
+]
+`;

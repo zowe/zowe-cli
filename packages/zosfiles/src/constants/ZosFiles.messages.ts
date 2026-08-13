@@ -813,5 +813,22 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     commonWithValue: {
         message: "with value"
+    },
+
+    /**
+     * Message indicating the alias was resolved successfully
+     * @type {IMessageDefinition}
+     */
+    aliasResolvedSuccessfully: {
+        message: "Alias '%s' resolved to data set '%s'."
+    },
+
+    /**
+     * Message indicating the alias target could not be found
+     * @type {IMessageDefinition}
+     */
+    aliasTargetNotFound: {
+        message: "Could not determine the target data set for the specified alias. " +
+            "Ensure the alias exists and is cataloged."
     }
 };

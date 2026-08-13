@@ -265,7 +265,13 @@ export class Copy {
                 };
             }
 
-            const downloadDir = path.join(tmpdir(), fromPds);
+            // Per-user parent dir so co-tenants on a shared tmp don't collide on a shared,
+            // foreign-owned directory (which ensureSafeTempDir would reject). Validate the parent
+            // (0700, owned by us) before creating the per-PDS staging dir inside it.
+            const copyBaseDir = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`);
+            ZosFilesUtils.ensureSafeTempDir(copyBaseDir);
+            const downloadDir = path.join(copyBaseDir, fromPds);
+            ZosFilesUtils.ensureSafeTempDir(downloadDir);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
             const truncatedMembers: string[] = [];
@@ -296,11 +302,14 @@ export class Copy {
                     continue;
                 }
             }
-            const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+            const truncatedMembersFile = path.join(downloadDir, 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 const firstTenMembers = truncatedMembers.slice(0, 10);
-                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w', mode: 0o600});
+                if (process.platform === "win32") {
+                    IO.giveAccessOnlyToOwner(truncatedMembersFile);
+                }
                 const numMembers = truncatedMembers.length - firstTenMembers.length;
                 return {
                     success: true,
@@ -313,7 +322,6 @@ export class Copy {
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
-            fs.rmSync(truncatedMembersFile, {force: true});
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
