@@ -28,7 +28,7 @@ export class PluginCmdConstants {
         "the plug-in path. For example, there is a local plug-in in folder 'test-plugin' " +
         "that you want to install. Specify the relative local directory by issuing the following command:\n\n" +
         `${cliCmdName} plugins install ./test-plugin\n\n` +
-        "If you omit the './', the install command looks for 'test-plugin' in an npm registry.\n" +
+        "If you omit the './', the install command looks for 'test-plugin' in an NPM registry.\n" +
         "\n" +
         "If the `plugin` argument is omitted, the plugins.json file determines which " +
         "plug-ins are installed. For more information on the plugins.json file, see the --file entry in the Options section.";
@@ -49,36 +49,36 @@ export class PluginCmdConstants {
         `reinstalling or updating ${ImperativeConfig.instance.loadedConfig.productDisplayName}.`;
 
     public static readonly REGISTRY_DESCRIPTION: string =
-        "The npm registry that is used when installing remote packages. When omitted, the " +
+        "The NPM registry that is used when installing remote packages. When omitted, the " +
         "value returned by `npm config get registry` is used.\n" +
         "\n" +
-        "For more information about npm registries, see: " +
+        "For more information about NPM registries, see: " +
         "https://docs.npmjs.com/misc/registry";
 
     public static readonly LOGIN_DESCRIPTION: string =
         "The flag to add a registry user account to install from secure registry. It saves credentials " +
-        "to the .npmrc file using `npm login`.\n\n" +
-        "When omitted, credentials from .npmrc file are used. " +
-        "If you used this flag once for specific registry, you do not have to use it again, it uses credentials from .npmrc file.\n" +
+        "to the `.npmrc` file using `npm login`.\n\n" +
+        "When omitted, credentials from `.npmrc` file are used. " +
+        "If you used this flag once for specific registry, you do not have to use it again, it uses credentials from `.npmrc` file.\n" +
         "\n" +
-        "For more information about npm registries, see: \n" +
+        "For more information about NPM registries, see: \n" +
         "  https://docs.npmjs.com/cli/login";
 
     public static readonly VERBOSE_DESCRIPTION: string =
-        "Verbose output is printed for npm install.\n\n" +
+        "Verbose output is printed for NPM install.\n\n" +
         "This can be useful for debugging errors during plug-in installation.";
 
     public static readonly ALLOW_SCRIPTS_DESCRIPTION: string =
-        "A comma-separated list of package names that are allowed to run their npm install scripts " +
+        "A comma-separated list of package names that are allowed to run their NPM install scripts " +
         "(preinstall, install, postinstall, and prepare). The names must match. Zowe passes " +
-        "this list to npm as its own --allow-scripts option.\n" +
+        "this list to NPM as its own --allow-scripts option.\n" +
         "\n" +
         "NPM 12 blocks these scripts unless the package is in the list. This breaks plug-ins that " +
         "have a dependency that must be built during install, such as the Db2 plug-in and its " +
-        "ibm_db dependency. Older versions of npm do not know this option and ignore it, so using " +
-        "this option does not change how they work. Older versions of npm may show a warning about " +
+        "ibm_db dependency. Older versions of NPM do not know this option and ignore it, so using " +
+        "this option does not change how they work. Older versions of NPM may show a warning about " +
         "the --allow-scripts option being unknown. This warning can be safely ignored. " +
-        "When omitted, Zowe does not pass anything to npm, and npm decides what to do.\n" +
+        "When omitted, Zowe does not pass anything to NPM, and NPM decides what to do.\n" +
         "\n" +
         "Only list packages that you trust. Install scripts can run any code on your machine.";
 }
