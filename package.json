@@ -65,7 +65,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-extended": "^6.0.0",
     "jest-html-reporter": "^3.6.0",
-    "jest-junit": "^16.0.0",
+    "jest-junit": "^17.0.0",
     "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^2.5.3",
     "js-yaml": "^4.2.0",
