@@ -23,8 +23,13 @@ const fs = require("fs");
 const path = require("path");
 const packlist = require("npm-packlist");
 
-// Exclude optional deps that compile platform-specific binaries on install
-const excludedDeps = ["cpu-features"];
+// Deps, or specific paths within a dep, that compile platform-specific binaries on install and so
+// are left out entirely: a bare name excludes the whole package, "pkg:sub/path" just that subpath.
+const excludedPaths = ["cpu-features", "ssh2:lib/protocol/crypto/build"];
+const excludedDeps = new Set(excludedPaths.filter((p) => !p.includes(":")));
+const excludedSubpaths = excludedPaths
+    .filter((p) => p.includes(":"))
+    .map((p) => ({ name: p.slice(0, p.indexOf(":")), subpath: p.slice(p.indexOf(":") + 1) }));
 
 const pkgDir = process.cwd();
 process.chdir(path.join(__dirname, ".."));
@@ -57,7 +62,7 @@ function prodDepTree() {
     const queue = [JSON.parse(output).dependencies[pkgName]];
     while (queue.length > 0) {
         for (const [name, dep] of Object.entries(queue.shift().dependencies ?? {})) {
-            if (excludedDeps.includes(name) || dep.path == null) {
+            if (excludedDeps.has(name) || dep.path == null) {
                 skipped.push(name);
             } else if (!tree.has(dep.path)) {
                 tree.set(dep.path, dep);
@@ -131,6 +136,7 @@ async function prepack() {
     if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
     try {
         fs.mkdirSync(pkgNodeModules, { recursive: true });
+        const localBuilds = [];
 
         for (const [realPath, archiveLocation] of placements) {
             // A package's own copy can already include a nested node_modules also listed separately.
@@ -143,7 +149,14 @@ async function prepack() {
                 ? path.join(nodeModulesBackup, realPath.slice(pkgNodeModules.length + 1))
                 : realPath;
 
-            for (const file of await filesToBundle(tree.get(realPath), sourceDir)) {
+            const entry = tree.get(realPath);
+            const skipPrefixes = excludedSubpaths.filter((s) => s.name === entry.name).map((s) => s.subpath + path.sep);
+            const files = (await filesToBundle(entry, sourceDir)).filter((file) => !skipPrefixes.some((p) => file.startsWith(p)));
+
+            // A compiled .node under build/ means this was built here, for this machine only.
+            if (files.some((file) => /(^|[\\/])build[\\/].*\.node$/i.test(file))) localBuilds.push(entry.name);
+
+            for (const file of files) {
                 const targetFile = path.join(targetPath, file);
                 fs.mkdirSync(path.dirname(targetFile), { recursive: true });
                 fs.copyFileSync(path.join(sourceDir, file), targetFile);
@@ -152,6 +165,10 @@ async function prepack() {
 
         if (skipped.length > 0) {
             console.log(`${scriptName}: skipped ${skipped.length} optional dependencies: ${skipped.join(", ")}`);
+        }
+        if (localBuilds.length > 0) {
+            console.warn(`${scriptName}: WARNING: ${localBuilds.join(", ")} bundled a local native build, ` +
+                `which will not work on other platforms -- add it (or the offending subpath) to excludedPaths`);
         }
         console.log(`${scriptName}: staged ${placements.length} dependencies`);
 
