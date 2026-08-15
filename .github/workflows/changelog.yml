@@ -14,12 +14,12 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       with:
         fetch-depth: 0
 
     - name: Check Changelog Updated
-      uses: awharn/check_changelog_action@v1
+      uses: awharn/check_changelog_action@c55576539feda35872002e76b03da4e61cc4fed7 # v1
       with:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
