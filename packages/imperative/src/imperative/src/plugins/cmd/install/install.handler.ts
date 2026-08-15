@@ -90,7 +90,7 @@ export default class InstallHandler implements ICommandHandler {
 
                 params.response.console.log(
                     "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
-                    `control of the \`${ImperativeConfig.instance.rootCommandName}\` CLI application ` +
+                    "control of the `" + ImperativeConfig.instance.rootCommandName + "` CLI application " +
                     "during the execution of every command.\n" +
                     "Install third-party plug-ins at your own risk."
                 );
