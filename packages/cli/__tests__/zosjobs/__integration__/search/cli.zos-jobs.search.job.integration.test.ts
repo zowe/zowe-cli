@@ -44,7 +44,7 @@ describe("zos-jobs search job command", () => {
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain('Unable to perform this operation due to the following problem');
-            expect(response.stderr.toString()).toContain('You must specify either the \`--search-string\` or \`--search-regex\` option');
+            expect(response.stderr.toString()).toContain('You must specify either the `--search-string` or `--search-regex` option');
         });
 
         it("should occur if an extra unknown option is specified", () => {
