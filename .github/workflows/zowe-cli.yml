@@ -99,7 +99,7 @@ jobs:
     - name: Archive Binary
       if: github.event.inputs.test-type != 'nodejs'
       id: upload-binary
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       # Ignore conflict if multiple jobs upload artifact at same time: https://github.com/actions/upload-artifact/issues/506
       continue-on-error: true
       with:
@@ -139,7 +139,7 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: ${{ runner.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
