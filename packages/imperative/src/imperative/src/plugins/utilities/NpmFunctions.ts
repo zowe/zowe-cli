@@ -57,10 +57,27 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
         })(Logger.getAppLogger());
         args.push(`--loglevel=${logLevel}`, "--foreground-scripts");
     }
-    for (const [k, v] of Object.entries(npmArgs)) {
+    // allowScripts is handled below instead of in this loop, because the npm option name uses
+    // dashes (--allow-scripts) and does not match the property name.
+    const { allowScripts, ...registryArgs } = npmArgs;
+    for (const [k, v] of Object.entries(registryArgs)) {
         if (v != null) {
             // If npm arg starts with @ like @zowe:registry, must use = as separator
             args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
+        }
+    }
+    if (allowScripts != null) {
+        const allowedPackages = allowScripts.split(",").map((pkg) => pkg.trim()).filter((pkg) => pkg.length > 0);
+        if (allowedPackages.length > 0) {
+            // npm 12 blocks install scripts unless the package is in this list, so we pass the
+            // list to npm and let npm decide. Older versions of npm do not know this option and
+            // ignore it, so they keep working the same way. We add nothing to the command when
+            // the user did not name any package.
+            args.push(`--allow-scripts=${allowedPackages.join(",")}`);
+        } else {
+            Logger.getImperativeLogger().warn(
+                "The --allow-scripts option was specified without any package names, so it will be ignored."
+            );
         }
     }
     let execOutput = "";
