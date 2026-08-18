@@ -42,8 +42,7 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
     "@zowe/zos-files-for-zowe-sdk": "8.35.3"

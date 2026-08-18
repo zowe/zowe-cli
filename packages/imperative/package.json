@@ -40,7 +40,6 @@
     "watch:webHelp": "cd web-help && npm run watch",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js",
     "clean": "rimraf lib tsconfig.tsbuildinfo",
     "prepublishOnly": "cd web-help && npm run deps:lockfile"
   },
