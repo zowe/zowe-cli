@@ -50,6 +50,47 @@ describe("NpmFunctions", () => {
         expect(result).toBe(stdoutBuffer.toString());
     });
 
+    it("installPackages should pass allowScripts to npm as --allow-scripts", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync")
+            .mockReturnValueOnce({ status: 0, stdout: Buffer.from("install output") } as any);
+
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", allowScripts: "pkg1, pkg2 ,,ibm_db" });
+
+        // Only one npm command should run, and the package names should be trimmed
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["install", "samplePlugin"]));
+        expect(spawnSyncSpy.mock.calls[0][1]).toContain("--allow-scripts=pkg1,pkg2,ibm_db");
+        // The property name should never be used as an npm option
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--allowScripts");
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--ignore-scripts");
+        expect(result).toBe("install output");
+    });
+
+    it("installPackages should not pass --allow-scripts when allowScripts has no package names", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0, stdout: Buffer.from("install output") } as any);
+        const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
+
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", allowScripts: "  , ," });
+
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        expect(spawnSyncSpy.mock.calls[0][1].join(" ")).not.toContain("--allow-scripts");
+        // The user gets a warning explaining why the option had no effect, instead of a silent no-op
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("--allow-scripts option was specified without any package names"));
+        expect(result).toBe("install output");
+    });
+
+    it("installPackages should not pass any script option when allowScripts is not given", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0, stdout: Buffer.from("") } as any);
+        npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix" });
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        // npm should decide what to do when the user did not use the option
+        expect(spawnSyncSpy.mock.calls[0][1].join(" ")).not.toContain("--allow-scripts");
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--ignore-scripts");
+    });
+
     it("getRegistry should run npm config command", () => {
         const stdoutBuffer = Buffer.from(fakeRegistry);
         const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({

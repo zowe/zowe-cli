@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Added an `--allow-scripts` option to the `zowe plugins install` and `zowe plugins update` commands. [#2839](https://github.com/zowe/zowe-cli/issues/2839)
 - BugFix: Addressed an issue that caused the `npm pack` command to fail, since `npm` v12 changed the command's JSON output from an array to an object. [#2840](https://github.com/zowe/zowe-cli/pull/2840)
 
 ## `8.35.3`

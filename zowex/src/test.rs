@@ -74,7 +74,7 @@ fn unit_test_util_get_socket_string() {
     // expect to override pipe name with env on Windows
     #[cfg(target_family = "windows")]
     {
-        env::set_var("ZOWE_DAEMON_PIPE", "FakePipePath");
+        unsafe { env::set_var("ZOWE_DAEMON_PIPE", "FakePipePath") };
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("\\\\.\\pipe\\FakePipePath"));
@@ -87,13 +87,15 @@ fn unit_test_util_get_socket_string() {
                 );
             }
         }
-        env::remove_var("ZOWE_DAEMON_PIPE");
+        unsafe { env::remove_var("ZOWE_DAEMON_PIPE") };
     }
 
     // expect to override socket string with env on Linux
     #[cfg(target_family = "unix")]
     {
-        env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
+        unsafe {
+            env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
+        }
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));
@@ -106,7 +108,7 @@ fn unit_test_util_get_socket_string() {
                 );
             }
         }
-        env::remove_var("ZOWE_DAEMON_DIR");
+        unsafe { env::remove_var("ZOWE_DAEMON_DIR") };
     }
 }
 
@@ -152,35 +154,35 @@ fn unit_test_get_zowe_env() {
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("ZOWE_EDITOR"), None);
 
-    env::set_var("ZOWE_EDITOR", "nano");
+    unsafe { env::set_var("ZOWE_EDITOR", "nano") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("ZOWE_EDITOR"), Some(&"nano".to_owned()));
-    env::remove_var("ZOWE_EDITOR");
+    unsafe { env::remove_var("ZOWE_EDITOR") };
 
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
     let environment = util_get_zowe_env();
     let color = util_terminal_supports_color();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&color.to_string()));
 
-    env::set_var("FORCE_COLOR", "0");
+    unsafe { env::set_var("FORCE_COLOR", "0") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"0".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "1");
+    unsafe { env::set_var("FORCE_COLOR", "1") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"1".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "2");
+    unsafe { env::set_var("FORCE_COLOR", "2") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"2".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "3");
+    unsafe { env::set_var("FORCE_COLOR", "3") };
     let env = util_get_zowe_env();
     assert_eq!(env.get("FORCE_COLOR"), Some(&"3".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 }
 
 #[cfg(target_family = "unix")]
