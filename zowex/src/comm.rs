@@ -20,6 +20,9 @@ use tokio::io::AsyncBufReadExt;
 use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
+#[cfg(target_family = "unix")]
+use std::os::unix::io::AsRawFd;
+
 #[cfg(target_family = "windows")]
 use std::os::windows::io::AsRawHandle;
 #[cfg(target_family = "windows")]
@@ -81,14 +84,33 @@ pub async fn comm_establish_connection(
     let stream = loop {
         #[cfg(target_family = "unix")]
         if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
-            // We made our connection. Break with the actual stream value
-            break good_stream;
+            if comm_peer_is_current_user(&good_stream) {
+                // We made our connection. Break with the actual stream value
+                break good_stream;
+            }
+            // A socket with our daemon's name exists, but it is not served by a
+            // process running as the current user. The daemon directory is
+            // normally restricted to its owner, so this should not happen, but
+            // a socket left in a relaxed ZOWE_DAEMON_DIR (or created during the
+            // window before the directory was restricted) could be served by
+            // another local account in order to capture what we would otherwise
+            // send to it. Drop this connection and keep retrying/starting our
+            // own daemon instead of trusting it. Only warn once, since this
+            // branch is reached on every retry.
+            static WARNED_UNTRUSTED_SOCKET: std::sync::Once = std::sync::Once::new();
+            WARNED_UNTRUSTED_SOCKET.call_once(|| {
+                eprintln!(
+                    "Warning: The Zowe daemon socket at {} does not belong to the current user. Ignoring it.",
+                    daemon_socket
+                );
+            });
+            drop(good_stream);
         }
 
         #[cfg(target_family = "windows")]
         match ClientOptions::new().open(daemon_socket) {
             Ok(stream) => {
-                if windows_pipe_owned_by_current_user(&stream) {
+                if comm_peer_is_current_user(&stream) {
                     break stream;
                 }
                 // A pipe with our daemon's name exists, but it is not served by a
@@ -179,6 +201,100 @@ pub async fn comm_establish_connection(
     };
 
     Ok(stream)
+}
+
+/**
+ * Confirm that the process serving the other end of our connection runs as the
+ * current user, so that we never hand our command line, environment, stdin, or
+ * secure prompt replies to a daemon impersonated by another local account.
+ *
+ * The comparison is made against the OS-reported identity of the peer process
+ * rather than against the ownership of the socket or pipe in the file system,
+ * because only the former identifies the process that will actually read what
+ * we send. Any failure to positively confirm a match is treated as untrusted.
+ *
+ * @param stream
+ *      The already-connected socket or pipe client.
+ *
+ * @returns
+ *      true only if the process serving the connection runs as the current user.
+ */
+#[cfg(target_family = "unix")]
+pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
+    match comm_peer_uid(stream.as_raw_fd()) {
+        // SAFETY: geteuid takes no arguments and is documented as always
+        // succeeding, so there is no error case to handle.
+        Some(peer_uid) => peer_uid == unsafe { libc::geteuid() },
+        None => {
+            eprintln!(
+                "Warning: Unable to verify the owner of the Zowe daemon socket. Details = {}",
+                io::Error::last_os_error()
+            );
+            false
+        }
+    }
+}
+
+#[cfg(target_family = "windows")]
+pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
+    windows_pipe_owned_by_current_user(stream)
+}
+
+/**
+ * Ask the kernel for the effective user ID of the process on the other end of
+ * a connected Unix domain socket.
+ *
+ * Both mechanisms below report the credentials that the peer held when the
+ * connection was established, not the credentials it holds now, so the answer
+ * cannot be invalidated by a later change on the peer side.
+ *
+ * @param fd
+ *      The file descriptor of the connected socket.
+ *
+ * @returns
+ *      The effective UID of the peer, or None if the kernel would not tell us.
+ */
+#[cfg(target_family = "unix")]
+fn comm_peer_uid(fd: i32) -> Option<u32> {
+    // Linux and Android report a ucred struct of { pid, uid, gid }.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    {
+        let mut peer_cred: libc::ucred = unsafe { std::mem::zeroed() };
+        let mut peer_cred_len = std::mem::size_of::<libc::ucred>() as libc::socklen_t;
+
+        // SAFETY: peer_cred and peer_cred_len describe a correctly sized and
+        // correctly typed ucred buffer that outlives this call.
+        let got_peer_cred = unsafe {
+            libc::getsockopt(
+                fd,
+                libc::SOL_SOCKET,
+                libc::SO_PEERCRED,
+                &mut peer_cred as *mut libc::ucred as *mut libc::c_void,
+                &mut peer_cred_len,
+            )
+        };
+
+        if got_peer_cred != 0 || (peer_cred_len as usize) < std::mem::size_of::<libc::ucred>() {
+            return None;
+        }
+        Some(peer_cred.uid)
+    }
+
+    // macOS and the BSDs report the UID and GID directly.
+    #[cfg(not(any(target_os = "linux", target_os = "android")))]
+    {
+        let mut peer_uid: libc::uid_t = 0;
+        let mut peer_gid: libc::gid_t = 0;
+
+        // SAFETY: both out parameters are correctly typed locals that outlive
+        // this call.
+        let got_peer_eid = unsafe { libc::getpeereid(fd, &mut peer_uid, &mut peer_gid) };
+
+        if got_peer_eid != 0 {
+            return None;
+        }
+        Some(peer_uid)
+    }
 }
 
 /**
@@ -310,6 +426,19 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
      */
     stream.writable().await?;
 
+    /* Re-verify the peer immediately before we disclose anything to it. The
+     * request carries our command line, environment, and daemon token, so we
+     * check here as well as at connection time rather than relying on the
+     * caller having handed us a stream that was already vetted.
+     */
+    if !comm_peer_is_current_user(stream) {
+        return Err(io::Error::new(
+            io::ErrorKind::PermissionDenied,
+            "The Zowe daemon is not being served by a process running as the current user. \
+             Refusing to send the command to it.",
+        ));
+    }
+
     // write request to daemon
     stream.write_all(message).await?;
 
@@ -372,6 +501,21 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                     if let Some(s) = p.stderr {
                         eprint!("{}", s);
                         io::stderr().flush().unwrap();
+                    }
+
+                    /* A prompt asks us to collect input from the user and send
+                     * it onward, which for securePrompt is a credential typed in
+                     * response to text that the peer controls. Verify the peer
+                     * once more before we display that text or read the reply.
+                     */
+                    if (p.prompt.is_some() || p.securePrompt.is_some())
+                        && !comm_peer_is_current_user(reader.get_ref())
+                    {
+                        return Err(io::Error::new(
+                            io::ErrorKind::PermissionDenied,
+                            "The Zowe daemon is not being served by a process running as the \
+                             current user. Refusing to supply the requested input.",
+                        ));
                     }
 
                     if let Some(s) = p.prompt {
