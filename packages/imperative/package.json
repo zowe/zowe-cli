@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.35.3",
+  "version": "8.36.0",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -40,7 +40,6 @@
     "watch:webHelp": "cd web-help && npm run watch",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js",
     "clean": "rimraf lib tsconfig.tsbuildinfo",
     "prepublishOnly": "cd web-help && npm run deps:lockfile"
   },
@@ -99,7 +98,7 @@
     "@types/progress": "^2.0.7",
     "@types/sanitize-html": "^2.16.1",
     "@types/stack-trace": "^0.0.33",
-    "@zowe/secrets-for-zowe-sdk": "8.35.3",
+    "@zowe/secrets-for-zowe-sdk": "8.36.0",
     "concurrently": "^8.0.0",
     "cowsay": "^1.6.0",
     "deep-diff": "^1.0.0",

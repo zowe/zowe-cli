@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "8.35.3",
+  "version": "8.36.0",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -42,18 +42,17 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
     "lodash": "^4.17.23",
     "minimatch": "^10.2.3"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.35.3",
-    "@zowe/core-for-zowe-sdk": "8.35.3",
-    "@zowe/imperative": "8.35.3",
-    "@zowe/zos-uss-for-zowe-sdk": "8.35.3"
+    "@zowe/cli-test-utils": "8.36.0",
+    "@zowe/core-for-zowe-sdk": "8.36.0",
+    "@zowe/imperative": "8.36.0",
+    "@zowe/zos-uss-for-zowe-sdk": "8.36.0"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0",
