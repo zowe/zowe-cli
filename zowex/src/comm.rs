@@ -20,9 +20,6 @@ use tokio::io::AsyncBufReadExt;
 use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
-#[cfg(target_family = "unix")]
-use std::os::unix::io::AsRawFd;
-
 #[cfg(target_family = "windows")]
 use std::os::windows::io::AsRawHandle;
 #[cfg(target_family = "windows")]
@@ -212,6 +209,9 @@ pub async fn comm_establish_connection(
  * rather than against the ownership of the socket or pipe in the file system,
  * because only the former identifies the process that will actually read what
  * we send. Any failure to positively confirm a match is treated as untrusted.
+ * On Unix, `UnixStream::peer_cred` reports the credentials the peer held when
+ * the connection was established, so the answer cannot be invalidated by a
+ * later change on the peer side.
  *
  * @param stream
  *      The already-connected socket or pipe client.
@@ -221,14 +221,14 @@ pub async fn comm_establish_connection(
  */
 #[cfg(target_family = "unix")]
 pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
-    match comm_peer_uid(stream.as_raw_fd()) {
+    match stream.peer_cred() {
         // SAFETY: geteuid takes no arguments and is documented as always
         // succeeding, so there is no error case to handle.
-        Some(peer_uid) => peer_uid == unsafe { libc::geteuid() },
-        None => {
+        Ok(peer_cred) => peer_cred.uid() == unsafe { libc::geteuid() },
+        Err(e) => {
             eprintln!(
                 "Warning: Unable to verify the owner of the Zowe daemon socket. Details = {}",
-                io::Error::last_os_error()
+                e
             );
             false
         }
@@ -238,63 +238,6 @@ pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
 #[cfg(target_family = "windows")]
 pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
     windows_pipe_owned_by_current_user(stream)
-}
-
-/**
- * Ask the kernel for the effective user ID of the process on the other end of
- * a connected Unix domain socket.
- *
- * Both mechanisms below report the credentials that the peer held when the
- * connection was established, not the credentials it holds now, so the answer
- * cannot be invalidated by a later change on the peer side.
- *
- * @param fd
- *      The file descriptor of the connected socket.
- *
- * @returns
- *      The effective UID of the peer, or None if the kernel would not tell us.
- */
-#[cfg(target_family = "unix")]
-fn comm_peer_uid(fd: i32) -> Option<u32> {
-    // Linux and Android report a ucred struct of { pid, uid, gid }.
-    #[cfg(any(target_os = "linux", target_os = "android"))]
-    {
-        let mut peer_cred: libc::ucred = unsafe { std::mem::zeroed() };
-        let mut peer_cred_len = std::mem::size_of::<libc::ucred>() as libc::socklen_t;
-
-        // SAFETY: peer_cred and peer_cred_len describe a correctly sized and
-        // correctly typed ucred buffer that outlives this call.
-        let got_peer_cred = unsafe {
-            libc::getsockopt(
-                fd,
-                libc::SOL_SOCKET,
-                libc::SO_PEERCRED,
-                &mut peer_cred as *mut libc::ucred as *mut libc::c_void,
-                &mut peer_cred_len,
-            )
-        };
-
-        if got_peer_cred != 0 || (peer_cred_len as usize) < std::mem::size_of::<libc::ucred>() {
-            return None;
-        }
-        Some(peer_cred.uid)
-    }
-
-    // macOS and the BSDs report the UID and GID directly.
-    #[cfg(not(any(target_os = "linux", target_os = "android")))]
-    {
-        let mut peer_uid: libc::uid_t = 0;
-        let mut peer_gid: libc::gid_t = 0;
-
-        // SAFETY: both out parameters are correctly typed locals that outlive
-        // this call.
-        let got_peer_eid = unsafe { libc::getpeereid(fd, &mut peer_uid, &mut peer_gid) };
-
-        if got_peer_eid != 0 {
-            return None;
-        }
-        Some(peer_uid)
-    }
 }
 
 /**
