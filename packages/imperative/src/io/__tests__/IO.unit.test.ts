@@ -117,6 +117,26 @@ describe("IO tests", () => {
         expect(fnFm).toHaveBeenCalled();
     });
 
+    it("should pass a mode to mkdirSync when one is supplied", () => {
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((_file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        IO.createDirSync("pretend/to/create", IO.OWNER_ONLY_DIR_MODE);
+        expect(fnFm).toHaveBeenCalledWith("pretend/to/create", { recursive: true, mode: IO.OWNER_ONLY_DIR_MODE });
+    });
+
+    it("should omit the mode option when no mode is supplied", () => {
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((_file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        IO.createDirSync("pretend/to/create");
+        expect(fnFm).toHaveBeenCalledWith("pretend/to/create", { recursive: true });
+    });
+
     it("should get an error for no input on createDirsSync", () => {
         let error;
         try {

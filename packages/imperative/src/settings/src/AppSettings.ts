@@ -49,7 +49,12 @@ export class AppSettings {
         } catch (up) {
             if (!existsSync(settingsFile)) {
                 Logger.getImperativeLogger().trace("Executing missing file recovery.");
-                IO.createDirsSyncFromFilePath(settingsFile);
+                /* This is what creates the CLI home directory (for example ~/.zowe) on a
+                 * first run. That directory holds the config files, the logs, and the
+                 * credential-bearing files, and belongs to a single user, so create it
+                 * owner-only. A directory that already exists keeps its current mode.
+                 */
+                IO.createDirsSyncFromFilePath(settingsFile, IO.OWNER_ONLY_DIR_MODE);
                 persistence.write(defaults);
             } else {
                 Logger.getImperativeLogger().error("Unable to recover from load failure");

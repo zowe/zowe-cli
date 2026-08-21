@@ -23,6 +23,7 @@ import { LoggerManager } from "../../logger/src/LoggerManager";
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { Logger } from "../../logger/src/Logger";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { IConfig } from "./doc/IConfig";
 import { IConfigProfile } from "./doc/IConfigProfile";
 import { IExtendersJsonOpts } from "./doc/IExtenderOpts";
 
@@ -190,6 +191,84 @@ export class ConfigUtils {
             msg: "Unable to securely save credentials.",
             additionalDetails: details
         });
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Property names that are treated as credentials when no profile schema is
+     * available to consult. This list is only a fallback for
+     * {@link ConfigUtils.hasPlaintextSecret}; the schema is always preferred.
+     */
+    public static readonly LIKELY_SECRET_PROP_NAMES: readonly string[] = [
+        "user", "password", "passphrase", "keyPassphrase", "tokenValue"
+    ];
+
+    // _______________________________________________________________________
+    /**
+     * Read the site-selected POSIX mode for config files that we create.
+     * The variable is named with the CLI's environment variable prefix, for
+     * example ZOWE_CONFIG_FILE_MODE, and its value is octal (e.g. "0640").
+     *
+     * @returns The mode, or undefined when the variable is unset or invalid.
+     *          A configured value of 0 means "use the process umask" and is
+     *          returned as 0 so callers can distinguish it from "unset".
+     */
+    public static getConfigFileModeFromEnv(): number | undefined {
+        const prefix = ImperativeConfig.instance.loadedConfig?.envVariablePrefix ?? "ZOWE";
+        const rawValue = process.env[prefix + EnvironmentalVariableSettings.CONFIG_FILE_MODE_SUFFIX];
+        if (rawValue == null || rawValue.trim().length === 0) {
+            return undefined;
+        }
+
+        // Only accept octal digits so that a value like "600" is never read as decimal.
+        const trimmedValue = rawValue.trim();
+        const mode = /^[0-7]{1,4}$/.test(trimmedValue) ? parseInt(trimmedValue, 8) : NaN;
+        if (isNaN(mode) || mode > 0o777) {
+            Logger.getConsoleLogger().warn(
+                `Warning: '${rawValue}' is not a valid octal file mode. ` +
+                `Zowe ignores ${prefix}${EnvironmentalVariableSettings.CONFIG_FILE_MODE_SUFFIX}.`
+            );
+            return undefined;
+        }
+        return mode;
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Determine whether a set of config properties holds a credential in plain
+     * text. A credential is in plain text when the profile schema marks the
+     * property as secure, but the profile's `secure` array does not list it.
+     *
+     * The schema from the loaded Imperative configuration is authoritative.
+     * When no schema is available for a profile type, fall back to
+     * {@link ConfigUtils.LIKELY_SECRET_PROP_NAMES}.
+     *
+     * @param properties The properties of a single config layer.
+     * @returns True when at least one plain text credential is present.
+     */
+    public static hasPlaintextSecret(properties: IConfig): boolean {
+        const profileSchemas = ImperativeConfig.instance.loadedConfig?.profiles;
+
+        const walkProfiles = (profiles: { [key: string]: IConfigProfile }): boolean => {
+            for (const profile of Object.values(profiles ?? {})) {
+                const secureProps = profile.secure ?? [];
+                const schema = profile.type != null
+                    ? profileSchemas?.find((profileCfg) => profileCfg.type === profile.type)?.schema
+                    : undefined;
+
+                for (const propName of Object.keys(profile.properties ?? {})) {
+                    if (secureProps.includes(propName)) continue;
+                    const isSecureProp = schema != null
+                        ? schema.properties?.[propName]?.secure === true
+                        : ConfigUtils.LIKELY_SECRET_PROP_NAMES.includes(propName);
+                    if (isSecureProp) return true;
+                }
+                if (walkProfiles(profile.profiles)) return true;
+            }
+            return false;
+        };
+
+        return walkProfiles(properties?.profiles);
     }
 
     // _______________________________________________________________________
