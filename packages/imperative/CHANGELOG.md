@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. []()
+- BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
 
 ## `5.27.23`
 
