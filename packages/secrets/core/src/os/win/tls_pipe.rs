@@ -6,13 +6,22 @@ use std::io::{Read, Write};
 use std::thread;
 use windows_sys::Win32::System::Pipes::{CreateNamedPipeW, ConnectNamedPipe, PeekNamedPipe};
 use windows_sys::Win32::Foundation::{CloseHandle, INVALID_HANDLE_VALUE, GetLastError, ERROR_PIPE_CONNECTED};
+use windows_sys::Win32::System::Memory::LocalFree;
+use windows_sys::Win32::Security::{SECURITY_ATTRIBUTES, PSECURITY_DESCRIPTOR};
+use windows_sys::Win32::Security::Authorization::ConvertStringSecurityDescriptorToSecurityDescriptorW;
 
 // Named pipe constants
 const PIPE_ACCESS_DUPLEX: u32 = 0x00000003;
 const PIPE_TYPE_BYTE: u32 = 0x00000000;
 const PIPE_READMODE_BYTE: u32 = 0x00000000;
 const PIPE_WAIT: u32 = 0x00000000;
+const PIPE_REJECT_REMOTE_CLIENTS: u32 = 0x00000008;
 const FILE_FLAG_FIRST_PIPE_INSTANCE: u32 = 0x00080000;
+const SDDL_REVISION_1: u32 = 1;
+
+// SDDL granting full control to the creating process's owner only; all other
+// principals (including Everyone / ANONYMOUS LOGON) get no access.
+const OWNER_ONLY_SDDL: &str = "D:P(A;;GA;;;OW)";
 
 /// Map Windows Schannel HRESULT codes to their documented symbolic name and cause.
 /// Values are verified against winapi/src/shared/winerror.rs.
@@ -60,18 +69,46 @@ pub fn create_tls_pipe(
     let mut wide_name: Vec<u16> = pipe_name_str.encode_utf16().collect();
     wide_name.push(0);
 
+    let mut sddl_wide: Vec<u16> = OWNER_ONLY_SDDL.encode_utf16().collect();
+    sddl_wide.push(0);
+
+    let mut sec_desc: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
+    let conv_res = unsafe {
+        ConvertStringSecurityDescriptorToSecurityDescriptorW(
+            sddl_wide.as_ptr(),
+            SDDL_REVISION_1,
+            &mut sec_desc,
+            std::ptr::null_mut(),
+        )
+    };
+
+    if conv_res == 0 {
+        let err = unsafe { GetLastError() };
+        return Err(KeyringError::Os(format!("Failed to convert SDDL to security descriptor. Error: {}", err)));
+    }
+
+    let mut sec_attrs = SECURITY_ATTRIBUTES {
+        nLength: std::mem::size_of::<SECURITY_ATTRIBUTES>() as u32,
+        lpSecurityDescriptor: sec_desc,
+        bInheritHandle: 0,
+    };
+
     let pipe_handle = unsafe {
         CreateNamedPipeW(
             wide_name.as_ptr(),
             PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
-            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
             1, // Max instances
             16384, // out buffer size
             16384, // in buffer size
             0, // default timeout
-            std::ptr::null(), // default security attributes
+            &mut sec_attrs,
         )
     };
+
+    unsafe {
+        LocalFree(sec_desc as _);
+    }
 
     if pipe_handle == INVALID_HANDLE_VALUE {
         let err = unsafe { GetLastError() };
@@ -230,5 +267,33 @@ pub fn create_tls_pipe(
     });
 
     Ok(socket_path_ret)
+}
+
+#[cfg(all(test, target_os = "windows"))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_owner_only_sddl_conversion() {
+        let mut sddl_wide: Vec<u16> = OWNER_ONLY_SDDL.encode_utf16().collect();
+        sddl_wide.push(0);
+
+        let mut sec_desc: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
+        let conv_res = unsafe {
+            ConvertStringSecurityDescriptorToSecurityDescriptorW(
+                sddl_wide.as_ptr(),
+                SDDL_REVISION_1,
+                &mut sec_desc,
+                std::ptr::null_mut(),
+            )
+        };
+
+        assert_ne!(conv_res, 0, "ConvertStringSecurityDescriptorToSecurityDescriptorW should succeed");
+        assert_ne!(sec_desc, std::ptr::null_mut(), "Security descriptor pointer should not be null");
+
+        unsafe {
+            LocalFree(sec_desc as _);
+        }
+    }
 }
 
