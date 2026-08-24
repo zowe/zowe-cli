@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated `TextUtils.getTable` to detect numeric columns and right-align them using `cli-table3` colAligns support. [#2825](https://github.com/zowe/zowe-cli/pull/2825)
+
 ## `8.36.0`
 
 - Enhancement: Added an `--allow-scripts` option to the `zowe plugins install` and `zowe plugins update` commands. [#2839](https://github.com/zowe/zowe-cli/issues/2839)
