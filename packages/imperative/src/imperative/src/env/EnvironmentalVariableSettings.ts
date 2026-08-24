@@ -90,6 +90,15 @@ export class EnvironmentalVariableSettings {
      */
     public static readonly ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX = "_REQUEST_COMPLETION_TIMEOUT";
 
+    /**
+     * Octal POSIX mode applied to config files that we create for the first time.
+     * A value of "0" keeps the mode that the process umask produces.
+     *
+     * @type {string}
+     * @memberof EnvironmentalVariableSettings
+     */
+    public static readonly CONFIG_FILE_MODE_SUFFIX = "_CONFIG_FILE_MODE";
+
 
     /**
      * Read all environmental variable settings for a CLI

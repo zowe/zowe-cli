@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
@@ -19,11 +20,19 @@ import { IConfigLayer } from "../doc/IConfigLayer";
 import { ConfigApi } from "./ConfigApi";
 import { IConfig } from "../doc/IConfig";
 import { Logger } from "../../../logger";
+import { IO } from "../../../io";
+import { ConfigUtils } from "../ConfigUtils";
 
 /**
  * API Class for manipulating config layers.
  */
 export class ConfigLayers extends ConfigApi {
+
+    /**
+     * Set once the loose-permission warning has been emitted, so that a process
+     * that saves the config repeatedly only reports the problem one time.
+     */
+    private static warnedAboutPermissions = false;
 
     // _______________________________________________________________________
     /**
@@ -89,13 +98,85 @@ export class ConfigLayers extends ConfigApi {
         const layerCloned = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as any;
         this.mConfig.api.secure.cacheAndPrune(layerCloned);
 
+        // writeFileSync only applies a mode when it creates the file, so 
+        // we need to know whether the file is new before writing to it.
+        const fileIsNew = !fs.existsSync(layer.path);
+        const fileMode = ConfigLayers.modeForNewFile(layer);
+
         // Write the layer
         try {
+            // Create the file with restricted permissions before any content goes 
+            // into it, so the content is never readable by other accounts.
+            if (fileIsNew && fileMode != null) {
+                fs.closeSync(fs.openSync(layer.path, "w", fileMode));
+            }
             fs.writeFileSync(layer.path, JSONC.stringify(layerCloned.properties, null, ConfigConstants.INDENT));
         } catch (e) {
             throw new ImperativeError({ msg: `error writing "${layer.path}": ${e.message}` });
         }
         layer.exists = true;
+
+        // Warn when the pre-existing file permissions expose a credential to other accounts.
+        if (!fileIsNew) {
+            ConfigLayers.warnOnLoosePermissions(layer, layerCloned.properties);
+        }
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Get the POSIX mode for a config layer file that is being created for the
+     * first time.
+     *
+     * The three layers that belong to a single user get owner-only access. The
+     * project team layer keeps the mode that the process umask produces, because
+     * teams share that file through source control.
+     *
+     * @param layer The layer that is about to be written.
+     * @returns The mode, or undefined when the layer keeps the umask default.
+     */
+    private static modeForNewFile(layer: IConfigLayer): number | undefined {
+        // Windows ignores POSIX mode bits. Use `IO.giveAccessOnlyToOwner` there instead.
+        if (os.platform() === IO.OS_WIN32) return undefined;
+
+        // A site can select its own mode, or opt out entirely with a value of 0.
+        const siteMode = ConfigUtils.getConfigFileModeFromEnv();
+        if (siteMode != null) return siteMode === 0 ? undefined : siteMode;
+
+        if (layer.global || layer.user) return IO.OWNER_ONLY_FILE_MODE;
+
+        // This is the project team layer, so keep the umask default.
+        return undefined;
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Warn once per process when a config file that already existed holds a
+     * credential in plain text and grants access to accounts other than its owner.
+     *
+     * @param layer The layer that was written.
+     * @param written The properties that were written, after secure values were pruned.
+     */
+    private static warnOnLoosePermissions(layer: IConfigLayer, written: IConfig): void {
+        if (ConfigLayers.warnedAboutPermissions) return;
+        if (os.platform() === IO.OS_WIN32) return;
+
+        try {
+            if (!ConfigUtils.hasPlaintextSecret(written)) return;
+            if (IO.hasOwnerOnlyAccess(layer.path)) return;
+
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            const mode = (fs.statSync(layer.path).mode & 0o777).toString(8);
+            Logger.getConsoleLogger().warn(
+                `Warning: "${layer.path}" contains a credential in plain text and its permissions are ` +
+                `0${mode}, so other accounts on this system can read it.\n` +
+                `  To move the credential into the credential vault, run: zowe config secure\n` +
+                `  To restrict the file to your account, run: chmod 600 "${layer.path}"`
+            );
+        } catch (_e) {
+            // A warning must never break a config save.
+            return;
+        }
+        ConfigLayers.warnedAboutPermissions = true;
     }
 
     // _______________________________________________________________________

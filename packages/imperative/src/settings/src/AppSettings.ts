@@ -49,7 +49,8 @@ export class AppSettings {
         } catch (up) {
             if (!existsSync(settingsFile)) {
                 Logger.getImperativeLogger().trace("Executing missing file recovery.");
-                IO.createDirsSyncFromFilePath(settingsFile);
+                // Ensure that settings dir is owner-only
+                IO.createDirsSyncFromFilePath(settingsFile, IO.OWNER_ONLY_DIR_MODE);
                 persistence.write(defaults);
             } else {
                 Logger.getImperativeLogger().error("Unable to recover from load failure");

@@ -113,6 +113,14 @@ describe("Configuration Initialization command handler", () => {
         existsSyncSpy = jest.spyOn(fs, "existsSync");
         searchSpy = jest.spyOn(Config, "search");
         editFileSpy = jest.spyOn(ProcessUtils, "openInEditor");
+
+        /* 
+         * On POSIX platforms, a new global or user config layer is pre-created with
+         * owner-only permissions before it is written. Stub that out so these tests
+         * never touch the real file system.
+         */
+        jest.spyOn(fs, "openSync").mockReturnValue(1 as any);
+        jest.spyOn(fs, "closeSync").mockImplementation();
     });
 
     afterAll(() => {

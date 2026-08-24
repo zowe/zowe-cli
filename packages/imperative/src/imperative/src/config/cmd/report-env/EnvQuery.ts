@@ -15,7 +15,8 @@ import * as path from "path";
 import * as spawn from "cross-spawn";
 import { StdioOptions } from "child_process";
 
-import { ConfigConstants, IConfigProfile } from "../../../../../config";
+import { ConfigConstants, ConfigUtils, IConfigProfile } from "../../../../../config";
+import { IO } from "../../../../../io";
 import { IHandlerProgressApi } from "../../../../../cmd";
 import { ImperativeConfig , TextUtils } from "../../../../../utilities";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../../../operations";
@@ -263,8 +264,16 @@ export class EnvQuery {
              * Logic stolen from "config list" handler.
              */
             const configListObj: any = {};
+            const exposedConfigFiles: string[] = [];
             for (const layer of config.layers) {
                 if (layer.exists) {
+                    // Record any config file that holds a plain text credential and is
+                    // readable by accounts other than its owner, before the secure
+                    // values below are masked in place.
+                    if (ConfigUtils.hasPlaintextSecret(layer.properties) && !IO.hasOwnerOnlyAccess(layer.path)) {
+                        exposedConfigFiles.push(layer.path);
+                    }
+
                     configListObj[layer.path] = layer.properties;
                     if (configListObj[layer.path] != null) {
                         for (const secureProp of config.api.secure.secureFields(layer)) {
@@ -279,6 +288,12 @@ export class EnvQuery {
             getResult.itemValMsg += `${os.EOL}Zowe client config files in use:${os.EOL}`;
             for (const configLoc  of Object.keys(configListObj)) {
                 getResult.itemValMsg += EnvQuery.indent + configLoc + os.EOL;
+            }
+
+            for (const exposedFile of exposedConfigFiles) {
+                getResult.itemProbMsg += `${os.EOL}The file '${exposedFile}' contains a credential in plain ` +
+                    "text and is readable by other accounts on this system. Move the credential into the " +
+                    "credential vault with 'zowe config secure', or restrict the file to your own account.";
             }
 
             // get default profile names

@@ -65,6 +65,22 @@ export class IO {
     public static readonly OS_LINUX = "linux";
 
     /**
+     * POSIX mode for a file that only its owner can read and write.
+     * Windows ignores POSIX mode bits, so use {@link IO.giveAccessOnlyToOwner}
+     * when an owner-only ACL is needed there.
+     * @static
+     * @memberof IO
+     */
+    public static readonly OWNER_ONLY_FILE_MODE = 0o600;
+
+    /**
+     * POSIX mode for a directory that only its owner can read, write, and search.
+     * @static
+     * @memberof IO
+     */
+    public static readonly OWNER_ONLY_DIR_MODE = 0o700;
+
+    /**
      * Return whether input file is a directory or file
      * @static
      * @param {string} dirOrFile - file path
@@ -111,12 +127,16 @@ export class IO {
      * Create a directory and all subdirectories if they do not yet exist synchronously.
      * @static
      * @param  {string} dir - directory to create
+     * @param  {number} mode - POSIX mode applied to directories that this call creates.
+     *                         The process umask masks this value, and Windows ignores it.
+     *                         A directory that already exists keeps its current mode,
+     *                         because mkdir only applies a mode at creation time.
      * @return {undefined}
      * @memberof IO
      */
-    public static createDirSync(dir: string) {
+    public static createDirSync(dir: string, mode?: number) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        fs.mkdirSync(dir, {recursive: true});
+        fs.mkdirSync(dir, mode != null ? {recursive: true, mode} : {recursive: true});
     }
 
     /**
@@ -138,12 +158,14 @@ export class IO {
      * oneDir, twoDir, and threeDir will be created.
      * @static
      * @param  {string} filePath [description]
+     * @param  {number} mode - POSIX mode applied to directories that this call creates.
+     *                         See {@link IO.createDirSync}.
      * @return {[type]}          [description]
      * @memberof IO
      */
-    public static createDirsSyncFromFilePath(filePath: string) {
+    public static createDirsSyncFromFilePath(filePath: string, mode?: number) {
         ImperativeExpect.toBeDefinedAndNonBlank(filePath, "filePath");
-        IO.createDirSync(path.dirname(filePath));
+        IO.createDirSync(path.dirname(filePath), mode);
     }
 
     /**

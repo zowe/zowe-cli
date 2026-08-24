@@ -143,6 +143,14 @@ describe("Configuration Secure command handler", () => {
         jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({
             emitZoweEvent: jest.fn(),
         } as any);
+
+        /* 
+         * On POSIX platforms, a new global or user config layer is pre-created with
+         * owner-only permissions before it is written. Stub that out so these tests
+         * never touch the real file system.
+         */
+        jest.spyOn(fs, "openSync").mockReturnValue(1 as any);
+        jest.spyOn(fs, "closeSync").mockImplementation();
     });
 
     afterEach(() => {

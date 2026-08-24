@@ -17,6 +17,7 @@ import * as glob from "fast-glob";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
+import { Logger } from "../../logger";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 
@@ -438,6 +439,116 @@ describe("Config Utils", () => {
             });
             expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
             expect(jsonParseSpy).toHaveBeenCalled();
+        });
+    });
+
+    describe("getConfigFileModeFromEnv", () => {
+        const envVarName = "ZOWE" + EnvironmentalVariableSettings.CONFIG_FILE_MODE_SUFFIX;
+
+        beforeEach(() => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                loadedConfig: { envVariablePrefix: "ZOWE" }
+            } as any);
+        });
+
+        afterEach(() => {
+            delete process.env[envVarName];
+        });
+
+        it("returns undefined when the variable is unset or blank", () => {
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBeUndefined();
+            process.env[envVarName] = "   ";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBeUndefined();
+        });
+
+        it("parses an octal value", () => {
+            process.env[envVarName] = "0640";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBe(0o640);
+            process.env[envVarName] = "600";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBe(0o600);
+        });
+
+        it("returns 0 so that callers can detect an explicit opt-out", () => {
+            process.env[envVarName] = "0";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBe(0);
+        });
+
+        it("warns and returns undefined for a value that is not octal", () => {
+            const warnSpy = jest.fn();
+            jest.spyOn(Logger, "getConsoleLogger").mockReturnValue({ warn: warnSpy } as any);
+            process.env[envVarName] = "rw-------";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBeUndefined();
+            expect(warnSpy).toHaveBeenCalledTimes(1);
+            expect(warnSpy.mock.calls[0][0]).toContain("ZOWE_CONFIG_FILE_MODE");
+        });
+
+        it("warns and returns undefined for a digit outside the octal range", () => {
+            jest.spyOn(Logger, "getConsoleLogger").mockReturnValue({ warn: jest.fn() } as any);
+            process.env[envVarName] = "0680";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBeUndefined();
+        });
+
+        it("warns and returns undefined for a mode above 0777", () => {
+            jest.spyOn(Logger, "getConsoleLogger").mockReturnValue({ warn: jest.fn() } as any);
+            process.env[envVarName] = "7777";
+            expect(ConfigUtils.getConfigFileModeFromEnv()).toBeUndefined();
+        });
+    });
+
+    describe("hasPlaintextSecret", () => {
+        const schemaWithSecurePassword = {
+            profiles: [{
+                type: "zosmf",
+                schema: { properties: { host: { secure: false }, password: { secure: true } } }
+            }]
+        };
+
+        it("returns true when a schema-secure property is not in the secure array", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                loadedConfig: schemaWithSecurePassword
+            } as any);
+            expect(ConfigUtils.hasPlaintextSecret({
+                profiles: { lpar1: { type: "zosmf", properties: { host: "example.com", password: "hunter2" } } }
+            } as any)).toBe(true);
+        });
+
+        it("returns false when the secure array lists the property", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                loadedConfig: schemaWithSecurePassword
+            } as any);
+            expect(ConfigUtils.hasPlaintextSecret({
+                profiles: { lpar1: { type: "zosmf", properties: { host: "example.com" }, secure: ["password"] } }
+            } as any)).toBe(false);
+        });
+
+        it("finds a plain text credential in a nested profile", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                loadedConfig: schemaWithSecurePassword
+            } as any);
+            expect(ConfigUtils.hasPlaintextSecret({
+                profiles: {
+                    parent: {
+                        properties: {},
+                        profiles: { child: { type: "zosmf", properties: { password: "hunter2" } } }
+                    }
+                }
+            } as any)).toBe(true);
+        });
+
+        it("falls back to a name list when no schema is available for the profile type", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ loadedConfig: {} } as any);
+            expect(ConfigUtils.hasPlaintextSecret({
+                profiles: { lpar1: { type: "unknown", properties: { password: "hunter2" } } }
+            } as any)).toBe(true);
+            expect(ConfigUtils.hasPlaintextSecret({
+                profiles: { lpar1: { type: "unknown", properties: { host: "example.com", port: 443 } } }
+            } as any)).toBe(false);
+        });
+
+        it("returns false for an empty or absent profiles object", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ loadedConfig: {} } as any);
+            expect(ConfigUtils.hasPlaintextSecret({ profiles: {} } as any)).toBe(false);
+            expect(ConfigUtils.hasPlaintextSecret({} as any)).toBe(false);
         });
     });
 });
