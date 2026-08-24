@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated and removed dependencies for technical currency. []()
+
 ## `7.29.4`
 
 - BugFix: Updated deprecated-profile warning to include spaces. [zowe-cli-sample-plugin#113](https://github.com/zowe/zowe-cli-sample-plugin/pull/113)

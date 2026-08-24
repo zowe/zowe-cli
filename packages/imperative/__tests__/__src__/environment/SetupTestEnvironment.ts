@@ -15,8 +15,8 @@ import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { mkdirpSync } from "fs-extra";
+import { randomUUID as uuidv4 } from "crypto";
 
-const uuidv4 = require("uuid/v4");
 /**
  * Use the utility methods here to setup the test environment for running APIs
  * and CLIs. Imperative will always touch the filesystem in some capacity
