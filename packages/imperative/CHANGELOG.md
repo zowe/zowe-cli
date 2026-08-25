@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
+
 ## `5.27.23`
 
 - BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `tar` dependency to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
+
 ## `7.29.32`
 
 - **Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the fingerprint and the key is saved to your ssh profile; a changed key is rejected. Use `--insecure` to skip verification or `--host-key` to pin a key. [#2812](https://github.com/zowe/zowe-cli/pull/2812)

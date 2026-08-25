@@ -199,7 +199,7 @@ export class SshSession {
      * @returns a promise resolving to true to trust the key and continue, or false to reject the connection.
      */
     public hostKeyVerifier?: (info: { fingerprint: string; key: string; changed: boolean; pinnedFingerprint?: string })
-        => Promise<boolean>;
+    => Promise<boolean>;
 
     /**
      * Creates an instance of AbstractSession.

@@ -31,14 +31,12 @@ import { Config, IConfig, IConfigOpts } from "../../src/config";
 import { ImperativeConfig } from "../../src/utilities";
 import { sync } from "cross-spawn";
 import { mkdirpSync } from "fs-extra";
+import { randomUUID as uuidv4 } from "crypto";
 
 /**
  * Requires for non-typed.
  */
-const yargs = require("yargs").argv;
-const yaml = require("js-yaml");
 const diff = require("deep-diff").diff;
-const uuidv4 = require("uuid/v4");
 
 /**
  * Exports for usage in tests
