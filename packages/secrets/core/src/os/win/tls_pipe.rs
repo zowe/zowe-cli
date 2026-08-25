@@ -46,6 +46,28 @@ fn schannel_error_hint(code: i32) -> &'static str {
     }
 }
 
+fn owner_only_security_descriptor() -> Result<PSECURITY_DESCRIPTOR, KeyringError> {
+    let mut sddl_wide: Vec<u16> = OWNER_ONLY_SDDL.encode_utf16().collect();
+    sddl_wide.push(0);
+
+    let mut sec_desc: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
+    let conv_res = unsafe {
+        ConvertStringSecurityDescriptorToSecurityDescriptorW(
+            sddl_wide.as_ptr(),
+            SDDL_REVISION_1,
+            &mut sec_desc,
+            std::ptr::null_mut(),
+        )
+    };
+
+    if conv_res == 0 {
+        let err = unsafe { GetLastError() };
+        return Err(KeyringError::Os(format!("Failed to convert SDDL to security descriptor. Error: {}", err)));
+    }
+
+    Ok(sec_desc)
+}
+
 pub fn create_tls_pipe(
     remote_host: &String,
     remote_port: u16,
@@ -69,23 +91,7 @@ pub fn create_tls_pipe(
     let mut wide_name: Vec<u16> = pipe_name_str.encode_utf16().collect();
     wide_name.push(0);
 
-    let mut sddl_wide: Vec<u16> = OWNER_ONLY_SDDL.encode_utf16().collect();
-    sddl_wide.push(0);
-
-    let mut sec_desc: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
-    let conv_res = unsafe {
-        ConvertStringSecurityDescriptorToSecurityDescriptorW(
-            sddl_wide.as_ptr(),
-            SDDL_REVISION_1,
-            &mut sec_desc,
-            std::ptr::null_mut(),
-        )
-    };
-
-    if conv_res == 0 {
-        let err = unsafe { GetLastError() };
-        return Err(KeyringError::Os(format!("Failed to convert SDDL to security descriptor. Error: {}", err)));
-    }
+    let sec_desc = owner_only_security_descriptor()?;
 
     let mut sec_attrs = SECURITY_ATTRIBUTES {
         nLength: std::mem::size_of::<SECURITY_ATTRIBUTES>() as u32,
@@ -106,13 +112,13 @@ pub fn create_tls_pipe(
         )
     };
 
+    let create_err = unsafe { GetLastError() };
     unsafe {
         LocalFree(sec_desc as _);
     }
 
     if pipe_handle == INVALID_HANDLE_VALUE {
-        let err = unsafe { GetLastError() };
-        return Err(KeyringError::Os(format!("Failed to create named pipe. Error: {}", err)));
+        return Err(KeyringError::Os(format!("Failed to create named pipe. Error: {}", create_err)));
     }
 
     let remote_addr = format!("{}:{}", remote_host, remote_port);
@@ -275,20 +281,9 @@ mod tests {
 
     #[test]
     fn test_owner_only_sddl_conversion() {
-        let mut sddl_wide: Vec<u16> = OWNER_ONLY_SDDL.encode_utf16().collect();
-        sddl_wide.push(0);
+        let sec_desc = owner_only_security_descriptor()
+            .expect("owner-only security descriptor should be constructible");
 
-        let mut sec_desc: PSECURITY_DESCRIPTOR = std::ptr::null_mut();
-        let conv_res = unsafe {
-            ConvertStringSecurityDescriptorToSecurityDescriptorW(
-                sddl_wide.as_ptr(),
-                SDDL_REVISION_1,
-                &mut sec_desc,
-                std::ptr::null_mut(),
-            )
-        };
-
-        assert_ne!(conv_res, 0, "ConvertStringSecurityDescriptorToSecurityDescriptorW should succeed");
         assert_ne!(sec_desc, std::ptr::null_mut(), "Security descriptor pointer should not be null");
 
         unsafe {
