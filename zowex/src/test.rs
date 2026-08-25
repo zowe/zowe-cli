@@ -236,6 +236,45 @@ fn unit_test_util_restrict_zowe_bin_to_owner() {
     );
 }
 
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn unit_test_comm_peer_is_current_user() {
+    use crate::comm::comm_peer_is_current_user;
+    use tokio::net::{UnixListener, UnixStream};
+
+    // Both ends of this socket belong to the process running the test, so the
+    // check must accept them. The negative case (a socket served by a different
+    // user) cannot be produced without a second account, so it is not covered.
+    let sock_path = env::temp_dir().join("zowe_test_comm_peer_cred.sock");
+    std::fs::remove_file(&sock_path).ok();
+
+    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
+
+    // Accept concurrently, so that our own connect can complete.
+    let accept_task = tokio::spawn(async move { listener.accept().await });
+    let client_end = UnixStream::connect(&sock_path)
+        .await
+        .expect("should connect to the test socket");
+    let (server_end, _addr) = accept_task
+        .await
+        .expect("the accept task should not panic")
+        .expect("should accept the test connection");
+
+    println!("--- test_comm_peer_is_current_user: socket path = {}", sock_path.display());
+    assert!(
+        comm_peer_is_current_user(&client_end),
+        "the client end should trust a peer running as the current user"
+    );
+    assert!(
+        comm_peer_is_current_user(&server_end),
+        "the server end should trust a peer running as the current user"
+    );
+
+    drop(client_end);
+    drop(server_end);
+    std::fs::remove_file(&sock_path).ok();
+}
+
 #[tokio::test]
 // test daemon restart
 async fn integration_test_restart() {
