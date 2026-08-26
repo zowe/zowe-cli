@@ -275,6 +275,102 @@ async fn unit_test_comm_peer_is_current_user() {
     std::fs::remove_file(&sock_path).ok();
 }
 
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
+    use crate::comm::comm_talk;
+    use tokio::io::AsyncWriteExt;
+    use tokio::net::{UnixListener, UnixStream};
+
+    let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_no_exit.sock");
+    std::fs::remove_file(&sock_path).ok();
+
+    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
+
+    let daemon_task = tokio::spawn(async move {
+        let (mut server_end, _addr) = listener
+            .accept()
+            .await
+            .expect("should accept the test connection");
+
+        server_end
+            .write_all(b"{\"stdout\":\"partial output\"}\x0c")
+            .await
+            .expect("should write the fake daemon response");
+        server_end
+            .flush()
+            .await
+            .expect("should flush the fake daemon response");
+        drop(server_end);
+    });
+
+    let mut client_end = UnixStream::connect(&sock_path)
+        .await
+        .expect("should connect to the test socket");
+
+    let result = comm_talk(b"{}", &mut client_end).await;
+
+    daemon_task.await.expect("the fake daemon task should not panic");
+    std::fs::remove_file(&sock_path).ok();
+
+    match result {
+        Err(err_val) => {
+            assert_eq!(
+                err_val.kind(),
+                std::io::ErrorKind::UnexpectedEof,
+                "an EOF without an exit code should surface as UnexpectedEof, got: {}",
+                err_val
+            );
+        }
+        Ok(exit_code) => {
+            panic!("comm_talk should not report success on an unexpected EOF, got exit code {}", exit_code);
+        }
+    }
+}
+
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn unit_test_comm_talk_returns_exit_code_before_eof() {
+    use crate::comm::comm_talk;
+    use tokio::io::AsyncWriteExt;
+    use tokio::net::{UnixListener, UnixStream};
+
+    let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_with_exit.sock");
+    std::fs::remove_file(&sock_path).ok();
+
+    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
+
+    let daemon_task = tokio::spawn(async move {
+        let (mut server_end, _addr) = listener
+            .accept()
+            .await
+            .expect("should accept the test connection");
+        server_end
+            .write_all(b"{\"exitCode\":42}\x0c")
+            .await
+            .expect("should write the fake daemon response");
+        server_end
+            .flush()
+            .await
+            .expect("should flush the fake daemon response");
+        drop(server_end);
+    });
+
+    let mut client_end = UnixStream::connect(&sock_path)
+        .await
+        .expect("should connect to the test socket");
+
+    let result = comm_talk(b"{}", &mut client_end).await;
+
+    daemon_task.await.expect("the fake daemon task should not panic");
+    std::fs::remove_file(&sock_path).ok();
+
+    assert_eq!(
+        result.expect("comm_talk should succeed when the daemon sends an exit code"),
+        42
+    );
+}
+
 #[tokio::test]
 // test daemon restart
 async fn integration_test_restart() {

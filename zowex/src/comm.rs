@@ -390,6 +390,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     let mut reader = BufReader::new(stream);
 
     let mut exit_code = EXIT_CODE_SUCCESS;
+    let mut got_exit_code = false;
     let mut _progress = false;
 
     // get the daemon directory so we can read the token from its pid file later on
@@ -494,6 +495,9 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                         reader.get_mut().write_all(v.as_bytes()).await?;
                     }
 
+                    if p.exitCode.is_some() {
+                        got_exit_code = true;
+                    }
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
                     _progress = p.progress.unwrap_or(false);
 
@@ -505,6 +509,12 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                     }
                 } else {
                     // end of reading
+                    if !got_exit_code {
+                        return Err(io::Error::new(
+                            io::ErrorKind::UnexpectedEof,
+                            "The Zowe daemon closed the connection before returning an exit code.",
+                        ));
+                    }
                     break;
                 }
             }
