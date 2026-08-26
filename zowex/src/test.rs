@@ -279,7 +279,7 @@ async fn unit_test_comm_peer_is_current_user() {
 #[tokio::test]
 async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
     use crate::comm::comm_talk;
-    use tokio::io::AsyncWriteExt;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
     use tokio::net::{UnixListener, UnixStream};
 
     let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_no_exit.sock");
@@ -292,6 +292,12 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
             .accept()
             .await
             .expect("should accept the test connection");
+
+        let mut request_buf = [0u8; 2];
+        server_end
+            .read_exact(&mut request_buf)
+            .await
+            .expect("should read the fake client request");
 
         server_end
             .write_all(b"{\"stdout\":\"partial output\"}\x0c")
@@ -332,7 +338,7 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
 #[tokio::test]
 async fn unit_test_comm_talk_returns_exit_code_before_eof() {
     use crate::comm::comm_talk;
-    use tokio::io::AsyncWriteExt;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
     use tokio::net::{UnixListener, UnixStream};
 
     let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_with_exit.sock");
@@ -345,6 +351,13 @@ async fn unit_test_comm_talk_returns_exit_code_before_eof() {
             .accept()
             .await
             .expect("should accept the test connection");
+
+        let mut request_buf = [0u8; 2];
+        server_end
+            .read_exact(&mut request_buf)
+            .await
+            .expect("should read the fake client request");
+
         server_end
             .write_all(b"{\"exitCode\":42}\x0c")
             .await
