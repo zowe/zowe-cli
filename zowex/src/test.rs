@@ -275,7 +275,6 @@ async fn unit_test_comm_peer_is_current_user() {
     std::fs::remove_file(&sock_path).ok();
 }
 
-#[cfg(target_family = "unix")]
 #[tokio::test]
 async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
     use crate::comm::comm_talk;
@@ -334,7 +333,6 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
     }
 }
 
-#[cfg(target_family = "unix")]
 #[tokio::test]
 async fn unit_test_comm_talk_returns_exit_code_before_eof() {
     use crate::comm::comm_talk;
