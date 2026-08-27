@@ -232,11 +232,8 @@ describe("Configuration Secure command handler", () => {
             PersistenceValue.Enterprise
         );
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
-            1,
-            fakeProjPath,
-            JSON.stringify(compObj, null, 4)
-        ); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath);
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should attempt to secure the project user configuration", async () => {
@@ -306,11 +303,8 @@ describe("Configuration Secure command handler", () => {
             PersistenceValue.Enterprise
         );
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
-            1,
-            fakeProjUserPath,
-            JSON.stringify(compObj, null, 4)
-        ); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjUserPath);
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should attempt to secure the global configuration", async () => {
@@ -386,11 +380,8 @@ describe("Configuration Secure command handler", () => {
             PersistenceValue.Enterprise
         );
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
-            1,
-            fakeGblProjPath,
-            JSON.stringify(compObj, null, 4)
-        ); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGblProjPath);
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should attempt to secure the global user configuration", async () => {
@@ -465,11 +456,8 @@ describe("Configuration Secure command handler", () => {
             PersistenceValue.Enterprise
         );
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(
-            1,
-            fakeGblProjUserPath,
-            JSON.stringify(compObj, null, 4)
-        ); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGblProjUserPath);
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should fail to secure the project configuration if there is no project configuration", async () => {

@@ -192,7 +192,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should secure a property and add it to the project user configuration", async () => {
@@ -254,7 +255,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjUserPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should secure a property and add it to the global configuration", async () => {
@@ -319,7 +321,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGlobalPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should secure a property and add it to the global user configuration", async () => {
@@ -382,7 +385,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGlobalUserPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define an insecure property and add it to the project configuration", async () => {
@@ -440,7 +444,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define an insecure property and add it to the project user configuration", async () => {
@@ -497,7 +502,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGlobalUserPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define an insecure property and add it to the global configuration", async () => {
@@ -556,7 +562,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGlobalPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define an insecure property and add it to the global user configuration", async () => {
@@ -614,7 +621,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeGlobalUserPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define an insecure property and add it to the project configuration while keeping other secure props", async () => {
@@ -678,7 +686,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should prompt for a property and add it to the project configuration", async () => {
@@ -745,7 +754,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(promptSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
         expect(compObj.profiles.secured.properties.info).toEqual("anUnsecuredTestProperty");
     });
 
@@ -808,7 +818,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define a property and add it to the project configuration with secure equal to null and not secure it", async () => {
@@ -871,7 +882,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define a property as json and add it to the project configuration", async () => {
@@ -935,7 +947,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy.mock.calls[0][0]).toBe(fakeProjPath); // Config
+        expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(compObj, null, 4));
     });
 
     it("should allow you to define a property as json and not add it to the project configuration if it is bad", async () => {

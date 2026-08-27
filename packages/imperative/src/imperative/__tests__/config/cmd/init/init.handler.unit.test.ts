@@ -179,8 +179,10 @@ describe("Configuration Initialization command handler", () => {
 
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
             // 1 = Schema and 2 = Config
-            expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, schemaPath, JSON.stringify(expectedSchemaObject, null, ConfigConstants.INDENT));
-            expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, configPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
+            expect(writeFileSyncSpy.mock.calls[0][0]).toBe(schemaPath);
+            expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(expectedSchemaObject, null, ConfigConstants.INDENT));
+            expect(writeFileSyncSpy.mock.calls[1][0]).toBe(configPath);
+            expect(writeFileSyncSpy.mock.calls[1][1]).toBe(JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
             // Secure value supplied during prompting should be on properties
             if (!user) {
@@ -322,8 +324,10 @@ describe("Configuration Initialization command handler", () => {
 
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
             // 1 = Schema and 2 = Config
-            expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, schemaPath, JSON.stringify(expectedSchemaObject, null, ConfigConstants.INDENT));
-            expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, configPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
+            expect(writeFileSyncSpy.mock.calls[0][0]).toBe(schemaPath);
+            expect(writeFileSyncSpy.mock.calls[0][1]).toBe(JSON.stringify(expectedSchemaObject, null, ConfigConstants.INDENT));
+            expect(writeFileSyncSpy.mock.calls[1][0]).toBe(configPath);
+            expect(writeFileSyncSpy.mock.calls[1][1]).toBe(JSON.stringify(compObj, null, ConfigConstants.INDENT));
         });
 
         it("should attempt to overwrite the configuration with prompting disabled", async () => {

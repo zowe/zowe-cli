@@ -16,6 +16,15 @@ import { SetupTestEnvironment } from "../../../../../../__src__/environment/Setu
 const fakeCertPath = "./fakeCert.cert";
 const fakeCertKeyPath = "./fakeKey.key";
 
+/**
+ * base_password.config.json intentionally leaves user/password unsecured, so every
+ * write to imperative-test-cli.config.json logs ConfigLayers.write's plaintext-credential
+ * warning. Strip that one expected line before asserting a command produced no other,
+ * unexpected stderr output.
+ */
+const stripExpectedPlaintextWarning = (stderr: string): string =>
+    stderr.replace(/\[[^\]]*\]\s*\[WARN\].*contains a credential in plain text[\s\S]*?chmod 600 "[^"]*"\r?\n?/, "");
+
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 describe("imperative-test-cli auth login", () => {
@@ -32,7 +41,7 @@ describe("imperative-test-cli auth login", () => {
             TEST_ENVIRONMENT.workingDir);
 
         // the output of the command should include token value
-        expect(response.stderr.toString()).toBe("");
+        expect(stripExpectedPlaintextWarning(response.stderr.toString())).toBe("");
         expect(response.stdout.toString()).toMatch(/user:  +fakeUser/);
         expect(response.stdout.toString()).toMatch(/password: +fakePass/);
         expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
@@ -45,7 +54,7 @@ describe("imperative-test-cli auth login", () => {
             TEST_ENVIRONMENT.workingDir);
 
         // the output of the command should include token value
-        expect(response.stderr.toString()).toBe("");
+        expect(stripExpectedPlaintextWarning(response.stderr.toString())).toBe("");
         expect(response.stdout.toString()).toMatch(/user:  +fakeUser/);
         expect(response.stdout.toString()).toMatch(/password: +fakePass/);
         expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
