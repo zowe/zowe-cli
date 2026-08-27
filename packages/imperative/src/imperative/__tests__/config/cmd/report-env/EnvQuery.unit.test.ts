@@ -14,6 +14,7 @@ import * as path from "path";
 
 import { CommandResponse } from "../../../../../cmd/src/response/CommandResponse";
 import { ImperativeConfig } from "../../../../../utilities";
+import { IO } from "../../../../../io";
 import { PluginIssues } from "../../../../src/plugins/utilities/PluginIssues";
 
 import { EnvQuery, IGetItemOpts, IGetItemVal } from "../../../../src/config/cmd/report-env/EnvQuery";
@@ -296,6 +297,78 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemValMsg).toContain("Zowe daemon mode = on");
             expect(itemObj.itemValMsg).toMatch(/Default Zowe daemon executable directory = this_is_a_fake_cli_home_dir.bin/);
             expect(itemObj.itemProbMsg).toBe("");
+        });
+
+        describe("plain text credential exposure", () => {
+            // Captured after the outer beforeAll runs, so this is the real fixture
+            // descriptor - restored in afterEach instead of re-typing the fixture.
+            let originalConfigDescriptor: PropertyDescriptor;
+
+            beforeAll(() => {
+                originalConfigDescriptor = Object.getOwnPropertyDescriptor(impCfg, "config")!;
+            });
+
+            afterEach(() => {
+                Object.defineProperty(impCfg, "config", originalConfigDescriptor);
+            });
+
+            /**
+             * Point impCfg.config at a layer with an unsecured credential property, so
+             * that ConfigUtils.hasPlaintextSecret finds something to report.
+             */
+            const useLayerWithExposedCredential = () => {
+                Object.defineProperty(impCfg, "config", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return {
+                            exists: true,
+                            properties: { profiles: {} },
+                            mProperties: { defaults: {} },
+                            layers: [{
+                                exists: true,
+                                global: true,
+                                user: false,
+                                path: "fakeDir/zowe.config.json",
+                                properties: {
+                                    profiles: {
+                                        fakeProf: { secure: [], properties: { user: "fakeUserId" } }
+                                    }
+                                }
+                            }],
+                            api: { secure: { secureFields: jest.fn(() => []) } }
+                        };
+                    })
+                });
+            };
+
+            it("should warn about a plain text credential exposed to other accounts", async () => {
+                const platformSpy = jest.spyOn(os, "platform").mockReturnValue("linux");
+                const accessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess").mockReturnValue(false);
+                useLayerWithExposedCredential();
+
+                const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_INFO);
+                expect(itemObj.itemProbMsg).toContain("contains a credential in plain text");
+                expect(itemObj.itemProbMsg).toContain("fakeDir/zowe.config.json");
+
+                platformSpy.mockRestore();
+                accessSpy.mockRestore();
+            });
+
+            it("should not report an exposed credential on Windows", async () => {
+                const platformSpy = jest.spyOn(os, "platform").mockReturnValue("win32");
+                const accessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess").mockReturnValue(false);
+                useLayerWithExposedCredential();
+
+                // On Windows, hasOwnerOnlyAccess returns false for a normal file that
+                // simply inherited its ACL, so this check must not run there at all -
+                // otherwise every Windows user with this property would get a false alarm.
+                const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_INFO);
+                expect(itemObj.itemProbMsg).toBe("");
+                expect(accessSpy).not.toHaveBeenCalled();
+
+                platformSpy.mockRestore();
+                accessSpy.mockRestore();
+            });
         });
 
     }); // end getEnvItemVal function

@@ -139,7 +139,10 @@ export class EnvQuery {
             }
         }
 
-        getResult.itemProbMsg = EnvQuery.getEnvItemProblems(itemId, getResult.itemVal);
+        // Append rather than overwrite: getConfigInfo already writes directly into
+        // itemProbMsg (for example, the exposed-plaintext-credential warning), and a
+        // plain assignment here would silently discard that.
+        getResult.itemProbMsg += EnvQuery.getEnvItemProblems(itemId, getResult.itemVal);
         return getResult;
     }
 
@@ -269,8 +272,11 @@ export class EnvQuery {
                 if (layer.exists) {
                     // Record any config file that holds a plain text credential and is
                     // readable by accounts other than its owner, before the secure
-                    // values below are masked in place.
-                    if (ConfigUtils.hasPlaintextSecret(layer.properties) && !IO.hasOwnerOnlyAccess(layer.path)) {
+                    // values below are masked in place. Skip this check on Windows: an
+                    // inherited-but-otherwise-normal ACL fails hasOwnerOnlyAccess there,
+                    // which would flag nearly every file, not just an exposed one.
+                    if (os.platform() !== IO.OS_WIN32 &&
+                        ConfigUtils.hasPlaintextSecret(layer.properties) && !IO.hasOwnerOnlyAccess(layer.path)) {
                         exposedConfigFiles.push(layer.path);
                     }
 

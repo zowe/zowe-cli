@@ -423,7 +423,7 @@ describe("Config API tests", () => {
             const modeEnvVar = "ZOWE" + EnvironmentalVariableSettings.CONFIG_FILE_MODE_SUFFIX;
 
             beforeEach(() => {
-                (ConfigLayers as any).warnedAboutPermissions = false;
+                (ConfigLayers as any).warnedAboutPermissions = new Set();
                 delete process.env[modeEnvVar];
             });
 
@@ -432,99 +432,123 @@ describe("Config API tests", () => {
             });
 
             /**
-             * Spy on the calls that apply a file mode. A new file is pre-created via
-             * openSync so that content is never written into a world-readable file.
+             * Spy on writeFileSync. The exclusive `wx` attempt succeeds by default, so
+             * the call is treated as having created a new file.
              */
             const spyOnModeApplication = () => {
-                const openSpy = jest.spyOn(fs, "openSync").mockReturnValue(1 as any);
-                jest.spyOn(fs, "closeSync").mockReturnValue(undefined);
                 const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockReturnValue(undefined);
-                return { openSpy, writeFileSpy };
+                return { writeFileSpy };
+            };
+
+            /**
+             * Make the exclusive `wx` write fail with EEXIST, simulating a file that
+             * already exists on disk, so `write()` falls back to a plain write with no mode.
+             */
+            const simulateExistingFile = () => {
+                return jest.spyOn(fs, "writeFileSync").mockImplementation((_path, _content, options) => {
+                    if ((options as any)?.flag === "wx") {
+                        const err: any = new Error("EEXIST: file already exists");
+                        err.code = "EEXIST";
+                        throw err;
+                    }
+                });
             };
 
             it("should create a new project user layer with owner-only permissions", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
-                const { openSpy, writeFileSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.write();
                 expect(config.layerActive().user).toBe(true);
-                expect(openSpy).toHaveBeenCalledWith(config.layerActive().path, "w", IO.OWNER_ONLY_FILE_MODE);
-                // The write itself must keep the call shape that existing callers rely on.
-                expect(writeFileSpy.mock.calls[0]).toHaveLength(2);
+                expect(writeFileSpy).toHaveBeenCalledWith(
+                    config.layerActive().path, expect.any(String), { flag: "wx", mode: IO.OWNER_ONLY_FILE_MODE }
+                );
+                // The successful create path must not need a second write call.
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
             });
 
             it("should create a new global layer with owner-only permissions", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.activate(false, true);
                 config.api.layers.write();
-                expect(openSpy).toHaveBeenCalledWith(config.layerActive().path, "w", IO.OWNER_ONLY_FILE_MODE);
+                expect(writeFileSpy).toHaveBeenCalledWith(
+                    config.layerActive().path, expect.any(String), { flag: "wx", mode: IO.OWNER_ONLY_FILE_MODE }
+                );
             });
 
             it("should create a new global user layer with owner-only permissions", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.activate(true, true);
                 config.api.layers.write();
-                expect(openSpy).toHaveBeenCalledWith(config.layerActive().path, "w", IO.OWNER_ONLY_FILE_MODE);
+                expect(writeFileSpy).toHaveBeenCalledWith(
+                    config.layerActive().path, expect.any(String), { flag: "wx", mode: IO.OWNER_ONLY_FILE_MODE }
+                );
             });
 
             it("should leave the project team layer at the umask default", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.activate(false, false);
                 config.api.layers.write();
                 expect(config.layerActive().user).toBe(false);
                 expect(config.layerActive().global).toBe(false);
-                expect(openSpy).not.toHaveBeenCalled();
+                expect(writeFileSpy).toHaveBeenCalledWith(config.layerActive().path, expect.any(String));
+                expect(writeFileSpy.mock.calls[0]).toHaveLength(2);
             });
 
             it("should not apply a mode on Windows", async () => {
                 jest.spyOn(os, "platform").mockReturnValue("win32");
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.write();
-                expect(openSpy).not.toHaveBeenCalled();
+                expect(writeFileSpy).toHaveBeenCalledWith(config.layerActive().path, expect.any(String));
+                expect(writeFileSpy.mock.calls[0]).toHaveLength(2);
             });
 
             it("should honor a site-selected mode from the environment", async () => {
                 posixPlatform();
                 process.env[modeEnvVar] = "0640";
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.write();
-                expect(openSpy).toHaveBeenCalledWith(config.layerActive().path, "w", 0o640);
+                expect(writeFileSpy).toHaveBeenCalledWith(
+                    config.layerActive().path, expect.any(String), { flag: "wx", mode: 0o640 }
+                );
             });
 
             it("should apply no mode when the environment opts out with 0", async () => {
                 posixPlatform();
                 process.env[modeEnvVar] = "0";
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
+                const { writeFileSpy } = spyOnModeApplication();
                 config.api.layers.write();
-                expect(openSpy).not.toHaveBeenCalled();
+                expect(writeFileSpy).toHaveBeenCalledWith(config.layerActive().path, expect.any(String));
+                expect(writeFileSpy.mock.calls[0]).toHaveLength(2);
             });
 
             it("should not apply a mode to a file that already exists", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
-                const { openSpy } = spyOnModeApplication();
-                jest.spyOn(fs, "existsSync").mockReturnValue(true);
+                const writeFileSpy = simulateExistingFile();
                 jest.spyOn(ConfigUtils, "hasPlaintextSecret").mockReturnValue(false);
                 config.api.layers.write();
-                expect(openSpy).not.toHaveBeenCalled();
+                // First call is the rejected exclusive-create attempt; second is the
+                // plain fallback write that carries no mode.
+                expect(writeFileSpy).toHaveBeenCalledTimes(2);
+                expect(writeFileSpy.mock.calls[0][2]).toEqual({ flag: "wx", mode: IO.OWNER_ONLY_FILE_MODE });
+                expect(writeFileSpy.mock.calls[1]).toHaveLength(2);
             });
 
             it("should warn once when an existing layer exposes a plain text credential", async () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
                 const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
-                jest.spyOn(fs, "writeFileSync").mockReturnValue(undefined);
-                // The file already exists, so writeFileSync cannot apply a mode to it.
-                jest.spyOn(fs, "existsSync").mockReturnValue(true);
+                simulateExistingFile();
                 jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o100644 } as any);
                 jest.spyOn(ConfigUtils, "hasPlaintextSecret").mockReturnValue(true);
                 jest.spyOn(IO, "hasOwnerOnlyAccess").mockReturnValue(false);
@@ -542,8 +566,7 @@ describe("Config API tests", () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
                 const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
-                jest.spyOn(fs, "writeFileSync").mockReturnValue(undefined);
-                jest.spyOn(fs, "existsSync").mockReturnValue(true);
+                simulateExistingFile();
                 jest.spyOn(ConfigUtils, "hasPlaintextSecret").mockReturnValue(true);
                 jest.spyOn(IO, "hasOwnerOnlyAccess").mockReturnValue(true);
 
@@ -556,8 +579,7 @@ describe("Config API tests", () => {
                 posixPlatform();
                 const config = await Config.load(MY_APP);
                 const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
-                jest.spyOn(fs, "writeFileSync").mockReturnValue(undefined);
-                jest.spyOn(fs, "existsSync").mockReturnValue(true);
+                simulateExistingFile();
                 jest.spyOn(ConfigUtils, "hasPlaintextSecret").mockReturnValue(false);
                 const accessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess");
 
@@ -565,6 +587,25 @@ describe("Config API tests", () => {
 
                 expect(warnSpy).not.toHaveBeenCalled();
                 expect(accessSpy).not.toHaveBeenCalled();
+            });
+
+            it("warns once per file path, not once per process", async () => {
+                posixPlatform();
+                const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
+                simulateExistingFile();
+                jest.spyOn(fs, "statSync").mockReturnValue({ mode: 0o100644 } as any);
+                jest.spyOn(ConfigUtils, "hasPlaintextSecret").mockReturnValue(true);
+                jest.spyOn(IO, "hasOwnerOnlyAccess").mockReturnValue(false);
+
+                const configA = await Config.load(MY_APP);
+                configA.api.layers.write();
+
+                const configB = await Config.load(MY_APP);
+                configB.api.layers.activate(true, true);
+                configB.api.layers.write();
+
+                // Two distinct layer paths were exposed, so each gets its own warning.
+                expect(warnSpy).toHaveBeenCalledTimes(2);
             });
         });
         describe("activate", () => {

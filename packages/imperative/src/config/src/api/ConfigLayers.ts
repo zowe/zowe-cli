@@ -29,10 +29,12 @@ import { ConfigUtils } from "../ConfigUtils";
 export class ConfigLayers extends ConfigApi {
 
     /**
-     * Set once the loose-permission warning has been emitted, so that a process
-     * that saves the config repeatedly only reports the problem one time.
+     * Config file paths for which the loose-permission warning has already been
+     * emitted, so that a process that saves the same file repeatedly (daemon mode,
+     * an extension host) only reports the problem once per file, while still
+     * warning about a different file that has the same problem.
      */
-    private static warnedAboutPermissions = false;
+    private static warnedAboutPermissions = new Set<string>();
 
     // _______________________________________________________________________
     /**
@@ -98,19 +100,30 @@ export class ConfigLayers extends ConfigApi {
         const layerCloned = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as any;
         this.mConfig.api.secure.cacheAndPrune(layerCloned);
 
-        // writeFileSync only applies a mode when it creates the file, so 
-        // we need to know whether the file is new before writing to it.
-        const fileIsNew = !fs.existsSync(layer.path);
+        const content = JSONC.stringify(layerCloned.properties, null, ConfigConstants.INDENT);
         const fileMode = ConfigLayers.modeForNewFile(layer);
+        let fileIsNew: boolean;
 
         // Write the layer
         try {
-            // Create the file with restricted permissions before any content goes 
-            // into it, so the content is never readable by other accounts.
-            if (fileIsNew && fileMode != null) {
-                fs.closeSync(fs.openSync(layer.path, "w", fileMode));
+            if (fileMode != null) {
+                // Create the file exclusively so that a file which already exists - or a
+                // symlink planted by another account at this path - never receives the
+                // owner-only mode, and our content is never written through such a link.
+                // writeFileSync applies `mode` only when it creates the file, so this is
+                // also the only way the mode is ever actually set.
+                try {
+                    fs.writeFileSync(layer.path, content, { flag: "wx", mode: fileMode });
+                    fileIsNew = true;
+                } catch (createErr) {
+                    if (createErr.code !== "EEXIST") throw createErr;
+                    fs.writeFileSync(layer.path, content);
+                    fileIsNew = false;
+                }
+            } else {
+                fileIsNew = !fs.existsSync(layer.path);
+                fs.writeFileSync(layer.path, content);
             }
-            fs.writeFileSync(layer.path, JSONC.stringify(layerCloned.properties, null, ConfigConstants.INDENT));
         } catch (e) {
             throw new ImperativeError({ msg: `error writing "${layer.path}": ${e.message}` });
         }
@@ -157,7 +170,7 @@ export class ConfigLayers extends ConfigApi {
      * @param written The properties that were written, after secure values were pruned.
      */
     private static warnOnLoosePermissions(layer: IConfigLayer, written: IConfig): void {
-        if (ConfigLayers.warnedAboutPermissions) return;
+        if (ConfigLayers.warnedAboutPermissions.has(layer.path)) return;
         if (os.platform() === IO.OS_WIN32) return;
 
         try {
@@ -176,7 +189,7 @@ export class ConfigLayers extends ConfigApi {
             // A warning must never break a config save.
             return;
         }
-        ConfigLayers.warnedAboutPermissions = true;
+        ConfigLayers.warnedAboutPermissions.add(layer.path);
     }
 
     // _______________________________________________________________________
