@@ -13,6 +13,7 @@
 
 #[cfg(test)]
 use std::env;
+use std::io;
 use std::thread;
 use std::time::Duration;
 
@@ -275,13 +276,16 @@ async fn unit_test_comm_peer_is_current_user() {
     std::fs::remove_file(&sock_path).ok();
 }
 
-#[tokio::test]
-async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
+
+// Run comm_talk against a fake daemon that writes a single canned response
+// and then closes the connection, and return comm_talk's result.
+#[cfg(target_family = "unix")]
+async fn comm_talk_with_fake_daemon_response(test_name: &str, response: &'static [u8]) -> io::Result<i32> {
     use crate::comm::comm_talk;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
     use tokio::net::{UnixListener, UnixStream};
 
-    let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_no_exit.sock");
+    let sock_path = env::temp_dir().join(format!("zowe_test_{}.sock", test_name));
     std::fs::remove_file(&sock_path).ok();
 
     let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
@@ -299,7 +303,7 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
             .expect("should read the fake client request");
 
         server_end
-            .write_all(b"{\"stdout\":\"partial output\"}\x0c")
+            .write_all(response)
             .await
             .expect("should write the fake daemon response");
         server_end
@@ -317,6 +321,64 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
 
     daemon_task.await.expect("the fake daemon task should not panic");
     std::fs::remove_file(&sock_path).ok();
+
+    result
+}
+
+/// Windows counterpart of [comm_talk_with_fake_daemon_response] using a named pipe.
+#[cfg(target_family = "windows")]
+async fn comm_talk_with_fake_daemon_response(test_name: &str, response: &'static [u8]) -> io::Result<i32> {
+    use crate::comm::comm_talk;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::windows::named_pipe::{ClientOptions, ServerOptions};
+
+    let pipe_name = format!(r"\\.\pipe\zowe_test_{}", test_name);
+
+    let mut server = ServerOptions::new()
+        .create(&pipe_name)
+        .expect("should create the test pipe");
+
+    let daemon_task = tokio::spawn(async move {
+        server
+            .connect()
+            .await
+            .expect("should accept the test connection");
+
+        let mut request_buf = [0u8; 2];
+        server
+            .read_exact(&mut request_buf)
+            .await
+            .expect("should read the fake client request");
+
+        server
+            .write_all(response)
+            .await
+            .expect("should write the fake daemon response");
+        server
+            .flush()
+            .await
+            .expect("should flush the fake daemon response");
+        drop(server);
+    });
+
+    let mut client_end = ClientOptions::new()
+        .open(&pipe_name)
+        .expect("should connect to the test pipe");
+
+    let result = comm_talk(b"{}", &mut client_end).await;
+
+    daemon_task.await.expect("the fake daemon task should not panic");
+
+    result
+}
+
+#[tokio::test]
+async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
+    let result = comm_talk_with_fake_daemon_response(
+        "comm_talk_eof_no_exit",
+        b"{\"stdout\":\"partial output\"}\x0c",
+    )
+    .await;
 
     match result {
         Err(err_val) => {
@@ -335,46 +397,8 @@ async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
 
 #[tokio::test]
 async fn unit_test_comm_talk_returns_exit_code_before_eof() {
-    use crate::comm::comm_talk;
-    use tokio::io::{AsyncReadExt, AsyncWriteExt};
-    use tokio::net::{UnixListener, UnixStream};
-
-    let sock_path = env::temp_dir().join("zowe_test_comm_talk_eof_with_exit.sock");
-    std::fs::remove_file(&sock_path).ok();
-
-    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
-
-    let daemon_task = tokio::spawn(async move {
-        let (mut server_end, _addr) = listener
-            .accept()
-            .await
-            .expect("should accept the test connection");
-
-        let mut request_buf = [0u8; 2];
-        server_end
-            .read_exact(&mut request_buf)
-            .await
-            .expect("should read the fake client request");
-
-        server_end
-            .write_all(b"{\"exitCode\":42}\x0c")
-            .await
-            .expect("should write the fake daemon response");
-        server_end
-            .flush()
-            .await
-            .expect("should flush the fake daemon response");
-        drop(server_end);
-    });
-
-    let mut client_end = UnixStream::connect(&sock_path)
-        .await
-        .expect("should connect to the test socket");
-
-    let result = comm_talk(b"{}", &mut client_end).await;
-
-    daemon_task.await.expect("the fake daemon task should not panic");
-    std::fs::remove_file(&sock_path).ok();
+    let result =
+        comm_talk_with_fake_daemon_response("comm_talk_eof_with_exit", b"{\"exitCode\":42}\x0c").await;
 
     assert_eq!(
         result.expect("comm_talk should succeed when the daemon sends an exit code"),
