@@ -34,9 +34,6 @@ const path = require("path");
 
 const SECRETS_PKG = "@zowe/secrets-for-zowe-sdk";
 const DOC_LINK = "https://github.com/zowe/zowe-cli/blob/master/packages/secrets/README.md#troubleshooting";
-// The doc link is the one line we must not wrap, so it sets the width of the
-// box. Wrapping prose to the same width keeps the border flush.
-const WRAP_WIDTH = DOC_LINK.length + 2;
 
 /* The platform target that the keyring loader builds its binary file name from.
  * Kept deliberately identical to getTargetName() in the Secrets SDK's
@@ -132,30 +129,10 @@ function diagnose(target) {
     }
 }
 
-/* Wrap to the box width, prefixing continuation lines with hangingIndent so
- * that numbered steps stay readable when they run past one line.
- */
-function wrap(text, hangingIndent = "") {
-    const words = text.split(" ");
-    const lines = [];
-    let current = words.shift();
-    for (const word of words) {
-        if (current.length + 1 + word.length > WRAP_WIDTH) {
-            lines.push(current);
-            current = hangingIndent + word;
-        } else {
-            current += ` ${word}`;
-        }
-    }
-    lines.push(current);
-    return lines;
-}
-
 /* The repair steps the user should follow, tailored to what we found. We do not
  * attempt the repair ourselves: rebuilding a native module needs prerequisites
  * we cannot install, and re-entering npm from inside a lifecycle script is not
- * safe. Deliberately plain ASCII apart from the border, so that the box stays
- * aligned in terminals and CI logs that render wide or ambiguous glyphs.
+ * safe.
  */
 function repairSteps(problem) {
     const isGlobal = process.env.npm_config_global === "true";
@@ -164,86 +141,69 @@ function repairSteps(problem) {
         ? `npm install -g @zowe/cli@${cliVersion} --foreground-scripts`
         : "npm install --foreground-scripts";
 
-    const steps = ["To repair:", ""];
-
     switch (problem.kind) {
         case "notInstalled":
-            /* We cannot tell why npm skipped the package, so the first step is to
-             * make it say so out loud rather than to guess at a prerequisite.
-             */
-            steps.push(
-                ...wrap("1. Re-run the install with --foreground-scripts, which prints the " +
-                    "install script output that npm hid the first time:", "   "),
-                "",
-                `     ${reinstall}`,
-                "",
-                ...wrap("2. Install whatever that output reports as missing, then repeat " +
-                    "step 1. A failed Rust or cargo command means the module had to be " +
-                    "built from source: install the toolchain from https://rustup.rs. A " +
-                    "missing shared library on Linux means the libsecret runtime is " +
-                    "absent: install it with \"apt install libsecret-1-0\" or " +
-                    "\"yum install libsecret\".", "   ")
-            );
-            break;
-        case "noPrebuild":
-            steps.push(
-                ...wrap("1. Install the Rust toolchain from https://rustup.rs so that the " +
-                    "keyring module can be built for this platform.", "   "),
-                "",
-                ...wrap("2. Rebuild the Secrets SDK in place, without reinstalling the CLI:", "   "),
-                "",
-                `     npm rebuild ${SECRETS_PKG}`,
-                "",
-                ...wrap("If that is not an option, reinstall the CLI instead. " +
-                    "--foreground-scripts shows the real build error if it fails again:"),
-                "",
-                `     ${reinstall}`
-            );
-            break;
-        default:
-            /* The binary is fine; the OS could not satisfy its dependencies. A
-             * rebuild produces the same binary, so do not suggest one.
-             */
-            steps.push(
-                ...wrap("1. Install the credential storage prerequisites for your platform. " +
-                    "On Linux this is the libsecret runtime, for example " +
-                    "\"apt install libsecret-1-0\" or \"yum install libsecret\".", "   "),
-                "",
-                ...wrap("2. Re-run the failed Zowe CLI command. No reinstall is needed once " +
-                    "the prerequisites are in place.", "   ")
-            );
-            break;
-    }
+            // We cannot tell why npm skipped the package, so the first step is to
+            // make it say so out loud rather than to guess at a prerequisite.
+            return `To repair:
 
-    return steps;
+1. Re-run the install with --foreground-scripts. That prints the install
+   script output that npm hid the first time:
+
+     ${reinstall}
+
+2. Install whatever that output reports as missing, then repeat step 1.
+   - A failed Rust/cargo command means the module had to be built from
+     source: install the toolchain from https://rustup.rs
+   - A missing shared library on Linux (e.g. libsecret-1.so.0) means the
+     libsecret runtime is absent: install it with "apt install libsecret-1-0"
+     or "yum install libsecret"`;
+
+        case "noPrebuild":
+            return `To repair:
+
+1. Install the Rust toolchain from https://rustup.rs so the keyring module
+   can be built for this platform.
+
+2. Rebuild the Secrets SDK in place, without reinstalling the CLI:
+
+     npm rebuild ${SECRETS_PKG}
+
+   If that is not an option, reinstall the CLI instead:
+
+     ${reinstall}`;
+
+        default:
+            // The binary is fine; the OS could not satisfy its dependencies. A
+            // rebuild produces the same binary, so do not suggest one.
+            return `To repair:
+
+1. Install the credential storage prerequisites for your platform. On Linux
+   this is the libsecret runtime: "apt install libsecret-1-0" or
+   "yum install libsecret".
+
+2. Re-run the failed Zowe CLI command. No reinstall is needed once the
+   prerequisites are in place.`;
+    }
 }
 
 function printWarning(problem, target) {
-    const lines = [
-        "Warning: Zowe CLI cannot use secure credential storage",
-        "",
-        ...wrap(problem.problem),
-        ...wrap(problem.cause),
-        "",
-        ...wrap("Zowe CLI is installed and will run, but it cannot store or read " +
-            "credentials securely until this is resolved. Commands that need a stored " +
-            "credential fail with \"Failed to load Keytar module\"."),
-        "",
-        ...repairSteps(problem),
-        "",
-        `Detected platform: ${target} (node ${process.version})`,
-        "Full troubleshooting steps:",
-        `  ${DOC_LINK}`
-    ];
+    console.log(`
+Warning: Zowe CLI cannot use secure credential storage
 
-    const width = lines.reduce((max, line) => Math.max(max, line.length), 0);
-    console.log([
-        "",
-        `╔═${"═".repeat(width)}═╗`,
-        ...lines.map((line) => `║ ${line.padEnd(width)} ║`),
-        `╚═${"═".repeat(width)}═╝`,
-        ""
-    ].join("\n"));
+${problem.problem}
+${problem.cause}
+
+Zowe CLI is installed and will run, but it cannot store or read credentials
+securely until this is resolved. Commands that need a stored credential fail
+with "Failed to load Keytar module".
+
+${repairSteps(problem)}
+
+Detected platform: ${target} (node ${process.version})
+Full troubleshooting steps:
+  ${DOC_LINK}
+`);
 }
 
 function validateSecretsPrebuild() {
