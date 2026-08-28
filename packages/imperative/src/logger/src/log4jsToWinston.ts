@@ -252,17 +252,18 @@ export function log4jsConfigToWinstonConfig(
             isAppenderWithType(appender, "fileSync")
         ) {
             const fileAppender = appender as { filename: string; mode?: number };
-            winstonTransports.push(
-                new transports.File({
-                    filename: fileAppender.filename,
-                    level: transportLevel,
-                    format: winstonFileFormat, // Use potentially translated format (no color)
-                    // Preserve the log4js appender's file permission mode, if set, so
-                    // winston-backed loggers (e.g. ConfigUtils, ProfileInfo, event consumers)
-                    // create log files with the same restricted permissions.
-                    ...(fileAppender.mode != null ? { options: { flags: "a", mode: fileAppender.mode } } : {}),
-                })
-            );
+            const fileTransportOptions: any = {
+                filename: fileAppender.filename,
+                level: transportLevel,
+                format: winstonFileFormat, // Use potentially translated format (no color)
+            };
+            // Preserve the log4js appender's file permission mode, if set, so
+            // winston-backed loggers (e.g. ConfigUtils, ProfileInfo, event consumers)
+            // create log files with the same restricted permissions.
+            if (fileAppender.mode != null) {
+                fileTransportOptions.options = { flags: "a", mode: fileAppender.mode };
+            }
+            winstonTransports.push(new transports.File(fileTransportOptions));
         }
     }
 
