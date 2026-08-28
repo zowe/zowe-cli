@@ -18,98 +18,116 @@ This script works around npm bugs related to bundling deps in workspaces:
  4. Copying lockfile into CLI package dir may not resolve all deps correctly
 */
 
+const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const packlist = require("npm-packlist");
 
-process.chdir(__dirname + "/..");
-const repoRoot = process.cwd();
-const cliPkgDir = path.join(repoRoot, "packages", "cli");
-const cliNodeModules = path.join(cliPkgDir, "node_modules");
-const pkgJsonFile = path.join(cliPkgDir, "package.json");
-// Inside node_modules so it is already ignored by git, and never picked up by npm pack.
-const stateFile = path.join(cliNodeModules, ".bundle-deps-state.json");
-const cliLockPath = "packages/cli";
+// Deps, or specific paths within a dep, that compile platform-specific binaries on install and so
+// are left out entirely: a bare name excludes the whole package, "pkg:sub/path" just that subpath.
+const excludedPaths = ["cpu-features", "ssh2:lib/protocol/crypto/build"];
+const excludedDeps = new Set(excludedPaths.filter((p) => !p.includes(":")));
+const excludedSubpaths = excludedPaths
+    .filter((p) => p.includes(":"))
+    .map((p) => ({
+        name: p.slice(0, p.indexOf(":")),
+        subpath: p.slice(p.indexOf(":") + 1),
+    }));
 
-// Matches how npm formats package.json, so adding and removing bundleDependencies leaves it unchanged.
+const pkgDir = process.cwd();
+process.chdir(path.join(__dirname, ".."));
+const scriptName = path.basename(__filename, ".js");
+const pkgNodeModules = path.join(pkgDir, "node_modules");
+const nodeModulesBackup = path.join(pkgDir, "node_modules_old");
+const pkgJsonFile = path.join(pkgDir, "package.json");
+const { name: pkgName, private: isPrivate } = JSON.parse(
+    fs.readFileSync(pkgJsonFile, "utf-8"),
+);
+
 function updatePkgJson(update) {
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
     update(pkgJson);
     fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
-// Node's resolution over lockfile keys: try <dir>/node_modules/<name>, walk up, follow workspace links.
-function resolveDep(packages, fromPath, name) {
-    for (let dir = fromPath; ; ) {
-        const key = (dir === "" ? "" : dir + "/") + "node_modules/" + name;
-        const entry = packages[key];
-        if (entry != null) {
-            return entry.link
-                ? { lockPath: entry.resolved, entry: packages[entry.resolved] }
-                : { lockPath: key, entry };
-        }
-        if (dir === "") return null;
-        const nested = dir.lastIndexOf("/node_modules/");
-        dir = nested === -1 ? "" : dir.slice(0, nested);
-    }
+function normalizePath(realPath) {
+    return path.relative(process.cwd(), realPath).split(path.sep).join("/");
 }
+const relPkgDir = normalizePath(pkgDir);
 
-// What packages/cli needs at runtime, at lockfile-pinned versions. Prod/optional edges, not npm's dev flags.
-function prodClosureOf(packages) {
-    const closure = new Map(); // lockfile key -> lockfile entry
-    const queue = [[cliLockPath, packages[cliLockPath]]];
+// The package's runtime deps, as npm resolved them on disk. An optional dep npm never installed
+// (e.g. a platform-specific native) has no path to copy from, so it is skipped.
+function prodDepTree() {
+    const output = childProcess.execSync(
+        `npm ls --all --omit=dev --json --long -w ${pkgName}`,
+        {
+            maxBuffer: 1024 * 1024 * 100,
+        },
+    );
+
+    const tree = new Map(); // real absolute path -> npm ls entry
+    const skipped = [];
+    const queue = [JSON.parse(output).dependencies[pkgName]];
     while (queue.length > 0) {
-        const [fromPath, entry] = queue.shift();
-        const optional = new Set(Object.keys(entry.optionalDependencies ?? {}));
-        for (const name of new Set([
-            ...Object.keys(entry.dependencies ?? {}),
-            ...optional,
-        ])) {
-            const found = resolveDep(packages, fromPath, name);
-            if (found == null) {
-                // A missing optional dep is normal; anything else means a stale lockfile and a short bundle.
-                if (optional.has(name)) continue;
-                throw new Error(
-                    `bundleCliDeps: "${fromPath}" depends on "${name}", which the lockfile does not resolve`,
-                );
+        for (const [name, dep] of Object.entries(
+            queue.shift().dependencies ?? {},
+        )) {
+            if (excludedDeps.has(name) || dep.path == null) {
+                skipped.push(name);
+            } else if (!tree.has(dep.path)) {
+                tree.set(dep.path, dep);
+                queue.push(dep);
             }
-            if (closure.has(found.lockPath)) continue;
-            closure.set(found.lockPath, found.entry);
-            queue.push([found.lockPath, found.entry]);
         }
     }
-    return closure;
+    return { tree, skipped };
 }
 
-// Where an entry belongs in the packed CLI: npm's own hoisted layout, with workspace paths rewritten.
-function archiveLocationOf(lockPath, linkPathByWorkspace) {
-    if (lockPath.startsWith(cliLockPath + "/"))
-        return lockPath.slice(cliLockPath.length + 1);
-    if (lockPath.startsWith("node_modules/")) return lockPath;
-
-    for (const [workspace, linkPath] of linkPathByWorkspace) {
-        if (lockPath === workspace) return linkPath;
-        if (lockPath.startsWith(workspace + "/"))
-            return linkPath + lockPath.slice(workspace.length);
+// Where each dep goes in the packed tarball: paths already under a node_modules keep npm's hoisted
+// layout, and a version conflict nested under some package lands under that package's own packed copy.
+function archiveLocations(tree) {
+    // Workspaces carry a "file:" spec, so mapping them needs no scan of the repo layout.
+    const owners = new Map([[relPkgDir, ""]]); // real dir -> packed location, "" being this package
+    for (const entry of tree.values()) {
+        if (entry.resolved?.startsWith("file:")) {
+            owners.set(
+                normalizePath(fs.realpathSync(entry.path)),
+                "node_modules/" + entry.name,
+            );
+        }
     }
-    throw new Error(
-        `bundleCliDeps: cannot place "${lockPath}" inside the packed CLI`,
+
+    const locate = (archivePath) => {
+        if (archivePath.startsWith("node_modules/")) return archivePath;
+        for (const [ownerDir, location] of owners) {
+            if (!archivePath.startsWith(ownerDir + "/")) continue;
+            const nested = archivePath.slice(ownerDir.length + 1);
+            return location === "" ? nested : `${location}/${nested}`;
+        }
+        throw new Error(
+            `${scriptName}: cannot place "${archivePath}" inside the packed tarball`,
+        );
+    };
+    return new Map(
+        [...tree.keys()].map((realPath) => [
+            realPath,
+            locate(normalizePath(realPath)),
+        ]),
     );
 }
 
-// Every file under a directory, relative to it. statSync also filters out broken symlinks.
-function filesUnder(dir) {
-    return fs.readdirSync(dir, { recursive: true }).filter((file) => {
-        try {
-            return fs.statSync(path.join(dir, file)).isFile();
-        } catch {
-            return false;
-        }
-    });
-}
-
-// Only what a workspace package publishes; detached so packlist skips bundled deps (it throws on missing ones).
-function publishedFilesOf(sourceDir) {
+// A registry package on disk is already its published content, so it ships verbatim; filtering again
+// would drop files it has. Workspace source is filtered, detached so packlist skips bundled deps.
+function filesToBundle(entry, sourceDir) {
+    if (!entry.resolved?.startsWith("file:")) {
+        return fs.readdirSync(sourceDir, { recursive: true }).filter((file) => {
+            try {
+                return fs.statSync(path.join(sourceDir, file)).isFile();
+            } catch {
+                return false; // a broken symlink has nothing to copy
+            }
+        });
+    }
     const pkg = JSON.parse(
         fs.readFileSync(path.join(sourceDir, "package.json"), "utf-8"),
     );
@@ -123,108 +141,119 @@ function publishedFilesOf(sourceDir) {
     });
 }
 
-async function prepack() {
-    const { packages } = JSON.parse(
-        fs.readFileSync(path.join(repoRoot, "package-lock.json"), "utf-8"),
-    );
-
-    // Workspace packages appear twice: as a "link" under node_modules and as the directory it points at.
-    const linkPathByWorkspace = new Map();
-    for (const [key, entry] of Object.entries(packages)) {
-        if (
-            entry.link &&
-            key.startsWith("node_modules/") &&
-            entry.resolved !== cliLockPath
-        ) {
-            linkPathByWorkspace.set(entry.resolved, key);
-        }
+// Undoes the rename in prepack. The backup's existence is the only state this script tracks.
+function restoreNodeModules() {
+    if (!fs.existsSync(nodeModulesBackup)) {
+        throw new Error(
+            `${scriptName}: no backup at "${nodeModulesBackup}" to restore -- was postpack run without a matching prepack?`,
+        );
     }
+    fs.rmSync(pkgNodeModules, { recursive: true, force: true });
+    fs.renameSync(nodeModulesBackup, pkgNodeModules);
+}
+
+async function prepack() {
+    if (fs.existsSync(nodeModulesBackup)) {
+        throw new Error(
+            `${scriptName}: "${nodeModulesBackup}" already exists -- a previous run may not have finished cleanly`,
+        );
+    }
+    const { tree, skipped } = prodDepTree();
+    const locations = archiveLocations(tree);
 
     // Shallowest first, so a package is always in place before anything nested inside it.
-    const placements = [...prodClosureOf(packages).keys()]
-        .map((lockPath) => ({
-            lockPath,
-            archiveLocation: archiveLocationOf(lockPath, linkPathByWorkspace),
-        }))
-        .sort(
-            (a, b) =>
-                a.archiveLocation.split("/").length -
-                b.archiveLocation.split("/").length,
-        );
-
-    const created = []; // repo-root-relative paths added here, to remove again in postpack
-    const bundled = [];
-    const skipped = [];
-
-    for (const { lockPath, archiveLocation } of placements) {
-        // Missing = an optional dep npm skipped here, so keep it out of the bundle and bundleDependencies.
-        const sourceDir = path.join(repoRoot, lockPath);
-        if (!fs.existsSync(sourceDir)) {
-            skipped.push(lockPath);
-            continue;
-        }
-        if (!archiveLocation.includes("/node_modules/"))
-            bundled.push(archiveLocation.slice("node_modules/".length));
-
-        // Nested entries mostly exist already, via the package they sit inside.
-        const targetPath = path.join(cliPkgDir, archiveLocation);
-        if (fs.existsSync(targetPath)) continue;
-
-        // Hard links share data without symlinks, which npm's tar step would name by on-disk path,
-        // emitting entries that backtrack out of the package root. realpathSync: link(2) follows only on macOS.
-        const files = linkPathByWorkspace.has(lockPath)
-            ? await publishedFilesOf(sourceDir)
-            : filesUnder(sourceDir);
-        for (const file of files) {
-            const targetFile = path.join(targetPath, file);
-            fs.mkdirSync(path.dirname(targetFile), { recursive: true });
-            fs.linkSync(
-                fs.realpathSync(path.join(sourceDir, file)),
-                targetFile,
-            );
-        }
-        created.push(path.relative(repoRoot, targetPath));
-    }
-
-    fs.mkdirSync(cliNodeModules, { recursive: true });
-    fs.writeFileSync(stateFile, JSON.stringify(created, null, 2));
-    if (skipped.length > 0) {
-        console.log(
-            `bundleCliDeps: skipped ${skipped.length} optional dependencies not installed here: ${skipped.join(", ")}`,
-        );
-    }
-    console.log(
-        `bundleCliDeps: staged ${bundled.length} bundled dependencies (${created.length} added, rest already in place)`,
+    const placements = [...locations].sort(
+        (a, b) => a[1].split("/").length - b[1].split("/").length,
     );
 
-    // Pack time only: "true" would drop the hoisted transitive deps, and committing either form breaks "npm ci".
-    updatePkgJson((pkgJson) => (pkgJson.bundleDependencies = bundled.sort()));
+    if (fs.existsSync(pkgNodeModules))
+        fs.renameSync(pkgNodeModules, nodeModulesBackup);
+    try {
+        fs.mkdirSync(pkgNodeModules, { recursive: true });
+        const localBuilds = [];
+
+        for (const [realPath, archiveLocation] of placements) {
+            // A package's own copy can already include a nested node_modules also listed separately.
+            const targetPath = path.join(pkgDir, archiveLocation);
+            if (fs.existsSync(targetPath)) continue;
+
+            // Anything under this package's own node_modules moved with the rename above. Workspace deps
+            // point at their node_modules symlink, which fs calls read through.
+            const sourceDir = realPath.startsWith(pkgNodeModules + path.sep)
+                ? path.join(
+                      nodeModulesBackup,
+                      realPath.slice(pkgNodeModules.length + 1),
+                  )
+                : realPath;
+
+            const entry = tree.get(realPath);
+            const skipPrefixes = excludedSubpaths
+                .filter((s) => s.name === entry.name)
+                .map((s) => s.subpath + path.sep);
+            const files = (await filesToBundle(entry, sourceDir)).filter(
+                (file) => !skipPrefixes.some((p) => file.startsWith(p)),
+            );
+
+            // A compiled .node under build/ means this was built here, for this machine only.
+            if (
+                files.some((file) => /(^|[\\/])build[\\/].*\.node$/i.test(file))
+            )
+                localBuilds.push(entry.name);
+
+            for (const file of files) {
+                const targetFile = path.join(targetPath, file);
+                fs.mkdirSync(path.dirname(targetFile), { recursive: true });
+                fs.copyFileSync(path.join(sourceDir, file), targetFile);
+            }
+        }
+
+        if (skipped.length > 0) {
+            console.log(
+                `${scriptName}: skipped ${skipped.length} optional dependencies: ${skipped.join(", ")}`,
+            );
+        }
+        if (localBuilds.length > 0) {
+            console.warn(
+                `${scriptName}: WARNING: ${localBuilds.join(", ")} bundled a local native build, ` +
+                    `which will not work on other platforms -- add it (or the offending subpath) to excludedPaths`,
+            );
+        }
+        console.log(`${scriptName}: staged ${placements.length} dependencies`);
+
+        // Pack time only, since committing bundleDependencies breaks "npm ci". Just the direct deps, as
+        // npm pulls in each one's own; "true" covers "dependencies" alone, leaving optional ones out.
+        updatePkgJson((pkgJson) => {
+            const direct = [
+                ...Object.keys(pkgJson.dependencies ?? {}),
+                ...Object.keys(pkgJson.optionalDependencies ?? {}),
+            ];
+            // Skip any optional dep npm never installed, which has nothing staged to bundle.
+            pkgJson.bundleDependencies = direct
+                .filter((name) =>
+                    fs.existsSync(path.join(pkgNodeModules, name)),
+                )
+                .sort();
+        });
+    } catch (err) {
+        restoreNodeModules();
+        throw err;
+    }
 }
 
 async function postpack() {
-    for (const relativePath of JSON.parse(
-        fs.readFileSync(stateFile, "utf-8"),
-    )) {
-        fs.rmSync(path.resolve(repoRoot, relativePath), {
-            recursive: true,
-            force: true,
-        });
-    }
-    fs.rmSync(stateFile, { force: true });
-
-    // Scope directories (e.g. node_modules/@zowe) are left behind by the removals above.
-    for (const entry of fs.readdirSync(cliNodeModules)) {
-        const entryPath = path.join(cliNodeModules, entry);
-        if (entry.startsWith("@") && fs.readdirSync(entryPath).length === 0)
-            fs.rmdirSync(entryPath);
-    }
+    restoreNodeModules();
     updatePkgJson((pkgJson) => delete pkgJson.bundleDependencies);
 }
 
 const run = { prepack, postpack }[process.argv[2]];
 if (run == null) {
     console.error(
-        `Usage: node ${path.basename(__filename)} <prepack|postpack>`,
+        `Usage: cd <package> && node ${path.relative(pkgDir, __filename)} <prepack|postpack>`,
+    );
+    process.exit(1);
+} else if (isPrivate) {
+    console.error(
+        `${scriptName}: "${pkgName}" is private, so cannot bundle dependencies`,
     );
     process.exit(1);
 }

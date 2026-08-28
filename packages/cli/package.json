@@ -52,7 +52,7 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js && node ../../scripts/bundleCliDeps.js prepack",
+    "prepack": "node ../../scripts/bundleCliDeps.js prepack",
     "postpack": "node ../../scripts/bundleCliDeps.js postpack",
     "prepublishOnly": "bash ../../scripts/bundleDaemon.sh"
   },
