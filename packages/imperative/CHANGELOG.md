@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.36.1`
 
 - BugFix: Restricted default permissions on log files written by the Imperative logger. [#2874](https://github.com/zowe/zowe-cli/pull/2874)
 - Enhancement: Updated `TextUtils.getTable` to detect numeric columns and right-align them using `cli-table3` colAligns support. [#2825](https://github.com/zowe/zowe-cli/pull/2825)

@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.36.1`
 
 - BugFix: Fixed the daemon client reporting a command as successful when the daemon closed the connection without sending an exit code. [#2873](https://github.com/zowe/zowe-cli/pull/2873)
 
