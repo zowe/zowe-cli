@@ -727,6 +727,7 @@ dependencies = [
  "fslock",
  "home",
  "is-terminal",
+ "libc",
  "pathsearch",
  "rpassword",
  "serde",

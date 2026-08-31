@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "8.35.3",
+  "version": "8.36.0",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -41,16 +41,15 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
     "comment-json": "~4.2.3",
     "string-width": "^4.2.3"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.35.3",
-    "@zowe/imperative": "8.35.3"
+    "@zowe/cli-test-utils": "8.36.0",
+    "@zowe/imperative": "8.36.0"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0"

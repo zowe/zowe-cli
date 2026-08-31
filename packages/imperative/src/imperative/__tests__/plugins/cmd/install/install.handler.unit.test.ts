@@ -130,6 +130,7 @@ describe("Plugin Management Facility install handler", () => {
      *                                          a file and not passed packages.
      * @param {boolean} [verbose=false]        was verbose mode expected to be enabled.
      * @param {object}  [extraNpmArgs={}]      additional npm arguments expected to be passed.
+     * @param {string}  [allowScripts=undefined] the value of allow-scripts expected to be passed.
      */
     const wasInstallCallValid = (
         packageLocation: string,
@@ -137,14 +138,15 @@ describe("Plugin Management Facility install handler", () => {
         installFromFile = false,
         verbose: boolean | undefined = undefined,
         extraNpmArgs = {},
+        allowScripts: string | undefined = undefined,
     ) => {
         if (installFromFile) {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true, verbose
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true, verbose, allowScripts
             );
         } else {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, false, verbose
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, false, verbose, allowScripts
             );
         }
     };
@@ -599,6 +601,71 @@ describe("Plugin Management Facility install handler", () => {
 
         // Check that verbose separator line was printed
         expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install single package with allow-scripts option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1"];
+        params.arguments.allowScripts = "ibm_db";
+
+        await handler.process(params as IHandlerParameters);
+
+        // Check that install was called with allowScripts set to "ibm_db"
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry, false, undefined, {}, "ibm_db");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install multiple packages with allow-scripts option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1", "sample2"];
+        params.arguments.allowScripts = "pkg1,pkg2,ibm_db";
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the install
+        wasGetRegistryCalled();
+
+        // Validate that install was called with the same allow-scripts list for each package
+        expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry, false, undefined, {}, "pkg1,pkg2,ibm_db");
+        wasInstallCallValid(params.arguments.plugin[1], packageRegistry, false, undefined, {}, "pkg1,pkg2,ibm_db");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install from JSON file with allow-scripts option", async () => {
+        const fileJson: IPluginJson = {
+            a: {
+                package: packageName,
+                location: "",
+                version: packageVersion
+            }
+        };
+
+        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.install.mockResolvedValueOnce("a");
+
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = [];
+        params.arguments.file = "prod-plugins.json";
+        params.arguments.allowScripts = "ibm_db";
+
+        const resolveVal = `/some/test/directory/${params.arguments.file}`;
+        expectedVal = params.arguments.file;
+        returnedVal = resolveVal;
+
+        await handler.process(params as IHandlerParameters);
+
+        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, packageRegistry, true, undefined, {}, "ibm_db");
 
         wasInstallSuccessful(params);
     });

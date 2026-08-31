@@ -42,6 +42,13 @@ describe("LoggerConfigBuilder tests", () => {
         expect(config).toMatchSnapshot();
     });
 
+    it("Should restrict file appender permissions to the owner", () => {
+        let config = LoggerConfigBuilder.getDefaultIConfigLogging();
+        const testKey = "sampleFile";
+        config = LoggerConfigBuilder.addFileAppender(config, testKey);
+        expect((config.log4jsConfig!.appenders[testKey] as any).mode).toBe(0o600);
+    });
+
     it("Should add a console and file appender to basic log4js configuration", () => {
         let config = LoggerConfigBuilder.getDefaultIConfigLogging();
         const fileKey = "sampleFile";
