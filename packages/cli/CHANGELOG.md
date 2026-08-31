@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added a postinstall check that verifies the Secrets SDK has a keyring prebuild your platform can load. Because `@zowe/secrets-for-zowe-sdk` is an optional dependency, npm silently omitted it whenever its install script failed, and the first sign of trouble was a `Failed to load Keytar module` error the next time a command needed a credential. You now get a warning at the end of the install that names the binary that was expected and the steps to repair it, with the full workaround documented under [Troubleshooting](https://github.com/zowe/zowe-cli/blob/master/packages/secrets/README.md#troubleshooting). [#2777](https://github.com/zowe/zowe-cli/issues/2777)
 
+## `8.36.1`
+
+- BugFix: Fixed the daemon client reporting a command as successful when the daemon closed the connection without sending an exit code. [#2873](https://github.com/zowe/zowe-cli/pull/2873)
+
 ## `8.35.1`
 
 - **Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the fingerprint and the key is saved to your ssh profile; a changed key is rejected. Use `--insecure` to skip verification or `--host-key` to pin a key. [#2813](https://github.com/zowe/zowe-cli/pull/2813)

@@ -178,3 +178,5 @@ Object {
   },
 }
 `;
+
+exports[`DaemonClient tests should shutdown when keyword is specified 1`] = `undefined`;
