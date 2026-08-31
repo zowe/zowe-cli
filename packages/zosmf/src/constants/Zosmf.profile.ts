@@ -87,6 +87,24 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             responseTimeout: {
                 type: "number",
                 optionDefinition: ZosFilesOptions.responseTimeout
+            },
+            tsoAccount: {
+                type: "string",
+                optionDefinition: {
+                    name: "tsoAccount",
+                    description: "If specified, this value will be sent in the header X-IBM-Request-Acctnum " +
+                    "for z/OSMF data set and file operations that support it.",
+                    type: "string"
+                }
+            },
+            tsoProc: {
+                type: "string",
+                optionDefinition: {
+                    name: "tsoProc",
+                    description: "If specified, this value will be sent in the header X-IBM-Request-Proc " +
+                    "for z/OSMF data set and file operations that support it.",
+                    type: "string"
+                }
             }
         },
         required: []
