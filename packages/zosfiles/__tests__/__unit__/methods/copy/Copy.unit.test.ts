@@ -834,7 +834,7 @@ describe("Copy", () => {
         jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
         jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation();
         jest.spyOn(fs, "writeFileSync").mockImplementation();
-        
+
         const fromDataSetName = "USER.DATA.FROM";
         const toDataSetName = "USER.DATA.TO";
         const readStream = jest.spyOn(IO, "createReadStream");

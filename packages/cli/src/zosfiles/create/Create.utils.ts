@@ -35,6 +35,8 @@ export function generateZosmfOptions(commandArguments: Arguments): ICreateDataSe
         dsntype: commandArguments.dataSetType,
         showAttributes: commandArguments.attributes,
         size: commandArguments.size,
-        responseTimeout: commandArguments.responseTimeout
+        responseTimeout: commandArguments.responseTimeout,
+        tsoAccount: commandArguments.tsoAccount,
+        tsoProcedure: commandArguments.tsoProcedure,
     }));
 }

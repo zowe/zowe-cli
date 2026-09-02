@@ -558,7 +558,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     newPath,
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    // tso procedure and account
+                    undefined, undefined,
                 );
             });
         });
@@ -574,7 +576,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    // tso options
+                    undefined, undefined,
                 );
             });
         });

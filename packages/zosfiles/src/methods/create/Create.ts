@@ -17,6 +17,7 @@ import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { CreateDefaults } from "./Create.defaults";
 import { CreateDataSetTypeEnum } from "./CreateDataSetType.enum";
 import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
@@ -127,9 +128,10 @@ export class Create {
             const endpoint: string = EncodeUri.encUriPathForZos(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
             );
-            const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+                .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
             if (options && options.responseTimeout != null) {
-                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             Create.dataSetValidateOptions(tempOptions);
@@ -154,9 +156,10 @@ export class Create {
         const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
         );
-        const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
         }
 
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
@@ -172,7 +175,7 @@ export class Create {
         */
         if (tempOptions.blksize === null || tempOptions.blksize === undefined) {
             let likeDataSetObj: IZosmfListResponse;
-            const likeDataSetList  = await List.dataSet(session, likeDataSetName, {
+            const likeDataSetList = await List.dataSet(session, likeDataSetName, {
                 attributes: true, maxLength: 1,
                 start: likeDataSetName,
                 recall: "wait"
@@ -211,7 +214,7 @@ export class Create {
                 switch (option) {
 
                     case "alcunit":
-                    // zOSMF defaults to TRK if missing so mimic it's behavior
+                        // zOSMF defaults to TRK if missing so mimic it's behavior
                         if (tempOptions.alcunit === null || tempOptions.alcunit === undefined) {
                             tempOptions.alcunit = "TRK";
                         }
@@ -228,19 +231,19 @@ export class Create {
                         break;
 
                     case "avgblk":
-                    // no validation at this time
+                        // no validation at this time
                         break;
 
                     case "blksize":
-                    /*
-                    *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439.
-                    *
-                    */
+                        /*
+                        *  This is a fix for issue https://github.com/zowe/zowe-cli/issues/1439.
+                        *
+                        */
                         if (tempOptions.blksize === null || tempOptions.blksize === undefined) {
                             tempOptions.blksize = tempOptions.lrecl;
                         }
 
-                        if(tempOptions.blksize <= tempOptions.lrecl ){
+                        if (tempOptions.blksize <= tempOptions.lrecl) {
                             tempOptions.blksize = tempOptions.lrecl;
                             if (tempOptions.recfm && tempOptions.recfm.toUpperCase().startsWith("V")) {
                                 tempOptions.blksize += 4;
@@ -249,7 +252,7 @@ export class Create {
                         break;
 
                     case "lrecl":
-                    // Required
+                        // Required
                         ImperativeExpect.toNotBeNullOrUndefined(tempOptions.lrecl, ZosFilesMessages.missingRecordLength.message);
 
                         break;
@@ -276,11 +279,10 @@ export class Create {
                     }
 
                     case "dsorg":
-                    // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE".
-                    // Since the create endpoint does not see "PS-L" as a valid creation option
+                        // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE".
+                        // Since the create endpoint does not see "PS-L" as a valid creation option
 
-                        if(tempOptions.dsorg === "PS-L")
-                        {
+                        if (tempOptions.dsorg === "PS-L") {
                             tempOptions.dsorg = "PS";
                             tempOptions.dsntype = "LARGE";
                         }
@@ -288,7 +290,7 @@ export class Create {
                         break;
 
                     case "primary":
-                    // Required
+                        // Required
                         ImperativeExpect.toNotBeNullOrUndefined(tempOptions.primary, ZosFilesMessages.missingPrimary.message);
 
                         // Validate maximum allocation quantity
@@ -298,7 +300,7 @@ export class Create {
                         break;
 
                     case "secondary":
-                    // zOSMF defaults to 0 if missing so mimic it's behavior
+                        // zOSMF defaults to 0 if missing so mimic it's behavior
                         if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                             tempOptions.secondary = 0;
                         }
@@ -310,7 +312,7 @@ export class Create {
                         break;
 
                     case "recfm":
-                    // no validation
+                        // no validation
 
                         break;
 
@@ -318,7 +320,7 @@ export class Create {
                     case "mgntclass":
                     case "storclass":
                     case "dataclass":
-                    // no validation
+                        // no validation
 
                         break;
 
@@ -326,7 +328,7 @@ export class Create {
                     case "volser":
                     case "responseTimeout":
                     case "like":
-                    // no validation
+                        // no validation
 
                         break;
 
@@ -408,7 +410,7 @@ export class Create {
             // We invoke IDCAMS to create the VSAM cluster
             const idcamsCmds = this.vsamFormIdcamsCreateCmd(dataSetName, idcamsOptions);
             Logger.getAppLogger().debug("Invoking this IDCAMS command:\n" + idcamsCmds.join("\n"));
-            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, {responseTimeout: respTimeout});
+            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, { responseTimeout: respTimeout });
             return {
                 success: true,
                 commandResponse: attribText + ZosFilesMessages.dataSetCreatedSuccessfully.message,
@@ -445,9 +447,10 @@ export class Create {
         const parameters: string = EncodeUri.encUriPathForUss(session,
             `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`
         );
-        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING];
+        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
         }
         let payload: object = { type };
         if (mode) {
@@ -486,7 +489,7 @@ export class Create {
             delete tempOptions.timeout;
         }
         if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             delete tempOptions.responseTimeout;
         }
 
@@ -534,7 +537,7 @@ export class Create {
         idcamsOptions = { ...CreateDefaults.VSAM, ...idcamsOptions };
 
         // when secondary is not specified, use 10% of primary
-        if (idcamsOptions.secondary  === null || idcamsOptions.secondary  === undefined) {
+        if (idcamsOptions.secondary === null || idcamsOptions.secondary === undefined) {
             const tenPercent = 0.10;
             idcamsOptions.secondary = Math.round(idcamsOptions.primary * tenPercent);
         }
@@ -618,7 +621,7 @@ export class Create {
 
                     case "primary":
                     case "secondary":
-                    // Validate maximum allocation quantity
+                        // Validate maximum allocation quantity
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
@@ -648,7 +651,7 @@ export class Create {
                     case "mgntclass":
                     case "dataclass":
                     case "responseTimeout":
-                    // no validation at this time
+                        // no validation at this time
                         break;
 
                     default:
@@ -701,7 +704,7 @@ export class Create {
                     }
                     case "cylsPri":
                     case "cylsSec":
-                    // Validate maximum allocation quantity
+                        // Validate maximum allocation quantity
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
@@ -719,7 +722,7 @@ export class Create {
                     case "volumes":
                     case "timeout":
                     case "responseTimeout":
-                    // no validation at this time
+                        // no validation at this time
                         break;
 
                     default:

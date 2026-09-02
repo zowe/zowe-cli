@@ -24,7 +24,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             statusMessage: "Retrieving USS file",
             stageName: TaskStage.IN_PROGRESS
         };
-        commandParameters.response.progress.startBar({task});
+        commandParameters.response.progress.startBar({ task });
 
         const dsContentBuf = await Get.USSFile(session, commandParameters.arguments.file,
             {
@@ -33,7 +33,9 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
                 record: commandParameters.arguments.record,
                 range: commandParameters.arguments.range,
                 responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
+                task: task,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             }
         );
         return {

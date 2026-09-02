@@ -19,6 +19,9 @@ import { Rename, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const { beforeDataSetName, afterDataSetName } = commandParameters.arguments;
-        return Rename.dataSet(session, beforeDataSetName, afterDataSetName);
+        return Rename.dataSet(session, beforeDataSetName, afterDataSetName, {
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
+        });
     }
 }

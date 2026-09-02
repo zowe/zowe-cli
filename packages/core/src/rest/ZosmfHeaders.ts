@@ -228,7 +228,7 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_RETURN_ETAG: IHeaderContent = {"X-IBM-Return-Etag": "true"};
+    public static readonly X_IBM_RETURN_ETAG: IHeaderContent = { "X-IBM-Return-Etag": "true" };
 
     /**
      * Header that specifies GZIP compression is supported
@@ -237,4 +237,21 @@ export class ZosmfHeaders {
      * @memberof ZosmfHeaders
      */
     public static readonly ACCEPT_ENCODING: IHeaderContent = { "Accept-Encoding": "gzip" };
+
+    /**
+     * Account number that is used for the TSO/E logon procedure used for data set and files
+     * z/OSMF REST APIs.
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_REQUEST_ACCTNUM = "X-IBM-Request-Acctnum";
+
+    /**
+     * TSO procedure name that is used for the TSO/E logon procedure used for data set and files
+     * z/OSMF REST APIs.
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_REQUEST_PROC = "X-IBM-Request-Proc";
+
 }
