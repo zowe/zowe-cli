@@ -90,21 +90,11 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             },
             tsoAccount: {
                 type: "string",
-                optionDefinition: {
-                    name: "tsoAccount",
-                    description: "If specified, this value will be sent in the header X-IBM-Request-Acctnum " +
-                    "for z/OSMF data set and file operations that support it.",
-                    type: "string"
-                }
+                optionDefinition: ZosFilesOptions.tsoAccount
             },
-            tsoProc: {
+            tsoProcedure: {
                 type: "string",
-                optionDefinition: {
-                    name: "tsoProc",
-                    description: "If specified, this value will be sent in the header X-IBM-Request-Proc " +
-                    "for z/OSMF data set and file operations that support it.",
-                    type: "string"
-                }
+                optionDefinition: ZosFilesOptions.tsoProcedure
             }
         },
         required: []

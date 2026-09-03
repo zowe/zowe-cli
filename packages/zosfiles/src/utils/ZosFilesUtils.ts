@@ -345,6 +345,8 @@ export class ZosFilesUtils {
                 headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
+            headers.push(...ZosFilesUtils.generateTsoHeaders(options));
+
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
