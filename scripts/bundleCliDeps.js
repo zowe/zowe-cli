@@ -58,12 +58,19 @@ const relPkgDir = normalizePath(pkgDir);
 // The package's runtime deps, as npm resolved them on disk. An optional dep npm never installed
 // (e.g. a platform-specific native) has no path to copy from, so it is skipped.
 function prodDepTree() {
-    const output = childProcess.execSync(
-        `npm ls --all --omit=dev --json --long -w ${pkgName}`,
-        {
-            maxBuffer: 1024 * 1024 * 100,
-        },
-    );
+    let output;
+    try {
+        output = childProcess.execSync(
+            `npm ls --all --omit=dev --json --long -w ${pkgName}`,
+            {
+                maxBuffer: 1024 * 1024 * 100,
+            },
+        );
+    } catch (err) {
+        // npm exits non-zero for problems like missing optional/peer deps, but still writes valid JSON to stdout.
+        if (err.stdout == null || err.stdout.length === 0) throw err;
+        output = err.stdout;
+    }
 
     const tree = new Map(); // real absolute path -> npm ls entry
     const skipped = [];
@@ -100,6 +107,7 @@ function archiveLocations(tree) {
     const locate = (archivePath) => {
         if (archivePath.startsWith("node_modules/")) return archivePath;
         for (const [ownerDir, location] of owners) {
+            if (archivePath === ownerDir) return location;
             if (!archivePath.startsWith(ownerDir + "/")) continue;
             const nested = archivePath.slice(ownerDir.length + 1);
             return location === "" ? nested : `${location}/${nested}`;
@@ -141,15 +149,13 @@ function filesToBundle(entry, sourceDir) {
     });
 }
 
-// Undoes the rename in prepack. The backup's existence is the only state this script tracks.
+// Undoes the rename in prepack. No backup means there was no node_modules to begin with, so just
+// remove what prepack staged instead of restoring anything.
 function restoreNodeModules() {
-    if (!fs.existsSync(nodeModulesBackup)) {
-        throw new Error(
-            `${scriptName}: no backup at "${nodeModulesBackup}" to restore -- was postpack run without a matching prepack?`,
-        );
-    }
     fs.rmSync(pkgNodeModules, { recursive: true, force: true });
-    fs.renameSync(nodeModulesBackup, pkgNodeModules);
+    if (fs.existsSync(nodeModulesBackup)) {
+        fs.renameSync(nodeModulesBackup, pkgNodeModules);
+    }
 }
 
 async function prepack() {
