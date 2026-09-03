@@ -147,12 +147,12 @@ function repairSteps(problem) {
             // make it say so out loud rather than to guess at a prerequisite.
             return `To repair:
 
-1. Re-run the install with --foreground-scripts. That prints the install
-   script output that npm hid the first time:
+1. Re-run the Zowe CLI install with --foreground-scripts. That prints the
+   install script output that npm hid the first time:
 
      ${reinstall}
 
-2. Install whatever that output reports as missing, then repeat step 1.
+2. Install whatever that output reports as missing, then repeat Step 1.
    - A failed Rust/cargo command means the module had to be built from
      source: install the toolchain from https://rustup.rs
    - A missing shared library on Linux (e.g. libsecret-1.so.0) means the
