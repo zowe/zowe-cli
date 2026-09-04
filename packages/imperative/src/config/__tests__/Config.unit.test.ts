@@ -985,6 +985,59 @@ describe("Config tests", () => {
             Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
         });
 
+        it("should normalize the current working directory on Windows when projectDir is not supplied", async () => {
+            // Regression test for #2604. Windows paths are case insensitive, so `chdir ops` and
+            // `cd OPS` land in the same directory but `process.cwd()` reports the casing that was
+            // typed. The project directory becomes the layer path, which is the secure credential
+            // store key, so an unnormalized cwd produces a second vault entry for one directory.
+            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+
+            const typedCwd = "C:\\users\\test\\OPS";
+            const realCwd = "C:\\users\\test\\ops";
+            jest.spyOn(process, "cwd").mockReturnValue(typedCwd);
+            const realPathSpy = jest.spyOn(fs.realpathSync, "native").mockReturnValue(realCwd as any);
+
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            config.mLayers = [];
+
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload();
+
+            expect(realPathSpy).toHaveBeenCalledWith(typedCwd);
+            expect(config.mProjectDir).toBe(realCwd);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+
+        it("should keep the directory as-is on Windows when it cannot be resolved", async () => {
+            // A directory that does not exist yet, such as the home directory on a first run,
+            // must not cause reload to throw.
+            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+
+            const missingDir = "C:\\users\\test\\does-not-exist";
+            jest.spyOn(fs.realpathSync, "native").mockImplementation(() => {
+                const err: NodeJS.ErrnoException = new Error("ENOENT");
+                err.code = "ENOENT";
+                throw err;
+            });
+
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            config.mLayers = [];
+
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ projectDir: missingDir });
+
+            expect(config.mProjectDir).toBe(missingDir);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+
         it("should NOT normalize projectDir if not on Windows", async () => {
             Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
             const testPath = "/home/user/project";
