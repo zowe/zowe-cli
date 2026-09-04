@@ -1048,7 +1048,7 @@ export class Download {
     }
 
     private static generateHeadersBasedOnOptions(options: IDownloadOptions) {
-        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options).concat(ZosFilesUtils.generateTsoHeaders(options));
         if (!options.binary && !options.record) {
             if (options.localEncoding) {
                 reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });

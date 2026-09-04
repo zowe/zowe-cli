@@ -44,7 +44,9 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout,
             includeHidden: commandParameters.arguments.includeHidden,
             makeDir: commandParameters.arguments.makeDir,
-            skipDirectoryCheck: commandParameters.arguments.skipDirectoryCheck
+            skipDirectoryCheck: commandParameters.arguments.skipDirectoryCheck,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         const attributes = ZosFilesAttributes.loadFromFile(

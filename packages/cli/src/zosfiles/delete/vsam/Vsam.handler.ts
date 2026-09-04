@@ -22,7 +22,9 @@ export default class VsamHandler extends ZosFilesBaseHandler {
             const response = await Delete.vsam(session, commandParameters.arguments.dataSetName, {
                 erase: commandParameters.arguments.erase,
                 purge: commandParameters.arguments.purge,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             });
 
             return response;
@@ -31,7 +33,7 @@ export default class VsamHandler extends ZosFilesBaseHandler {
                 (error.errorCode === '404' || error.toString().includes("IDC3012I"))) {
                 return { success: true, commandResponse: "VSAM dataset not found but this is ignored" };
             }
-            if (error instanceof ImperativeError){
+            if (error instanceof ImperativeError) {
                 throw error;
             }
             throw new ImperativeError({

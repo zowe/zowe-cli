@@ -26,7 +26,7 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
             statusMessage: "Uploading stdin to data set",
             stageName: TaskStage.IN_PROGRESS
         };
-        commandParameters.response.progress.startBar({task});
+        commandParameters.response.progress.startBar({ task });
 
         const result = await Upload.streamToDataSet(session,
             commandParameters.stdin,
@@ -35,7 +35,9 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
                 binary: commandParameters.arguments.binary,
                 record: commandParameters.arguments.record,
                 task,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             });
 
         if (result.success) {
