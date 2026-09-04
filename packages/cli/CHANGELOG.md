@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Added `--tso-account` and `--tso-procedure` options to `zowe zos-files` commands, and corresponding `tsoAccount`/`tsoProcedure` properties to the zosmf profile. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 - Enhancement: Added a postinstall check that verifies the Secrets SDK has a keyring prebuild your platform can load. Because `@zowe/secrets-for-zowe-sdk` is an optional dependency, npm silently omitted it whenever its install script failed, and the first sign of trouble was a `Failed to load Keytar module` error the next time a command needed a credential. You now get a warning at the end of the install that names the binary that was expected and the steps to repair it, with the full workaround documented under [Troubleshooting](https://github.com/zowe/zowe-cli/blob/master/packages/secrets/README.md#troubleshooting). [#2777](https://github.com/zowe/zowe-cli/issues/2777)
 
 ## `8.36.1`
