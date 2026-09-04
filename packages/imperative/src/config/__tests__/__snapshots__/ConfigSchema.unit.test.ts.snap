@@ -24,6 +24,7 @@ Object {
       "description": "Mapping of profile names to profile configurations",
       "patternProperties": Object {
         "^\\\\S*$": Object {
+          "additionalProperties": false,
           "allOf": Array [
             Object {
               "if": Object {
@@ -131,6 +132,7 @@ Object {
       "description": "Mapping of profile names to profile configurations",
       "patternProperties": Object {
         "^\\\\S*$": Object {
+          "additionalProperties": false,
           "allOf": Array [
             Object {
               "if": Object {
@@ -239,6 +241,7 @@ Object {
       "description": "Mapping of profile names to profile configurations",
       "patternProperties": Object {
         "^\\\\S*$": Object {
+          "additionalProperties": false,
           "allOf": Array [
             Object {
               "if": Object {
@@ -335,6 +338,7 @@ Object {
       "description": "Mapping of profile names to profile configurations",
       "patternProperties": Object {
         "^\\\\S*$": Object {
+          "additionalProperties": false,
           "allOf": Array [
             Object {
               "if": Object {
@@ -414,6 +418,7 @@ Object {
       "description": "Mapping of profile names to profile configurations",
       "patternProperties": Object {
         "^\\\\S*$": Object {
+          "additionalProperties": false,
           "allOf": Array [
             Object {
               "if": Object {
