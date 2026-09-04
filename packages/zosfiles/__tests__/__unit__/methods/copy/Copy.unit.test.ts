@@ -140,6 +140,46 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+                it("should send a request with tsoAccount and tsoProcedure", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "tsoAccount": "TSO1234",
+                        "tsoProcedure": "MYPROC",
+                        "from-dataset": {
+                            dsn: fromDataSetName
+                        }
+                    };
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
+                        { "X-IBM-Request-Acctnum": "TSO1234" },
+                        { "X-IBM-Request-Proc": "MYPROC" }
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, tsoAccount: "TSO1234", tsoProcedure: "MYPROC" }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
             });
             describe("Member > Member", () => {
                 it("should send a request", async () => {

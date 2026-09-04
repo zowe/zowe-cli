@@ -328,6 +328,8 @@ export class Create {
                     case "volser":
                     case "responseTimeout":
                     case "like":
+                    case "tsoAccount":
+                    case "tsoProcedure":
                         // no validation
 
                         break;
@@ -492,6 +494,11 @@ export class Create {
             headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             delete tempOptions.responseTimeout;
         }
+        if (options) {
+            headers.push(...ZosFilesUtils.generateTsoHeaders(options));
+            delete tempOptions.tsoAccount;
+            delete tempOptions.tsoProcedure;
+        }
 
         const jsonContent = JSON.stringify(tempOptions);
         headers.push(ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length });
@@ -651,6 +658,8 @@ export class Create {
                     case "mgntclass":
                     case "dataclass":
                     case "responseTimeout":
+                    case "tsoAccount":
+                    case "tsoProcedure":
                         // no validation at this time
                         break;
 
@@ -722,6 +731,8 @@ export class Create {
                     case "volumes":
                     case "timeout":
                     case "responseTimeout":
+                    case "tsoAccount":
+                    case "tsoProcedure":
                         // no validation at this time
                         break;
 

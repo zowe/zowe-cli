@@ -10,7 +10,7 @@
 */
 
 import { Mount, IMountFsMode, IMountFsOptions } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 
 
@@ -44,6 +44,39 @@ describe("Mount FS", () => {
         };
         await Mount.fs(dummySession, fileSystemName, mountPoint, options);
         expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
+    });
+
+    it("should succeed with tsoAccount and tsoProcedure", async () => {
+        const putExpectStringSpy = jest.fn((..._args: any[]) => {
+            // Do nothing
+        });
+        (ZosmfRestClient as any).putExpectString = putExpectStringSpy;
+        const mode: IMountFsMode = "rdonly";
+        const options: IMountFsOptions = {
+            "fs-type": "ZFS",
+            "mode": mode,
+            "tsoAccount": "TSO1234",
+            "tsoProcedure": "MYPROC"
+        };
+        await Mount.fs(dummySession, fileSystemName, mountPoint, options);
+
+        expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+        const [session, , headers, jsonContent] = putExpectStringSpy.mock.calls[0];
+        expect(session).toBe(dummySession);
+        expect(headers).toEqual([
+            { "Content-Length": jsonContent.length },
+            ZosmfHeaders.ACCEPT_ENCODING,
+            { "X-IBM-Request-Acctnum": "TSO1234" },
+            { "X-IBM-Request-Proc": "MYPROC" }
+        ]);
+        expect(JSON.parse(jsonContent)).toEqual({
+            "fs-type": "ZFS",
+            "mode": mode,
+            "tsoAccount": "TSO1234",
+            "tsoProcedure": "MYPROC",
+            "action": "mount",
+            "mount-point": mountPoint
+        });
     });
 
     it("should fail with a bad option", async () => {

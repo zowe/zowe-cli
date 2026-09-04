@@ -246,6 +246,35 @@ describe("Invoke", () => {
             );
         });
 
+        it("should process statements contained in an array of strings using tsoAccount and tsoProcedure", async () => {
+            let response;
+            let caughtError;
+            const options: IZosFilesOptions = {tsoAccount: "TSO1234", tsoProcedure: "MYPROC"};
+            const localHeaders = [...reqHeaders];
+            localHeaders.push({"X-IBM-Request-Acctnum": "TSO1234"}, {"X-IBM-Request-Proc": "MYPROC"});
+
+            try {
+                response = await Invoke.ams(dummySession, statements.split(/\r?\n/), options);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success        : true,
+                commandResponse: ZosFilesMessages.amsCommandExecutedSuccessfully.message,
+                apiResponse    : invokeAPIRespose
+            });
+
+            expect(invokeExpectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(invokeExpectJsonSpy).toHaveBeenCalledWith(
+                dummySession,
+                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_AMS),
+                localHeaders,
+                reqPayload
+            );
+        });
+
         it("should process statements from the specified file path", async () => {
             let response;
             let caughtError;

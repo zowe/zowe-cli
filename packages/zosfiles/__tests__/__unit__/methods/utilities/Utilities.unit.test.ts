@@ -159,6 +159,20 @@ describe("USS utiliites", () => {
                 expect(timeoutHeader[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]).toEqual(responseTimeout.toString());
             });
 
+            it("should include X-IBM-Request-Acctnum and X-IBM-Request-Proc headers when tsoAccount and tsoProcedure are provided", async () => {
+                const payload = { request: "test", action: "doSomething" };
+                const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer")
+                    .mockResolvedValue(Buffer.from("dummy"));
+
+                await Utilities.putUSSPayload(dummySession, "/u/testfile", payload, undefined, "TSO1234", "MYPROC");
+
+                const reqHeaders = restClientSpy.mock.calls[0][2];
+                expect(reqHeaders.find((h: any) => Object.keys(h).includes(ZosmfHeaders.X_IBM_REQUEST_ACCTNUM)))
+                    .toEqual({ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" });
+                expect(reqHeaders.find((h: any) => Object.keys(h).includes(ZosmfHeaders.X_IBM_REQUEST_PROC)))
+                    .toEqual({ [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" });
+            });
+
             it("should throw an error if the uss file name is null", async () => {
                 let response;
                 let caughtError;
