@@ -52,8 +52,8 @@
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/bundleCliDeps.js prepack",
-    "postpack": "node ../../scripts/bundleCliDeps.js postpack",
+    "prepack": "npx ts-node ../../scripts/bundleCliDeps.ts prepack",
+    "postpack": "npx ts-node ../../scripts/bundleCliDeps.ts postpack",
     "prepublishOnly": "bash ../../scripts/bundleDaemon.sh"
   },
   "dependencies": {
