@@ -427,7 +427,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    undefined,
+                    undefined
                 );
             });
 
@@ -457,7 +459,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    undefined,
+                    undefined
                 );
             });
 
@@ -558,7 +562,7 @@ describe("USS utiliites", () => {
                 expect(error).not.toBeDefined();
                 expect(renameResponse).toBeTruthy();
                 const payload = { request: "move", from: oldPath };
-                expect(zosmfExpectSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+                expect(zosmfExpectSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload, undefined, undefined, undefined);
             });
 
             it("should pass responseTimeout to putUSSPayload", async () => {
