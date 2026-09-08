@@ -83,7 +83,7 @@
     "which": "^2.0.2"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "7.18.6"
+    "@zowe/secrets-for-zowe-sdk": "7.28.3"
   },
   "engines": {
     "node": ">=20.9.0"

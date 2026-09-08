@@ -63,39 +63,46 @@ interface BundleDepInfo {
     link: boolean;
     hasInstallScript: boolean;
 }
+interface QueueItem {
+    tree: NpmDepTree;
+    parentArchivePath: string;
+}
 function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDepInfo> {
+    // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
-    const normalizePath = (path: string) => path.replace(/\\/g, "/");
-    const visitDep = (tree: NpmDepTree) => {
-        const pkgId = `${tree.name}@${tree.version}`;
-        let archivePath = `node_modules/${tree.name}`;
-        let isDupe = false;
+    const visited = new Set<string>();
+    let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
+        .map((tree) => ({ tree, parentArchivePath: "node_modules" }));
+    while (queue.length > 0) {
+        const nextQueue: QueueItem[] = [];
+        for (const { tree, parentArchivePath } of queue) {
+            if (visited.has(tree.path)) continue;
+            visited.add(tree.path);
 
-        if (archivePath in bundleDeps) {
-            const isRootLevel = normalizePath(path.relative(process.cwd(), tree.path)) === archivePath;
-            const isSameLevel = !isRootLevel && normalizePath(path.relative(pkgDir, tree.path)) === archivePath;
-            if (pkgId === bundleDeps[archivePath].id) {
-                isDupe = true;
-            } else if (isRootLevel || isSameLevel) {
-                throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
+            const pkgId = `${tree.name}@${tree.version}`;
+            const flatPath = path.posix.join("node_modules", tree.name);
+            const archivePath = flatPath in bundleDeps && bundleDeps[flatPath].id !== pkgId ?
+                path.posix.join(parentArchivePath, "node_modules", tree.name) : flatPath;
+
+            if (archivePath in bundleDeps) {
+                if (bundleDeps[archivePath].id !== pkgId) {
+                    throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
+                }
             } else {
-                archivePath = normalizePath(path.relative(process.cwd(), tree.path));
+                bundleDeps[archivePath] = {
+                    id: pkgId,
+                    srcPath: tree.path,
+                    link: tree.resolved != null,
+                    hasInstallScript: tree.scripts?.install != null,
+                };
+            }
+
+            for (const subtree of Object.values(tree.dependencies ?? {})) {
+                if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
             }
         }
-
-        if (!isDupe) {
-            bundleDeps[archivePath] = {
-                id: pkgId,
-                srcPath: tree.path,
-                link: tree.resolved != null,
-                hasInstallScript: tree.scripts?.install != null
-            };
-        }
-        for (const subtree of Object.values(tree.dependencies ?? {})) {
-            if (subtree.name != null) visitDep(subtree);
-        }
-    };
-    Object.values(root.dependencies![pkgName].dependencies ?? {}).forEach(visitDep);
+        queue = nextQueue;
+    }
     return bundleDeps;
 }
 
@@ -115,9 +122,10 @@ async function prepack(pkgName: string) {
         fs.mkdirSync(pkgNodeModules);
 
         for (const [destPath, bundleDep] of Object.entries(prodDepMap)) {
+            const srcPath = bundleDep.srcPath.replace(pkgNodeModules + path.sep, nodeModulesBackup + path.sep);
             if (bundleDep.link) {
                 const packlist = await npmPacklist({
-                    path: bundleDep.srcPath,
+                    path: srcPath,
                     package: bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@")),
                     edgesOut: new Map(),
                 });
@@ -130,7 +138,7 @@ async function prepack(pkgName: string) {
                 const absPkgPath = path.join(pkgDir, destPath);
                 const excludeNodeModules = (source: string) => path.basename(source) !== "node_modules" &&
                     (!bundleDep.hasInstallScript || path.basename(source) !== "build");
-                fs.cpSync(bundleDep.srcPath, absPkgPath, { recursive: true, filter: excludeNodeModules });
+                fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: excludeNodeModules });
             }
         }
 
