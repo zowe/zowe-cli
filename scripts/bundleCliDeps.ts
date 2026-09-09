@@ -73,6 +73,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     const visited = new Set<string>();
     let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
         .map((tree) => ({ tree, parentArchivePath: "node_modules" }));
+
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
@@ -103,6 +104,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
         }
         queue = nextQueue;
     }
+
     return bundleDeps;
 }
 

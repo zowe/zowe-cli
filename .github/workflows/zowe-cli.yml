@@ -177,7 +177,10 @@ jobs:
       if: ${{ always() && github.event_name == 'push' && steps.cli-artifact-upload.outcome == 'success' }}
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: echo "number=$(gh pr list --head '${{ github.ref_name }}' --state open --json number --jq '.[0].number // empty')" >> $GITHUB_OUTPUT
+        HEAD_REF: ${{ github.ref_name }}
+      run: |
+        number=$(gh pr list --head "$HEAD_REF" --state open --json number --jq '.[0].number // empty')
+        echo "number=$number" >> "$GITHUB_OUTPUT"
 
     - name: Comment on PR
       if: ${{ always() && steps.find-pr.outputs.number != '' }}
