@@ -76,7 +76,7 @@
     "prettyjson": "^1.2.5",
     "progress": "^2.0.3",
     "read": "^3.0.1",
-    "sanitize-html": "^2.17.5",
+    "sanitize-html": "^2.17.7",
     "semver": "^7.5.2",
     "stack-trace": "^0.0.10",
     "strip-ansi": "^6.0.1",
