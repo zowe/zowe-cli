@@ -138,6 +138,47 @@ describe("Invoke AMS", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
     });
 
+    it("should create and delete a VSAM data set from command statement in files with tsoAccount", async () => {
+        let error;
+        let response;
+
+        // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
+        let controlStatementFile: string =
+            createTestAMSStatementFileFromTemplate(__dirname + "/DefineVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {tsoAccount: systemProps.tso.account});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+
+        // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
+        controlStatementFile =
+            createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {tsoAccount: systemProps.tso.account});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+    });
+
     it("should create and delete a VSAM data set from command statements", async () => {
         let error;
         let response;
