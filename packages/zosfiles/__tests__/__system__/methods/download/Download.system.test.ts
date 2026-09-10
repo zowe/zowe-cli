@@ -230,11 +230,9 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(response.commandResponse).toContain(
                     ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
 
-                // convert the data set name to use as a path/file
                 const regex2 = /\./gi;
                 file = dsname.replace(regex2, "/") + ".txt";
                 file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
                 const fileContents2 = stripNewLines(fs.readFileSync(`${file}`).toString());
                 expect(fileContents2).toEqual(testData);
             });

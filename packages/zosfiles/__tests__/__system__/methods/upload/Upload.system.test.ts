@@ -120,7 +120,6 @@ describe("Upload Data Set", () => {
                 let response: IZosFilesResponse;
 
                 try {
-                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         inputfile, dsname, {tsoAccount: defaultSystem.tso.account});
                     Imperative.console.info("Response: " + inspect(response));

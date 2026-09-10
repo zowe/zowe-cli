@@ -142,7 +142,6 @@ describe("Invoke AMS", () => {
         let error;
         let response;
 
-        // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
         let controlStatementFile: string =
             createTestAMSStatementFileFromTemplate(__dirname + "/DefineVSAM.ams");
 
@@ -160,7 +159,6 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
 
