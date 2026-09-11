@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where copying a data set to another LPAR over-allocated the target when the source was allocated in cylinders. The target is now always allocated in tracks, matching the size that z/OSMF reports, so a 15-track source no longer becomes a 225-track target. [#2623](https://github.com/zowe/zowe-cli/issues/2623)
+
 ## `8.35.1`
 
 - **Breaking:** The `ZosFilesUtils.ensureSafeTempDir` function no longer creates missing parent directories recursively; the temp directory's immediate parent must already exist. This avoids a race condition where a recursive `mkdir` function call could create part of the path before the safety checks ran. [#2831](https://github.com/zowe/zowe-cli/pull/2831)
