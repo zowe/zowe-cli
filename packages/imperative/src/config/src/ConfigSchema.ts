@@ -328,6 +328,7 @@ export class ConfigSchema {
                                     uniqueItems: true
                                 }
                             },
+                            additionalProperties: false,
                             allOf: [
                                 {
                                     if: {
