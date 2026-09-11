@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.37.0`
 
 - Enhancement: Added support for the `tsoAccount` and `tsoProcedure` z/OSMF profile properties. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 

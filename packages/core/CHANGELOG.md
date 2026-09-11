@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.37.0`
 
 - Enhancement: Added `X_IBM_REQUEST_ACCTNUM` and `X_IBM_REQUEST_PROC` header constants to `ZosmfHeaders` for sending a TSO account number and logon procedure on z/OSMF data set and file requests. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 

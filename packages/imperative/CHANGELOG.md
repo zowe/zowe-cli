@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.37.0`
 
 - BugFix: Updated the `ConfigSchema.buildSchema` API so the generated config schema sets `additionalProperties: false` on profile objects. Editors now report errors when profile properties such as `user` or `password` are mistakenly placed at the same level as the `properties` object, where they would be silently ignored. [#2882](https://github.com/zowe/zowe-cli/pull/2882)
 

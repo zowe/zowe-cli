@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `8.37.0`
 
 - Enhancement: Added `tsoAccount` and `tsoProcedure` options to the zosmf profile/schema, allowing users to specify a TSO account number and logon procedure to use for z/OSMF data set and file operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 
