@@ -11,10 +11,11 @@
 
 const childProcess = require("child_process");
 const fs = require("fs");
+const path = require("path");
 const chalk = require("chalk");
 
-const rootLockfilePath = __dirname + "/../package-lock.json";
-const newLockfilePath = process.cwd() + "/" + (process.argv[2] ?? "package-lock.json");
+const rootLockfilePath = path.join(__dirname, "..", "package-lock.json");
+const newLockfilePath = path.join(process.cwd(), process.argv[2] ?? "package-lock.json");
 
 // Remove "file:" links from lock file
 const lockFile = JSON.parse(fs.readFileSync(rootLockfilePath, "utf-8"));
