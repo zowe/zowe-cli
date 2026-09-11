@@ -16,6 +16,7 @@ import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to mount file systems through the z/OS MF APIs
@@ -62,6 +63,9 @@ export class Mount {
         if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
+        if (options) {
+            headers.push(...ZosFilesUtils.generateTsoHeaders(options));
+        }
 
         const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
 
@@ -106,6 +110,8 @@ export class Mount {
 
                     case "fs-type":
                     case "responseTimeout":
+                    case "tsoAccount":
+                    case "tsoProcedure":
                     // no validation at this time
                         break;
 

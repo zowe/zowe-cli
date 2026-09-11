@@ -208,6 +208,35 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(fileContents).toEqual(testData);
             });
 
+            it("should download a data set with tsoAccount", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const options: IDownloadSingleOptions = {tsoAccount: defaultSystem.tso.account};
+
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                await wait(waitTime);
+
+                try {
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                const regex2 = /\./gi;
+                file = dsname.replace(regex2, "/") + ".txt";
+                file = file.toLowerCase();
+                const fileContents2 = stripNewLines(fs.readFileSync(`${file}`).toString());
+                expect(fileContents2).toEqual(testData);
+            });
+
             it("should download a data set and create folders and file in original letter case", async () => {
                 let error;
                 let response: IZosFilesResponse;

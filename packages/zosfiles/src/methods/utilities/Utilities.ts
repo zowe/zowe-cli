@@ -17,6 +17,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {
     private static readonly minimumTimeout = 5;
@@ -34,7 +35,8 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async putUSSPayload(session: AbstractSession, USSFileName: string, payload: any, responseTimeout?: number): Promise<Buffer> {
+    public static async putUSSPayload(session: AbstractSession, USSFileName: string, payload: any,
+        responseTimeout?: number, tsoAccount?: string, tsoProcedure?: string): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeNullOrUndefined(payload, ZosFilesMessages.missingPayload.message);
@@ -50,9 +52,9 @@ export class Utilities {
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
-        ];
+        ].concat(ZosFilesUtils.generateTsoHeaders({ tsoAccount, tsoProcedure }));
         if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString()});
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString() });
         }
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
         return response;
@@ -76,7 +78,9 @@ export class Utilities {
         ussFileName: string,
         type: Tag,
         codeset?: string,
-        responseTimeout?: number
+        responseTimeout?: number,
+        tsoAccount?: string,
+        tsoProcedure?: string,
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
 
@@ -89,11 +93,8 @@ export class Utilities {
             payload.codeset = codeset;
         }
 
-        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
-            await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout);
-        } else {
-            await Utilities.putUSSPayload(session, ussFileName, payload);
-        }
+        await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout, tsoAccount, tsoProcedure);
+
         return {
             success: true,
             commandResponse: "File tagged successfully."
@@ -116,14 +117,11 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string, responseTimeout?: number): Promise<boolean> {
-        const payload = {request:"chtag", action:"list"};
-        let response;
-        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload);
-        }
+    public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string, responseTimeout?: number,
+        tsoAccount?: string, tsoProcedure?: string): Promise<boolean> {
+        const payload = { request: "chtag", action: "list" };
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout, tsoAccount, tsoProcedure);
+
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const stdout = jsonObj.stdout[0];
@@ -147,12 +145,8 @@ export class Utilities {
         options: IOptions,
         responseTimeout?: number): Promise<void> {
         const payload = { request: "chtag", action: "list" };
-        let response;
-        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload);
-        }
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout, options.tsoAccount, options.tsoProcedure);
+
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
@@ -176,16 +170,12 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string, responseTimeout?: number): Promise<Buffer> {
+    public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string,
+        responseTimeout?: number, tsoAccount?: string, tsoProcedure?: string): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
         const payload = { request: "move", from: path.posix.normalize(oldFilePath) };
-        let response;
-        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
-            response = await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, newFilePath, payload);
-        }
-        return response;
+        return await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout,
+            tsoAccount, tsoProcedure);
     }
 }

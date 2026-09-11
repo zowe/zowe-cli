@@ -21,6 +21,7 @@ import { IDeleteDatasetOptions } from "./doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -57,7 +58,8 @@ export class Delete {
             endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+                .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
             if (options && options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
@@ -146,7 +148,8 @@ export class Delete {
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }
@@ -187,7 +190,8 @@ export class Delete {
         const endpoint = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName
         );
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }

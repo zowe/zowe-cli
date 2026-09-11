@@ -737,6 +737,39 @@ describe("Copy", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
+            it("Should succeed with tsoAccount option", async () => {
+                let error;
+                let response;
+                let contents1;
+                let contents2;
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName, member: file2 },
+                        {
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
+                            tsoAccount: defaultSystem.tso.account
+                        }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                expect(contents1).toBeTruthy();
+                expect(contents2).toBeTruthy();
+                expect(contents1.toString()).toEqual(contents2.toString());
+            });
         });
     });
 

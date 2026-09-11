@@ -44,7 +44,7 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             percentComplete: 0,
             stageName: TaskStage.IN_PROGRESS
         };
-        commandParameters.response.progress.startBar({task: status});
+        commandParameters.response.progress.startBar({ task: status });
         return Download.allMembers(session, commandParameters.arguments.dataSetName, {
             volume: commandParameters.arguments.volumeSerial,
             binary: commandParameters.arguments.binary,
@@ -59,6 +59,8 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             task: status,
             responseTimeout: commandParameters.arguments.responseTimeout,
             memberPatternResponse: response.apiResponse,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         });
     }
 }
