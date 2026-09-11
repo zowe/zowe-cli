@@ -26,7 +26,7 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
             statusMessage: "Uploading to data set",
             stageName: TaskStage.IN_PROGRESS
         };
-        commandParameters.response.progress.startBar({task});
+        commandParameters.response.progress.startBar({ task });
         const response = await Upload.fileToDataset(session, commandParameters.arguments.inputfile,
             commandParameters.arguments.dataSetName,
             {
@@ -35,7 +35,9 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
                 record: commandParameters.arguments.record,
                 encoding: commandParameters.arguments.encoding,
                 task,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             });
 
         if (response.apiResponse) {

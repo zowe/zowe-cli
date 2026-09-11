@@ -44,7 +44,9 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             task: status,
             responseTimeout: commandParameters.arguments.responseTimeout,
             includeHidden: commandParameters.arguments.includeHidden,
-            encoding: commandParameters.arguments.encoding
+            encoding: commandParameters.arguments.encoding,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         const attributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes, inputDir);

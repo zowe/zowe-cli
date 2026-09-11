@@ -19,7 +19,11 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class UssDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const strMode = commandParameters.arguments.mode;
-        const zosFilesOptions: IZosFilesOptions = { responseTimeout: commandParameters.arguments.responseTimeout};
+        const zosFilesOptions: IZosFilesOptions = {
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
+        };
 
         return Create.uss(session, commandParameters.arguments.ussPath, "directory", strMode, zosFilesOptions);
     }

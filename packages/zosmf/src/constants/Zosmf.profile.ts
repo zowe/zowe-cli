@@ -87,6 +87,14 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             responseTimeout: {
                 type: "number",
                 optionDefinition: ZosFilesOptions.responseTimeout
+            },
+            tsoAccount: {
+                type: "string",
+                optionDefinition: ZosFilesOptions.tsoAccount
+            },
+            tsoProcedure: {
+                type: "string",
+                optionDefinition: ZosFilesOptions.tsoProcedure
             }
         },
         required: []
