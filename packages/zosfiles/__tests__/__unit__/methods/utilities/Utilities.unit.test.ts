@@ -508,6 +508,48 @@ describe("USS utiliites", () => {
             });
         });
 
+        describe("malformed chtag list responses fall back to safe default", () => {
+            const malformedPayloads: Array<{ name: string, payload: Buffer | null }> = [
+                { name: "null response", payload: null },
+                { name: "empty body", payload: Buffer.from("") },
+                { name: "non-JSON HTML", payload: Buffer.from("<html>error</html>") },
+                { name: "literal null JSON", payload: Buffer.from("null") },
+                { name: "empty stdout array", payload: Buffer.from(JSON.stringify({ stdout: [] })) },
+                { name: "non-array stdout", payload: Buffer.from(JSON.stringify({ stdout: "b binary" })) },
+                { name: "non-string stdout entry", payload: Buffer.from(JSON.stringify({ stdout: [123] })) }
+            ];
+            for (const { name, payload } of malformedPayloads) {
+                it(`isFileTagBinOrAscii returns false for ${name}`, async () => {
+                    jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(payload as any);
+                    let caughtError: Error;
+                    let result: boolean;
+                    try {
+                        result = await Utilities.isFileTagBinOrAscii(dummySession, "/u/testfile");
+                    } catch (e) {
+                        caughtError = e;
+                    }
+                    expect(caughtError).toBeUndefined();
+                    expect(result).toBe(false);
+                });
+                it(`applyTaggedEncoding leaves options unmutated for ${name}`, async () => {
+                    jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(payload as any);
+                    let caughtError: Error;
+                    const options: any = {};
+                    try {
+                        await Utilities.applyTaggedEncoding(dummySession, "/u/testfile", options);
+                    } catch (e) {
+                        caughtError = e;
+                    }
+                    expect(caughtError).toBeUndefined();
+                    expect(options.binary).toBeUndefined();
+                    expect(options.encoding).toBeUndefined();
+                });
+            }
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+        });
+
         describe("renameUSSFile", () => {
             const dummySession = new Session({
                 user: "fake",

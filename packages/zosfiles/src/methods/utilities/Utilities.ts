@@ -22,6 +22,30 @@ export class Utilities {
     private static readonly minimumTimeout = 5;
 
     /**
+     * Safely parse the stdout line from a chtag list response.
+     * Returns undefined when the tag cannot be determined so callers
+     * can apply the safe default (convert / leave options unmutated).
+     * @param {Buffer | null | undefined} response raw payload from putUSSPayload
+     * @returns {string | undefined} first stdout line, or undefined if unparseable
+     */
+    private static parseChtagStdout(response: Buffer | null | undefined): string | undefined {
+        if (response == null) {
+            return undefined;
+        }
+        let jsonObj: any;
+        try {
+            jsonObj = JSON.parse(response.toString());
+        } catch {
+            return undefined;
+        }
+        const out = jsonObj?.stdout;
+        if (!Array.isArray(out) || typeof out[0] !== "string") {
+            return undefined;
+        }
+        return out[0];
+    }
+
+    /**
      * Retrieve various details from USS file functions
      *
      * This function uses a JSON payload to retrieve information via zosmf utilities function
@@ -113,6 +137,7 @@ export class Utilities {
      *
      * @returns {Promise<boolean>} Promise that resolves to true if the file is binary or ASCII text or false if file
      * should likely be converted to text. Default is false which aligns with the zosmf default behavior converting
+     * Unparseable chtag output also resolves to false (safe default).
      *
      * @throws {ImperativeError}
      */
@@ -124,14 +149,13 @@ export class Utilities {
         } else {
             response = await Utilities.putUSSPayload(session, USSFileName, payload);
         }
-        const jsonObj = JSON.parse(response.toString());
-        if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
-            const stdout = jsonObj.stdout[0];
-            // Tests if binary tag set
-            return stdout.indexOf("b ") > -1 ||
-                stdout.indexOf("UTF-") > -1 || stdout.indexOf("ISO8859-") > -1 || stdout.indexOf("IBM-850") > -1;
+        const stdout = Utilities.parseChtagStdout(response);
+        if (stdout == null) {
+            return false;
         }
-        return false;
+        // Tests if binary tag set
+        return stdout.indexOf("b ") > -1 ||
+            stdout.indexOf("UTF-") > -1 || stdout.indexOf("ISO8859-") > -1 || stdout.indexOf("IBM-850") > -1;
     }
 
     /**
@@ -140,6 +164,7 @@ export class Utilities {
      * @param session z/OSMF connection info
      * @param USSFileName Path to USS file
      * @param options Options for downloading a USS file
+     * Unparseable chtag output leaves options unmutated (safe default).
      */
     public static async applyTaggedEncoding(
         session: AbstractSession,
@@ -153,15 +178,16 @@ export class Utilities {
         } else {
             response = await Utilities.putUSSPayload(session, USSFileName, payload);
         }
-        const jsonObj = JSON.parse(response.toString());
-        if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
-            const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
-            // Tests if binary tag set
-            if (columns[0] === "b" || columns[1]?.startsWith("ISO8859-") || columns[1]?.startsWith("UCS-") || columns[1]?.startsWith("UTF-")) {
-                options.binary = true;
-            } else if (columns[1]?.startsWith("IBM-")) {
-                options.encoding = columns[1];
-            }
+        const stdout = Utilities.parseChtagStdout(response);
+        if (stdout == null) {
+            return;
+        }
+        const columns = stdout.trim().split(/\s+/);
+        // Tests if binary tag set
+        if (columns[0] === "b" || columns[1]?.startsWith("ISO8859-") || columns[1]?.startsWith("UCS-") || columns[1]?.startsWith("UTF-")) {
+            options.binary = true;
+        } else if (columns[1]?.startsWith("IBM-")) {
+            options.encoding = columns[1];
         }
     }
 
