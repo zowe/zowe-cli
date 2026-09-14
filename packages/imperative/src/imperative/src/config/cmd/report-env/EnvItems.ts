@@ -9,6 +9,8 @@
 *
 */
 
+import * as semver from "semver";
+
 /**
  * This enum represents the runtime environment items of interest.
  * These are more than just environment variables.
@@ -37,22 +39,28 @@ export enum ItemId {
  */
 export interface IProbTest {
     itemId: ItemId;
-    probExpr: string;   // if probExpr evaluates to true, we have a problem
+    probExpr: (value: string) => boolean;   // if probExpr returns true, we have a problem
     probMsg: string;
 }
 
 // used in probTests below.
-const logLevelExpr =
-    "'{val}'.toUpperCase() != 'ALL' && " +
-    "'{val}'.toUpperCase() != 'TRACE' && " +
-    "'{val}'.toUpperCase() != 'DEBUG' && " +
-    "'{val}'.toUpperCase() != 'INFO' && " +
-    "'{val}'.toUpperCase() != 'WARN' && " +
-    "'{val}'.toUpperCase() != 'ERROR' && " +
-    "'{val}'.toUpperCase() != 'FATAL' && " +
-    "'{val}'.toUpperCase() != 'MARK' && " +
-    "'{val}'.toUpperCase() != 'OFF' && " +
-    "'{val}' != 'undefined'";
+const logLevelExpr = (value: string): boolean => {
+    if (value == undefined) { return false; }
+    switch (value.toUpperCase()) {
+        case 'ALL':
+        case 'TRACE':
+        case 'DEBUG':
+        case 'INFO':
+        case 'WARN':
+        case 'ERROR':
+        case 'FATAL':
+        case 'MARK':
+        case 'OFF':
+            return false;
+        default:
+            return true;
+    }
+}
 
 function formatLogLevelMsg(logTypeName: string) {
     return `The ${logTypeName} must be set to one of: \n` +
@@ -68,12 +76,12 @@ function formatLogLevelMsg(logTypeName: string) {
 export const probTests: IProbTest[] = [
     {
         itemId: ItemId.NODEJS_VER,
-        probExpr: "semver.satisfies('{val}', '<20.x || 21.x || 23.x || >24.x')",
+        probExpr: (value: string) => semver.satisfies(String(value), '<20.x || 21.x || 23.x || >24.x'),
         probMsg: "Only Node.js versions 20, 22, and 24 are supported."
     },
     {
         itemId: ItemId.NPM_VER,
-        probExpr: "semver.satisfies('{val}', '8.11.0 || 8.12.0')",
+        probExpr: (value: string) => semver.satisfies(String(value), '8.11.0 || 8.12.0'),
         probMsg: "NPM versions 8.11.0 and 8.12.0 cause SCS errors in some situations."
     },
     {

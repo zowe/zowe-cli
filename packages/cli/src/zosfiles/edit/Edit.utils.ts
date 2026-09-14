@@ -12,7 +12,7 @@
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions, ZosFilesUtils, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import {
     AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions, CliUtils
+    TextUtils, IDiffNameOptions, CliUtils, IO
 } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { existsSync, unlinkSync } from "fs";
@@ -106,7 +106,11 @@ export class EditUtilities {
             return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
         const dsDir = this.ensureEditTempDir("ds");
-        return path.join(dsDir, lfFile.fileName + ext);
+        const fullPath = path.join(dsDir, lfFile.fileName + ext);
+        if (IO.fileEvaluatesToDir(lfFile.fileName) || IO.containsBacktrack(lfFile.fileName + ext) || !IO.isSubPath(dsDir, fullPath)) {
+            throw new ImperativeError({msg: "The data set name contains illegal characters."});
+        }
+        return fullPath;
     }
 
     /**
