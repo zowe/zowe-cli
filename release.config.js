@@ -37,7 +37,6 @@ module.exports = {
             aliasTags: {
                 "latest": ["zowe-v2-lts"]
             },
-            pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true,
             versionIndependent: ["@zowe/imperative"]
         }],
