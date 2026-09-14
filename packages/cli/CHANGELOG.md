@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. []()
+- BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
 
 ## `8.37.0`
 

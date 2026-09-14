@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. []()
+- BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
 
 ## `8.37.0`
 
