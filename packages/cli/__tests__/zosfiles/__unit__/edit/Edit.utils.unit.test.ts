@@ -235,6 +235,42 @@ describe("Files Edit Utilities", () => {
                 expect(caughtError.message).toContain("Unsafe temp directory");
             });
         });
+        it("should throw an error if the data set name contains illegal characters 1", async() => {
+            const fileCopy = structuredClone(localFileDS);
+            fileCopy.fileName = "SOME.FAKE.DATA../SET";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(fileCopy, commandParametersDs);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
+        });
+        it("should throw an error if the data set name contains illegal characters 2", async() => {
+            const fileCopy = structuredClone(localFileDS);
+            fileCopy.fileName = "/SOME.FAKE.DATA.SET";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(fileCopy, commandParametersDs);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
+        });
+        it("should throw an error if the data set name contains illegal characters 3", async() => {
+            const parameterCopy = cloneDeep(commandParametersDs);
+            parameterCopy.arguments.extension = "/../txt";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(localFileDS, parameterCopy);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
+        });
     });
     describe("checkForStash()", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
