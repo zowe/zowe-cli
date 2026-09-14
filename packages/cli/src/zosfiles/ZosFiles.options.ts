@@ -22,5 +22,13 @@ export const ZosFilesOptionDefinitions: ICommandOptionDefinition[] = [
     {
         ...ZosFilesOptions.responseTimeout,
         description: strings.RESPONSETIMEOUT
+    },
+    {
+        ...ZosFilesOptions.tsoAccount,
+        description: strings.TSOACCOUNT
+    },
+    {
+        ...ZosFilesOptions.tsoProcedure,
+        description: strings.TSOPROCEDURE
     }
 ];

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-console-for-zowe-sdk",
-  "version": "8.36.1",
+  "version": "8.37.0",
   "description": "Zowe SDK to interact with the z/OS console",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -44,9 +44,9 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.36.1",
-    "@zowe/core-for-zowe-sdk": "8.36.1",
-    "@zowe/imperative": "8.36.1"
+    "@zowe/cli-test-utils": "8.37.0",
+    "@zowe/core-for-zowe-sdk": "8.37.0",
+    "@zowe/imperative": "8.37.0"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0",

@@ -97,6 +97,16 @@ exports[`Create  Data Set should display the help 1`] = `
       before returning a response. Any request exceeding this amount of time will be
       terminated and return an error. Allowed values: 5 - 600
 
+   --tso-account (string)
+
+      If specified, this value will be sent in the header X-IBM-Request-Acctnum for
+      z/OSMF data set and file operations that support it.
+
+   --tso-procedure | --tso-proc (string)
+
+      If specified, this value will be sent in the header X-IBM-Request-Proc for
+      z/OSMF data set and file operations that support it.
+
  ZOSMF CONNECTION OPTIONS
  ------------------------
 

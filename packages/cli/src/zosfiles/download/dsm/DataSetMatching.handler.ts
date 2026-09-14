@@ -19,7 +19,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const extensionMap: {[key: string]: string} = {};
+        const extensionMap: { [key: string]: string } = {};
         try {
             if (commandParameters.arguments.extensionMap) {
                 commandParameters.arguments.extensionMap = commandParameters.arguments.extensionMap.toLowerCase();
@@ -31,7 +31,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
                 }
             }
         } catch (err) {
-            throw new ImperativeError({msg: "An error occurred processing the extension map.", causeErrors: err});
+            throw new ImperativeError({ msg: "An error occurred processing the extension map.", causeErrors: err });
         }
 
         const listStatus: ITaskWithStatus = {
@@ -44,7 +44,9 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: listStatus,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         commandParameters.response.progress.startBar({ task: listStatus });
@@ -74,7 +76,9 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             failFast: commandParameters.arguments.failFast,
             overwrite: commandParameters.arguments.overwrite,
             task: downloadStatus,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         commandParameters.response.progress.startBar({ task: downloadStatus });

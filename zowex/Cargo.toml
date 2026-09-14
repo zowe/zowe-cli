@@ -3,7 +3,7 @@ name = "zowe"
 version = "1.2.7"
 authors = ["Zowe Project"]
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.88"
 license = "EPL-2.0"
 repository = "https://github.com/zowe/zowe-cli"
 

@@ -497,6 +497,42 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
 
+        it("should download a data set using tsoAccount and tsoProcedure", async () => {
+            let response;
+            let caughtError;
+            const destination = dsFolder + ".txt";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {tsoAccount: "TSO1234", tsoProcedure: "MYPROC"});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
+                apiResponse: { destination: "user/data/set.txt" }
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING,
+                    { "X-IBM-Request-Acctnum": "TSO1234" },
+                    { "X-IBM-Request-Proc": "MYPROC" },
+                    ZosmfHeaders.TEXT_PLAIN],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+        });
+
         it("should download a data set and return Etag", async () => {
             zosmfGetFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             let response;
