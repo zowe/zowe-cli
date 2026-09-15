@@ -10,6 +10,7 @@
 */
 
 import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "../ZosmfSession";
 import { ZosFilesOptions } from "./Zosmf.constants";
 
@@ -87,6 +88,14 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             responseTimeout: {
                 type: "number",
                 optionDefinition: ZosFilesOptions.responseTimeout
+            },
+            allowedLoginMethod: {
+                type: "string",
+                optionDefinition: ProfileConstants.BASE_OPTION_ALLOWED_LOGIN_METHOD
+            },
+            authOrder: {
+                type: "string",
+                optionDefinition: ProfileConstants.BASE_OPTION_AUTH_ORDER
             }
         },
         required: []
