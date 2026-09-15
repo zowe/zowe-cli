@@ -46,7 +46,7 @@ export interface IProbTest {
 
 // used in probTests below.
 const logLevelExpr = (value: string): boolean => {
-    if (value == undefined || [...Console.LEVELS, "all"].includes(value.toLowerCase())) { return false; }
+    if (value == undefined || [...Console.LEVELS, "all", "mark"].includes(value.toLowerCase())) { return false; }
     return true;
 };
 
