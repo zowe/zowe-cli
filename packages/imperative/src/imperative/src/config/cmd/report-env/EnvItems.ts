@@ -10,6 +10,7 @@
 */
 
 import * as semver from "semver";
+import { Console } from "../../../../../console";
 
 /**
  * This enum represents the runtime environment items of interest.
@@ -45,22 +46,9 @@ export interface IProbTest {
 
 // used in probTests below.
 const logLevelExpr = (value: string): boolean => {
-    if (value == undefined) { return false; }
-    switch (value.toUpperCase()) {
-        case 'ALL':
-        case 'TRACE':
-        case 'DEBUG':
-        case 'INFO':
-        case 'WARN':
-        case 'ERROR':
-        case 'FATAL':
-        case 'MARK':
-        case 'OFF':
-            return false;
-        default:
-            return true;
-    }
-}
+    if (value == undefined || [...Console.LEVELS, "all"].includes(value.toLowerCase())) { return false; }
+    return true;
+};
 
 function formatLogLevelMsg(logTypeName: string) {
     return `The ${logTypeName} must be set to one of: \n` +
