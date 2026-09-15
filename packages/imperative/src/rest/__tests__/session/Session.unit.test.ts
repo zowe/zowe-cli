@@ -12,6 +12,8 @@
 import { URL } from "url";
 import { Session } from "../../src/session/Session";
 import * as SessConstants from "../../src/session/SessConstants";
+import { ApimlDecisionReason } from "../../src/session/doc/IApimlDecision";
+import { ISession } from "../../src/session/doc/ISession";
 
 describe("Session tests", () => {
 
@@ -408,6 +410,132 @@ describe("Session tests", () => {
         it("should return true if a basePath exists with no tokenType", () => {
             const session = new Session({ hostname: "localhost", basePath: "/some/base/path" });
             expect(session.isUsingApiml()).toBe(true);
+        });
+
+        it("should return true when allowedLoginMethod is apiml-basic, even with no basePath or APIML tokenType", () => {
+            const session = new Session({
+                hostname: "localhost",
+                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC
+            });
+            expect(session.isUsingApiml()).toBe(true);
+        });
+
+        it("should return false when allowedLoginMethod is direct-basic, even though a basePath exists", () => {
+            const session = new Session({
+                hostname: "localhost",
+                basePath: "/some/base/path",
+                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC
+            });
+            expect(session.isUsingApiml()).toBe(false);
+        });
+
+        it("should fall back to the historical heuristic when allowedLoginMethod is prompt", () => {
+            const session = new Session({
+                hostname: "localhost",
+                basePath: "/some/base/path",
+                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_PROMPT
+            });
+            expect(session.isUsingApiml()).toBe(true);
+        });
+    });
+
+    describe("getApimlDecision", () => {
+        // Each case below represents a distinct team config scenario (varying combinations of
+        // allowedLoginMethod, tokenType, and basePath) that a user's profile properties could produce.
+        const testCases: {
+            description: string;
+            sessCfg: ISession;
+            usingApiml: boolean;
+            reason: ApimlDecisionReason;
+        }[] = [
+            {
+                description: "no allowedLoginMethod, no tokenType, no basePath",
+                sessCfg: { hostname: "localhost" },
+                usingApiml: false,
+                reason: ApimlDecisionReason.NONE
+            },
+            {
+                description: "no allowedLoginMethod, non-APIML tokenType, no basePath",
+                sessCfg: { hostname: "localhost", tokenType: "Not-Apiml" },
+                usingApiml: false,
+                reason: ApimlDecisionReason.NONE
+            },
+            {
+                description: "no allowedLoginMethod, APIML tokenType",
+                sessCfg: { hostname: "localhost", tokenType: SessConstants.TOKEN_TYPE_APIML },
+                usingApiml: true,
+                reason: ApimlDecisionReason.APIML_AUTH_TOKEN_PRESENT
+            },
+            {
+                description: "no allowedLoginMethod, basePath exists",
+                sessCfg: { hostname: "localhost", basePath: "/some/base/path" },
+                usingApiml: true,
+                reason: ApimlDecisionReason.BASE_PATH_EXISTS
+            },
+            {
+                description: "allowedLoginMethod is prompt, basePath exists",
+                sessCfg: {
+                    hostname: "localhost",
+                    basePath: "/some/base/path",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_PROMPT
+                },
+                usingApiml: true,
+                reason: ApimlDecisionReason.BASE_PATH_EXISTS
+            },
+            {
+                description: "allowedLoginMethod is prompt, nothing else set",
+                sessCfg: { hostname: "localhost", allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_PROMPT },
+                usingApiml: false,
+                reason: ApimlDecisionReason.NONE
+            },
+            {
+                description: "allowedLoginMethod is apiml-basic, no basePath or APIML tokenType",
+                sessCfg: { hostname: "localhost", allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC },
+                usingApiml: true,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_APIML
+            },
+            {
+                description: "allowedLoginMethod is apiml-cert-pem, no basePath or APIML tokenType",
+                sessCfg: {
+                    hostname: "localhost",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM
+                },
+                usingApiml: true,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_APIML
+            },
+            {
+                description: "allowedLoginMethod is direct-basic, overrides an existing basePath",
+                sessCfg: {
+                    hostname: "localhost",
+                    basePath: "/some/base/path",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC
+                },
+                usingApiml: false,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_DIRECT
+            },
+            {
+                description: "allowedLoginMethod is direct-cert-pem, overrides an existing APIML tokenType",
+                sessCfg: {
+                    hostname: "localhost",
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM
+                },
+                usingApiml: false,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_DIRECT
+            }
+        ];
+
+        it.each(testCases)("$description", ({ sessCfg, usingApiml, reason }) => {
+            const session = new Session(sessCfg);
+            const decision = session.getApimlDecision();
+
+            expect(decision.usingApiml).toBe(usingApiml);
+            expect(decision.reason).toBe(reason);
+            expect(typeof decision.message).toBe("string");
+            expect(decision.message.length).toBeGreaterThan(0);
+
+            // isUsingApiml must always agree with getApimlDecision().usingApiml
+            expect(session.isUsingApiml()).toBe(decision.usingApiml);
         });
     });
 });
