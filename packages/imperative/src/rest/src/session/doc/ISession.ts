@@ -200,6 +200,20 @@ export interface ISession {
     authTypeOrder?: SessConstants.AUTH_TYPE_CHOICES[];
 
     /**
+     * The allowedLoginMethod property restricts which credentials a user should be
+     * prompted for when logging into a service, so that they are compliant with a
+     * site's requirements and backend configuration.
+     *
+     * This is a single value (not an array). Values are specified using
+     * SessConstants.ALLOWED_LOGIN_METHOD_XXX values. When unset, the value defaults
+     * to SessConstants.ALLOWED_LOGIN_METHOD_PROMPT.
+     *
+     * @type {string}
+     * @memberof ISession
+     */
+    allowedLoginMethod?: SessConstants.ALLOWED_LOGIN_METHOD_CHOICES;
+
+    /**
      * The _authCache property contains a cache of credentials which are available
      * for authentication. It also contains properties related to whether the user
      * supplied the authentication order or whether we are using a default order.

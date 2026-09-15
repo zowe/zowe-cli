@@ -138,7 +138,29 @@ export class ProfileConstants {
     //     type: "string",
     //     group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
     // };
+    /**
+     * Option used in profile creation and commands for allowedLoginMethod
+     */
+    public static readonly BASE_OPTION_ALLOWED_LOGIN_METHOD: ICommandOptionDefinition = {
+        name: "allowed-login-method",
+        description: "Restricts which credentials a user is prompted for when logging into a " +
+        "service or updating stored credentials, so that they comply with site requirements. " +
+        "Defaults to 'prompt' when omitted.",
+        type: "string",
+        allowableValues: { values: SessConstants.ALL_ALLOWED_LOGIN_METHODS },
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
 
+    /**
+     * Option used in profile creation and commands for authOrder
+     */
+    public static readonly BASE_OPTION_AUTH_ORDER: ICommandOptionDefinition = {
+        name: "auth-order",
+        description: "A comma separated list of authentication types, in order of precedence, " +
+        "that should be used to authenticate to a service.",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
 
     public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
 
@@ -401,6 +423,14 @@ export class ProfileConstants {
                     //     type: "string",
                     //     secure: true,
                     //     optionDefinition: BASE_OPTION_CERT_FILE_PASSPHRASE
+                },
+                allowedLoginMethod: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_ALLOWED_LOGIN_METHOD
+                },
+                authOrder: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_AUTH_ORDER
                 }
             },
             required: []

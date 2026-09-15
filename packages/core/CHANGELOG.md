@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an `allowedLoginMethod` property to the base profile schema, letting administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service. Defaults to `prompt` (existing behavior) when method is not chosen.
+- Enhancement: Added the `authOrder` property to the base profile schema, so it is validated and available for editor IntelliSense. Previously `authOrder` was accepted at runtime but omitted from the schema.
+- If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties.
+
 ## `8.35.0`
 
 - BugFix: Improved the handling of APIML service base paths in the `Services.getServicesByConfig` function. [#2819](https://github.com/zowe/zowe-cli/pull/2819)
