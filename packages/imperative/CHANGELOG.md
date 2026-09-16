@@ -2,11 +2,21 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+<<<<<<< HEAD
 ## Recent Changes
 
 - Enhancement: Added an `allowedLoginMethod` base profile property that lets administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service, so entered credentials comply with site requirements. Defaults to `prompt` (existing behavior) when method is not chosen. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
 - Enhancement: Added the `authOrder` base profile property to the team config schema so it is validated and available for editor IntelliSense. Previously `authOrder` was accepted at runtime but omitted from the schema. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
 - If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
+=======
+## `8.37.1`
+
+- BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
+
+## `8.37.0`
+
+- BugFix: Updated the `ConfigSchema.buildSchema` API so the generated config schema sets `additionalProperties: false` on profile objects. Editors now report errors when profile properties such as `user` or `password` are mistakenly placed at the same level as the `properties` object, where they would be silently ignored. [#2882](https://github.com/zowe/zowe-cli/pull/2882)
+>>>>>>> master
 
 ## `8.36.1`
 

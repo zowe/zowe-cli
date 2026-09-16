@@ -17,6 +17,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * Class to handle renaming data sets
@@ -102,7 +103,7 @@ export class Rename {
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
-        ];
+        ].concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
 
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});

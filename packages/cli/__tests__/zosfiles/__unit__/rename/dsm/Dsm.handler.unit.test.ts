@@ -44,7 +44,10 @@ describe("DsmHandler", () => {
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(renameSpy).toHaveBeenCalledTimes(1);
-        expect(renameSpy).toHaveBeenLastCalledWith(dummySession, dataSetName, beforeMemberName, afterMemberName);
+        expect(renameSpy).toHaveBeenLastCalledWith(dummySession, dataSetName, beforeMemberName, afterMemberName, {
+            tsoAccount: undefined,
+            tsoProcedure: undefined
+        });
         expect(response).toBe(defaultReturn);
     });
 });

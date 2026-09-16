@@ -19,6 +19,7 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to execute AMS control statements through the z/OS MF APIs
@@ -74,17 +75,17 @@ export class Invoke {
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             // The request payload
-            const reqPayload = {input: statements};
+            const reqPayload = { input: statements };
 
             // The request headers
             const reqHeaders: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
                 { [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString() },
                 ZosmfHeaders.ACCEPT_ENCODING
-            ];
+            ].concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
 
             if (options && options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             const response = await ZosmfRestClient.putExpectJSON(session, endpoint, reqHeaders, reqPayload);
