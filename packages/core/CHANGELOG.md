@@ -4,9 +4,9 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## Recent Changes
 
-- Enhancement: Added an `allowedLoginMethod` property to the base profile schema, letting administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service. Defaults to `prompt` (existing behavior) when method is not chosen.
-- Enhancement: Added the `authOrder` property to the base profile schema, so it is validated and available for editor IntelliSense. Previously `authOrder` was accepted at runtime but omitted from the schema.
-- If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties.
+- Enhancement: Added an `allowedLoginMethod` property to the base profile schema, letting administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service. Defaults to `prompt` (existing behavior) when method is not chosen. If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
+- Enhancement: Added the `authOrder` property to the base profile schema, so it is validated and available for editor IntelliSense. Previously `authOrder` was accepted at runtime but omitted from the schema. If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
+- If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. If you already have a `zowe.schema.json` file, run `zowe config update-schemas` (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. [#2653] (https://github.com/zowe/zowe-cli/issues/2653)
 
 ## `8.35.0`
 
