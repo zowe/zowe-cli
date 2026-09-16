@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
+
 ## `8.37.0`
 
 - Enhancement: Added `--tso-account` and `--tso-procedure` options to `zowe zos-files` commands, and corresponding `tsoAccount`/`tsoProcedure` properties to the zosmf profile. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
