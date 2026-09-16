@@ -89,7 +89,6 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
                 type: "number",
                 optionDefinition: ZosFilesOptions.responseTimeout
             },
-<<<<<<< HEAD
             allowedLoginMethod: {
                 type: "string",
                 optionDefinition: ProfileConstants.BASE_OPTION_ALLOWED_LOGIN_METHOD
@@ -97,7 +96,7 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             authOrder: {
                 type: "string",
                 optionDefinition: ProfileConstants.BASE_OPTION_AUTH_ORDER
-=======
+            },
             tsoAccount: {
                 type: "string",
                 optionDefinition: ZosFilesOptions.tsoAccount
@@ -105,7 +104,6 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             tsoProcedure: {
                 type: "string",
                 optionDefinition: ZosFilesOptions.tsoProcedure
->>>>>>> master
             }
         },
         required: []
