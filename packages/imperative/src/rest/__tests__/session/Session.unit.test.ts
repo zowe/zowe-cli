@@ -534,7 +534,6 @@ describe("Session tests", () => {
             expect(typeof decision.message).toBe("string");
             expect(decision.message.length).toBeGreaterThan(0);
 
-            // isUsingApiml must always agree with getApimlDecision().usingApiml
             expect(session.isUsingApiml()).toBe(decision.usingApiml);
         });
     });
