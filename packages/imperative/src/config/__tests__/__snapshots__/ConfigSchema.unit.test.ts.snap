@@ -47,6 +47,9 @@ Object {
                     "const": "zosmf",
                   },
                 },
+                "required": Array [
+                  "type",
+                ],
               },
               "then": Object {
                 "properties": Object {
@@ -155,6 +158,9 @@ Object {
                     "const": "zosmf",
                   },
                 },
+                "required": Array [
+                  "type",
+                ],
               },
               "then": Object {
                 "properties": Object {
@@ -264,6 +270,9 @@ Object {
                     "const": "zosmf",
                   },
                 },
+                "required": Array [
+                  "type",
+                ],
               },
               "then": Object {
                 "properties": Object {
@@ -441,6 +450,9 @@ Object {
                     "const": "zosmf",
                   },
                 },
+                "required": Array [
+                  "type",
+                ],
               },
               "then": Object {
                 "properties": Object {
