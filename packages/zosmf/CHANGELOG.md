@@ -3,7 +3,7 @@
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Added `allowedLoginMethod` and `AuthOrder` options to the zosmf profile/schema, allowing users to specifiy those properties to use for z/OSMF operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+- Enhancement: Added `allowedLoginMethod` and `AuthOrder` options to the z/OSMF profile/schema, allowing users to specifiy those properties to use for z/OSMF operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 
 ## `8.37.0`
 
