@@ -101,3 +101,49 @@ export const ALL_TOKEN_TYPES = [
 export type TOKEN_TYPE_CHOICES =
     typeof TOKEN_TYPE_LTPA | typeof TOKEN_TYPE_JWT |
     typeof TOKEN_TYPE_APIML;
+
+
+/**
+ * allowedLoginMethod property value to require direct basic authentication
+ */
+export const ALLOWED_LOGIN_METHOD_DIRECT_BASIC = "direct-basic";
+
+/**
+ * allowedLoginMethod property value to require direct certificate authentication
+ */
+export const ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM = "direct-cert-pem";
+
+/**
+ * allowedLoginMethod property value to require APIML basic authentication
+ */
+export const ALLOWED_LOGIN_METHOD_APIML_BASIC = "apiml-basic";
+
+/**
+ * allowedLoginMethod property value to require APIML certificate authentication
+ */
+export const ALLOWED_LOGIN_METHOD_APIML_CERT_PEM = "apiml-cert-pem";
+
+/**
+ * allowedLoginMethod property value to prompt the user for a login method.
+ * This is the default behavior when allowedLoginMethod is unset.
+ */
+export const ALLOWED_LOGIN_METHOD_PROMPT = "prompt";
+
+/**
+ * list of all allowedLoginMethod values
+ */
+export const ALL_ALLOWED_LOGIN_METHODS = [
+    ALLOWED_LOGIN_METHOD_DIRECT_BASIC,
+    ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM,
+    ALLOWED_LOGIN_METHOD_APIML_BASIC,
+    ALLOWED_LOGIN_METHOD_APIML_CERT_PEM,
+    ALLOWED_LOGIN_METHOD_PROMPT
+];
+
+/**
+ * type that specifies the choice of allowedLoginMethod values
+ */
+export type ALLOWED_LOGIN_METHOD_CHOICES =
+    typeof ALLOWED_LOGIN_METHOD_DIRECT_BASIC    | typeof ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM |
+    typeof ALLOWED_LOGIN_METHOD_APIML_BASIC     | typeof ALLOWED_LOGIN_METHOD_APIML_CERT_PEM  |
+    typeof ALLOWED_LOGIN_METHOD_PROMPT;

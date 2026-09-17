@@ -192,6 +192,20 @@ exports[`Create  Data Set should display the help 1`] = `
 
       The value of the token to pass to the API.
 
+   --allowed-login-method (string)
+
+      Restricts which credentials a user is prompted for when logging into a service
+      or updating stored credentials, so that they comply with site requirements.
+      Defaults to 'prompt' when omitted.
+
+      Allowed values: direct-basic, direct-cert-pem, apiml-basic, apiml-cert-pem,
+      prompt
+
+   --auth-order (string)
+
+      A comma separated list of authentication types, in order of precedence, that
+      should be used to authenticate to a service.
+
  GLOBAL OPTIONS
  --------------
 
