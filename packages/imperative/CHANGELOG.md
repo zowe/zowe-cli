@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: `ProfileCredentials.defaultCredMgrWithKeytar` now rejects a `requireKeytar` callback that resolves without providing a keyring. Previously the credential manager was initialized with no keyring and no load error, so the first credential operation failed with the unhelpful `Keytar was not properly loaded due to an unknown cause`. [#4360](https://github.com/zowe/zowe-explorer-vscode/issues/4360)
+
 ## `8.37.1`
 
 - BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
