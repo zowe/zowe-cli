@@ -110,10 +110,12 @@ function loadKeyring() {
         }
     }
 
+    const searchedPaths = paths.map(dir => `  ${dir}`).join("\n");
+    const attemptedErrors = attempts.join("\n");
+
     throw new Error(
         `Failed to load the Zowe keyring native module for ${process.platform}-${process.arch}.\n` +
-            `Searched in:\n${paths.map((dir) => `  ${dir}`).join("\n")}\n` +
-            `Attempted:\n${attempts.join("\n")}`
+        `Searched in:\n${searchedPaths}\n` + `Attempted:\n${attemptedErrors}`
     );
 }
 
