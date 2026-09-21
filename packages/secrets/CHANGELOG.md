@@ -4,9 +4,9 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## Recent Changes
 
-- BugFix: Removed the hard dependency on `process.report` when detecting the Linux libc variant. `process.report` is unavailable in some runtimes that embed Node, such as the VS Code extension host, where reading it threw a `TypeError` and prevented the keyring from loading at all. Detection now uses filesystem probes first and treats an inconclusive result as glibc. [#4360](https://github.com/zowe/zowe-explorer-vscode/issues/4360)
-- BugFix: The keyring loader now tries both the `gnu` and `musl` prebuilds on Linux, so an incorrect libc detection no longer prevents the module from loading. [#4360](https://github.com/zowe/zowe-explorer-vscode/issues/4360)
-- BugFix: When no prebuild can be loaded, the thrown error now lists every path searched and the underlying failure for each candidate, instead of surfacing only the last resolution error. [#4360](https://github.com/zowe/zowe-explorer-vscode/issues/4360)
+- BugFix: Removed the hard dependency on `process.report` when detecting the Linux libc variant. `process.report` is unavailable in some runtimes that embed Node, such as the VS Code extension host, where reading it threw a `TypeError` and prevented the keyring from loading at all. Detection now uses filesystem probes first and treats an inconclusive result as glibc. [#2898](https://github.com/zowe/zowe-cli/pull/2898)
+- BugFix: The keyring loader now tries both the `gnu` and `musl` prebuilds on Linux, so an incorrect libc detection no longer prevents the module from loading. [#2898](https://github.com/zowe/zowe-cli/pull/2898)
+- BugFix: When a prebuild cannot be loaded, the thrown error now lists every path searched and the underlying failure for each candidate, instead of surfacing only the last resolution error. [#2898](https://github.com/zowe/zowe-cli/pull/2898)
 
 ## `8.36.1`
 - BugFix: Restricts the discretionary access control list (DACL) on Windows local named pipes so that access is for the owner only. [#2872](https://github.com/zowe/zowe-cli/pull/2872)
