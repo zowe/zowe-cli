@@ -67,7 +67,7 @@ interface QueueItem {
     tree: NpmDepTree;
     parentArchivePath: string;
 }
-function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDepInfo> {
+function walkDepTree(root: NpmDepTree, pkgName: string, excludeDeps?: string[]): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
     const visited = new Set<string>();
@@ -77,7 +77,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
-            if (visited.has(tree.path)) continue;
+            if (visited.has(tree.path) || excludeDeps?.includes(tree.name)) continue;
             visited.add(tree.path);
 
             const pkgId = `${tree.name}@${tree.version}`;
@@ -108,16 +108,16 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     return bundleDeps;
 }
 
-async function prepack(pkgName: string) {
+async function prepack(pkg: { name: string, excludeDependencies?: string[] }) {
     /* eslint-disable @typescript-eslint/no-magic-numbers */
     if (fs.existsSync(nodeModulesBackup)) {
         throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
     }
     const start = Date.now();
-    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkgName}`, {
+    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkg.name}`, {
         maxBuffer: 1024 * 1024 * 100, // 100MB
     });
-    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkgName);
+    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name, pkg.excludeDependencies);
 
     try {
         if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
@@ -138,9 +138,9 @@ async function prepack(pkgName: string) {
                 }
             } else {
                 const absPkgPath = path.join(pkgDir, destPath);
-                const excludeNodeModules = (source: string) => path.basename(source) !== "node_modules" &&
-                    (!bundleDep.hasInstallScript || path.basename(source) !== "build");
-                fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: excludeNodeModules });
+                const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" &&
+                    !(bundleDep.hasInstallScript && path.basename(source) === "build");
+                fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: npmIncludeFilter });
             }
         }
 
@@ -164,8 +164,8 @@ const run = { prepack, postpack }[cmdName];
 if (run == null) {
     die(`Usage: cd <package> && node ${path.relative(pkgDir, __filename)} <prepack|postpack>`);
 }
-const { name: pkgName, private: isPrivate } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
-if (isPrivate) {
-    die(`[${cmdName}] "${pkgName}" is private, so cannot bundle dependencies`);
+const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+if (pkgJson.isPrivate) {
+    die(`[${cmdName}] "${pkgJson.name}" is private, so cannot bundle dependencies`);
 }
-run(pkgName).catch(die);
+run(pkgJson).catch(die);
