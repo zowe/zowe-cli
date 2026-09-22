@@ -98,10 +98,8 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                 };
             }
 
-            if (!bundleDeps[archivePath].native) {
-                for (const subtree of Object.values(tree.dependencies ?? {})) {
-                    if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
-                }
+            for (const subtree of Object.values(tree.dependencies ?? {})) {
+                if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
             }
         }
         queue = nextQueue;
