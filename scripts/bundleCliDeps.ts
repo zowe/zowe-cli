@@ -94,8 +94,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                     id: pkgId,
                     srcPath: tree.path,
                     link: tree.resolved != null,
-                    native: tree.scripts?.install != null &&
-                        fs.existsSync(path.join(tree.path, "binding.gyp")),
+                    native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
                 };
             }
 
@@ -175,7 +174,7 @@ if (run == null) {
     die(`Usage: cd <package> && node ${path.relative(pkgDir, __filename)} <prepack|postpack>`);
 }
 const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
-if (pkgJson.isPrivate) {
+if (pkgJson.private) {
     die(`[${cmdName}] "${pkgJson.name}" is private, so cannot bundle dependencies`);
 }
 run(pkgJson).catch(die);
