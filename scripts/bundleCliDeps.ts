@@ -61,6 +61,7 @@ interface BundleDepInfo {
     id: string;
     srcPath: string;
     link: boolean;
+    native: boolean;
 }
 interface QueueItem {
     tree: NpmDepTree;
@@ -83,7 +84,6 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
             const flatPath = path.posix.join("node_modules", tree.name);
             const archivePath = flatPath in bundleDeps && bundleDeps[flatPath].id !== pkgId ?
                 path.posix.join(parentArchivePath, "node_modules", tree.name) : flatPath;
-            const isNative = tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp"));
 
             if (archivePath in bundleDeps) {
                 if (bundleDeps[archivePath].id !== pkgId) {
@@ -94,6 +94,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                     id: pkgId,
                     srcPath: tree.path,
                     link: tree.resolved != null,
+                    native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
                 };
             }
 
@@ -135,7 +136,7 @@ async function prepack(pkg: { name: string }) {
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
                     fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
                 }
-            } else {
+            } else if (!bundleDep.native) {
                 const absPkgPath = path.join(pkgDir, destPath);
                 const isNativeBuild = (source: string) => path.basename(source) === "build" &&
                     fs.existsSync(path.join(source, "..", "binding.gyp"));
