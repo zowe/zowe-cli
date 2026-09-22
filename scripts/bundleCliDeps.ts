@@ -61,7 +61,6 @@ interface BundleDepInfo {
     id: string;
     srcPath: string;
     link: boolean;
-    native: boolean;
 }
 interface QueueItem {
     tree: NpmDepTree;
@@ -77,24 +76,24 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
-            if (visited.has(tree.path)) continue;
+            if (tree.name == null || visited.has(tree.path)) continue;
             visited.add(tree.path);
 
             const pkgId = `${tree.name}@${tree.version}`;
             const flatPath = path.posix.join("node_modules", tree.name);
             const archivePath = flatPath in bundleDeps && bundleDeps[flatPath].id !== pkgId ?
                 path.posix.join(parentArchivePath, "node_modules", tree.name) : flatPath;
+            const isNative = tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp"));
 
             if (archivePath in bundleDeps) {
                 if (bundleDeps[archivePath].id !== pkgId) {
                     throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
                 }
-            } else {
+            } else if (!isNative) {
                 bundleDeps[archivePath] = {
                     id: pkgId,
                     srcPath: tree.path,
                     link: tree.resolved != null,
-                    native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
                 };
             }
 
@@ -136,12 +135,6 @@ async function prepack(pkg: { name: string }) {
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
                     fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
                 }
-            } else if (bundleDep.native) {
-                const pkgName = bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@"));
-                const pkgVersion = bundleDep.id.slice(pkgName.length + 1);
-                updatePkgJson((pkgJson) => {
-                    pkgJson.overrides = { ...pkgJson.overrides ?? {}, [pkgName]: pkgVersion };
-                });
             } else {
                 const absPkgPath = path.join(pkgDir, destPath);
                 const isNativeBuild = (source: string) => path.basename(source) === "build" &&
