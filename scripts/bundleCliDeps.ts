@@ -89,7 +89,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                 if (bundleDeps[archivePath].id !== pkgId) {
                     throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
                 }
-            } else if (!isNative) {
+            } else {
                 bundleDeps[archivePath] = {
                     id: pkgId,
                     srcPath: tree.path,
