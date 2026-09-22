@@ -61,13 +61,13 @@ interface BundleDepInfo {
     id: string;
     srcPath: string;
     link: boolean;
-    hasInstallScript: boolean;
+    native: boolean;
 }
 interface QueueItem {
     tree: NpmDepTree;
     parentArchivePath: string;
 }
-function walkDepTree(root: NpmDepTree, pkgName: string, excludeDeps?: string[]): Record<string, BundleDepInfo> {
+function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
     const visited = new Set<string>();
@@ -77,7 +77,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string, excludeDeps?: string[]):
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
-            if (visited.has(tree.path) || excludeDeps?.includes(tree.name)) continue;
+            if (visited.has(tree.path)) continue;
             visited.add(tree.path);
 
             const pkgId = `${tree.name}@${tree.version}`;
@@ -94,12 +94,15 @@ function walkDepTree(root: NpmDepTree, pkgName: string, excludeDeps?: string[]):
                     id: pkgId,
                     srcPath: tree.path,
                     link: tree.resolved != null,
-                    hasInstallScript: tree.scripts?.install != null,
+                    native: tree.scripts?.install != null &&
+                        fs.existsSync(path.join(tree.path, "binding.gyp")),
                 };
             }
 
-            for (const subtree of Object.values(tree.dependencies ?? {})) {
-                if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
+            if (!bundleDeps[archivePath].native) {
+                for (const subtree of Object.values(tree.dependencies ?? {})) {
+                    if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
+                }
             }
         }
         queue = nextQueue;
@@ -108,7 +111,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string, excludeDeps?: string[]):
     return bundleDeps;
 }
 
-async function prepack(pkg: { name: string, excludeDependencies?: string[] }) {
+async function prepack(pkg: { name: string }) {
     /* eslint-disable @typescript-eslint/no-magic-numbers */
     if (fs.existsSync(nodeModulesBackup)) {
         throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
@@ -117,7 +120,7 @@ async function prepack(pkg: { name: string, excludeDependencies?: string[] }) {
     const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkg.name}`, {
         maxBuffer: 1024 * 1024 * 100, // 100MB
     });
-    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name, pkg.excludeDependencies);
+    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name);
 
     try {
         if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
@@ -136,10 +139,17 @@ async function prepack(pkg: { name: string, excludeDependencies?: string[] }) {
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
                     fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
                 }
+            } else if (bundleDep.native) {
+                const pkgName = bundleDep.id.slice(0, bundleDep.id.lastIndexOf("@"));
+                const pkgVersion = bundleDep.id.slice(pkgName.length + 1);
+                updatePkgJson((pkgJson) => {
+                    pkgJson.overrides = { ...pkgJson.overrides ?? {}, [pkgName]: pkgVersion };
+                });
             } else {
                 const absPkgPath = path.join(pkgDir, destPath);
-                const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" &&
-                    !(bundleDep.hasInstallScript && path.basename(source) === "build");
+                const isNativeBuild = (source: string) => path.basename(source) === "build" &&
+                    fs.existsSync(path.join(source, "..", "binding.gyp"));
+                const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" && !isNativeBuild(source);
                 fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: npmIncludeFilter });
             }
         }
