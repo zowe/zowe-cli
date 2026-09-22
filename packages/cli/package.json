@@ -82,7 +82,8 @@
     "which": "^4.0.0"
   },
   "optionalDependencies": {
-    "@zowe/secrets-for-zowe-sdk": "8.37.0"
+    "@zowe/secrets-for-zowe-sdk": "8.37.0",
+    "cpu-features": "0.0.9"
   },
   "engines": {
     "node": ">=20.9.0"
