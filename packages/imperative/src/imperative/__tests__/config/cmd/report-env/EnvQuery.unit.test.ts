@@ -334,5 +334,16 @@ describe("Tests for EnvQuery module", () => {
             expect(cmdOutput).toContain("Failed to run command = bogusCmd");
             expect(cmdOutput).toContain("Pretend this was thrown by spawnSync");
         });
+
+        it("should not use a shell to run commands", async () => {
+           const spawn = require("cross-spawn");
+           const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValue({
+               stdout: Buffer.from("fake example output"),
+               stderr: Buffer.from("")
+           });
+
+           await EnvQuery["getCmdOutput"]("npm", ["--help"]);
+           expect(spawnSyncSpy).toHaveBeenCalledWith("npm", ["--help"], expect.not.objectContaining({ shell: true }));
+        });
     }); // end getCmdOutput function
 }); // end Handler
