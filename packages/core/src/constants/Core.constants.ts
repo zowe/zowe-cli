@@ -152,14 +152,14 @@ export class ProfileConstants {
     };
 
     /**
-     * Option used in profile creation and commands for authOrder
+     * Option used in profile creation and commands for authOrder. Allowable Values include: 
      */
     public static readonly BASE_OPTION_AUTH_ORDER: ICommandOptionDefinition = {
         name: "auth-order",
         description: "A comma separated list of authentication types, in order of precedence, " +
-        "that should be used to authenticate to a service.",
+        "that should be used to authenticate to a service. Accepted values are 'basic', 'bearer', " +
+        "'token', 'cert-pem', and 'none'.",
         type: "string",
-        allowableValues: { values: SessConstants.ALL_AUTH_TYPES   },
         group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
     };
 
