@@ -159,6 +159,7 @@ export class ProfileConstants {
         description: "A comma separated list of authentication types, in order of precedence, " +
         "that should be used to authenticate to a service.",
         type: "string",
+        allowableValues: { values: SessConstants.ALL_AUTH_TYPES   },
         group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
     };
 

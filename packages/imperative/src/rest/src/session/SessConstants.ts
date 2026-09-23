@@ -72,6 +72,14 @@ export type AUTH_TYPE_CHOICES =
     typeof AUTH_TYPE_CERT_PEM; // | typeof AUTH_TYPE_CERT_PFX ;
 
 /**
+ * list of the authentication values
+ */
+export const ALL_AUTH_TYPES = [
+    AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, 
+    AUTH_TYPE_NONE, AUTH_TYPE_TOKEN
+];
+
+/**
  * tokenType property value for IBM's LTPA2 token
  */
 export const TOKEN_TYPE_LTPA = "LtpaToken2";
