@@ -53,6 +53,7 @@ interface NpmDepTree {
     version: string;
     name: string;
     resolved?: string;
+    optional?: boolean;
     path: string;
     dependencies?: { [pkgName: string]: NpmDepTree };
     [key: string]: any;
@@ -62,6 +63,7 @@ interface BundleDepInfo {
     srcPath: string;
     link: boolean;
     native: boolean;
+    optional: boolean;
 }
 interface QueueItem {
     tree: NpmDepTree;
@@ -77,7 +79,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
-            if (tree.name == null || visited.has(tree.path)) continue;
+            if (visited.has(tree.path)) continue;
             visited.add(tree.path);
 
             const pkgId = `${tree.name}@${tree.version}`;
@@ -95,6 +97,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                     srcPath: tree.path,
                     link: tree.resolved != null,
                     native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
+                    optional: tree.optional || false,
                 };
             }
 
@@ -114,7 +117,7 @@ async function prepack(pkg: { name: string }) {
         throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
     }
     const start = Date.now();
-    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkg.name}`, {
+    const output = childProcess.execSync(`npm ls --all --json --long --omit=dev --package-lock-only -w ${pkg.name}`, {
         maxBuffer: 1024 * 1024 * 100, // 100MB
     });
     const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name);
@@ -141,6 +144,7 @@ async function prepack(pkg: { name: string }) {
                 const isNativeBuild = (source: string) => path.basename(source) === "build" &&
                     fs.existsSync(path.join(source, "..", "binding.gyp"));
                 const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" && !isNativeBuild(source);
+                if (bundleDep.optional && !fs.existsSync(srcPath)) continue;
                 fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: npmIncludeFilter });
             }
         }
