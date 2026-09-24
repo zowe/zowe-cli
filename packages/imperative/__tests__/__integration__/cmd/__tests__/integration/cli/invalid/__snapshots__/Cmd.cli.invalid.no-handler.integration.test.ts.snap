@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`cmd-cli invalid no-handler should fail the command with a message if the command definition of type command omits a handler 1`] = `
-"/Users/pujalgandhi/Documents/ZOWE/zowe-cli/packages/imperative/__tests__/__integration__/cmd/__tests__/integration/cli/invalid/__scripts__/no-handler.sh: line 2: /Users/pujalgandhi/Documents/ZOWE/zowe-cli/.npm-global/bin/cmd-cli: Permission denied
-/Users/pujalgandhi/Documents/ZOWE/zowe-cli/packages/imperative/__tests__/__integration__/cmd/__tests__/integration/cli/invalid/__scripts__/no-handler.sh: line 3: /Users/pujalgandhi/Documents/ZOWE/zowe-cli/.npm-global/bin/cmd-cli: Permission denied
+"Internal Command Error:
+Expect Error: Command Processor Error: The definition supplied is of type \\"command\\", but no handler was specified.
 "
 `;
 
