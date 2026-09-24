@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `EnvQuery.getCmdOutput` function so that commands are no longer spawned with the `shell` option. [#2905](https://github.com/zowe/zowe-cli/pull/2905)
+
 ## `8.37.1`
 
 - BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
