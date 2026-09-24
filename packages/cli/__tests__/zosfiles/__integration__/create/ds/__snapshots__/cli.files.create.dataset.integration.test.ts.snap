@@ -206,6 +206,11 @@ exports[`Create  Data Set should display the help 1`] = `
       A comma separated list of authentication types, in order of precedence, that
       should be used to authenticate to a service.
 
+<<<<<<< Updated upstream
+=======
+      Allowed values: basic, bearer, cert-pem, none, token
+
+>>>>>>> Stashed changes
  GLOBAL OPTIONS
  --------------
 
