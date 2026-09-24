@@ -204,9 +204,8 @@ exports[`Create  Data Set should display the help 1`] = `
    --auth-order (string)
 
       A comma separated list of authentication types, in order of precedence, that
-      should be used to authenticate to a service.
-
-      Allowed values: basic, bearer, cert-pem, none, token
+      should be used to authenticate to a service. Accepted values are 'basic',
+      'bearer', 'token', 'cert-pem', and 'none'.
 
  GLOBAL OPTIONS
  --------------
