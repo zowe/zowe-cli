@@ -70,7 +70,8 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mSession = new Session(sessCfgWithCreds);
 
         if(this.mSession.getApimlDecision().usingApiml === true && !sessCfg.tokenValue) {
-            return Login.apimlLogin(this.mSession);
+            await Login.apimlLogin(this.mSession);
+            return;
         }
 
         this.mArguments = commandParameters.arguments;
