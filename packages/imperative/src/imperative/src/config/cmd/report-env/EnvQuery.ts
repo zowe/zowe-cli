@@ -169,8 +169,7 @@ export class EnvQuery {
         const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
             const spawnResult = spawn.sync(cmdToRun, args, {
-                stdio: ioOpts,
-                shell: true
+                stdio: ioOpts
             });
             if (spawnResult.stdout && spawnResult.stdout.length > 0) {
                 // remove any trailing newline from the output
