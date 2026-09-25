@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: The `ProfileCredentials.defaultCredMgrWithKeytar` function now rejects a `requireKeytar` callback that resolves without providing a keyring. Previously, the credential manager was initialized with no keyring and no load error, so the first credential operation failed with the unhelpful `Keytar was not properly loaded due to an unknown cause` message. [#2898](https://github.com/zowe/zowe-cli/pull/2898)
 - BugFix: Updated the `EnvQuery.getCmdOutput` function so that commands are no longer spawned with the `shell` option. [#2905](https://github.com/zowe/zowe-cli/pull/2905)
 
 ## `8.37.1`
