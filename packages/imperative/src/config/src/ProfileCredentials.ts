@@ -46,14 +46,28 @@ export class ProfileCredentials {
             service: null,
             Manager: class extends DefaultCredentialManager {
                 public async initialize(): Promise<void> {
+                    let keytar: NodeJS.Module;
                     try {
-                        (this as any).keytar = requireKeytar();
+                        keytar = requireKeytar();
                     } catch (error) {
                         throw new ImperativeError({
                             msg: `Failed to load Keytar module: ${error.message}`,
                             causeErrors: error
                         });
                     }
+                    if (keytar == null) {
+                        /* The callback resolved without throwing, but produced nothing usable. This happens when
+                         * the caller bundles the Secrets SDK and the module threw on an earlier load attempt:
+                         * bundlers such as webpack keep the failed module in their require cache with empty
+                         * exports, so requiring it again yields `undefined` instead of re-throwing. Reject it here,
+                         * otherwise `keytar` stays unset with no `loadError` and the first credential operation
+                         * fails with the unhelpful "Keytar was not properly loaded due to an unknown cause."
+                         */
+                        throw new ImperativeError({
+                            msg: "Failed to load Keytar module: the module was loaded but did not provide a keyring."
+                        });
+                    }
+                    (this as any).keytar = keytar;
                 }
             }
         };
