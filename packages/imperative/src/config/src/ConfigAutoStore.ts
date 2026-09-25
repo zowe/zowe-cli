@@ -269,9 +269,14 @@ export class ConfigAutoStore {
             return false;
         }
 
+        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod;
+        const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
+
         const api = authHandlerClass.getAuthHandlerApi();
         opts.sessCfg.type = AUTH_TYPE_TOKEN;
-        opts.sessCfg.tokenType = opts.params?.arguments?.tokenType ?? api.promptParams.defaultTokenType;
+        opts.sessCfg.tokenType = opts.params?.arguments?.tokenType ??
+            (isApimlLoginMethod ? SessConstants.TOKEN_TYPE_APIML : api.promptParams.defaultTokenType);
         const baseSessCfg: ISession = { type: opts.sessCfg.type };
 
         for (const propName of Object.keys(ImperativeConfig.instance.loadedConfig.baseProfile.schema.properties)) {
