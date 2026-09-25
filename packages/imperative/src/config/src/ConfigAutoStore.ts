@@ -18,7 +18,7 @@ import { AbstractAuthHandler } from "../../imperative/src/auth/handlers/Abstract
 import { ImperativeConfig } from "../../utilities";
 import { ISession } from "../../rest/src/session/doc/ISession";
 import { Session } from "../../rest/src/session/Session";
-import { AUTH_TYPE_TOKEN, TOKEN_TYPE_APIML } from "../../rest/src/session/SessConstants";
+import { AUTH_TYPE_TOKEN, TOKEN_TYPE_APIML, SessConstants } from "../../rest/src/session/SessConstants";
 import { Logger } from "../../logger";
 import {
     IConfigAutoStoreFindActiveProfileOpts,
@@ -80,17 +80,30 @@ export class ConfigAutoStore {
 
         if (profile == null || profileType == null) { // Profile must exist and have type defined
             return;
-        } else if (profileType === "base") {
-            if (profile.tokenType == null) { // Base profile must have tokenType defined
-                return;
-            }
-        } else {
-            if (profile.basePath == null) { // Service profiles must have basePath defined
-                return;
-            }
-            if (profile.tokenType == null) {  // If tokenType undefined in service profile, fall back to base profile
-                const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.cmdArguments, opts.defaultBaseProfileName);
-                return this._findAuthHandlerForProfile({ ...opts, profilePath: config.api.profiles.getProfilePathFromName(baseProfileName) });
+        }
+
+        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod ?? profile.allowedLoginMethod;
+        const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
+
+        let effectiveTokenType = profile.tokenType;
+        if (effectiveTokenType == null && isApimlLoginMethod) {
+            effectiveTokenType = SessConstants.TOKEN_TYPE_APIML;
+        }
+
+        if (!isApimlLoginMethod) {
+            if (profileType === "base") {
+                if (effectiveTokenType == null) { // Base profile must have tokenType defined
+                    return;
+                }
+            } else {
+                if (profile.basePath == null) { // Service profiles must have basePath defined
+                    return;
+                }
+                if (effectiveTokenType == null) {  // If tokenType undefined in service profile, fall back to base profile
+                    const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.cmdArguments, opts.defaultBaseProfileName);
+                    return this._findAuthHandlerForProfile({ ...opts, profilePath: config.api.profiles.getProfilePathFromName(baseProfileName) });
+                }
             }
         }
 
@@ -107,7 +120,7 @@ export class ConfigAutoStore {
 
             if (authHandlerClass instanceof AbstractAuthHandler) {
                 const { promptParams } = authHandlerClass.getAuthHandlerApi();
-                if (profile.tokenType === promptParams.defaultTokenType || profile.tokenType.startsWith(TOKEN_TYPE_APIML)) {
+                if (effectiveTokenType == null || effectiveTokenType === promptParams.defaultTokenType || effectiveTokenType.startsWith(TOKEN_TYPE_APIML) || isApimlLoginMethod) {
                     return authHandlerClass;  // Auth service must have matching token type
                 }
             }
@@ -144,10 +157,31 @@ export class ConfigAutoStore {
         const [profileType, profileName] = profileData ?? [opts.profileType, opts.profileName];
         const profilePath = config.api.profiles.getProfilePathFromName(profileName);
 
-        // Replace user and password with tokenValue if tokenType is defined in config
-        if (profileProps.includes("user") && profileProps.includes("password") && await this._fetchTokenForSessCfg({ ...opts, profilePath })) {
-            profileProps = profileProps.filter(propName => propName !== "user" && propName !== "password");
-            profileProps.push("tokenValue");
+        // Replace user/password or cert properties with tokenValue if token login succeeded
+        const hasBasicCreds = profileProps.includes("user") && profileProps.includes("password");
+        const hasCertCreds = (profileProps.includes("cert") && profileProps.includes("certKey")) ||
+            (profileProps.includes("certFile") && profileProps.includes("certKeyFile"));
+
+        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod;
+        const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
+
+        const shouldFetchToken = hasBasicCreds || (hasCertCreds && isApimlLoginMethod);
+
+        if (shouldFetchToken && await this._fetchTokenForSessCfg({ ...opts, profilePath })) {
+            const credProps = ["user", "password", "cert", "certKey", "certFile", "certKeyFile", "certAccount"];
+            profileProps = profileProps.filter(propName => !credProps.includes(propName));
+            if (!profileProps.includes("tokenValue")) {
+                profileProps.push("tokenValue");
+            }
+            if (opts.sessCfg.tokenType && !profileProps.includes("tokenType")) {
+                const profileObj = config.api.profiles.get(profileName, false);
+                const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.params?.arguments, opts.defaultBaseProfileName);
+                const baseProfileObj = config.api.profiles.get(baseProfileName, false);
+                if (!profileObj?.tokenType && !baseProfileObj?.tokenType) {
+                    profileProps.push("tokenType");
+                }
+            }
         }
 
         const beforeLayer = config.api.layers.get();
@@ -249,6 +283,7 @@ export class ConfigAutoStore {
         Logger.getAppLogger().info(`Fetching ${opts.sessCfg.tokenType} for ${opts.profilePath}`);
         opts.sessCfg.tokenValue = await api.sessionLogin(new Session(baseSessCfg));
         opts.sessCfg.user = opts.sessCfg.password = undefined;
+        opts.sessCfg.cert = opts.sessCfg.certKey = opts.sessCfg.certFile = opts.sessCfg.certKeyFile = opts.sessCfg.certAccount = undefined;
         return true;
     }
 }
