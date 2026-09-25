@@ -201,7 +201,10 @@ jobs:
         name: zowe-cli
 
     - name: Install Offline
-      run: unshare -n "npm install -g zowe-cli-*.tgz"
+      run: sudo unshare -n "npm install -g zowe-cli-*.tgz"
+
+    - name: Test Zowe CLI
+      run: zowe --version
 
   release:
     if: github.event_name == 'push' && github.ref_protected
