@@ -26,5 +26,6 @@ for (const dep of nativeDeps) {
     const pkgVersion = lockfile.packages[`node_modules/${dep.name}`]?.version;
     if (pkgVersion) {
         childProcess.execSync(`npm pkg set ${pkgKey}=${pkgVersion}`, { cwd: path.resolve(dep.workspace) });
+        childProcess.execSync(`npm install ${dep.name}@${pkgVersion} --no-save`, { cwd: path.resolve(dep.workspace) });
     }
 }
