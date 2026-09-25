@@ -1339,6 +1339,143 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.cert).toBe(certFileFromArgs);
     });
 
+    it("should prompt for basic credentials and NOT request token when allowedLoginMethod is direct-basic", async () => {
+        const userFromPrompt = "FakeUser";
+        const passFromPrompt = "FakePassword";
+        const promptCalls: string[] = [];
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn((text: string) => {
+            promptCalls.push(text);
+            return Promise.resolve(text.includes("user") ? userFromPrompt : passFromPrompt);
+        });
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC,
+            type: SessConstants.AUTH_TYPE_NONE,
+            authTypeOrder: [SessConstants.AUTH_TYPE_NONE]
+        };
+        const args = { $0: "zowe", _: [""] };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.user).toBe(userFromPrompt);
+        expect(sessCfgWithConnProps.password).toBe(passFromPrompt);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+    });
+
+    it("should prompt for basic credentials and set requestToken when allowedLoginMethod is apiml-basic", async () => {
+        const userFromPrompt = "FakeUser";
+        const passFromPrompt = "FakePassword";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn((text: string) => {
+            return Promise.resolve(text.includes("user") ? userFromPrompt : passFromPrompt);
+        });
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+            type: SessConstants.AUTH_TYPE_NONE,
+            authTypeOrder: [SessConstants.AUTH_TYPE_NONE]
+        };
+        const args = { $0: "zowe", _: [""] };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.user).toBe(userFromPrompt);
+        expect(sessCfgWithConnProps.password).toBe(passFromPrompt);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+    });
+
+    it("should prompt for cert credentials and NOT request token when allowedLoginMethod is direct-cert-pem", async () => {
+        const certFromPrompt = certFilePath;
+        const certKeyFromPrompt = certKeyFilePath;
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn((text: string) => {
+            return Promise.resolve(text.includes("certKey") ? certKeyFromPrompt : certFromPrompt);
+        });
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM,
+            type: SessConstants.AUTH_TYPE_NONE,
+            authTypeOrder: [SessConstants.AUTH_TYPE_NONE]
+        };
+        const args = { $0: "zowe", _: [""] };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.cert).toBe(certFromPrompt);
+        expect(sessCfgWithConnProps.certKey).toBe(certKeyFromPrompt);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+    });
+
+    it("should prompt for cert credentials and set requestToken when allowedLoginMethod is apiml-cert-pem", async () => {
+        const certFromPrompt = certFilePath;
+        const certKeyFromPrompt = certKeyFilePath;
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn((text: string) => {
+            return Promise.resolve(text.includes("certKey") ? certKeyFromPrompt : certFromPrompt);
+        });
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM,
+            type: SessConstants.AUTH_TYPE_NONE,
+            authTypeOrder: [SessConstants.AUTH_TYPE_NONE]
+        };
+        const args = { $0: "zowe", _: [""] };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.cert).toBe(certFromPrompt);
+        expect(sessCfgWithConnProps.certKey).toBe(certKeyFromPrompt);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+    });
+
     it("get host name from prompt with custom service description", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
