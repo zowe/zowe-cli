@@ -27,6 +27,7 @@ import { AppSettings } from "../../settings/src/AppSettings";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
 import { ProfileInfo } from "../src/ProfileInfo";
 import { OverridesLoader } from "../../imperative/src/OverridesLoader";
+import { ConfigUtils } from "../src/ConfigUtils";
 
 jest.mock("../../imperative/src/OverridesLoader");
 
@@ -120,7 +121,7 @@ describe("ConvertV1Profiles tests", () => {
             const profInfo = new ProfileInfo(appName);
             await ConvertV1Profiles.convert({
                 deleteV1Profs: true,
-                profileInfo : profInfo
+                profileInfo: profInfo
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
@@ -217,8 +218,7 @@ describe("ConvertV1Profiles tests", () => {
             for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                 if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE &&
                     (nextMsg.msgText.includes("Encountered the following error while trying to convert V1 profiles:") ||
-                     nextMsg.msgText.includes(fakeErrMsg)))
-                {
+                        nextMsg.msgText.includes(fakeErrMsg))) {
                     numErrMsgsFound++;
                 }
             }
@@ -285,8 +285,7 @@ describe("ConvertV1Profiles tests", () => {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
                         nextMsg.msgText.includes(
                             "Did not convert any V1 profiles because a current Zowe client configuration was found"
-                        ))
-                    {
+                        )) {
                         numErrMsgsFound++;
                     }
                 }
@@ -319,7 +318,7 @@ describe("ConvertV1Profiles tests", () => {
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
                         nextMsg.msgText.includes("Did not convert any V1 profiles because no V1 profiles were found")
-                    ){
+                    ) {
                         numErrMsgsFound++;
                     }
                 }
@@ -355,7 +354,7 @@ describe("ConvertV1Profiles tests", () => {
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
                         nextMsg.msgText.includes(`Did not convert any V1 profiles because ` +
-                        `no V1 profiles were found at ${profileDir}`)
+                            `no V1 profiles were found at ${profileDir}`)
                     ) {
                         numMsgsFound++;
                     }
@@ -527,8 +526,8 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     } else {
                         if (nextMsg.msgText.includes('Failed to read "fruit" profile named "banana"') ||
-                            nextMsg.msgText.includes("invalid profile file")  ||
-                            nextMsg.msgText.includes('Failed to find default "fruit" profile')  ||
+                            nextMsg.msgText.includes("invalid profile file") ||
+                            nextMsg.msgText.includes('Failed to find default "fruit" profile') ||
                             nextMsg.msgText.includes("invalid meta file") ||
                             nextMsg.msgText.includes("Unable to convert 2 profile(s).")
                         ) {
@@ -542,7 +541,7 @@ describe("ConvertV1Profiles tests", () => {
 
         describe("convertPropNames", () => {
             it("should convert old v1 property names to new names", () => {
-                const testConfig= {
+                const testConfig = {
                     profiles: {
                         zosmf_LPAR1: {
                             type: "zosmf",
@@ -798,7 +797,35 @@ describe("ConvertV1Profiles tests", () => {
                 }
                 expect(numMsgsFound).toEqual(4);
             });
+
+            it("should throw a secureSaveError when newConfig.save() fails", async () => {
+                ConvertV1Profiles["convertOpts"] = { deleteV1Profs: false };
+
+                saveSpy.mockRejectedValueOnce(new Error("Failed to initialize secure credential manager"));
+
+                jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({
+                    secureErrorDetails: jest.fn().mockReturnValue(undefined)
+                } as any);
+
+                const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
+
+                let caughtErr: any;
+                try {
+                    await ConvertV1Profiles["createNewConfigFile"](testConfig);
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(saveSpy).toHaveBeenCalled();
+                expect(secureSaveErrorSpy).toHaveBeenCalled();
+                expect(caughtErr).toBeDefined();
+                expect(caughtErr.message).toContain("Unable to securely save credentials");
+
+            });
+
         }); // end createNewConfigFile
+
+
 
         describe("putCfgFileNmInResult", () => {
 
@@ -1407,7 +1434,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
-                        if (nextMsg.msgText.includes("Cannot read plugins file") && nextMsg.msgText.includes("plugins.json") ) {
+                        if (nextMsg.msgText.includes("Cannot read plugins file") && nextMsg.msgText.includes("plugins.json")) {
                             numMsgsFound++;
                         }
                         if ((nextMsg.msgText.includes("Reason: ") || nextMsg.msgText.includes("Error: ")) &&
@@ -1645,7 +1672,7 @@ describe("ConvertV1Profiles tests", () => {
                 const readMetaFileSpy = jest.spyOn(V1ProfileRead, "readMetaFile")
                     .mockReturnValueOnce({ defaultProfile: "base", configuration: "baseSchema" as any })
                     .mockReturnValueOnce({ defaultProfile: "cics", configuration: "cicsSchema" as any })
-                    .mockReturnValueOnce({ defaultProfile: "zosmf", configuration: "zosmfSchema" as any});
+                    .mockReturnValueOnce({ defaultProfile: "zosmf", configuration: "zosmfSchema" as any });
 
                 // call the function that we want to test
                 ConvertV1Profiles["loadV1Schemas"]();
