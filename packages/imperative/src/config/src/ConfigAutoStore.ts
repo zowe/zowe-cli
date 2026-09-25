@@ -279,6 +279,10 @@ export class ConfigAutoStore {
             (isApimlLoginMethod ? SessConstants.TOKEN_TYPE_APIML : api.promptParams.defaultTokenType);
         const baseSessCfg: ISession = { type: opts.sessCfg.type };
 
+        if (opts.sessCfg.allowedLoginMethod != null) {
+            baseSessCfg.allowedLoginMethod = opts.sessCfg.allowedLoginMethod;
+        }
+
         for (const propName of Object.keys(ImperativeConfig.instance.loadedConfig.baseProfile.schema.properties)) {
             const sessCfgPropName = propName === "host" ? "hostname" : propName;
             if (opts.sessCfg[sessCfgPropName] != null) {
