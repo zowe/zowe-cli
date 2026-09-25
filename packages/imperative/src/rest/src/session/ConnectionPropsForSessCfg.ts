@@ -201,7 +201,7 @@ export class ConnectionPropsForSessCfg {
                     }
                 }
             } else {
-                // allowedLoginMethod is "prompt" or unset: preserve existing behavior.
+                // allowedLoginMethod is "prompt" or unset, continue with existing behavior.
                 switch (sessCfgToUse.authTypeOrder[0]) {
                     case SessConstants.AUTH_TYPE_BASIC:
                         if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
