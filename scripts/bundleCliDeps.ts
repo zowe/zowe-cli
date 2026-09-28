@@ -53,6 +53,7 @@ interface NpmDepTree {
     version: string;
     name: string;
     resolved?: string;
+    optional?: boolean;
     path: string;
     dependencies?: { [pkgName: string]: NpmDepTree };
     [key: string]: any;
@@ -61,7 +62,8 @@ interface BundleDepInfo {
     id: string;
     srcPath: string;
     link: boolean;
-    hasInstallScript: boolean;
+    native: boolean;
+    optional: boolean;
 }
 interface QueueItem {
     tree: NpmDepTree;
@@ -94,7 +96,8 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                     id: pkgId,
                     srcPath: tree.path,
                     link: tree.resolved != null,
-                    hasInstallScript: tree.scripts?.install != null,
+                    native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
+                    optional: tree.optional || false,
                 };
             }
 
@@ -108,16 +111,16 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     return bundleDeps;
 }
 
-async function prepack(pkgName: string) {
+async function prepack(pkg: { name: string }) {
     /* eslint-disable @typescript-eslint/no-magic-numbers */
     if (fs.existsSync(nodeModulesBackup)) {
         throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
     }
     const start = Date.now();
-    const output = childProcess.execSync(`npm ls --all --omit=dev --json --long -w ${pkgName}`, {
+    const output = childProcess.execSync(`npm ls --all --json --long --omit=dev --package-lock-only -w ${pkg.name}`, {
         maxBuffer: 1024 * 1024 * 100, // 100MB
     });
-    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkgName);
+    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name);
 
     try {
         if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
@@ -136,11 +139,13 @@ async function prepack(pkgName: string) {
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
                     fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
                 }
-            } else {
+            } else if (!bundleDep.native) {
                 const absPkgPath = path.join(pkgDir, destPath);
-                const excludeNodeModules = (source: string) => path.basename(source) !== "node_modules" &&
-                    (!bundleDep.hasInstallScript || path.basename(source) !== "build");
-                fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: excludeNodeModules });
+                const isNativeBuild = (source: string) => path.basename(source) === "build" &&
+                    fs.existsSync(path.join(source, "..", "binding.gyp"));
+                const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" && !isNativeBuild(source);
+                if (bundleDep.optional && !fs.existsSync(srcPath)) continue;
+                fs.cpSync(srcPath, absPkgPath, { recursive: true, filter: npmIncludeFilter });
             }
         }
 
@@ -164,8 +169,8 @@ const run = { prepack, postpack }[cmdName];
 if (run == null) {
     die(`Usage: cd <package> && node ${path.relative(pkgDir, __filename)} <prepack|postpack>`);
 }
-const { name: pkgName, private: isPrivate } = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
-if (isPrivate) {
-    die(`[${cmdName}] "${pkgName}" is private, so cannot bundle dependencies`);
+const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, "utf-8"));
+if (pkgJson.private) {
+    die(`[${cmdName}] "${pkgJson.name}" is private, so cannot bundle dependencies`);
 }
-run(pkgName).catch(die);
+run(pkgJson).catch(die);
