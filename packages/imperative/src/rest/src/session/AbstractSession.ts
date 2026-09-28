@@ -377,7 +377,7 @@ export abstract class AbstractSession {
                     // ok
                 } else if (session.base64EncodedAuth !== undefined && session.base64EncodedAuth !== null) {
                     // ok
-                } else if ((populatedSession.cert !== undefined && populatedSession.certKey !== undefined) ||
+                } else if (populatedSession.cert !== undefined && populatedSession.certKey !== undefined ||
                            populatedSession.certAccount !== undefined) {
                     // ok
                 } else {

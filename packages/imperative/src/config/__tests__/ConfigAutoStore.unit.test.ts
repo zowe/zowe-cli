@@ -491,15 +491,20 @@ describe("ConfigAutoStore tests", () => {
             it("should store token value when allowedLoginMethod is apiml-basic", async () => {
                 await setupConfigToLoad({
                     profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC
+                            }
+                        },
                         base: {
                             type: "base",
                             properties: {
-                                host: "example.com",
-                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC
+                                host: "example.com"
                             }
                         }
                     },
-                    defaults: { base: "base" },
+                    defaults: { fruit: "fruit", base: "base" },
                     autoStore: true
                 });
                 ImperativeConfig.instance.config.save = jest.fn();
@@ -512,8 +517,7 @@ describe("ConfigAutoStore tests", () => {
                 }, ["user", "password"]);
 
                 expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
-                expect(ImperativeConfig.instance.config.properties.profiles.base.properties).toMatchObject({
-                    host: "example.com",
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
                     allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
                     tokenType: SessConstants.TOKEN_TYPE_APIML,
                     tokenValue: "fakeToken"
@@ -523,15 +527,20 @@ describe("ConfigAutoStore tests", () => {
             it("should store token value when allowedLoginMethod is apiml-cert-pem", async () => {
                 await setupConfigToLoad({
                     profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM
+                            }
+                        },
                         base: {
                             type: "base",
                             properties: {
-                                host: "example.com",
-                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM
+                                host: "example.com"
                             }
                         }
                     },
-                    defaults: { base: "base" },
+                    defaults: { fruit: "fruit", base: "base" },
                     autoStore: true
                 });
                 ImperativeConfig.instance.config.save = jest.fn();
@@ -544,8 +553,7 @@ describe("ConfigAutoStore tests", () => {
                 }, ["cert", "certKey"]);
 
                 expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
-                expect(ImperativeConfig.instance.config.properties.profiles.base.properties).toMatchObject({
-                    host: "example.com",
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
                     allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM,
                     tokenType: SessConstants.TOKEN_TYPE_APIML,
                     tokenValue: "fakeToken"

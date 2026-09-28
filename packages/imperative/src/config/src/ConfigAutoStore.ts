@@ -160,14 +160,14 @@ export class ConfigAutoStore {
 
         // Replace user/password or cert properties with tokenValue if token login succeeded
         const hasBasicCreds = profileProps.includes("user") && profileProps.includes("password");
-        const hasCertCreds = (profileProps.includes("cert") && profileProps.includes("certKey")) ||
-            (profileProps.includes("certFile") && profileProps.includes("certKeyFile"));
+        const hasCertCreds = profileProps.includes("cert") && profileProps.includes("certKey") ||
+            profileProps.includes("certFile") && profileProps.includes("certKeyFile");
 
         const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod;
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
-        const shouldFetchToken = hasBasicCreds || (hasCertCreds && isApimlLoginMethod);
+        const shouldFetchToken = hasBasicCreds || hasCertCreds && isApimlLoginMethod;
 
         if (shouldFetchToken && await this._fetchTokenForSessCfg({ ...opts, profilePath })) {
             const credProps = ["user", "password", "cert", "certKey", "certFile", "certKeyFile", "certAccount"];
