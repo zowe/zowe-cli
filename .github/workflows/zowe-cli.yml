@@ -185,6 +185,27 @@ jobs:
           Client artifacts:
            - CLI: ${{ steps.cli-artifact-upload.outputs.artifact-url }}
 
+  smoke-test:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Use Node.js LTS
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version: 'lts/*'
+
+    - name: Download CLI Package
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: zowe-cli
+
+    - name: Install Offline
+      run: sudo unshare -n npm install -g zowe-cli-*.tgz
+
+    - name: Test Zowe CLI
+      run: zowe --version
+
   release:
     if: github.event_name == 'push' && github.ref_protected
     needs: test
@@ -214,7 +235,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@e0672bf28f74f36219713afe75915ea2dc7bf85b # v1
+    - uses: zowe-actions/octorelease@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1.5.6
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
