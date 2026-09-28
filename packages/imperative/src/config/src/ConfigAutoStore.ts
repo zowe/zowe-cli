@@ -121,7 +121,10 @@ export class ConfigAutoStore {
 
             if (authHandlerClass instanceof AbstractAuthHandler) {
                 const { promptParams } = authHandlerClass.getAuthHandlerApi();
-                if (effectiveTokenType == null || effectiveTokenType === promptParams.defaultTokenType || effectiveTokenType.startsWith(TOKEN_TYPE_APIML) || isApimlLoginMethod) {
+                if (effectiveTokenType == null ||
+                    effectiveTokenType === promptParams.defaultTokenType ||
+                    effectiveTokenType.startsWith(TOKEN_TYPE_APIML) ||
+                    isApimlLoginMethod) {
                     return authHandlerClass;  // Auth service must have matching token type
                 }
             }
