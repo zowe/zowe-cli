@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `--allowed-login-method` connection option to CLI base connection options (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, `prompt`). Restricts which credentials a user is prompted for when logging into a service or updating stored credentials, so that they comply with site requirements. Defaults to 'prompt' when omitted. [#2906](https://github.com/zowe/zowe-cli/issues/2906)
+
 ## `8.37.1`
 
 - BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
