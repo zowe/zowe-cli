@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.38.0`
 
 - Enhancement: Added an `allowedLoginMethod` base profile property that lets administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service, so entered credentials comply with site requirements. Defaults to `prompt` (existing behavior) when method is not chosen. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
 - Enhancement: Added the `authOrder` base profile property to the team config schema so it is validated and available for editor IntelliSense. Previously `authOrder` was accepted at runtime but omitted from the schema. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
