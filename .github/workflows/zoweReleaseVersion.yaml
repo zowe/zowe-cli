@@ -3,19 +3,26 @@ name: Update Zowe Version and Create PR
 on:
   workflow_dispatch:
     inputs:
-      major_version:
-        description: 'Major version (default is 3)'
+      version:
+        description: Version number to publish (e.g., 1.0.0)
         required: true
-        default: '3'
-      minor_version:
-        description: 'Minor version'
-        required: true
-      patch_version:
-        description: 'Patch version'
-        required: true
+        type: string
 
 jobs:
+  validate-version:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Validate version format
+          run: |
+            if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?(\+[A-Za-z0-9.]+)?$ ]]; then
+              echo "::error::Invalid version '$VERSION' - expected semver format, e.g. 1.0.0 or 1.0.0-rc.1"
+              exit 1
+            fi
+          env:
+            VERSION: ${{ inputs.version }}
+
   update_versions_and_create_pr:
+    needs: validate-version
     runs-on: ubuntu-22.04
 
     steps:
@@ -33,23 +40,25 @@ jobs:
           current_version=$(jq -r '.zoweVersion' packages/cli/package.json)
           current_version="${current_version#v}"  # Strip the 'v' prefix
           echo "current_version=$current_version" >> $GITHUB_ENV
-          new_version="${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}"
+          new_version="$VERSION"
           echo "new_version=$new_version" >> $GITHUB_ENV
           echo "PACKAGE_JSON_PATH=packages/cli/package.json" >> $GITHUB_ENV
           if [[ "$new_version" < "$current_version" ]]; then
             echo "Error: New version $new_version is not greater than current version $current_version."
             exit 1
           fi
+        env:
+          VERSION: ${{ inputs.version }}
 
       - name: Create Branch
         run: |
-          branch_name="update-version-v${{ env.new_version }}"
+          branch_name="update-version-v$new_version"
           echo "branch_name=$branch_name" >> $GITHUB_ENV
           git checkout -b "$branch_name"
 
       - name: Update Zowe Version in cli/package.json
         run: |
-          jq ".zoweVersion = \"v${{ env.new_version }}\"" ${{ env.PACKAGE_JSON_PATH }} > package.tmp.json && mv package.tmp.json ${{ env.PACKAGE_JSON_PATH }}
+          jq ".zoweVersion = \"v$new_version\"" "$PACKAGE_JSON_PATH" > package.tmp.json && mv package.tmp.json "$PACKAGE_JSON_PATH"
 
       - name: Update RELEASE_HISTORY.md
         run: node ".github/updateReleaseMarkdown.js"
@@ -62,13 +71,13 @@ jobs:
           git config --global user.email "${{ secrets.ZOWE_ROBOT_EMAIL }}"
           git add "${{ env.PACKAGE_JSON_PATH }}"
           git add "RELEASE_HISTORY.md"
-          git commit -sm "Update version to ${{ env.new_version }}"
+          git commit -sm "Update version to $new_version"
           git push origin "$branch_name"
 
       - name: Create Pull Request
         run: |
-          pr_title="Update CLI version to ${{ env.new_version }}"
+          pr_title="Update CLI version to $new_version"
           base_branch="${{ github.ref_name }}"
-          gh pr create -t "$pr_title" -b "$base_branch" --head "$branch_name" --body "Updating Zowe CLI version to ${{ env.new_version }}" --reviewer zFernand0,t1m0thyj,awharn,gejohnston,traeok,jace-roell,ATorrise
+          gh pr create -t "$pr_title" -b "$base_branch" --head "$branch_name" --body "Updating Zowe CLI version to $new_version" --reviewer zFernand0,t1m0thyj,awharn,gejohnston,traeok,jace-roell,ATorrise
         env:
           GH_TOKEN: ${{ secrets.ZOWE_ROBOT_TOKEN }}
