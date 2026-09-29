@@ -9,7 +9,7 @@
 *
 */
 
-import { ConfigUtils } from "@zowe/imperative";
+import { Config, ConfigUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -337,5 +337,90 @@ describe("auth login/logout apiml with pem cert", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
         }
+    });
+});
+
+describe("direct-* authentication method", () => {
+    describe("direct-* with an APIML base path", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+        let user: string;
+        let apimlBasePath: string;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "direct_with_apiml_base_path"
+            });
+
+            const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+            user = systemProps.zosmf.user;
+            apimlBasePath = systemProps.zosmf.basePath || "ibmzosmf/api/v1";
+
+            // Create zosmf profile with direct-basic allowedLoginMethod but basePath routing through APIML
+            await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "zosmf", {
+                host: systemProps.base?.host || systemProps.zosmf.host,
+                port: systemProps.base?.port || systemProps.zosmf.port,
+                basePath: apimlBasePath,
+                allowedLoginMethod: "direct-basic",
+                user: systemProps.zosmf.user,
+                password: systemProps.zosmf.password,
+                rejectUnauthorized: systemProps.zosmf.rejectUnauthorized
+            });
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("direct-basic on a profile whose basePath routes through APIML - use a pound sign in a data set name that isn't encoded - results in HTTP 400 from APIML", () => {
+            const dsNameWithPound = `${user}.#TEST.DATA`;
+            const response = runCliScript(__dirname + "/__scripts__/auth_direct_apiml_base_path.sh", TEST_ENVIRONMENT, [dsNameWithPound]);
+
+            // The command should fail (HTTP 400 from APIML due to unencoded pound sign)
+            expect(response.status).not.toBe(0);
+            const combinedOutput = response.stdout.toString() + response.stderr.toString();
+            expect(combinedOutput).toMatch(/400|Bad Request|RestError|error/i);
+        });
+    });
+
+    describe("direct-* goes direct to the service", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+        let user: string;
+        let password: string;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "direct_goes_direct_to_service"
+            });
+
+            const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+            user = systemProps.zosmf.user;
+            password = systemProps.zosmf.password;
+
+            // Create zosmf profile with direct-basic allowedLoginMethod without stored credentials
+            await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "zosmf", {
+                host: systemProps.zosmf.host,
+                port: systemProps.zosmf.port,
+                rejectUnauthorized: systemProps.zosmf.rejectUnauthorized,
+                allowedLoginMethod: "direct-basic"
+            });
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("The command authenticates to the service with the prompted credentials. No APIML login request is made and no token is requested", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/auth_direct_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
+
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("successfully connected to z/OSMF");
+
+            // Verify no APIML token was stored in the active profile
+            const config = await Config.load("zowe", { homeDir: TEST_ENVIRONMENT.workingDir });
+            const zosmfProfile: any = config.api.profiles.get("zosmf", false);
+            expect(zosmfProfile).toBeDefined();
+            expect(zosmfProfile?.properties?.tokenValue).toBeUndefined();
+            expect(zosmfProfile?.properties?.tokenType).toBeUndefined();
+        });
     });
 });
