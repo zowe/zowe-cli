@@ -195,7 +195,7 @@ export abstract class AbstractSession {
      * @memberof AbstractSession
      */
     public getApimlDecision(): IApimlDecision {
-        const allowedLoginMethod = this.ISession.allowedLoginMethod;
+        const allowedLoginMethod = this.ISession.allowedLoginMethod?.toLowerCase();
         if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
             return {

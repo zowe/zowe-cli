@@ -145,6 +145,7 @@ export class ProfileConstants {
         name: "allowed-login-method",
         description: "Restricts which credentials a user is prompted for when logging into a " +
         "service or updating stored credentials, so that they comply with site requirements. " +
+        "Accepted values are 'direct-basic', 'direct-cert-pem', 'apiml-basic', 'apiml-cert-pem', and 'prompt'. " +
         "Defaults to 'prompt' when omitted.",
         type: "string",
         allowableValues: { values: SessConstants.ALL_ALLOWED_LOGIN_METHODS },
@@ -152,7 +153,7 @@ export class ProfileConstants {
     };
 
     /**
-     * Option used in profile creation and commands for authOrder. Allowable Values include: 
+     * Option used in profile creation and commands for authOrder. Allowable Values include:
      */
     public static readonly BASE_OPTION_AUTH_ORDER: ICommandOptionDefinition = {
         name: "auth-order",

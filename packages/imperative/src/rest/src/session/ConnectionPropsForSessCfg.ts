@@ -174,7 +174,7 @@ export class ConnectionPropsForSessCfg {
         if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
             !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
         {
-            const allowedLoginMethod = sessCfgToUse.allowedLoginMethod;
+            const allowedLoginMethod = sessCfgToUse.allowedLoginMethod?.toLowerCase();
             const basicCreds = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
                 allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC;
             const certCreds = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM ||
@@ -314,16 +314,18 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
-        // use defaults if caller has not specified these properties.
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
             // When allowedLoginMethod is apiml-basic or apiml-cert-pem, the credentials
             // supplied by the user must be exchanged for an APIML token, just like an
             // explicit `zowe auth login apiml` would do.
-            const allowedLoginMethod = ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
-                cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod;
-            connOpts.requestToken =
-                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            const allowedLoginMethod = (ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
+                cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod)?.toLowerCase();
+            const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
                 allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
+            const hasTokenValue = ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue) ||
+                ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) ||
+                ConnectionPropsForSessCfg.propHasValue(sessCfg._authCache?.availableCreds?.tokenValue);
+            connOpts.requestToken = isApimlLoginMethod && !hasTokenValue;
         }
         if (!Object.prototype.hasOwnProperty.call(connOpts, "doPrompting")) {
             connOpts.doPrompting = true;

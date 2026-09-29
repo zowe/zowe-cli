@@ -1373,16 +1373,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.password).toBe(passFromPrompt);
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
         expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.cert).toBeUndefined();
+        expect(sessCfgWithConnProps.certKey).toBeUndefined();
+        expect(promptCalls.length).toBe(2);
+        expect(promptCalls.some(p => p.includes("user"))).toBe(true);
+        expect(promptCalls.some(p => p.includes("password"))).toBe(true);
     });
 
     it("should prompt for basic credentials and set requestToken when allowedLoginMethod is apiml-basic", async () => {
         const userFromPrompt = "FakeUser";
         const passFromPrompt = "FakePassword";
+        const promptCalls: string[] = [];
 
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
         CliUtils.readPrompt = jest.fn((text: string) => {
+            promptCalls.push(text);
             return Promise.resolve(text.includes("user") ? userFromPrompt : passFromPrompt);
         });
 
@@ -1407,16 +1414,20 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.password).toBe(passFromPrompt);
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
         expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.cert).toBeUndefined();
+        expect(promptCalls.length).toBe(2);
     });
 
     it("should prompt for cert credentials and NOT request token when allowedLoginMethod is direct-cert-pem", async () => {
         const certFromPrompt = certFilePath;
         const certKeyFromPrompt = certKeyFilePath;
+        const promptCalls: string[] = [];
 
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
         CliUtils.readPrompt = jest.fn((text: string) => {
+            promptCalls.push(text);
             return Promise.resolve(text.includes("certKey") ? certKeyFromPrompt : certFromPrompt);
         });
 
@@ -1440,16 +1451,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.cert).toBe(certFromPrompt);
         expect(sessCfgWithConnProps.certKey).toBe(certKeyFromPrompt);
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+        expect(sessCfgWithConnProps.user).toBeUndefined();
+        expect(sessCfgWithConnProps.password).toBeUndefined();
+        expect(promptCalls.length).toBe(2);
+        expect(promptCalls.some(p => p.includes("cert"))).toBe(true);
+        expect(promptCalls.some(p => p.includes("certKey"))).toBe(true);
     });
 
     it("should prompt for cert credentials and set requestToken when allowedLoginMethod is apiml-cert-pem", async () => {
         const certFromPrompt = certFilePath;
         const certKeyFromPrompt = certKeyFilePath;
+        const promptCalls: string[] = [];
 
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
         CliUtils.readPrompt = jest.fn((text: string) => {
+            promptCalls.push(text);
             return Promise.resolve(text.includes("certKey") ? certKeyFromPrompt : certFromPrompt);
         });
 
@@ -1472,8 +1490,57 @@ describe("ConnectionPropsForSessCfg tests", () => {
 
         expect(sessCfgWithConnProps.cert).toBe(certFromPrompt);
         expect(sessCfgWithConnProps.certKey).toBe(certKeyFromPrompt);
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
-        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.user).toBeUndefined();
+        expect(sessCfgWithConnProps.password).toBeUndefined();
+        expect(promptCalls.length).toBe(2);
+    });
+
+    it("should not prompt when credentials already exist and follow authOrder with allowedLoginMethod", async () => {
+        const readPromptSpy = jest.fn();
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = readPromptSpy;
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            user: "existingUser",
+            password: "existingPassword",
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC
+        };
+        const args = { $0: "zowe", _: [""] };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(readPromptSpy).not.toHaveBeenCalled();
+        expect(sessCfgWithConnProps.user).toBe("existingUser");
+        expect(sessCfgWithConnProps.password).toBe("existingPassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+    });
+
+    it("should carry allowedLoginMethod from flags into the session", async () => {
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            user: "someUser",
+            password: "somePassword"
+        };
+        const args = { $0: "zowe", _: [""], allowedLoginMethod: "apiml-basic" };
+
+        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args
+        );
+
+        expect(sessCfgWithConnProps.allowedLoginMethod).toBe("apiml-basic");
     });
 
     it("get host name from prompt with custom service description", async () => {
