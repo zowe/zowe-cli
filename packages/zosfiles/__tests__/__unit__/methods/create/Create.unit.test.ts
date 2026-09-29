@@ -190,6 +190,39 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a sequential data set (PS) with tsoAccount and tsoProcedure", async () => {
+
+            dsOptions.dsntype = "PDS";
+            dsOptions.tsoAccount = "TSO1234";
+            dsOptions.tsoProcedure = "MYPROC";
+            let response: IZosFilesResponse;
+
+            try {
+                response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+            } finally {
+                dsOptions.tsoAccount = undefined;
+                dsOptions.tsoProcedure = undefined;
+            }
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING,
+                    { [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" },
+                    { [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" }],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        tsoAccount: "TSO1234",
+                        tsoProcedure: "MYPROC",
+                        secondary: 1
+                    }
+                })
+            );
+        });
+
         it("should be able to allocate like from a sequential data set", async () => {
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -1681,6 +1714,41 @@ describe("Create ZFS", () => {
             dummySession,
             endpoint,
             [{[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }, ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length }],
+            JSON.stringify(options)
+        );
+
+    });
+
+    it("should add tsoAccount and tsoProcedure headers when supplied in Create.zfs", async () => {
+        let caughtError: undefined;
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName + "?timeout=5";
+        const options: any = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 5,
+            tsoAccount: "TSO1234",
+            tsoProcedure: "MYPROC",
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            caughtError = e;
+        }
+
+        delete options.timeout;
+        delete options.tsoAccount;
+        delete options.tsoProcedure;
+        options.JSONversion = 1;
+        const jsonContent = JSON.stringify(options);
+
+        expect(caughtError).toBeUndefined();
+        expect(mySpy).toHaveBeenCalledWith(
+            dummySession,
+            endpoint,
+            [{ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" }, { [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" },
+                ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length }],
             JSON.stringify(options)
         );
 

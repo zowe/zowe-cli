@@ -632,7 +632,11 @@ export default {
     },
     OPTIONS: {
         RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
-        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+        TSOACCOUNT: "If specified, this value will be sent in the header X-IBM-Request-Acctnum" +
+        " for z/OSMF data set and file operations that support it.",
+        TSOPROCEDURE: "If specified, this value will be sent in the header X-IBM-Request-Proc" +
+        " for z/OSMF data set and file operations that support it."
     },
     SEARCH: {
         SUMMARY: "Search Files",

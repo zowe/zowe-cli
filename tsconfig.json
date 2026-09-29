@@ -32,5 +32,8 @@
   ],
   "files": [
     "./__types__/hogan.d.ts"
+  ],
+  "include": [
+    "./scripts/*.ts"
   ]
 }

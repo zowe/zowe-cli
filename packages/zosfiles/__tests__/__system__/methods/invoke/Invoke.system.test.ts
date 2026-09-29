@@ -138,6 +138,45 @@ describe("Invoke AMS", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
     });
 
+    it("should create and delete a VSAM data set from command statement in files with tsoAccount", async () => {
+        let error;
+        let response;
+
+        let controlStatementFile: string =
+            createTestAMSStatementFileFromTemplate(__dirname + "/DefineVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {tsoAccount: systemProps.tso.account});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+
+        controlStatementFile =
+            createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {tsoAccount: systemProps.tso.account});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+    });
+
     it("should create and delete a VSAM data set from command statements", async () => {
         let error;
         let response;

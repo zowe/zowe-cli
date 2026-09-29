@@ -81,7 +81,6 @@ export class Upload {
         });
 
         await promise;
-
         return this.pathToDataSet(session, inputFile, dataSetName, options);
     }
 
@@ -256,7 +255,7 @@ export class Upload {
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: inspect(fileStream, { showHidden: false, depth: -1}),
+            from: inspect(fileStream, { showHidden: false, depth: -1 }),
             to: dataSetName
         };
 
@@ -341,7 +340,7 @@ export class Upload {
 
         // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
-        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName, recall: "wait"});
+        const listResponse = await List.dataSet(session, dataSetName, { attributes: true, maxLength: 1, start: dataSetName, recall: "wait" });
         if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
             // Look for the index of the data set in the response from the List API
             const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :
@@ -350,7 +349,7 @@ export class Upload {
                 // If dsnameIndex === -1, it means we could not find the given data set.
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
-                if(dsInfo.dsorg?.startsWith("PO")) {
+                if (dsInfo.dsorg?.startsWith("PO")) {
                     isUploadToPds = true;
                 }
                 else {
@@ -511,9 +510,11 @@ export class Upload {
         }
 
         if (options.encoding != null) {
-            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         } else if (options.binary) {
-            await Utilities.chtag(session, origUssname, Tag.BINARY);
+            await Utilities.chtag(session, origUssname, Tag.BINARY, undefined,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         }
 
         return {
@@ -557,15 +558,17 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
 
         if (options.encoding != null) {
-            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         } else if (options.binary) {
-            await Utilities.chtag(session, origUssname, Tag.BINARY);
+            await Utilities.chtag(session, origUssname, Tag.BINARY, undefined,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         }
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: inspect(uploadStream, { showHidden: false, depth: -1}),
+            from: inspect(uploadStream, { showHidden: false, depth: -1 }),
             to: origUssname
         };
 
@@ -705,7 +708,7 @@ export class Upload {
                 // Check if error indicates a file exists where we're trying to create a directory
                 if (errorMsg.includes("Not a directory") || errorMsg.includes("EDC5135I")) {
                     helpText = "A file may exist in the path where a directory is expected. " +
-                              "Check that all path components are directories, not files.";
+                        "Check that all path components are directories, not files.";
                 }
 
                 throw new ImperativeError({
@@ -790,7 +793,7 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(session,fileName, ussFilePath,
+                return this.uploadFile(session, fileName, ussFilePath,
                     { ...options, binary: file.binary });
             };
 
@@ -981,17 +984,17 @@ export class Upload {
             tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
 
-            if(remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
-            else if(remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
+            if (remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
+            else if (remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
 
             if (!tempOptions.binary) {
                 tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
-        } else if(options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
+        } else if (options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
             tempOptions.binary = options.filesMap.binary;
 
             // Reset encoding to undefined if binary is true to avoid file tagging issues
-            if(tempOptions.binary) tempOptions.encoding = undefined;
+            if (tempOptions.binary) tempOptions.encoding = undefined;
         }
 
         return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
@@ -1084,7 +1087,7 @@ export class Upload {
                 }
                 reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {
-                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                    reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
                 }
                 break;
             default: {
@@ -1119,12 +1122,13 @@ export class Upload {
         }
 
         if (options.etag) {
-            reqHeaders.push({"If-Match" : options.etag});
+            reqHeaders.push({ "If-Match": options.etag });
         }
 
         if (options.returnEtag) {
             reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
         }
-        return reqHeaders;
+
+        return reqHeaders.concat(ZosFilesUtils.generateTsoHeaders(options));
     }
 }

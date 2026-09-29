@@ -24,7 +24,9 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
             attributes: commandParameters.arguments.attributes,
             maxLength: commandParameters.arguments.maxLength,
             responseTimeout: commandParameters.arguments.responseTimeout,
-            start: commandParameters.arguments.start
+            start: commandParameters.arguments.start,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         });
 
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {

@@ -30,6 +30,38 @@ describe("ProfileCredentials tests", () => {
         jest.restoreAllMocks();
     });
 
+    describe("defaultCredMgrWithKeytar", () => {
+        const newManager = (requireKeytar: () => any): any => {
+            const credMgrInit = ProfileCredentials.defaultCredMgrWithKeytar(requireKeytar);
+            return new (credMgrInit.Manager as any)("test-service");
+        };
+
+        it("should use the keyring returned by the callback", async () => {
+            const keyring = { getPassword: jest.fn() };
+            const manager = newManager(() => keyring);
+            await manager.initialize();
+            expect(manager.keytar).toBe(keyring);
+        });
+
+        it("should fail with the underlying cause if the callback throws", async () => {
+            const manager = newManager(() => {
+                throw new Error("Cannot read properties of undefined (reading 'getReport')");
+            });
+            await expect(manager.initialize()).rejects.toThrow(/Failed to load Keytar module: Cannot read properties of undefined/);
+        });
+
+        it("should fail if the callback resolves without providing a keyring", async () => {
+            /* Bundlers such as webpack keep a module that threw while loading in their require cache with empty
+             * exports, so requiring it again yields `undefined` rather than re-throwing. Without this check
+             * `keytar` stays unset with no `loadError`, and the first credential operation fails with the
+             * unhelpful "Keytar was not properly loaded due to an unknown cause."
+             */
+            const manager = newManager(() => undefined);
+            await expect(manager.initialize()).rejects.toThrow(/did not provide a keyring/);
+            expect(manager.keytar).toBeUndefined();
+        });
+    });
+
     describe("isSecured", () => {
         it("should be true if team config is not secure but CredentialManager is set", () => {
             const profCreds = new ProfileCredentials({

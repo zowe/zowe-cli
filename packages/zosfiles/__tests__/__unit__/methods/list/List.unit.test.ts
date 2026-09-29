@@ -179,6 +179,31 @@ describe("z/OS Files - List", () => {
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
+        it("should list members from given data set with tsoAccount and tsoProcedure", async () => {
+            let response;
+            let caughtError;
+            const options: IListOptions = {tsoAccount: "TSO1234", tsoProcedure: "MYPROC"};
+
+            try {
+                response = await List.allMembers(dummySession, dsname, options);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: null,
+                apiResponse: listApiResponse
+            });
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING,
+                    {"X-IBM-Request-Acctnum": "TSO1234"},
+                    {"X-IBM-Request-Proc": "MYPROC"},
+                    ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
         it("should list members from given data set that contains a member with an invalid name", async () => {
             let response;
             let caughtError;

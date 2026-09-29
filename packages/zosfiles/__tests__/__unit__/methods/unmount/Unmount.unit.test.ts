@@ -10,7 +10,7 @@
 */
 
 import { Unmount, ZosFilesMessages } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 
 describe("Unmount", () => {
     const dummySession: any = {};
@@ -32,6 +32,29 @@ describe("Unmount", () => {
             });
             await Unmount.fs(dummySession, fileSystemName, {responseTimeout: 5});
             expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
+        });
+
+        it("should succeed with tsoAccount and tsoProcedure", async () => {
+            const putExpectStringSpy = jest.fn(() => {
+                // Do nothing
+            });
+            (ZosmfRestClient as any).putExpectString = putExpectStringSpy;
+            const jsonContent = JSON.stringify({ action: "unmount" });
+
+            await Unmount.fs(dummySession, fileSystemName, {tsoAccount: "TSO1234", tsoProcedure: "MYPROC"});
+
+            expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(putExpectStringSpy).toHaveBeenCalledWith(
+                dummySession,
+                expect.anything(),
+                [
+                    { "Content-Length": jsonContent.length },
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    { "X-IBM-Request-Acctnum": "TSO1234" },
+                    { "X-IBM-Request-Proc": "MYPROC" }
+                ],
+                jsonContent
+            );
         });
 
         it("should fail if fileSystemName is missing or blank", async () => {

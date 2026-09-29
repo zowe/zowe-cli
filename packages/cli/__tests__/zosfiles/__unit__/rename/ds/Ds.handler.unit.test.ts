@@ -43,7 +43,10 @@ describe("DsHandler", () => {
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(renameDatasetSpy).toHaveBeenCalledTimes(1);
-        expect(renameDatasetSpy).toHaveBeenLastCalledWith(dummySession, beforeDataSetName, afterDataSetName);
+        expect(renameDatasetSpy).toHaveBeenLastCalledWith(dummySession, beforeDataSetName, afterDataSetName, {
+            tsoAccount: undefined,
+            tsoProcedure: undefined
+        });
         expect(response).toBe(defaultReturn);
     });
 });

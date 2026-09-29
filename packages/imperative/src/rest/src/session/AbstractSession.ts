@@ -15,6 +15,7 @@ import { ImperativeError } from "../../../error";
 import { ImperativeExpect } from "../../../expect";
 import * as SessConstants from "./SessConstants";
 import { AuthOrder } from "./AuthOrder";
+import { ApimlDecisionReason, IApimlDecision } from "./doc/IApimlDecision";
 import type { Agent } from "https";
 
 /**
@@ -175,30 +176,80 @@ export abstract class AbstractSession {
     }
 
     /**
-     * Detect if this session will connect to APIML.
+     * Detect if this session will connect to APIML, and report the reason for that decision.
      *
      * This detection is not foolproof. It is more like very, very likely APIML.
-     * Since this function is used for URI encoding choices, we will increase the
+     * Since this decision is used for URI encoding choices, we will increase the
      * encoding for APIML and minimize the encoding for z/OSMF. This should position
      * Zowe for anticipated future restrictions on encoded characters in URIs.
      * Previously, a high level of encoding was used for all connections. So, if some
      * configuration is misinterpreted as APIML, it will get similar encoding
      * as before these changes, so we do not expect any breaking changes as a result.
      *
+     * If allowedLoginMethod is set to an apiml-* or direct-* value, that value takes
+     * precedence over every other heuristic. Otherwise (when allowedLoginMethod is
+     * "prompt" or unset), we fall back to the historical heuristic of checking
+     * tokenType and basePath.
+     *
+     * @returns {IApimlDecision} - The APIML decision, including the reason it was made.
+     * @memberof AbstractSession
+     */
+    public getApimlDecision(): IApimlDecision {
+        const allowedLoginMethod = this.ISession.allowedLoginMethod;
+        if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
+            return {
+                usingApiml: true,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_APIML,
+                message: `The allowedLoginMethod property is set to '${allowedLoginMethod}', which requires a ` +
+                    "connection through the API Mediation Layer (APIML)."
+            };
+        }
+        if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM) {
+            return {
+                usingApiml: false,
+                reason: ApimlDecisionReason.ALLOWED_LOGIN_METHOD_DIRECT,
+                message: `The allowedLoginMethod property is set to '${allowedLoginMethod}', which requires a ` +
+                    "direct connection to the service."
+            };
+        }
+
+        if (this.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML) {
+            return {
+                usingApiml: true,
+                reason: ApimlDecisionReason.APIML_AUTH_TOKEN_PRESENT,
+                message: "The session's tokenType is the API Mediation Layer (APIML) authentication token type."
+            };
+        }
+        if (this.ISession.basePath) {
+            return {
+                usingApiml: true,
+                reason: ApimlDecisionReason.BASE_PATH_EXISTS,
+                message: "The session has a basePath property, which indicates a connection through the " +
+                    "API Mediation Layer (APIML)."
+            };
+        }
+
+        return {
+            usingApiml: false,
+            reason: ApimlDecisionReason.NONE,
+            message: "No indication of a connection through the API Mediation Layer (APIML) was found on the session."
+        };
+    }
+
+    /**
+     * Detect if this session will connect to APIML.
+     *
      * In the future we may want to replace this implementation with a more certain
      * confirmation that we are connecting to APIML.
      *
      * @returns {boolean} - True if connecting with APIML. False otherwise.
      * @memberof AbstractSession
+     * @see AbstractSession.getApimlDecision
      */
     public isUsingApiml(): boolean {
-        if (this.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML) {
-            return true;
-        }
-        if (this.ISession.basePath) {
-            return true;
-        }
-        return false;
+        return this.getApimlDecision().usingApiml;
     }
 
     /**
