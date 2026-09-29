@@ -38,7 +38,9 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             attributes: zosAttributes,
             includeHidden: commandParameters.arguments.includeHidden,
             overwrite: commandParameters.arguments.overwrite,
-            encoding: commandParameters.arguments.encoding
+            encoding: commandParameters.arguments.encoding,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
         const listOptions: IUSSListOptions = {
             name: commandParameters.arguments.name ? commandParameters.arguments.name : "*",
@@ -51,7 +53,9 @@ export default class UssDirHandler extends ZosFilesBaseHandler {
             type: commandParameters.arguments.type,
             depth: commandParameters.arguments.depth,
             filesys: commandParameters.arguments.filesys,
-            symlinks: commandParameters.arguments.symlinks
+            symlinks: commandParameters.arguments.symlinks,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         commandParameters.response.progress.startBar({ task: downloadStatus });

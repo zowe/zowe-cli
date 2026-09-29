@@ -90,9 +90,9 @@ export default class InstallHandler implements ICommandHandler {
 
                 params.response.console.log(
                     "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
-                    `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
+                    "control of the `" + ImperativeConfig.instance.rootCommandName + "` CLI application " +
                     "during the execution of every command.\n" +
-                    "Install third party plug-ins at your own risk."
+                    "Install third-party plug-ins at your own risk."
                 );
 
                 // This section determines which npm logic needs to take place
@@ -137,7 +137,9 @@ export default class InstallHandler implements ICommandHandler {
 
                             params.response.console.log(`\n${divider}`);
                             params.response.console.log("Location = " + packageInfo.location + "\n");
-                            const pluginName = await install(packageArgument, registryInfo, true, params.arguments.verbose);
+                            const pluginName = await install(
+                                packageArgument, registryInfo, true, params.arguments.verbose, params.arguments.allowScripts
+                            );
                             if (params.arguments.verbose) {
                                 params.response.console.log(divider);
                             }
@@ -152,7 +154,9 @@ export default class InstallHandler implements ICommandHandler {
                         params.response.console.log(`\n${divider}`);
                         const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
                         params.response.console.log("Location = " + registryInfo.location + "\n");
-                        const pluginName = await install(packageString, registryInfo, false, params.arguments.verbose);
+                        const pluginName = await install(
+                            packageString, registryInfo, false, params.arguments.verbose, params.arguments.allowScripts
+                        );
                         if (params.arguments.verbose) {
                             params.response.console.log(divider);
                         }

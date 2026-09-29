@@ -186,6 +186,30 @@ export class TextUtils {
                 "left": "", "left-mid": "", "mid": "", "mid-mid": "",
                 "right": "", "right-mid": "", "middle": " "
             };
+        const colAligns: ("left" | "right")[] = headers.map((header) => {
+            let hasNumeric = false;
+            for (const obj of objects) {
+                const val = obj[header];
+                if (val == null || val === "") {
+                    continue;
+                }
+                let isNum = false;
+                if (typeof val === "number") {
+                    isNum = !isNaN(val);
+                } else if (typeof val === "string") {
+                    const trimmed = val.trim();
+                    if (trimmed.length > 0 && !isNaN(Number(trimmed))) {
+                        isNum = true;
+                    }
+                }
+                if (!isNum) {
+                    return "left";
+                }
+                hasNumeric = true;
+            }
+            return hasNumeric ? "right" : "left";
+        });
+
         const table = new Table({
             // colWidths: headers.map((header) => {
             //     return header.length > maxColWidth ? maxColWidth + pad : header.length + pad;
@@ -196,6 +220,7 @@ export class TextUtils {
                     maxColumnWidth, "", hardWrap);
             }) : [],
             chars: borderChars,
+            colAligns,
             style: {"padding-left": 0, "padding-right": 0, "head": [], "border": includeBorders ? [] : undefined}
         });
 

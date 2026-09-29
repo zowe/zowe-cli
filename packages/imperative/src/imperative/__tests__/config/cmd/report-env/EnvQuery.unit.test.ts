@@ -21,6 +21,7 @@ import { ItemId } from "../../../../src/config/cmd/report-env/EnvItems";
 
 describe("Tests for EnvQuery module", () => {
     const fakeCliHomeDir = "this_is_a_fake_cli_home_dir";
+    const validLogLevels = ["all", "trace", "debug", "info", "warn", "error", "fatal", "mark", "off"];
     let impCfg: ImperativeConfig;
     let pluginIssInst: PluginIssues;
 
@@ -182,8 +183,8 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toBe("");
         });
 
-        it("should report a valid ZOWE_APP_LOG_LEVEL", async () => {
-            const logLevVal = "error";
+        it.each(validLogLevels)("should report a valid ZOWE_APP_LOG_LEVEL (%s)", async (level: string) => {
+            const logLevVal = level;
             process.env.ZOWE_APP_LOG_LEVEL = logLevVal;
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_APP_LOG_LEVEL);
             expect(itemObj.itemVal).toBe(logLevVal);
@@ -200,8 +201,8 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toContain("The ZOWE_APP_LOG_LEVEL must be set to one of:");
         });
 
-        it("should report a valid ZOWE_IMPERATIVE_LOG_LEVEL", async () => {
-            const logLevVal = "warn";
+        it.each(validLogLevels)("should report a valid ZOWE_IMPERATIVE_LOG_LEVEL (%s)", async (level: string) => {
+            const logLevVal = level;
             process.env.ZOWE_IMPERATIVE_LOG_LEVEL = logLevVal;
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_IMPERATIVE_LOG_LEVEL);
             expect(itemObj.itemVal).toBe(logLevVal);
@@ -332,6 +333,17 @@ describe("Tests for EnvQuery module", () => {
             const cmdOutput = await EnvQuery["getCmdOutput"]("bogusCmd", ["bogusArg"]);
             expect(cmdOutput).toContain("Failed to run command = bogusCmd");
             expect(cmdOutput).toContain("Pretend this was thrown by spawnSync");
+        });
+
+        it("should not use a shell to run commands", async () => {
+           const spawn = require("cross-spawn");
+           const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValue({
+               stdout: Buffer.from("fake example output"),
+               stderr: Buffer.from("")
+           });
+
+           await EnvQuery["getCmdOutput"]("npm", ["--help"]);
+           expect(spawnSyncSpy).toHaveBeenCalledWith("npm", ["--help"], expect.not.objectContaining({ shell: true }));
         });
     }); // end getCmdOutput function
 }); // end Handler

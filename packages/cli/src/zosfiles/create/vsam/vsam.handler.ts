@@ -31,7 +31,9 @@ export default class VsamHandler extends ZosFilesBaseHandler {
             retainFor: commandParameters.arguments.retainFor,
             retainTo: commandParameters.arguments.retainTo,
             showAttributes: commandParameters.arguments.attributes,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         }));
 
         return Create.vsam(session, commandParameters.arguments.dataSetName, createVsamOptions);

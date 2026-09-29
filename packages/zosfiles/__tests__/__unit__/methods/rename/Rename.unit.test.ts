@@ -91,6 +91,35 @@ describe("Rename", () => {
                     expectedPayload
                 );
             });
+            it("Should send a request to rename a data set with tsoAccount and tsoProcedure", async () => {
+                const expectedPayload = { "request": "rename", "from-dataset": { dsn: beforeDataSetName } };
+                const expectedEndpoint = posix.join(
+                    ZosFilesConstants.RESOURCE,
+                    ZosFilesConstants.RES_DS_FILES,
+                    afterDataSetName
+                );
+                const expectedHeaders = [
+                    { "Content-Type": "application/json" },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    { "X-IBM-Request-Acctnum": "TSO1234" },
+                    { "X-IBM-Request-Proc": "MYPROC" }
+                ];
+                const response = await Rename.dataSet(dummySession, beforeDataSetName, afterDataSetName,
+                    {tsoAccount: "TSO1234", tsoProcedure: "MYPROC"});
+
+                expect(response).toEqual({
+                    success: true,
+                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message
+                });
+                expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+                expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                    dummySession,
+                    expectedEndpoint,
+                    expectedHeaders,
+                    expectedPayload
+                );
+            });
         });
         describe("Failure Scenarios", () => {
             it("Should throw an error if a data set name is empty", async () => {

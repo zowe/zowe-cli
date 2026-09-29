@@ -109,4 +109,23 @@ describe("PMF: update Interface", () => {
         // Validate the update
         wasNpmInstallCallValid(scopedPackageName, { registry: packageRegistry, "@org:registry": packageRegistry });
     });
+
+    it("should pass allowScripts through to installPackages", async () => {
+        const oneOldPlugin: IPluginJson = {
+            plugin1: {
+                package: packageName,
+                location: packageRegistry,
+                version: packageVersion
+            }
+        };
+
+        mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
+        mocks.readFileSync.mockReturnValue(oneOldPlugin);
+
+        const registryInfo = npmFns.NpmRegistryUtils.buildRegistryInfo(oneOldPlugin.plugin1);
+        await update(packageName, registryInfo, "ibm_db");
+
+        expect(mocks.installPackages).toHaveBeenCalledWith(packageName,
+            { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: packageRegistry, allowScripts: "ibm_db" });
+    });
 });

@@ -115,6 +115,24 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
+            it("should upload a file to a physical sequential data set with tsoAccount", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await Upload.fileToDataset(REAL_SESSION,
+                        inputfile, dsname, {tsoAccount: defaultSystem.tso.account});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+            });
+
             it("should upload a file to a physical sequential data set while passing correct Etag", async () => {
                 let error;
                 let response: IZosFilesResponse;

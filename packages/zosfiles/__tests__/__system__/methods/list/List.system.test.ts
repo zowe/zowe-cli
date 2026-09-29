@@ -148,6 +148,26 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
             });
 
+            it("should list all members of a data set with tsoAccount", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await List.allMembers(REAL_SESSION, dsname, {tsoAccount: defaultSystem.tso.account});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(2);
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+                expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
+            });
+
             it("should list all members of a data set with attributes", async () => {
                 let error;
                 let response: IZosFilesResponse;

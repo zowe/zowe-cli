@@ -20,7 +20,9 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class AliasHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const response = await List.resolveAlias(session, commandParameters.arguments.aliasName, {
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         });
 
         return response;

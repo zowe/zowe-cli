@@ -799,7 +799,8 @@ describe("AbstractRestClient tests", () => {
 
         expect(requestFnc).toHaveBeenCalledTimes(1);
         expect(readEnvSpy).toHaveBeenCalledTimes(1);
-        expect(session.ISession.requestCompletionTimeout).toBeUndefined();
+        // Falls back to the 30 minute default when the env variable value cannot be parsed
+        expect(session.ISession.requestCompletionTimeout).toBe(30 * 60 * 1000);
     });
 
     it("should handle a request completion timeout and use the provided callback", async () => {

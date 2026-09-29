@@ -34,11 +34,19 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
             caseSensitive: commandParameters.arguments.caseSensitive,
             regex: commandParameters.arguments.regex,
             progressTask: task,
-            getOptions: { encoding: commandParameters.arguments.encoding },
-            searchExactName: commandParameters.arguments.searchExactName
+            listOptions: {
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
+            },
+            getOptions: {
+                encoding: commandParameters.arguments.encoding,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
+            },
+            searchExactName: commandParameters.arguments.searchExactName,
         };
 
-        commandParameters.response.progress.startBar({task});
+        commandParameters.response.progress.startBar({ task });
         const response = await Search.dataSets(session, searchOptions);
         commandParameters.response.progress.endBar();
 

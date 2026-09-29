@@ -103,5 +103,28 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
         defaultValue: undefined,
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         numericValueRange: [5, 600]
+    },
+
+    /**
+     * The TSO account number to use for z/OSMF data set and file operations
+     * @type {ICommandOptionDefinition}
+     */
+    tsoAccount: {
+        name: "tso-account",
+        description: "If specified, this value will be sent in the header X-IBM-Request-Acctnum" +
+        " for z/OSMF data set and file operations that support it.",
+        type: "string"
+    },
+
+    /**
+     * The TSO logon procedure to use for z/OSMF data set and file operations
+     * @type {ICommandOptionDefinition}
+     */
+    tsoProcedure: {
+        name: "tso-procedure",
+        aliases: ["tso-proc"],
+        description: "If specified, this value will be sent in the header X-IBM-Request-Proc" +
+        " for z/OSMF data set and file operations that support it.",
+        type: "string"
     }
 };

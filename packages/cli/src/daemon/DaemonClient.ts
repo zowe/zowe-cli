@@ -97,6 +97,10 @@ export class DaemonClient {
             }
         }
 
+        // Send dummy response to avoid empty error code handling.
+        const responsePayload: string = DaemonRequest.create({ exitCode: 0 });
+        this.mClient.write(responsePayload);
+
         this.mClient.end();
         this.mServer.close();
     }

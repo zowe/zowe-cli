@@ -18,7 +18,11 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class UssHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
+        const zosFilesOptions: IZosFilesOptions = {
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
+        };
         return Delete.ussFile(session, commandParameters.arguments.fileName, commandParameters.arguments.recursive, zosFilesOptions);
     }
 }

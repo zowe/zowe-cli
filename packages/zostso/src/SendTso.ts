@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, Headers } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 import { TsoValidator } from "./TsoValidator";
-import { noDataInput, noServletKeyInput, TsoConstants } from "./TsoConstants";
+import { noDataInput, noServletKeyInput, TsoConstants, tsoPromptTimeout } from "./TsoConstants";
 import { ISendTsoParms } from "./doc/input/ISendTsoParms";
 import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { ICollectedResponses } from "./doc/ICollectedResponses";
@@ -86,20 +86,23 @@ export class SendTso {
         const tsos: IZosmfTsoResponse[] = [];
         tsos.push(tso);
         let messages: string = "";
+        const startTime = Date.now();
         while (!done) {
+            if (Date.now() - startTime > TsoConstants.DEFAULT_PROMPT_TIMEOUT) {
+                throw new ImperativeError({msg: tsoPromptTimeout.message});
+            }
             if (!(tso.tsoData == null)) {
                 tso.tsoData.forEach((data) => {
                     if (data[TsoConstants.TSO_MESSAGE]) {
                         messages += data[TsoConstants.TSO_MESSAGE].DATA + "\n";
-                    } else if (data[TsoConstants.TSO_PROMPT]) {
-                        // handle case where we get a PROMPT but no data has been accumulated yet
-                        if (messages !== "") {
-                            done = true;
-                        } else {
-                            // TSO PROMPT reached without getting any data, retrying
-                        }
+                    } else if (data[TsoConstants.TSO_PROMPT] && messages !== "") {
+                        // ignore a PROMPT reached before any data has been accumulated yet
+                        done = true;
                     }
                 });
+            } else {
+                // No content returned yet - debounce briefly before polling again
+                await new Promise((resolve) => setTimeout(resolve, TsoConstants.DEFAULT_NO_DATA_DEBOUNCE));
             }
             if (!done) {
                 tso = await SendTso.getDataFromTSO(session, tso.servletKey);

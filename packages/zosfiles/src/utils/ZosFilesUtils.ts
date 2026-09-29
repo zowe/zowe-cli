@@ -21,6 +21,7 @@ import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { IDataSet } from "../doc/IDataSet";
+import { IZosFilesOptions } from "../doc/IZosFilesOptions";
 
 /**
  * Common IO utilities
@@ -50,7 +51,7 @@ export class ZosFilesUtils {
      */
     public static getDirsFromDataSet(dataSet: string) {
         if (IO.fileEvaluatesToDir(dataSet)) {
-            throw new ImperativeError({msg: "The data set name contains illegal characters."});
+            throw new ImperativeError({ msg: "The data set name contains illegal characters." });
         }
         let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), path.posix.sep).toLowerCase();
         if (localDirectory.indexOf("(") >= 0 && localDirectory.indexOf(")") >= 0) {
@@ -58,7 +59,7 @@ export class ZosFilesUtils {
             localDirectory = localDirectory.slice(0, -1);
         }
         if (IO.containsBacktrack(localDirectory) || localDirectory.includes(path.posix.sep + path.posix.sep)) {
-            throw new ImperativeError({msg: "The generated data set file path contains illegal backtracking."});
+            throw new ImperativeError({ msg: "The generated data set file path contains illegal backtracking." });
         }
         return localDirectory;
     }
@@ -203,10 +204,26 @@ export class ZosFilesUtils {
         }
 
         if (options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
         }
 
         return reqHeaders;
+    }
+
+    /**
+     * Get optional z/OSMF headers related to the tsoAccount and tsoProcedure z/OSMF profile options.
+     * @param options ZosFilesOptions which may contain tsoAccount or tsoProcedure
+     * @returns {IHeaderContent[]} any z/OSMF headers you should add to your request based on the options.
+     */
+    public static generateTsoHeaders(options: IZosFilesOptions): IHeaderContent[] {
+        const headers: IHeaderContent[] = [];
+        if (options.tsoAccount) {
+            headers.push({ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: options.tsoAccount });
+        }
+        if (options.tsoProcedure) {
+            headers.push({ [ZosmfHeaders.X_IBM_REQUEST_PROC]: options.tsoProcedure });
+        }
+        return headers;
     }
 
     /**
@@ -325,8 +342,10 @@ export class ZosFilesUtils {
             ];
 
             if (options.responseTimeout != null) {
-                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
+
+            headers.push(...ZosFilesUtils.generateTsoHeaders(options));
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
@@ -357,4 +376,5 @@ export class ZosFilesUtils {
             };
         }
     }
+
 }

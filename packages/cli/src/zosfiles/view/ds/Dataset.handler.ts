@@ -33,7 +33,9 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 volume: commandParameters.arguments.volumeSerial,
                 range: commandParameters.arguments.range,
                 responseTimeout: commandParameters.arguments.responseTimeout,
-                task: task
+                task: task,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             }
         );
         return {
