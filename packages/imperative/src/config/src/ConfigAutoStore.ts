@@ -20,6 +20,7 @@ import { ISession } from "../../rest/src/session/doc/ISession";
 import { Session } from "../../rest/src/session/Session";
 import * as SessConstants from "../../rest/src/session/SessConstants";
 import { AUTH_TYPE_TOKEN, TOKEN_TYPE_APIML } from "../../rest/src/session/SessConstants";
+import { AuthOrder, PropUse } from "../../rest/src/session/AuthOrder";
 import { Logger } from "../../logger";
 import {
     IConfigAutoStoreFindActiveProfileOpts,
@@ -53,7 +54,10 @@ export class ConfigAutoStore {
 
         for (const profType of profileTypes) {
             const profileMatch = ImperativeConfig.instance.loadedConfig.profiles?.find(p => p.type === profType);
-            if (profileMatch != null && opts.profileProps.every(propName => propName in profileMatch.schema.properties)) {
+            if (profileMatch != null && opts.profileProps.every(propName =>
+                propName in profileMatch.schema.properties ||
+                AuthOrder.getPropNmFor(propName, PropUse.IN_SESS) in profileMatch.schema.properties
+            )) {
                 return [profType, ConfigUtils.getActiveProfileName(profType, opts.params?.arguments, opts.defaultProfileName)];
             }
         }
@@ -153,7 +157,7 @@ export class ConfigAutoStore {
             return;
         }
 
-        let profileProps = opts.propsToStore.map(propName => propName === "hostname" ? "host" : propName);
+        let profileProps = opts.propsToStore.map(propName => propName === "hostname" ? "host" : AuthOrder.getPropNmFor(propName, PropUse.IN_CFG));
         const profileData = this._findActiveProfile({ ...opts, profileProps });
         if (profileData == null && opts.profileName == null && opts.profileType == null) {
             return;
@@ -232,8 +236,12 @@ export class ConfigAutoStore {
             const foundLayer = config.api.layers.find(config.api.profiles.getProfileNameFromPath(propProfilePath));
             if (foundLayer != null) config.api.layers.activate(foundLayer.user, foundLayer.global);
 
-            const sessCfgPropName = propName === "host" ? "hostname" : propName;
-            config.set(`${propProfilePath}.properties.${propName}`, opts.sessCfg[sessCfgPropName], {
+            const sessCfgPropName = propName === "host" ? "hostname" : AuthOrder.getPropNmFor(propName, PropUse.IN_SESS);
+            const propVal = opts.sessCfg[sessCfgPropName] ?? opts.sessCfg[propName];
+            const targetPropName = profileSchema?.properties[propName] == null &&
+                profileSchema?.properties[AuthOrder.getPropNmFor(propName, PropUse.IN_SESS)] != null ?
+                AuthOrder.getPropNmFor(propName, PropUse.IN_SESS) : propName;
+            config.set(`${propProfilePath}.properties.${targetPropName}`, propVal, {
                 secure: opts.setSecure ?? isSecureProp
             });
         }
@@ -287,9 +295,10 @@ export class ConfigAutoStore {
         }
 
         for (const propName of Object.keys(ImperativeConfig.instance.loadedConfig.baseProfile.schema.properties)) {
-            const sessCfgPropName = propName === "host" ? "hostname" : propName;
-            if (opts.sessCfg[sessCfgPropName] != null) {
-                (baseSessCfg as any)[sessCfgPropName] = opts.sessCfg[sessCfgPropName];
+            const sessCfgPropName = propName === "host" ? "hostname" : AuthOrder.getPropNmFor(propName, PropUse.IN_SESS);
+            const propVal = opts.sessCfg[sessCfgPropName] ?? opts.sessCfg[propName];
+            if (propVal != null) {
+                (baseSessCfg as any)[sessCfgPropName] = propVal;
             }
         }
 
