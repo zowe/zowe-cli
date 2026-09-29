@@ -155,5 +155,39 @@ describe("Modify Jobs API", () => {
             expect(err).toBeDefined();
             expect(err.message).toContain("At least one option needs to be selected for modification: `hold`, `release`, `jobclass`");
         });
+
+        it("should reject a jobname that would change the request path without sending a request", async () => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn();
+            let err: any;
+            try {
+                await ModifyJobs.modifyJob(
+                    fakeSession,
+                    {jobid: fakeJobID, jobname: "../../../../zosmf/restfiles/ds/PROD.APP.CONFIG"},
+                    {hold: true}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain("The job name");
+            expect(ZosmfRestClient.putExpectJSON).not.toHaveBeenCalled();
+        });
+
+        it("should reject a jobid that would change the request path without sending a request", async () => {
+            (ZosmfRestClient as any).putExpectJSON = jest.fn();
+            let err: any;
+            try {
+                await ModifyJobs.modifyJobCommon(
+                    fakeSession,
+                    {jobid: "JOB1/../../../../zosmf/restfiles/ds/PROD.APP.CONFIG", jobname: fakeJobName},
+                    {jobclass: fakeClass}
+                );
+            } catch (e) {
+                err = e;
+            }
+            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err.message).toContain("The job ID");
+            expect(ZosmfRestClient.putExpectJSON).not.toHaveBeenCalled();
+        });
     });
 });
