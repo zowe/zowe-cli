@@ -20,22 +20,24 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class FsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         let response;
-        if (commandParameters.arguments.path)
-        {
+        if (commandParameters.arguments.path) {
             response = await List.fsWithPath(session, {
                 path: commandParameters.arguments.path,
                 fsname: null,
                 maxLength: commandParameters.arguments.maxLength,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             });
         }
-        else
-        {
+        else {
             response = await List.fs(session, {
                 path: null,
                 fsname: commandParameters.arguments.fsname,
                 maxLength: commandParameters.arguments.maxLength,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             });
         }
 

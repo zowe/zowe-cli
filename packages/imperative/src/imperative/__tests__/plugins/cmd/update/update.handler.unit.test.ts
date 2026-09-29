@@ -83,13 +83,15 @@ describe("Plugin Management Facility update handler", () => {
      *
      * @param {string}   packageNameParm        expected package location that install was called with.
      * @param {string}   registry               expected registry that install was called with.
+     * @param {string}   [allowScripts=undefined] the value of allow-scripts expected to be passed.
      */
     const wasUpdateCallValid = (
         packageNameParm: string,
-        registry: string
+        registry: string,
+        allowScripts: string | undefined = undefined
     ) => {
         expect(mocks.updateSpy).toHaveBeenCalledWith(
-            packageNameParm, { location: registry, npmArgs: { registry } }
+            packageNameParm, { location: registry, npmArgs: { registry } }, allowScripts
         );
     };
 
@@ -186,6 +188,30 @@ describe("Plugin Management Facility update handler", () => {
         // Validate the call to login
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
         wasUpdateCallValid(resolveVal, localPackageRegistry);
+        wasUpdateSuccessful(params);
+    });
+
+    it("update specified plugin with allow-scripts option", async () => {
+        const fileJson: IPluginJson = {
+            "imperative-sample-plugin": {
+                package: packageName,
+                location: packageRegistry,
+                version: packageVersion
+            }
+        };
+
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson);
+
+        const handler = new UpdateHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = pluginName;
+        params.arguments.registry = packageRegistry;
+        params.arguments.allowScripts = "ibm_db";
+
+        await handler.process(params as IHandlerParameters);
+
+        wasUpdateCallValid(packageName, packageRegistry, "ibm_db");
         wasUpdateSuccessful(params);
     });
 });

@@ -12,6 +12,10 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { ISendResponse, IZosmfTsoResponse, SendTso } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { TsoConstants } from "../../src/TsoConstants";
+
+// Captured before any test gets a chance to permanently overwrite the static method below
+const originalGetAllResponses = SendTso.getAllResponses;
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -39,6 +43,29 @@ const ZOSMF_RESPONSE: IZosmfTsoResponse = {
             DATA: "some response"
         }
     }]
+};
+const RESPONSE_WITH_PROMPT: IZosmfTsoResponse = {
+    servletKey: "key",
+    queueID: "4",
+    ver: "0100",
+    reused: false,
+    timeout: false,
+    sessionID: "0x37",
+    tsoData: [{
+        "TSO PROMPT": {
+            VERSION: "0100",
+            HIDDEN: "N"
+        }
+    }]
+};
+const RESPONSE_WITH_NO_DATA: IZosmfTsoResponse = {
+    servletKey: "key",
+    queueID: "4",
+    ver: "0100",
+    reused: false,
+    timeout: false,
+    sessionID: "0x37",
+    tsoData: undefined
 };
 
 describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {
@@ -141,6 +168,61 @@ describe("TsoSend getDataFromTSO", () => {
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("TsoSend getAllResponses", () => {
+    beforeEach(() => {
+        // An earlier suite permanently overwrites this static method with a mock, so restore it here
+        (SendTso.getAllResponses as any) = originalGetAllResponses;
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+    });
+
+    it("should collect messages and stop once a TSO PROMPT is reached", async () => {
+        (SendTso.getDataFromTSO as any) = jest.fn().mockResolvedValueOnce(RESPONSE_WITH_PROMPT);
+
+        const response = await SendTso.getAllResponses(PRETEND_SESSION, ZOSMF_RESPONSE);
+
+        expect(response.messages).toEqual("some response\n");
+        expect(response.tsos).toEqual([ZOSMF_RESPONSE]);
+        expect(SendTso.getDataFromTSO as any).toHaveBeenCalledTimes(1);
+    });
+
+    it("should debounce for 100ms and poll again when no tsoData is returned", async () => {
+        jest.useFakeTimers();
+        const getDataFromTSOMock = jest.fn()
+            .mockResolvedValueOnce(RESPONSE_WITH_NO_DATA)
+            .mockResolvedValueOnce(RESPONSE_WITH_PROMPT);
+        (SendTso.getDataFromTSO as any) = getDataFromTSOMock;
+
+        const responsePromise = SendTso.getAllResponses(PRETEND_SESSION, ZOSMF_RESPONSE);
+        await jest.advanceTimersByTimeAsync(TsoConstants.DEFAULT_NO_DATA_DEBOUNCE);
+        const response = await responsePromise;
+
+        expect(getDataFromTSOMock).toHaveBeenCalledTimes(2);
+        expect(response.messages).toEqual("some response\n");
+    });
+
+    it("should throw an error when the TSO PROMPT timeout is exceeded", async () => {
+        (SendTso.getDataFromTSO as any) = jest.fn().mockResolvedValue(ZOSMF_RESPONSE);
+        jest.spyOn(Date, "now")
+            .mockReturnValueOnce(0) // start time
+            .mockReturnValueOnce(0) // first loop iteration check, timeout not yet exceeded
+            .mockReturnValue(TsoConstants.DEFAULT_PROMPT_TIMEOUT + 1); // subsequent checks exceed the timeout
+
+        let error: ImperativeError;
+        try {
+            await SendTso.getAllResponses(PRETEND_SESSION, ZOSMF_RESPONSE);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Timed out waiting for a TSO PROMPT");
     });
 });
 

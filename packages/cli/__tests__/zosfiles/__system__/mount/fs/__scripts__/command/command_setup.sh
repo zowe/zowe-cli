@@ -9,7 +9,7 @@ VOLS=$7
 set -e
 
 echo "================Z/OS USS ISSUE SSH==============="
-zowe zos-uss issue ssh "$cmd" --host $HOST --port $PORT --user $USER --password $PASS
+zowe zos-uss issue ssh "$cmd" --host $HOST --port $PORT --user $USER --password $PASS --insecure
 if [ $? -gt 0 ]
 then
     exit $?

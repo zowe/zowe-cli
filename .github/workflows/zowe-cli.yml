@@ -48,6 +48,11 @@ jobs:
       OS: ${{ matrix.os }}
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
+      PACKAGE_CLI: ${{ matrix.os == 'ubuntu-22.04' && matrix.node-version == '22.x' }}
+
+    permissions:
+      contents: read
+      pull-requests: write
 
     timeout-minutes: 90
 
@@ -57,10 +62,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ matrix.node-version }}
         check-latest: true
@@ -76,7 +81,7 @@ jobs:
     - name: Install Rust toolchain
       id: install-rust
       if: github.event.inputs.test-type != 'nodejs'
-      uses: dtolnay/rust-toolchain@stable
+      uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
 
     - name: Build Source
       id: build
@@ -92,7 +97,7 @@ jobs:
     - name: Archive Binary
       if: github.event.inputs.test-type != 'nodejs'
       id: upload-binary
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       # Ignore conflict if multiple jobs upload artifact at same time: https://github.com/actions/upload-artifact/issues/506
       continue-on-error: true
       with:
@@ -115,7 +120,7 @@ jobs:
     - name: Unlock Keyring
       id: unlock-keyring
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-22.04' }}
-      uses: t1m0thyj/unlock-keyring@v1
+      uses: t1m0thyj/unlock-keyring@cbcf205c879ebd86add70bab3a6abfcce59a5cae # v1
 
     - name: Start Daemon
       id: start-daemon
@@ -132,17 +137,74 @@ jobs:
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: ${{ runner.os }}-${{ matrix.node-version }}-results
         path: __tests__/__results__/
 
     - name: Upload Results to Codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       with:
         env_vars: OS,NODE
         token: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Package CLI
+      id: package
+      if: ${{ always() && steps.build.outcome == 'success' && env.PACKAGE_CLI == 'true' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npm run package
+
+    - name: Archive CLI Package
+      id: cli-artifact-upload
+      if: ${{ always() && steps.package.outcome == 'success' }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: zowe-cli
+        path: packages/cli/zowe-cli-*.tgz
+
+    # This job runs on "push" rather than "pull_request" for branches in this repo, so the PR must be looked up
+    - name: Find PR for Branch
+      id: find-pr
+      if: ${{ always() && github.event_name == 'push' && steps.cli-artifact-upload.outcome == 'success' }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        HEAD_REF: ${{ github.ref_name }}
+      run: |
+        number=$(gh pr list --head "$HEAD_REF" --state open --json number --jq '.[0].number // empty')
+        echo "number=$number" >> "$GITHUB_OUTPUT"
+
+    - name: Comment on PR
+      if: ${{ always() && steps.find-pr.outputs.number != '' }}
+      uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v2
+      with:
+        header: Client artifacts
+        number: ${{ steps.find-pr.outputs.number }}
+        message: |
+          Client artifacts:
+           - CLI: ${{ steps.cli-artifact-upload.outputs.artifact-url }}
+
+  smoke-test:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Use Node.js LTS
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      with:
+        node-version: 'lts/*'
+
+    - name: Download CLI Package
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: zowe-cli
+
+    - name: Install Offline
+      run: sudo unshare -n npm install -g zowe-cli-*.tgz
+
+    - name: Test Zowe CLI
+      run: zowe --version
 
   release:
     if: github.event_name == 'push' && github.ref_protected
@@ -155,7 +217,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -163,7 +225,7 @@ jobs:
 
     # Use Node 20. Currently the latest.
     - name: Use Node.js 20
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: '20'
 
@@ -173,7 +235,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@v1
+    - uses: zowe-actions/octorelease@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1.5.6
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}

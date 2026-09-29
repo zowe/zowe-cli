@@ -152,10 +152,7 @@ export class EnvQuery {
      * @returns True if we find a problem. False otherwise.
      */
     private static detectProbVal(value: string, probTest: IProbTest): boolean {
-        // eslint-disable-next-line unused-imports/no-unused-vars,@typescript-eslint/no-unused-vars
-        const semver = require('semver');
-        const probExprWithVals = probTest.probExpr.replace(/{val}/g, value);
-        return eval(probExprWithVals);
+        return probTest.probExpr(value);
     }
 
     // __________________________________________________________________________
@@ -172,8 +169,7 @@ export class EnvQuery {
         const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
             const spawnResult = spawn.sync(cmdToRun, args, {
-                stdio: ioOpts,
-                shell: true
+                stdio: ioOpts
             });
             if (spawnResult.stdout && spawnResult.stdout.length > 0) {
                 // remove any trailing newline from the output

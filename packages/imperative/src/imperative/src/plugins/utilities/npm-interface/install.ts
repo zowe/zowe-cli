@@ -84,9 +84,16 @@ export const updateExtendersJson = (
  *                                          absolute path. Also, if this is true, we will not update
  *                                          the plugins.json file since we are not adding/modifying
  *                                          it.
+ * @param {string} [allowScripts] A comma-separated list of package names that are allowed to run
+ *                                their npm install scripts. Zowe passes this list to npm as its
+ *                                own `--allow-scripts` option. npm 12 blocks these scripts unless
+ *                                the package is in the list. Older versions of npm ignore it.
+ *
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false, verbose = false) {
+export async function install(
+    packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false, verbose = false, allowScripts?: string
+) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -124,6 +131,7 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         installPackages(npmPackage, {
             prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
             ...registryInfo.npmArgs,
+            allowScripts,
         }, verbose);
 
         // We fetch the package name and version of newly installed plugin

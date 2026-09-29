@@ -25,6 +25,33 @@ describe("Config Utils", () => {
         jest.restoreAllMocks();
     });
 
+    describe("hasUnsafeOrEmptyProperty", () => {
+        it("should flag paths that contain a reserved property name", () => {
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("profiles.__proto__.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("profiles.constructor.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("profiles.prototype.properties.host")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("__proto__")).toBe(true);
+        });
+
+        it("should flag paths that contain an empty segment", () => {
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty(".lpar1")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("lpar1.")).toBe(true);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("lpar1..zosmf")).toBe(true);
+        });
+
+        it("should not flag normal config property paths", () => {
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("profiles.lpar1.properties.host")).toBe(false);
+            // "profiles" as a profile name is legal and must not be flagged
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("profiles.profiles.properties.host")).toBe(false);
+            expect(ConfigUtils.hasUnsafeOrEmptyProperty("defaults.zosmf")).toBe(false);
+        });
+
+        it("should expose the reserved property names", () => {
+            expect([...ConfigUtils.UNSAFE_PROP_NAMES].sort()).toEqual(["__proto__", "constructor", "prototype"]);
+        });
+    });
+
     describe("coercePropValue", () => {
         it("should parse value when type is boolean", () => {
             expect(ConfigUtils.coercePropValue("false", "boolean")).toBe(false);

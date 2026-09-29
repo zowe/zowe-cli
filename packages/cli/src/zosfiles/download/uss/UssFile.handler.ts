@@ -44,6 +44,8 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
                 responseTimeout: commandParameters.arguments.responseTimeout,
                 overwrite: commandParameters.arguments.overwrite,
                 attributes,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             }
         );
     }

@@ -50,6 +50,12 @@ Object {
 
 exports[`ZosFilesUtils CONSTANTS should check if constant files have the expected constants loaded 2`] = `
 Object {
+  "aliasResolvedSuccessfully": Object {
+    "message": "Alias '%s' resolved to data set '%s'.",
+  },
+  "aliasTargetNotFound": Object {
+    "message": "Could not determine the target data set for the specified alias. Ensure the alias exists and is cataloged.",
+  },
   "amsCommandExecutedSuccessfully": Object {
     "message": "AMS command executed successfully.",
   },

@@ -64,12 +64,19 @@ pub struct DaemonResponse {
     pub stdinLength: Option<i32>,
     pub stdin: Option<String>,
     pub user: Option<String>,
+    // Secret token read from the owner-only daemon pid file. Echoing it back
+    // proves to the daemon that we are the user that owns it.
+    pub token: Option<String>,
 }
 
 #[derive(Deserialize)]
 pub struct DaemonPidForUser {
     pub user: String,
     pub pid: i32,
+    // Secret token written by the daemon into the owner-only pid file. Older
+    // daemons do not write this field, so it defaults to None when absent.
+    #[serde(default)]
+    pub token: Option<String>,
 }
 
 pub enum CmdShell {

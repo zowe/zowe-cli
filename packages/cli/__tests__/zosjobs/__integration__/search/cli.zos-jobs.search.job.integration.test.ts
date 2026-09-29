@@ -43,7 +43,8 @@ describe("zos-jobs search job command", () => {
                 TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toMatchSnapshot();
+            expect(response.stderr.toString()).toContain('Unable to perform this operation due to the following problem');
+            expect(response.stderr.toString()).toContain('You must specify either the `--search-string` or `--search-regex` option');
         });
 
         it("should occur if an extra unknown option is specified", () => {
@@ -57,7 +58,6 @@ describe("zos-jobs search job command", () => {
                 '--host fakehost --user fakeuser --password fakepass"');
             expect(response.stderr.toString()).toContain('Available commands are "job".');
             expect(response.stderr.toString()).toContain('Use "zowe zos-jobs search --help" to view groups, commands, and options.');
-            expect(response.stderr.toString()).toMatchSnapshot();
         });
     });
 

@@ -137,6 +137,30 @@ describe("Delete", () => {
             );
         });
 
+        it("should send a request with tsoAccount and tsoProcedure", async () => {
+            const options: IDeleteDatasetOptions = {
+                volume: "ABCD",
+                tsoAccount: "TSO1234",
+                tsoProcedure: "MYPROC"
+            };
+
+            const apiResponse = await Delete.dataSet(dummySession, dataset, options);
+
+            expect(apiResponse).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+            });
+
+            expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
+                [ZosmfHeaders.ACCEPT_ENCODING,
+                    {"X-IBM-Request-Acctnum": "TSO1234"},
+                    {"X-IBM-Request-Proc": "MYPROC"}]
+            );
+        });
+
         it("should handle an error from the ZosmfRestClient", async () => {
             const error = new Error("This is a test");
 

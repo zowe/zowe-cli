@@ -9,9 +9,11 @@
 *
 */
 
-import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
-import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
+import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions, ZosFilesUtils, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import {
+    AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
+    TextUtils, IDiffNameOptions, CliUtils, IO
+} from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
 import { existsSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
@@ -64,6 +66,23 @@ export interface ILocalFile {
  */
 export class EditUtilities {
     /**
+     * Build the per-user temp directory for edit files and ensure it is safe to use.
+     * The directory name includes a per-user token so co-tenants on a shared OS temp location get
+     * separate directories. With a shared name the first user to run would own the directory and
+     * {@link ZosFilesUtils.ensureSafeTempDir} would then reject it for everyone else. The token is
+     * derived from the current user (not random) so the path stays stable across runs and the
+     * stash remains re-findable.
+     * @param {EditFileType} fileType - "uss" or "ds"
+     * @returns {string} - absolute path to the ensured, per-user temp directory
+     * @memberof EditUtilities
+     */
+    private static ensureEditTempDir(fileType: EditFileType): string {
+        const dir = path.join(tmpdir(), `zowe-edit-${fileType}-${ZosFilesUtils.getUserTempToken()}`);
+        ZosFilesUtils.ensureSafeTempDir(dir);
+        return dir;
+    }
+
+    /**
      * Builds a temp path where local file will be saved. If uss file, file name will be hashed
      * to prevent any conflicts with file naming. A given filename will always result in the
      * same unique file path.
@@ -71,21 +90,27 @@ export class EditUtilities {
      * @returns {Promise<string>} - returns unique file path for temp file
      * @memberof EditUtilities
      */
-    public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
+    public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string> {
         // find the appropriate extension for either uss or ds
         const ussExt = lfFile.fileType === 'uss' && lfFile.fileName.includes(".") ? lfFile.fileName.split(".").pop() : "";
-        let ext = "."  + (lfFile.fileType === 'uss' ? ussExt : commandParameters.arguments.extension ?? "txt");
+        let ext = "." + (lfFile.fileType === 'uss' ? ussExt : commandParameters.arguments.extension ?? "txt");
         ext = ext === "." ? "" : ext;
-        if (lfFile.fileType === 'uss'){
+        if (lfFile.fileType === 'uss') {
             // Hash in a repeatable way if uss fileName (in case presence of special chars)
             const crypto = require("crypto");
             let hash = crypto.createHash('sha256').update(lfFile.fileName).digest('hex');
             // shorten hash
             const hashLen = 10;
             hash = hash.slice(0, hashLen);
-            return path.join(tmpdir(), path.parse(lfFile.fileName).name + '_' + hash + ext);
+            const ussDir = this.ensureEditTempDir("uss");
+            return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        return path.join(tmpdir(), lfFile.fileName + ext);
+        const dsDir = this.ensureEditTempDir("ds");
+        const fullPath = path.join(dsDir, lfFile.fileName + ext);
+        if (IO.fileEvaluatesToDir(lfFile.fileName) || IO.containsBacktrack(lfFile.fileName + ext) || !IO.isSubPath(dsDir, fullPath)) {
+            throw new ImperativeError({msg: "The data set name contains illegal characters."});
+        }
+        return fullPath;
     }
 
     /**
@@ -94,10 +119,10 @@ export class EditUtilities {
      * @returns {Promise<boolean>} - promise that resolves to true if stash exists or false if doesn't
      * @memberof EditUtilities
      */
-    public static async checkForStash(tempPath: string): Promise<boolean>{
+    public static async checkForStash(tempPath: string): Promise<boolean> {
         try {
             return existsSync(tempPath);
-        } catch(err) {
+        } catch (err) {
             throw new ImperativeError({
                 msg: 'Failure when checking for stash. Command terminated.',
                 causeErrors: err
@@ -112,11 +137,11 @@ export class EditUtilities {
      * @returns {Promise<boolean>} - promise whose resolution depends on user input
      * @memberof EditUtilities
      */
-    public static async promptUser(prompt: Prompt, conflict?: boolean, promptTexts?: string[]): Promise<boolean>{
+    public static async promptUser(prompt: Prompt, conflict?: boolean, promptTexts?: string[]): Promise<boolean> {
         let input;
         let promptText;
         const promptPrefix = conflict ? 'CONFLICT: ' : '';
-        switch (prompt){
+        switch (prompt) {
             case Prompt.useStash:
                 promptText = 'Keep and continue editing found temp file? y/n';
                 break;
@@ -141,7 +166,7 @@ export class EditUtilities {
         do {
             input = await CliUtils.readPrompt(TextUtils.chalk.green(promptText));
         }
-        while (input != null && input.toLowerCase() != 'y' &&  input.toLowerCase() != 'n');
+        while (input != null && input.toLowerCase() != 'y' && input.toLowerCase() != 'n');
         if (input == null) {
             throw new ImperativeError({
                 msg: TextUtils.chalk.red('No input provided. Command terminated. Temp file will persist.')
@@ -157,9 +182,18 @@ export class EditUtilities {
      * @param {boolean} useStash - should be true if don't want to overwrite local file when refreshing etag
      * @returns {ILocalFile}
      */
-    public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean): Promise<ILocalFile>{
-        // account for both useStash|!useStash and uss|ds when downloading
-        const tempPath = useStash ? path.posix.join(tmpdir(), "toDelete.txt") : lfFile.tempPath;
+    public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean, options: IZosFilesOptions = {}): Promise<ILocalFile> {
+        // account for both useStash|!useStash and uss|ds when downloading.
+        // When only refreshing the etag (useStash), download to a throwaway scratch file with a
+        // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.
+        let scratchPath!: string;
+        if (useStash) {
+            const crypto = require("crypto");
+            const randomNameBytes = 16;
+            const scratchDir = this.ensureEditTempDir(lfFile.fileType);
+            scratchPath = path.join(scratchDir, `.etag-refresh-${crypto.randomBytes(randomNameBytes).toString("hex")}`);
+        }
+        const tempPath = useStash ? scratchPath : lfFile.tempPath;
         const args: [AbstractSession, string, IDownloadOptions] = [
             session,
             lfFile.fileName,
@@ -167,19 +201,20 @@ export class EditUtilities {
                 returnEtag: true,
                 binary: lfFile.binary,
                 encoding: lfFile.encoding,
-                file: tempPath
+                file: tempPath,
+                ...options,
             }
         ];
 
-        if(lfFile.fileType === 'uss'){
+        if (lfFile.fileType === 'uss') {
             lfFile.zosResp = await Download.ussFile(...args);
             lfFile.encoding = args[2].encoding;
-        }else{
+        } else {
             lfFile.zosResp = await Download.dataSet(...args);
         }
 
-        if (useStash){
-            await this.destroyTempFile(path.posix.join(tmpdir(), "toDelete.txt"));
+        if (useStash) {
+            await this.destroyTempFile(scratchPath);
         }
         return lfFile;
     }
@@ -195,7 +230,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async fileComparison(session: AbstractSession, commandParameters: IHandlerParameters, lfFile: ILocalFile,
-        promptUser?: boolean): Promise<IZosFilesResponse>{
+        promptUser?: boolean): Promise<IZosFilesResponse> {
         const handlerDs = new LocalfileDatasetHandler();
         const handlerUss = new LocalfileUssHandler();
         const helper = new CompareBaseHelper(commandParameters);
@@ -209,15 +244,15 @@ export class EditUtilities {
 
         const lf: Buffer = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mf: string | Buffer;
-        try{
-            if (commandParameters.positionals[2].toString().includes('d')){
+        try {
+            if (commandParameters.positionals[2].toString().includes('d')) {
                 mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
-            }else{
+            } else {
                 mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);
             }
-        }catch(err){
+        } catch (err) {
             throw new ImperativeError({
-                msg: TextUtils.chalk.red(err+'\nCommand terminated. Issue retrieving files for comparison.'),
+                msg: TextUtils.chalk.red(err + '\nCommand terminated. Issue retrieving files for comparison.'),
                 causeErrors: err
             });
         }
@@ -225,7 +260,7 @@ export class EditUtilities {
         const localContent = helper.prepareContent(lf);
         const remoteContent = helper.prepareContent(mf);
         let viewUpdatedRemote = !promptUser;
-        if (localContent !== remoteContent){
+        if (localContent !== remoteContent) {
             lfFile.conflict = true;
         }
         if (promptUser && lfFile.conflict) {
@@ -235,10 +270,10 @@ export class EditUtilities {
             return;
         }
         const diffResponse = await helper.getResponse(localContent, remoteContent, options);
-        if (!helper.browserView){
-            if (diffResponse){
-                commandParameters.response.console.log('\n'+diffResponse.commandResponse);
-            }else{
+        if (!helper.browserView) {
+            if (diffResponse) {
+                commandParameters.response.console.log('\n' + diffResponse.commandResponse);
+            } else {
                 throw new ImperativeError({
                     msg: TextUtils.chalk.red('Diff was unable to be generated')
                 });
@@ -253,8 +288,8 @@ export class EditUtilities {
      * @param {string} editor - optional parameter originally supplied by args
      * @memberof EditUtilities
      */
-    public static async makeEdits(lfFile: ILocalFile, editor?: string): Promise<boolean>{
-        if (lfFile.guiAvail){
+    public static async makeEdits(lfFile: ILocalFile, editor?: string): Promise<boolean> {
+        if (lfFile.guiAvail) {
             ProcessUtils.openInEditor(lfFile.tempPath, editor, true);
         }
         return await this.promptUser(Prompt.overwriteRemote, lfFile.conflict);
@@ -272,7 +307,7 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async uploadEdits(session: AbstractSession, commandParameters: IHandlerParameters,
-        lfFile: ILocalFile): Promise<[boolean, boolean]>{
+        lfFile: ILocalFile): Promise<[boolean, boolean]> {
         const etagMismatchCode = 412;
         const args: [AbstractSession, string, string, IUploadOptions] = [
             session,
@@ -282,29 +317,31 @@ export class EditUtilities {
                 binary: lfFile.binary,
                 encoding: lfFile.encoding,
                 etag: lfFile.zosResp.apiResponse.etag,
-                returnEtag: true
+                returnEtag: true,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             },
         ];
         let response: IZosFilesResponse;
 
-        try{
-            if (lfFile.fileType === 'uss'){
+        try {
+            if (lfFile.fileType === 'uss') {
                 response = await Upload.fileToUssFile(...args);
-            }else{
+            } else {
                 response = await Upload.fileToDataset(...args);
             }
-            if (response.success){
+            if (response.success) {
                 // If matching etag & successful upload, destroy temp file -> END
                 await this.destroyTempFile(lfFile.tempPath);
                 return [true, false];
             } else {
-                if (response.commandResponse.includes('412')){
+                if (response.commandResponse.includes('412')) {
                     return await this.etagMismatch(session, commandParameters, lfFile);
                     //returns [uploaded, canceled]
                 }
             }
-        }catch(err){
-            if (err.errorCode && err.errorCode == etagMismatchCode){
+        } catch (err) {
+            if (err.errorCode && err.errorCode == etagMismatchCode) {
                 return await this.etagMismatch(session, commandParameters, lfFile);
             }
         }
@@ -324,30 +361,33 @@ export class EditUtilities {
      * @memberof EditUtilities
      */
     public static async etagMismatch(session: AbstractSession, commandParameters: IHandlerParameters,
-        lfFile: ILocalFile): Promise<[boolean, boolean]>{
+        lfFile: ILocalFile): Promise<[boolean, boolean]> {
         lfFile.conflict = true;
-        try{
+        try {
             //alert user that the version of document they've been editing has changed
             //ask if they want to see changes on the remote file before continuing
             const viewUpdatedRemote: boolean = await this.promptUser(Prompt.viewUpdatedRemote, lfFile.conflict);
-            if (viewUpdatedRemote){
+            if (viewUpdatedRemote) {
                 await this.fileComparison(session, commandParameters, lfFile);
             }
             //ask if they want to keep editing or upload despite changes to remote
             const continueToUpload: boolean = await this.promptUser(Prompt.continueToUpload, lfFile.conflict);
             // refresh etag, keep stash
-            await this.localDownload(session, lfFile, true);
-            if (!continueToUpload){
+            await this.localDownload(session, lfFile, true, {
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
+            });
+            if (!continueToUpload) {
                 // create more edits & open stash/lf in editor
                 const readyToUpload = await this.makeEdits(lfFile, commandParameters.arguments.editor);
-                if (readyToUpload){
+                if (readyToUpload) {
                     return await EditUtilities.uploadEdits(session, commandParameters, lfFile);
-                }else{
+                } else {
                     return [false, true]; //[uploaded, canceled]
                 }
             }
             return [false, false]; //[uploaded, canceled]
-        }catch(err){
+        } catch (err) {
             throw new ImperativeError({
                 msg: TextUtils.chalk.red('Command terminated. Issue with etag. Temp file will persist.'),
                 causeErrors: err
@@ -360,7 +400,7 @@ export class EditUtilities {
      * @param {string} tempPath - unique file path for local file (stash)
      * @memberof EditUtilities
      */
-    public static async destroyTempFile(tempPath:string): Promise<void>{
+    public static async destroyTempFile(tempPath: string): Promise<void> {
         try {
             unlinkSync(tempPath);
         } catch (err) {

@@ -1,8 +1,9 @@
 [package]
 name = "zowe"
-version = "1.2.6"
+version = "1.2.7"
 authors = ["Zowe Project"]
-edition = "2018"
+edition = "2024"
+rust-version = "1.88"
 license = "EPL-2.0"
 repository = "https://github.com/zowe/zowe-cli"
 
@@ -23,9 +24,17 @@ tokio = { version = "1.44.2", features = ["io-util", "macros", "net", "rt-multi-
 whoami = "1.5.0"
 yansi = "0.5.1"
 
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
 [target.'cfg(windows)'.dependencies]
 fslock = "0.2.1"
-windows-sys = "0.52.0"
+windows-sys = { version = "0.52.0", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Pipes",
+    "Win32_System_Threading",
+] }
 
 [dev-dependencies]
 tokio-test = "0.4.4"

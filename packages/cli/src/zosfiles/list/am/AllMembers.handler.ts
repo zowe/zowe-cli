@@ -24,7 +24,9 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             attributes: commandParameters.arguments.attributes,
             maxLength: commandParameters.arguments.maxLength,
             pattern: commandParameters.arguments.pattern,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         });
         const invalidMemberCount = response.apiResponse.returnedRows - response.apiResponse.items.length;
         if (invalidMemberCount > 0) {

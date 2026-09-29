@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload, ZosFilesMessages } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, Delete, IListOptions, Invoke, IZosFilesResponse, List, Upload, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { format, inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -134,6 +134,26 @@ describe("List command group", () => {
 
                 try {
                     response = await List.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(2);
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+                expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
+            });
+
+            it("should list all members of a data set with tsoAccount", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await List.allMembers(REAL_SESSION, dsname, {tsoAccount: defaultSystem.tso.account});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -838,6 +858,78 @@ describe("List command group", () => {
         });
     });
 
+});
+
+describe("Resolve Alias", () => {
+    let aliasSession: Session;
+    let aliasTestEnv: ITestEnvironment<ITestPropertiesSchema>;
+    let targetDsn: string;
+    let aliasName: string;
+
+    beforeAll(async () => {
+        aliasTestEnv = await TestEnvironment.setUp({
+            testName: "zos_file_list_alias"
+        });
+        const aliasSystem = aliasTestEnv.systemTestProperties;
+        aliasSession = TestEnvironment.createZosmfSession(aliasTestEnv);
+
+        targetDsn = getUniqueDatasetName(`${aliasSystem.zosmf.user}.ZOSTEST.ALIAS`, false, 1);
+        aliasName = targetDsn + ".A";
+
+        // Create the target data set
+        await Create.dataSet(aliasSession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, targetDsn,
+            { volser: aliasSystem.datasets.vol });
+        await wait(waitTime);
+
+        // Define the alias pointing to the target data set
+        await Invoke.ams(aliasSession, [`DEFINE ALIAS (NAME('${aliasName}') RELATE('${targetDsn}'))`]);
+        await wait(waitTime);
+    });
+
+    afterAll(async () => {
+        // Clean up: delete alias first, then the target data set
+        try {
+            await Invoke.ams(aliasSession, [`DELETE '${aliasName}' ALIAS`]);
+        } catch (_) { /* ignore cleanup errors */ }
+        try {
+            await Delete.dataSet(aliasSession, targetDsn);
+        } catch (_) { /* ignore cleanup errors */ }
+        await TestEnvironment.cleanUp(aliasTestEnv);
+    });
+
+    it("should resolve an alias to its target data set", async () => {
+        let error;
+        let response: IZosFilesResponse;
+
+        try {
+            response = await List.resolveAlias(aliasSession, aliasName);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.apiResponse.targetDsn).toBe(targetDsn);
+        expect(response.apiResponse.alias).toBe(aliasName);
+    });
+
+    it("should throw an error for a non-existent alias", async () => {
+        let error;
+        let response: IZosFilesResponse;
+
+        try {
+            response = await List.resolveAlias(aliasSession, "NONEXISTENT.ALIAS.NAME");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeTruthy();
+    });
 });
 
 describe("List command group - encoded", () => {

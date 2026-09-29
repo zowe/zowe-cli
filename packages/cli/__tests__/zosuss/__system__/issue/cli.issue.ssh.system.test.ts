@@ -29,7 +29,9 @@ let password: string;
 let keyPassphrase: string;
 
 function checkResponse(response: any, expectStatus: number) {
-    expect(response.stderr.toString()).toBe("");
+    // These tests pass --insecure, which prints a host key verification warning to stderr.
+    const stderr = response.stderr.toString().replace(/Warning: SSH host key verification is disabled[^\n]*\n?/g, "").trim();
+    expect(stderr).toBe("");
     expect(response.status).toBe(expectStatus);
     expect(response.stdout.toString()).not.toMatch(Shell.startCmdFlag);
 }

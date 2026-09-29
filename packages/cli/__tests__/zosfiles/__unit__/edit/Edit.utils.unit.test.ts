@@ -16,7 +16,7 @@ import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
 import * as fs from "fs";
-import { Download, IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IZosFilesResponse, Upload, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import LocalfileDatasetHandler from "../../../../src/zosfiles/compare/lf-ds/LocalfileDataset.handler";
 import { CompareBaseHelper } from "../../../../src/zosfiles/compare/CompareBaseHelper";
 import LocalfileUssHandler from "../../../../src/zosfiles/compare/lf-uss/LocalfileUss.handler";
@@ -76,6 +76,7 @@ describe("Files Edit Utilities", () => {
 
     beforeEach(async () => {
         jest.resetAllMocks();
+        jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
     });
     describe("buildTempPath()", () => {
         it("should be able to build the correct temp path with ext argument - uss", async () => {
@@ -96,6 +97,49 @@ describe("Files Edit Utilities", () => {
         it("should be able to build the correct temp path with default ext (.txt) - ds", async () => {
             const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
             expect(response).toContain(".txt");
+        });
+        it("should use a per-user temp directory name so co-tenants on a shared tmp don't collide", async () => {
+            await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+            const dirArg = (ZosFilesUtils.ensureSafeTempDir as jest.Mock).mock.calls[0][0];
+            // per-user token (cross-platform, hashed) - not a bare shared name
+            expect(dirArg.endsWith(`zowe-edit-ds-${ZosFilesUtils.getUserTempToken()}`)).toBe(true);
+            expect(dirArg).toMatch(/zowe-edit-ds-[0-9a-f]{10}$/);
+        });
+        it("should throw an error if the data set name contains illegal characters 1", async() => {
+            const fileCopy = structuredClone(localFileDS);
+            fileCopy.fileName = "SOME.FAKE.DATA../SET";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(fileCopy, commandParametersDs);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
+        });
+        it("should throw an error if the data set name contains illegal characters 2", async() => {
+            const fileCopy = structuredClone(localFileDS);
+            fileCopy.fileName = "/SOME.FAKE.DATA.SET";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(fileCopy, commandParametersDs);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
+        });
+        it("should throw an error if the data set name contains illegal characters 3", async() => {
+            const parameterCopy = cloneDeep(commandParametersDs);
+            parameterCopy.arguments.extension = "/../txt";
+            let error: ImperativeError;
+            try {
+                await EditUtilities.buildTempPath(localFileDS, parameterCopy);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+            expect(error.message).toContain("illegal characters");
         });
     });
     describe("checkForStash()", () => {
@@ -239,6 +283,16 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.localDownload(REAL_SESSION, localFileUSS, true);
             expect(response.zosResp?.apiResponse.etag).toContain('remote etag');
             expect(EditUtilities.destroyTempFile).toHaveBeenCalledTimes(1);
+
+            //test that the etag refresh downloads to a safe, unique scratch path - not a shared/predictable one
+            const safeDir = (ZosFilesUtils.ensureSafeTempDir as jest.Mock).mock.calls[0][0];
+            expect(safeDir).toContain("zowe-edit-uss");
+            const scratchPath = downloadUssFileSpy.mock.calls[0][2]?.file as string;
+            expect(scratchPath).toContain(safeDir);
+            expect(path.basename(scratchPath)).toMatch(/^\.etag-refresh-[0-9a-f]+$/);
+            expect(scratchPath).not.toContain("toDelete.txt");
+            //the unique scratch file (not the stash) is the one destroyed
+            expect(EditUtilities.destroyTempFile).toHaveBeenCalledWith(scratchPath);
         });
 
         it("should download etag and copy of remote - [fileType = 'ds', useStash = false]", async () => {

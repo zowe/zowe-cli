@@ -281,6 +281,14 @@ describe("Config Schema", () => {
         expect(returnedSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toEqual(expectedAllOf);
     });
 
+    it("should not allow unknown properties alongside the profile properties object", () => {
+        const testConfig: IProfileTypeConfiguration[] = cloneDeep(testProfileConfiguration);
+        const returnedSchema = schema.buildSchema(testConfig);
+        const profileSchema = returnedSchema.properties.profiles.patternProperties["^\\S*$"];
+        expect(profileSchema.additionalProperties).toBe(false);
+        expect(Object.keys(profileSchema.properties).sort()).toEqual(["profiles", "properties", "secure", "type"]);
+    });
+
     it("should be able to regenerate profile schemas from a schema object", () => {
         const testConfig: IProfileTypeConfiguration[] = cloneDeep(testProfileConfiguration);
         const returnedSchema = schema.buildSchema(testConfig);

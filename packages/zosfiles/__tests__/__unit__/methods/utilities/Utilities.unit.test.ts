@@ -159,6 +159,20 @@ describe("USS utiliites", () => {
                 expect(timeoutHeader[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]).toEqual(responseTimeout.toString());
             });
 
+            it("should include X-IBM-Request-Acctnum and X-IBM-Request-Proc headers when tsoAccount and tsoProcedure are provided", async () => {
+                const payload = { request: "test", action: "doSomething" };
+                const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer")
+                    .mockResolvedValue(Buffer.from("dummy"));
+
+                await Utilities.putUSSPayload(dummySession, "/u/testfile", payload, undefined, "TSO1234", "MYPROC");
+
+                const reqHeaders = restClientSpy.mock.calls[0][2];
+                expect(reqHeaders.find((h: any) => Object.keys(h).includes(ZosmfHeaders.X_IBM_REQUEST_ACCTNUM)))
+                    .toEqual({ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" });
+                expect(reqHeaders.find((h: any) => Object.keys(h).includes(ZosmfHeaders.X_IBM_REQUEST_PROC)))
+                    .toEqual({ [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" });
+            });
+
             it("should throw an error if the uss file name is null", async () => {
                 let response;
                 let caughtError;
@@ -413,7 +427,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    undefined,
+                    undefined
                 );
             });
 
@@ -443,7 +459,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    undefined,
+                    undefined
                 );
             });
 
@@ -508,6 +526,48 @@ describe("USS utiliites", () => {
             });
         });
 
+        describe("malformed chtag list responses fall back to safe default", () => {
+            const malformedPayloads: Array<{ name: string, payload: Buffer | null }> = [
+                { name: "null response", payload: null },
+                { name: "empty body", payload: Buffer.from("") },
+                { name: "non-JSON HTML", payload: Buffer.from("<html>error</html>") },
+                { name: "literal null JSON", payload: Buffer.from("null") },
+                { name: "empty stdout array", payload: Buffer.from(JSON.stringify({ stdout: [] })) },
+                { name: "non-array stdout", payload: Buffer.from(JSON.stringify({ stdout: "b binary" })) },
+                { name: "non-string stdout entry", payload: Buffer.from(JSON.stringify({ stdout: [123] })) }
+            ];
+            for (const { name, payload } of malformedPayloads) {
+                it(`isFileTagBinOrAscii returns false for ${name}`, async () => {
+                    jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(payload as any);
+                    let caughtError: Error;
+                    let result: boolean;
+                    try {
+                        result = await Utilities.isFileTagBinOrAscii(dummySession, "/u/testfile");
+                    } catch (e) {
+                        caughtError = e;
+                    }
+                    expect(caughtError).toBeUndefined();
+                    expect(result).toBe(false);
+                });
+                it(`applyTaggedEncoding leaves options unmutated for ${name}`, async () => {
+                    jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(payload as any);
+                    let caughtError: Error;
+                    const options: any = {};
+                    try {
+                        await Utilities.applyTaggedEncoding(dummySession, "/u/testfile", options);
+                    } catch (e) {
+                        caughtError = e;
+                    }
+                    expect(caughtError).toBeUndefined();
+                    expect(options.binary).toBeUndefined();
+                    expect(options.encoding).toBeUndefined();
+                });
+            }
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+        });
+
         describe("renameUSSFile", () => {
             const dummySession = new Session({
                 user: "fake",
@@ -544,7 +604,7 @@ describe("USS utiliites", () => {
                 expect(error).not.toBeDefined();
                 expect(renameResponse).toBeTruthy();
                 const payload = { request: "move", from: oldPath };
-                expect(zosmfExpectSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+                expect(zosmfExpectSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload, undefined, undefined, undefined);
             });
 
             it("should pass responseTimeout to putUSSPayload", async () => {
@@ -558,7 +618,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     newPath,
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    // tso procedure and account
+                    undefined, undefined,
                 );
             });
         });
@@ -574,7 +636,9 @@ describe("USS utiliites", () => {
                     dummySession,
                     "/u/testfile",
                     expect.any(Object),
-                    responseTimeout
+                    responseTimeout,
+                    // tso options
+                    undefined, undefined,
                 );
             });
         });

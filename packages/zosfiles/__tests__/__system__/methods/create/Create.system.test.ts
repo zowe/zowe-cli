@@ -114,6 +114,27 @@ describe("Create data set", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 
+    it("should create a partitioned data set with tsoAccount", async () => {
+        let error;
+        let response;
+
+        const tempOptions = { ...options, tsoAccount: defaultSystem.tso.account };
+
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, tempOptions);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
     it("should create a sequential data set", async () => {
         let error;
         let response;

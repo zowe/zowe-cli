@@ -1066,7 +1066,7 @@ export class CommandProcessor {
 
             // display primary user message
             response.console.error(TextUtils.chalk.red(
-                "Unable to perform this operation due to the following problem."
+                "Unable to perform this operation due to the following problem:"
             ));
             // Remove http status in 'message', since the same information was placed in additionalDetails.
             response.console.error(TextUtils.chalk.red(

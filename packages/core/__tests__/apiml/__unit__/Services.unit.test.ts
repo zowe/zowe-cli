@@ -375,6 +375,74 @@ describe("APIML Services unit tests", () => {
                 }
             ]);
         });
+
+        it("should strip the service ID prefix literally when it contains regex metacharacters", async () => {
+            // The service ID "svc+" contains a regex metacharacter. Previously the prefix was
+            // stripped with a RegExp (`^/svc+/`), which treats "+" as a quantifier and fails to
+            // match the literal base path, causing the base path to be dropped incorrectly.
+            const services: IApimlService[] = [
+                genApimlService("fakeApi", "svc+", [1])
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "svc+",
+                    profType: "fakeProfile",
+                    basePaths: ["/svc+/api/v1"],
+                    pluginConfigs: new Set(configs),
+                    gatewayUrlConflicts: {}
+                }
+            ]);
+        });
+
+        it("should not hang (ReDoS) when a service ID is a catastrophic-backtracking pattern", async () => {
+            const evilServiceId = "(a+)+";
+            const maliciousBasePath = "/" + "a".repeat(40) + "!";
+            const services: IApimlService[] = [
+                {
+                    serviceId: evilServiceId,
+                    status: "UP",
+                    apiml: {
+                        apiInfo: [
+                            { apiId: "fakeApi", gatewayUrl: "api/v1", basePath: maliciousBasePath }
+                        ] as any,
+                        service: null,
+                        authentication: [{ supportsSso: true } as any]
+                    },
+                    instances: []
+                }
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+
+            const start = Date.now();
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+            const elapsed = Date.now() - start;
+
+            // The malicious base path does not match the "/<serviceId>/" prefix, so it is filtered out.
+            expect(response[0].profName).toEqual(evilServiceId);
+            expect(response[0].basePaths).toEqual([]);
+            expect(elapsed).toBeLessThan(1000);
+        });
     });
 
     describe("convertApimlProfileInfoToProfileConfig", () => {
@@ -867,6 +935,52 @@ describe("APIML Services unit tests", () => {
             expect(parsed.profiles.test1.properties.badProp).toBeUndefined();
 
             expect(actualJson).toContain("//\"basePath\": \"test1/v2\\n\\\"badProp\\\": \\\"badString\\\"\"");
+        });
+
+        it("should escape newlines and quotes in gatewayUrlConflicts (basePath conflict) comments", () => {
+            const testCase: IApimlProfileInfo[] = [{
+                profName: "test1",
+                profType: "type1",
+                basePaths: [
+                    "test1/v1",
+                    "test1/v2"
+                ],
+                pluginConfigs: new Set(),
+                gatewayUrlConflicts: {
+                    "pluginA": ["v1"],
+                    "pluginB\n\"badKey\": \"badValue": ["v1\",\n\"bad\": \"data"]
+                }
+            }];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.profiles.test1.properties.bad).toBeUndefined();
+            expect(parsed.profiles.test1.properties.badKey).toBeUndefined();
+        });
+
+        it("should escape newlines and quotes in a conflicting default profile type", () => {
+            const badProfType = "type1\",\n\"bad\": \"data";
+            const testCase: IApimlProfileInfo[] = [
+                {
+                    profName: "test1",
+                    profType: badProfType,
+                    basePaths: ["test1/v1"],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                },
+                {
+                    profName: "test2",
+                    profType: badProfType,
+                    basePaths: ["test2/v1"],
+                    pluginConfigs: new Set(),
+                    gatewayUrlConflicts: {}
+                }
+            ];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.defaults.bad).toBeUndefined();
+            expect(parsed.defaults[badProfType]).toBe("test1");
         });
     });
 

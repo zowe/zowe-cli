@@ -78,7 +78,7 @@ export default class UpdateHandler implements ICommandHandler {
                     packageName = installedPlugins[pluginName].package;
                     const registryInfo = NpmRegistryUtils.buildRegistryInfo(installedPlugins[pluginName], params.arguments.registry);
                     // Call update which returns the plugin's version so plugins.json can be updated
-                    installedPlugins[pluginName].version = await update(packageName, registryInfo);
+                    installedPlugins[pluginName].version = await update(packageName, registryInfo, params.arguments.allowScripts);
                     installedPlugins[pluginName].location = registryInfo.location; // update in case it changed
 
                     writeFileSync(PMFConstants.instance.PLUGIN_JSON, installedPlugins, {

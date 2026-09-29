@@ -7,22 +7,41 @@ use std::io::{Read, Write};
 use security_framework::secure_transport::{ClientBuilder, ClientHandshakeError};
 use std::fs;
 use std::path::PathBuf;
+use std::os::unix::fs::DirBuilderExt;
 
-/// RAII guard to ensure socket file cleanup on drop
+/// RAII guard to ensure the private socket directory (and the socket inside
+/// it) is cleaned up on drop.
 struct SocketGuard {
-    path: PathBuf,
+    dir_path: PathBuf,
 }
 
 impl SocketGuard {
-    fn new(path: PathBuf) -> Self {
-        Self { path }
+    fn new(dir_path: PathBuf) -> Self {
+        Self { dir_path }
     }
 }
 
 impl Drop for SocketGuard {
     fn drop(&mut self) {
-        let _ = fs::remove_file(&self.path);
+        let _ = fs::remove_dir_all(&self.dir_path);
     }
+}
+
+/// Creates a fresh, uniquely-named directory with mode 0700 to hold the
+/// socket. mkdir(2) applies `mode` to the inode directly, so — unlike
+/// bind() followed by a separate chmod() on the socket file — there is no
+/// window where the directory is reachable by anyone but its owner, no
+/// matter the ambient umask (0700 requests no group/other bits, so umask
+/// can only narrow permissions further, never widen them). connect() to a
+/// socket requires search permission on every path component, which holds
+/// on all BSD-derived kernels including Darwin, so this alone keeps other
+/// local users out regardless of the socket file's own mode.
+fn create_private_socket_dir() -> std::io::Result<PathBuf> {
+    let mut dir_path = std::env::temp_dir();
+    let short_id = &uuid::Uuid::new_v4().as_simple().to_string()[0..8];
+    dir_path.push(format!("zowe_{}_{}", env!("CARGO_PKG_NAME"), short_id));
+    fs::DirBuilder::new().mode(0o700).create(&dir_path)?;
+    Ok(dir_path)
 }
 
 /// Map Apple Secure Transport OSStatus codes to their documented symbolic name and cause.
@@ -58,27 +77,14 @@ pub fn create_tls_pipe(
     let identity = keychain.find_identity(cert_account.as_str())
         .map_err(|e| KeyringError::Os(format!("Identity not found: {:?}", e.message())))?;
     
-    let mut socket_path = std::env::temp_dir();
-    let short_id = &uuid::Uuid::new_v4().as_simple().to_string()[0..8];
-    socket_path.push(format!("zowe_{}_{}.sock", env!("CARGO_PKG_NAME"), short_id));
-    
-    // Clean up just in case
-    let _ = fs::remove_file(&socket_path);
-    
+    let dir_path = create_private_socket_dir()
+        .map_err(|e| KeyringError::Os(e.to_string()))?;
+    let mut socket_path = dir_path.clone();
+    socket_path.push("zowe.sock");
+
     let listener = UnixListener::bind(&socket_path)
         .map_err(|e| KeyringError::Os(e.to_string()))?;
-    
-    // Set restrictive permissions so only the current user can connect
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        if let Ok(metadata) = fs::metadata(&socket_path) {
-            let mut perms = metadata.permissions();
-            perms.set_mode(0o600);
-            let _ = fs::set_permissions(&socket_path, perms);
-        }
-    }
-    
+
     let socket_path_ret = socket_path.to_string_lossy().into_owned();
     
     let remote_addr = format!("{}:{}", remote_host, remote_port);
@@ -97,7 +103,7 @@ pub fn create_tls_pipe(
     let sf_identity = unsafe { SecIdentity::wrap_under_create_rule(raw_identity as *mut _) };
     
     thread::spawn(move || {
-        let _guard = SocketGuard::new(socket_path.clone());
+        let _guard = SocketGuard::new(dir_path);
         if let Ok((mut local_stream, _)) = listener.accept() {
             drop(listener);
             
@@ -234,6 +240,72 @@ pub fn create_tls_pipe(
             }
         }
     });
-    
+
     Ok(socket_path_ret)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::os::unix::fs::PermissionsExt;
+    use std::os::unix::net::UnixStream;
+
+    fn mode_of(path: &PathBuf) -> u32 {
+        fs::metadata(path).unwrap().permissions().mode() & 0o777
+    }
+
+    /// Functional: the directory is owner-only immediately after creation.
+    #[test]
+    fn creates_directory_with_owner_only_permissions() {
+        let dir = create_private_socket_dir().expect("directory creation should succeed");
+        assert!(dir.is_dir());
+        assert_eq!(mode_of(&dir), 0o700);
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    /// Regression for the original report: a bind()+chmod() socket briefly
+    /// inherited whatever the ambient umask allowed. Force the most
+    /// permissive umask possible and confirm the directory mode is still
+    /// exactly 0700 — mkdir(2) can only narrow the requested bits, never
+    /// widen them, so this holds no matter what other processes on the
+    /// host have set their umask to.
+    #[test]
+    fn is_atomic_against_a_permissive_umask() {
+        let old_umask = unsafe { libc::umask(0o000) };
+        let result = create_private_socket_dir();
+        unsafe { libc::umask(old_umask) };
+
+        let dir = result.expect("directory creation should succeed under umask 0");
+        assert_eq!(mode_of(&dir), 0o700);
+        let _ = fs::remove_dir_all(&dir);
+    }
+
+    /// Regression: each call still gets its own unique directory (previously
+    /// relied on the uuid-suffixed socket filename).
+    #[test]
+    fn generates_unique_directories_per_call() {
+        let a = create_private_socket_dir().unwrap();
+        let b = create_private_socket_dir().unwrap();
+        assert_ne!(a, b);
+        let _ = fs::remove_dir_all(&a);
+        let _ = fs::remove_dir_all(&b);
+    }
+
+    /// Functional: legitimate same-user bind/connect through the private
+    /// directory still works — the fix must not break the happy path.
+    #[test]
+    fn same_user_can_still_bind_and_connect_inside_it() {
+        let dir = create_private_socket_dir().unwrap();
+        let mut socket_path = dir.clone();
+        socket_path.push("zowe.sock");
+
+        let listener = UnixListener::bind(&socket_path).unwrap();
+        let accepted = thread::spawn(move || listener.accept().is_ok());
+
+        let connected = UnixStream::connect(&socket_path).is_ok();
+        accepted.join().unwrap();
+
+        assert!(connected, "the legitimate same-user client must still be able to connect");
+        let _ = fs::remove_dir_all(&dir);
+    }
 }

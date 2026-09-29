@@ -26,7 +26,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             percentComplete: 0,
             stageName: TaskStage.IN_PROGRESS
         };
-        commandParameters.response.progress.startBar({task: status});
+        commandParameters.response.progress.startBar({ task: status });
         const response = await Upload.dirToPds(
             session,
             commandParameters.arguments.inputdir,
@@ -37,7 +37,9 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
                 record: commandParameters.arguments.record,
                 encoding: commandParameters.arguments.encoding,
                 task: status,
-                responseTimeout: commandParameters.arguments.responseTimeout
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                tsoAccount: commandParameters.arguments.tsoAccount,
+                tsoProcedure: commandParameters.arguments.tsoProcedure,
             }
         );
 

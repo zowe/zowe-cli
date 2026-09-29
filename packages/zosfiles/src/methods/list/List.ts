@@ -20,11 +20,14 @@ import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sd
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 import { IDsmListOptions } from "./doc/IDsmListOptions";
+import { Invoke } from "../invoke/Invoke";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -63,17 +66,17 @@ export class List {
                 params.set("start", options.start);
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING].concat(ZosFilesUtils.generateTsoHeaders(options));
             if (options.attributes) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
             if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+                reqHeaders.push({ "X-IBM-Max-Items": `${options.maxLength}` });
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
             if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
@@ -128,7 +131,7 @@ export class List {
         ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
         const zosmfResponses: IZosmfListResponse[] = [];
 
-        for(const pattern of patterns) {
+        for (const pattern of patterns) {
             const response = await List.allMembers(session, dataSetName, { pattern, maxLength: options.maxLength, start: options.start });
             zosmfResponses.push(...response.apiResponse.items);
         }
@@ -146,7 +149,7 @@ export class List {
         for (const pattern of options.excludePatterns || []) {
             const response = await List.allMembers(session, dataSetName, { pattern });
             response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
-                const responseIndex = zosmfResponses.findIndex(response=> response.member === membersObj.member);
+                const responseIndex = zosmfResponses.findIndex(response => response.member === membersObj.member);
                 if (responseIndex !== -1) {
                     zosmfResponses.splice(responseIndex, 1);
                 }
@@ -195,17 +198,17 @@ export class List {
                 endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING].concat(ZosFilesUtils.generateTsoHeaders(options));
             if (options.attributes) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
             if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+                reqHeaders.push({ "X-IBM-Max-Items": `${options.maxLength}` });
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
             if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             // Migrated recall options
@@ -255,9 +258,9 @@ export class List {
         ImperativeExpect.toNotBeEqual(path.trim(), "", ZosFilesMessages.missingUSSFileName.message);
 
         // Error out if someone tries to use a second table parameter without specifying a first table parameter
-        if (options.depth || options.filesys != null || options.symlinks != null){
+        if (options.depth || options.filesys != null || options.symlinks != null) {
             if (!(options.group || options.user || options.name || options.size || options.mtime || options.perm || options.type)) {
-                throw new ImperativeError({msg: ZosFilesMessages.missingRequiredTableParameters.message});
+                throw new ImperativeError({ msg: ZosFilesMessages.missingRequiredTableParameters.message });
             }
         }
 
@@ -269,14 +272,14 @@ export class List {
             let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES +
                 `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`;
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING].concat(ZosFilesUtils.generateTsoHeaders(options));
             if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+                reqHeaders.push({ "X-IBM-Max-Items": `${options.maxLength}` });
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
             if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             // Start modifying the endpoint with the query parameters that were passed in
@@ -330,17 +333,17 @@ export class List {
                 endpoint += `/?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING].concat(ZosFilesUtils.generateTsoHeaders(options));
             // if (options.path) {
             //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             // }
             if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+                reqHeaders.push({ "X-IBM-Max-Items": `${options.maxLength}` });
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
             if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
@@ -377,14 +380,14 @@ export class List {
                 endpoint += `/?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING].concat(ZosFilesUtils.generateTsoHeaders(options));
             if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+                reqHeaders.push({ "X-IBM-Max-Items": `${options.maxLength}` });
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
             if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
@@ -522,6 +525,88 @@ export class List {
             commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, zosmfResponses.length),
             apiResponse: zosmfResponses
         };
+    }
+
+    /**
+     * Resolve a data set alias to its target data set name
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {string}           aliasName    - the alias name to resolve
+     * @param {IZosFilesOptions} [options]    - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response containing the target data set name
+     *
+     * @throws {ImperativeError} alias name must be set
+     * @throws {ImperativeError} if the alias target cannot be determined
+     * @throws {Error} When the {@link Invoke} AMS call throws an error
+     */
+    public static async resolveAlias(
+        session: AbstractSession,
+        aliasName: string,
+        options?: IZosFilesOptions
+    ): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(aliasName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(aliasName, "", ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            const listcatStmt = `LISTCAT ENTRIES('${aliasName.toUpperCase()}') ALL`;
+            this.log.debug(`Resolving alias with AMS statement: ${listcatStmt}`);
+
+            const amsResponse = await Invoke.ams(session, [listcatStmt], options);
+
+            // Parse the AMS output to find the target data set name
+            // LISTCAT output contains lines like:
+            //   ASSOCIATIONS
+            //     NONVSAM--- REAL.DATASET.NAME
+            // or  VSAM--- REAL.DATASET.NAME
+            const outputLines: string[] = amsResponse.apiResponse?.output ?? [];
+            let targetDsn: string | undefined;
+
+            let symbolicValue: string | undefined;
+
+            for (const line of outputLines) {
+                // Check for standard aliases (NONVSAM/VSAM)
+                let match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
+                if (match && match[2]) {
+                    targetDsn = match[2].trim();
+                    break;
+                }
+
+                // Capture the symbolic value for comparison
+                match = line.match(/SYMBOLIC-(.+)/i);
+                if (match && match[1]) {
+                    symbolicValue = match[1].trim();
+                    continue;
+                }
+
+                // Check for resolved value and compare against symbolic
+                match = line.match(/RESOLVED-(.+)/i);
+                if (match && match[1]) {
+                    const resolvedValue = match[1].trim();
+                    if (symbolicValue && resolvedValue === symbolicValue) {
+                        // Symbolic variable was not resolved — skip
+                        continue;
+                    }
+                    targetDsn = resolvedValue;
+                    break;
+                }
+            }
+
+            if (!targetDsn) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.aliasTargetNotFound.message
+                });
+            }
+
+            return {
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.aliasResolvedSuccessfully.message, aliasName, targetDsn),
+                apiResponse: { alias: aliasName, targetDsn }
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
     }
 
     private static get log() {

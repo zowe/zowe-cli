@@ -24,7 +24,18 @@ export interface INpmInstallArgs {
     registry?: string;
 
     /**
+     * A comma-separated list of package names that are allowed to run their npm install scripts
+     * (`preinstall`, `install`, `postinstall`, and `prepare`). The names must match exactly.
+     * This is passed to npm as its own `--allow-scripts` option.
+     *
+     * npm 12 blocks these scripts unless the package is in the list. Older versions of npm do
+     * not know this option and ignore it. If this is undefined or has no package names, we do
+     * not add the option at all, so npm decides what to do.
+     */
+    allowScripts?: string;
+
+    /**
      * Allows us to handle scoped registries in the future
      */
-    [key: string]: string;
+    [key: string]: string | undefined;
 }

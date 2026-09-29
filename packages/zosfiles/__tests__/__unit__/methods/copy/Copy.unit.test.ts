@@ -140,6 +140,46 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+                it("should send a request with tsoAccount and tsoProcedure", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "tsoAccount": "TSO1234",
+                        "tsoProcedure": "MYPROC",
+                        "from-dataset": {
+                            dsn: fromDataSetName
+                        }
+                    };
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
+                        { "X-IBM-Request-Acctnum": "TSO1234" },
+                        { "X-IBM-Request-Proc": "MYPROC" }
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, tsoAccount: "TSO1234", tsoProcedure: "MYPROC" }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
             });
             describe("Member > Member", () => {
                 it("should send a request", async () => {
@@ -831,6 +871,10 @@ describe("Copy", () => {
         const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
         const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const generateMemName = jest.spyOn(ZosFilesUtils, "generateMemberName");
+        jest.spyOn(ZosFilesUtils, "ensureSafeTempDir").mockImplementation();
+        jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation();
+        jest.spyOn(fs, "writeFileSync").mockImplementation();
+
         const fromDataSetName = "USER.DATA.FROM";
         const toDataSetName = "USER.DATA.TO";
         const readStream = jest.spyOn(IO, "createReadStream");
@@ -965,7 +1009,7 @@ describe("Copy", () => {
             });
         });
         it("should handle truncation errors and log them to a file", async () => {
-            const truncatedMembersFilePath = path.join(tmpdir(), "truncatedMembers.txt");
+            const truncatedMembersFilePath = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, "truncatedMembers.txt");
             let response;
             const sourceResponse = {
                 apiResponse: {

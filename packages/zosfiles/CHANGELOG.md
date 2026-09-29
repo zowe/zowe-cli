@@ -2,6 +2,23 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)
+
+## `8.37.0`
+
+- Enhancement: Added support for the `tsoAccount` and `tsoProcedure` z/OSMF profile properties. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+
+## `8.35.1`
+
+- **Breaking:** The `ZosFilesUtils.ensureSafeTempDir` function no longer creates missing parent directories recursively; the temp directory's immediate parent must already exist. This avoids a race condition where a recursive `mkdir` function call could create part of the path before the safety checks ran. [#2831](https://github.com/zowe/zowe-cli/pull/2831)
+
+## `8.35.0`
+
+- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+- BugFix: Hardened temporary directory handling for partitioned data set copy so the staging directory is scoped per user (co-tenants on a shared temp location no longer conflict) and owner-only access is enforced and re-verified on all platforms. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+
 ## `8.33.1`
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
