@@ -281,4 +281,219 @@ describe("ZosFilesUtils", () => {
         });
     });
 
+    describe("getUserTempToken", () => {
+        it("should return a stable, filesystem-safe per-user token", () => {
+            const token = ZosFilesUtils.getUserTempToken();
+            // 10-char lowercase hex, safe on any platform/filesystem
+            expect(token).toMatch(/^[0-9a-f]{10}$/);
+            // stable across calls so per-user temp paths stay re-findable
+            expect(ZosFilesUtils.getUserTempToken()).toEqual(token);
+        });
+        it("should fall back to a token when the OS user cannot be determined", () => {
+            const os = require("os");
+            const userInfoSpy = jest.spyOn(os, "userInfo").mockImplementation(() => {
+                throw new Error("no account entry");
+            });
+            const token = ZosFilesUtils.getUserTempToken();
+            expect(token).toMatch(/^[0-9a-f]{10}$/);
+            userInfoSpy.mockRestore();
+        });
+    });
+
+    describe("ensureSafeTempDir", () => {
+        const realPlatform = process.platform;
+        const setPlatform = (value: string) => Object.defineProperty(process, "platform", { value, configurable: true });
+        let lstatSyncSpy: jest.SpyInstance;
+        let mkdirSyncSpy: jest.SpyInstance;
+        let giveAccessSpy: jest.SpyInstance;
+        let hasOwnerOnlyAccessSpy: jest.SpyInstance;
+        const eexist = () => { const err: any = new Error("EEXIST"); err.code = "EEXIST"; throw err; };
+        beforeEach(() => {
+            lstatSyncSpy = jest.spyOn(fs, "lstatSync");
+            mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn());
+            giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(jest.fn());
+            hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess").mockImplementation(jest.fn());
+        });
+        afterEach(() => {
+            setPlatform(realPlatform);
+            jest.restoreAllMocks();
+        });
+
+        it("should create the directory owner-only when it does not exist (POSIX)", () => {
+            setPlatform("linux");
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
+            ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc");
+            expect(mkdirSyncSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc", { recursive: false, mode: 0o700 });
+            expect(giveAccessSpy).not.toHaveBeenCalled();
+            expect(hasOwnerOnlyAccessSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc");
+        });
+        it("should set an owner-only ACL when creating on Windows", () => {
+            setPlatform("win32");
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
+            ZosFilesUtils.ensureSafeTempDir("C:\\Temp\\zowe-edit-ds-abc");
+            expect(giveAccessSpy).toHaveBeenCalledWith("C:\\Temp\\zowe-edit-ds-abc");
+        });
+        it("should accept a pre-existing directory whose access is restricted to the current user (any platform)", () => {
+            mkdirSyncSpy.mockImplementation(eexist);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(true);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).not.toThrow();
+            expect(hasOwnerOnlyAccessSpy).toHaveBeenCalledWith("/tmp/zowe-edit-ds-abc");
+        });
+        it("should reject a pre-existing directory that is not restricted to the current user (any platform)", () => {
+            mkdirSyncSpy.mockImplementation(eexist);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(false);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+        });
+        it("should reject when the path exists but is not a directory (e.g. a planted symlink)", () => {
+            mkdirSyncSpy.mockImplementation(eexist);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => false } as any);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+            expect(hasOwnerOnlyAccessSpy).not.toHaveBeenCalled();
+        });
+        it("should reject a directory planted mid-race between a hypothetical existence check and creation", () => {
+            // Even though nothing "existed" beforehand from the caller's point of view, mkdirSync throwing
+            // EEXIST means something is there now - the safety check below must still run unconditionally.
+            mkdirSyncSpy.mockImplementation(eexist);
+            lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+            hasOwnerOnlyAccessSpy.mockReturnValue(false);
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(/Unsafe temp directory/);
+            expect(giveAccessSpy).not.toHaveBeenCalled();
+        });
+        it("should rethrow non-EEXIST errors from mkdirSync", () => {
+            const err: any = new Error("EACCES");
+            err.code = "EACCES";
+            mkdirSyncSpy.mockImplementation(() => { throw err; });
+            expect(() => ZosFilesUtils.ensureSafeTempDir("/tmp/zowe-edit-ds-abc")).toThrow(err);
+        });
+    });
+
+    describe("validateDSN", () => {
+        it("should fail on a data set name starting with a dot", () => {
+            const result = ZosFilesUtils.validateDSN(".DATA.SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set name ending with a dot", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET.");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set name containing multiple dots", () => {
+            const result = ZosFilesUtils.validateDSN("DATA..SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set segment starting with a number", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.1SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set segment with too many characters", () => {
+            const result = ZosFilesUtils.validateDSN("DATAAAAAA.SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set with a member", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET(MEM)");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set with too long a name", () => {
+            const result = ZosFilesUtils.validateDSN(`AAAAAAAA.AAAAAAAA.AAAAAAAA.AAAAAAAA.AAAAAAAA.A`);
+            expect(result).toEqual(false);
+        });
+
+        it("should fail if there is only one segment", () => {
+            const result = ZosFilesUtils.validateDSN("DATASET");
+            expect(result).toEqual(false);
+        });
+
+        it("should succeed with a properly formatted name", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET");
+            expect(result).toEqual(true);
+        });
+    });
+
+    describe("validateDSMemberName", () => {
+        it("should handle a good member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MEMBER");
+            expect(result).toEqual(true);
+        });
+
+        it("should handle a too long member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MEMBERLONG");
+            expect(result).toEqual(false);
+        });
+
+        it("should handle a member name starting with numeric", () => {
+            const result = ZosFilesUtils.validateDSMemberName("1MEMBER");
+            expect(result).toEqual(false);
+        });
+    });
+
+    describe("validateFQDSN", () => {
+        let validateDSNSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            validateDSNSpy = jest.spyOn(ZosFilesUtils, "validateDSN");
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should fail if a provided name exceeds the limit", () => {
+            const badName = "A".repeat(55);
+            const result = ZosFilesUtils.validateFQDSN(badName);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a bad member name 1", () => {
+            const name = "TEST.DATA.SET(BADMEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect a bad member name 2", () => {
+            const name = "TEST.DATA.SET(!MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect multiple member names", () => {
+            const name = "TEST.DATA.SET(MEMBER)(MEMBER2)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a bad data set name with good member", () => {
+            const name = "TEST.SOMEBADDATA.SET(MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect a bad data set name with data after the member", () => {
+            const name = "TEST.SOMEBADDATA.SET(MEMBER)DATA";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a good FQDSN", () => {
+            const name = "TEST.SOMEDATA.SET(MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(true);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+    });
+
 });
