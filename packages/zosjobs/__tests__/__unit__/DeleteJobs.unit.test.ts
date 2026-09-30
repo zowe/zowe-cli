@@ -326,7 +326,7 @@ describe("Delete Jobs unit tests", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The job name");
             expect(ZosmfRestClient.deleteExpectJSON).not.toHaveBeenCalled();
         });
@@ -339,7 +339,7 @@ describe("Delete Jobs unit tests", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The job ID");
             expect(ZosmfRestClient.deleteExpectJSON).not.toHaveBeenCalled();
         });

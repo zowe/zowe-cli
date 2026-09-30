@@ -168,7 +168,7 @@ describe("Modify Jobs API", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The job name");
             expect(ZosmfRestClient.putExpectJSON).not.toHaveBeenCalled();
         });
@@ -185,7 +185,7 @@ describe("Modify Jobs API", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The job ID");
             expect(ZosmfRestClient.putExpectJSON).not.toHaveBeenCalled();
         });

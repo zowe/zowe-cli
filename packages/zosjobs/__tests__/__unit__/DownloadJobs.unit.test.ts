@@ -702,7 +702,7 @@ describe("DownloadJobs", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The job name");
             expect(ZosmfRestClient.getStreamed).not.toHaveBeenCalled();
         });
@@ -718,7 +718,7 @@ describe("DownloadJobs", () => {
             } catch (e) {
                 err = e;
             }
-            expect(err instanceof ImperativeError).toEqual(true);
+            expect(err).toBeInstanceOf(ImperativeError);
             expect(err.message).toContain("The spool file ID");
             expect(IO.createFileSync).not.toHaveBeenCalled();
             expect(ZosmfRestClient.getStreamed).not.toHaveBeenCalled();
