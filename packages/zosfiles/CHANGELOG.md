@@ -7,6 +7,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)
 - Enhancement: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 - BugFix: Added validation for data set names to the `List` class's `resolveAlias` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+- BugFix: Added validation for data set names to the `Delete` class's `vsam` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 
 ## `8.37.0`
 
