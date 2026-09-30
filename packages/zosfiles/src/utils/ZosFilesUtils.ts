@@ -43,7 +43,7 @@ export class ZosFilesUtils {
     public static readonly SEGMENT_REGEX = /^[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}$/;
     public static readonly MEMBER_MATCH_REGEX = /(?<=\()[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}(?=\))/;
     public static readonly GENERIC_CHARACTERISTIC_REGEX = /^[A-Za-z0-9]{1,8}$/;
-    public static readonly RETAINTO_REGEX = /^[0-9]{7}$/;
+    public static readonly RETAINTO_REGEX = /^\d{7}$/;
     public static readonly VOLSER_REGEX = /^[A-Za-z0-9]{1,6}$/;
 
     /**
@@ -349,15 +349,10 @@ export class ZosFilesUtils {
      * @return {boolean} if the name is valid
      */
     public static validateFQDSN(name: string): boolean {
-        let modifiedName = name;
-
         if (name.length > this.MAX_FQDSN_LENGTH) { return false; }
-        if (this.MEMBER_MATCH_REGEX.test(name)) {
-            const memberNames = [...name.matchAll(new RegExp(this.MEMBER_MATCH_REGEX, "g"))];
-            if (memberNames.length !== 1 || !name.endsWith(")")) { return false; }
-            modifiedName = modifiedName.split("(")[0];
-        }
-
-        return this.validateDSN(modifiedName);
+        const memberNames = [...name.matchAll(new RegExp(this.MEMBER_MATCH_REGEX, "g"))];
+        if (memberNames.length === 0) { return this.validateDSN(name); }
+        if (memberNames.length !== 1 || memberNames[0].index + memberNames[0][0].length + 1 != name.length) { return false; }
+        return this.validateDSN(name.split("(")[0]);
     }
 }
