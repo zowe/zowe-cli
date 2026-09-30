@@ -9,6 +9,9 @@
 *
 */
 
+import * as fs from "fs";
+import * as path from "path";
+import { ProfileInfo } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -81,5 +84,361 @@ describe("Comma-separated authOrder", () => {
 
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("is not a valid authOrder string");
+    });
+});
+
+describe("allowedLoginMethod schema validation and runtime execution", () => {
+    let TEST_ENVIRONMENT_SCHEMA: ITestEnvironment<ITestPropertiesSchema>;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_SCHEMA = await TestEnvironment.setUp({
+            testName: "allowed_login_method_schema",
+            skipProperties: true
+        });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_SCHEMA);
+    });
+
+    it("zowe config update-schemas command includes the new allowedLoginMethod property and its five allowed values", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_SCHEMA, "zosmf", {
+            host: "example.com",
+            port: 443
+        });
+
+        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_SCHEMA, ["config", "update-schemas"]);
+        expect(updateResponse.status).toBe(0);
+
+        const schemaPath = path.join(TEST_ENVIRONMENT_SCHEMA.workingDir, "zowe.schema.json");
+        expect(fs.existsSync(schemaPath)).toBe(true);
+
+        const schemaJson = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+
+        const allOfEntries = schemaJson.properties?.profiles?.patternProperties?.["^\\S*$"]?.allOf || [];
+        let allowedLoginMethodProp: any = null;
+
+        for (const entry of allOfEntries) {
+            const props = entry.then?.properties?.properties?.properties;
+            if (props && props.allowedLoginMethod) {
+                allowedLoginMethodProp = props.allowedLoginMethod;
+                break;
+            }
+        }
+
+        expect(allowedLoginMethodProp).toBeDefined();
+        expect(allowedLoginMethodProp.type).toBe("string");
+        expect(allowedLoginMethodProp.enum).toEqual([
+            "direct-basic",
+            "direct-cert-pem",
+            "apiml-basic",
+            "apiml-cert-pem",
+            "prompt"
+        ]);
+    });
+
+    it("Illegal values: Schema only (Comma-separated, array, or unknown values are flagged by the schema; commands still run)", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_SCHEMA, "zosmf", {
+            host: "example.com",
+            port: 443
+        });
+
+        runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_SCHEMA, ["config", "update-schemas"]);
+        const schemaPath = path.join(TEST_ENVIRONMENT_SCHEMA.workingDir, "zowe.schema.json");
+        const schemaJson = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+
+        const Ajv = require("ajv");
+        const ajv = new Ajv({ allErrors: true, schemaId: "auto" });
+        ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-06.json"));
+        const validate = ajv.compile(schemaJson);
+
+        // 1. Valid allowedLoginMethod value
+        const validConfig = {
+            $schema: "./zowe.schema.json",
+            profiles: {
+                zosmf: {
+                    type: "zosmf",
+                    properties: {
+                        allowedLoginMethod: "direct-basic"
+                    }
+                }
+            }
+        };
+        expect(validate(validConfig)).toBe(true);
+
+        // 2. Illegal value: Comma-separated string
+        const commaSeparatedConfig = {
+            $schema: "./zowe.schema.json",
+            profiles: {
+                zosmf: {
+                    type: "zosmf",
+                    properties: {
+                        allowedLoginMethod: "direct-basic, direct-cert-pem"
+                    }
+                }
+            }
+        };
+        expect(validate(commaSeparatedConfig)).toBe(false);
+
+        // 3. Illegal value: Array
+        const arrayConfig = {
+            $schema: "./zowe.schema.json",
+            profiles: {
+                zosmf: {
+                    type: "zosmf",
+                    properties: {
+                        allowedLoginMethod: ["direct-basic"]
+                    }
+                }
+            }
+        };
+        expect(validate(arrayConfig)).toBe(false);
+
+        // 4. Illegal value: Unknown string
+        const unknownConfig = {
+            $schema: "./zowe.schema.json",
+            profiles: {
+                zosmf: {
+                    type: "zosmf",
+                    properties: {
+                        allowedLoginMethod: "unknown-method"
+                    }
+                }
+            }
+        };
+        expect(validate(unknownConfig)).toBe(false);
+
+        // 5. Commands still run when illegal value is in zowe.config.json
+        const configPath = path.join(TEST_ENVIRONMENT_SCHEMA.workingDir, "zowe.config.json");
+        fs.writeFileSync(configPath, JSON.stringify(commaSeparatedConfig, null, 2));
+
+        const cmdResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_SCHEMA);
+        expect(cmdResponse.stderr.toString()).not.toContain("Unknown argument");
+        expect(cmdResponse.stderr.toString()).not.toContain("SchemaValidationError");
+    });
+});
+
+describe("allowedLoginMethod option validation and environment variable", () => {
+    let TEST_ENVIRONMENT_CLI: ITestEnvironment<ITestPropertiesSchema>;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_CLI = await TestEnvironment.setUp({
+            testName: "allowed_login_method_cli_opts",
+            skipProperties: true
+        });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CLI);
+    });
+
+    it("Valid CLI value accepted (--allowed-login-method apiml-basic passes syntax validation)", () => {
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_CLI,
+            ["zosmf", "check", "status", "--allowed-login-method", "apiml-basic", "--host", "example.com"]
+        );
+
+        const stderr = response.stderr.toString();
+        expect(stderr).not.toContain("Unknown argument");
+        expect(stderr).not.toContain("is not valid and will be ignored");
+        expect(stderr).not.toContain("Allowed values");
+    });
+
+    it("Invalid CLI value rejected (--allowed-login-method bogus on command line fails with allowed-values error)", () => {
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_CLI,
+            ["zosmf", "check", "status", "--allowed-login-method", "bogus", "--host", "example.com"]
+        );
+
+        const output = response.stderr.toString() + response.stdout.toString();
+        expect(output).toMatch(/Allowed values:|is not valid|Must be one of/i);
+    });
+
+    it("Environment variable (ZOWE_OPT_ALLOWED_LOGIN_METHOD=direct-basic is picked up as option value)", () => {
+        TEST_ENVIRONMENT_CLI.env.ZOWE_OPT_ALLOWED_LOGIN_METHOD = "direct-basic";
+
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_CLI,
+            ["zosmf", "check", "status", "--host", "example.com"]
+        );
+
+        delete TEST_ENVIRONMENT_CLI.env.ZOWE_OPT_ALLOWED_LOGIN_METHOD;
+
+        const stderr = response.stderr.toString();
+        expect(stderr).not.toContain("Unknown argument");
+        expect(stderr).not.toContain("is not valid and will be ignored");
+        expect(stderr).not.toContain("Allowed values");
+    });
+});
+
+describe("Service profile overrides base", () => {
+    let TEST_ENVIRONMENT_OVERRIDE: ITestEnvironment<ITestPropertiesSchema>;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_OVERRIDE = await TestEnvironment.setUp({
+            testName: "service_profile_overrides_base",
+            skipProperties: true
+        });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_OVERRIDE);
+    });
+
+    it("direct-basic on the zosmf profile wins over apiml-basic on the base profile", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_OVERRIDE, "base", {
+            host: "example.com",
+            port: 443,
+            allowedLoginMethod: "apiml-basic"
+        });
+
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_OVERRIDE, "zosmf", {
+            host: "example.com",
+            port: 443,
+            allowedLoginMethod: "direct-basic"
+        });
+
+        const profInfo = new ProfileInfo("zowe");
+        await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_OVERRIDE.workingDir });
+
+        const zosmfProfile = profInfo.getDefaultProfile("zosmf");
+        expect(zosmfProfile).toBeDefined();
+
+        const mergedArgs = profInfo.mergeArgsForProfile(zosmfProfile);
+        const allowedLoginMethodArg = mergedArgs.knownArgs.find(arg => arg.argName === "allowedLoginMethod");
+
+        expect(allowedLoginMethodArg).toBeDefined();
+        expect(allowedLoginMethodArg.argValue).toBe("direct-basic");
+    });
+});
+
+describe("Users overriding the admin value", () => {
+    let TEST_ENVIRONMENT_USER_OVERRIDE: ITestEnvironment<ITestPropertiesSchema>;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_USER_OVERRIDE = await TestEnvironment.setUp({
+            testName: "users_overriding_admin_value",
+            skipProperties: true
+        });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_USER_OVERRIDE);
+    });
+
+    it("allows user to bypass admin value via --allowed-login-method command-line option", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
+            host: "example.com",
+            port: 443,
+            allowedLoginMethod: "apiml-basic"
+        });
+
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_USER_OVERRIDE,
+            ["--allowed-login-method", "direct-basic"]
+        );
+
+        const stderr = response.stderr.toString();
+        expect(stderr).not.toContain("Unknown argument");
+        expect(stderr).not.toContain("is not valid and will be ignored");
+    });
+
+    it("allows user to bypass admin value via ZOWE_OPT_ALLOWED_LOGIN_METHOD environment variable", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
+            host: "example.com",
+            port: 443,
+            allowedLoginMethod: "apiml-basic"
+        });
+
+        TEST_ENVIRONMENT_USER_OVERRIDE.env.ZOWE_OPT_ALLOWED_LOGIN_METHOD = "direct-basic";
+
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_USER_OVERRIDE
+        );
+
+        delete TEST_ENVIRONMENT_USER_OVERRIDE.env.ZOWE_OPT_ALLOWED_LOGIN_METHOD;
+
+        const stderr = response.stderr.toString();
+        expect(stderr).not.toContain("Unknown argument");
+        expect(stderr).not.toContain("is not valid and will be ignored");
+    });
+
+    it("allows user to bypass admin value via user config layer (zowe.config.user.json)", async () => {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
+            host: "example.com",
+            port: 443,
+            allowedLoginMethod: "apiml-basic"
+        });
+
+        const userConfigPath = path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.user.json");
+        const userConfig = {
+            profiles: {
+                zosmf: {
+                    properties: {
+                        allowedLoginMethod: "direct-basic"
+                    }
+                }
+            }
+        };
+        fs.writeFileSync(userConfigPath, JSON.stringify(userConfig, null, 2));
+
+        const profInfo = new ProfileInfo("zowe");
+        await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_USER_OVERRIDE.workingDir });
+
+        const zosmfProfile = profInfo.getDefaultProfile("zosmf");
+        expect(zosmfProfile).toBeDefined();
+
+        const mergedArgs = profInfo.mergeArgsForProfile(zosmfProfile);
+        const allowedLoginMethodArg = mergedArgs.knownArgs.find(arg => arg.argName === "allowedLoginMethod");
+
+        expect(allowedLoginMethodArg).toBeDefined();
+        expect(allowedLoginMethodArg.argValue).toBe("direct-basic");
+    });
+});
+
+describe("Help text tests", () => {
+    let TEST_ENVIRONMENT_HELP: ITestEnvironment<ITestPropertiesSchema>;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_HELP = await TestEnvironment.setUp({
+            testName: "allowed_login_method_help_text",
+            skipProperties: true
+        });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_HELP);
+    });
+
+    it("--allowed-login-method and --auth-order appear under BASE CONNECTION OPTIONS for zosmf-based commands, with the allowed values listed", () => {
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_HELP,
+            ["--help"]
+        );
+
+        expect(response.status).toBe(0);
+        const stdout = response.stdout.toString();
+
+        expect(stdout).toContain("BASE CONNECTION OPTIONS");
+
+        expect(stdout).toContain("--allowed-login-method");
+        expect(stdout).toContain("direct-basic");
+        expect(stdout).toContain("direct-cert-pem");
+        expect(stdout).toContain("apiml-basic");
+        expect(stdout).toContain("apiml-cert-pem");
+        expect(stdout).toContain("prompt");
+
+        expect(stdout).toContain("--auth-order");
+        expect(stdout).toContain("basic");
+        expect(stdout).toContain("bearer");
+        expect(stdout).toContain("token");
+        expect(stdout).toContain("cert-pem");
+        expect(stdout).toContain("none");
     });
 });

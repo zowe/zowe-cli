@@ -1,5 +1,9 @@
 #!/bin/bash
 
-# Execute zosmf check status using active profile with authOrder property
-zowe zosmf check status
+# Execute zowe command (defaults to zosmf check status if no args provided)
+if [ $# -eq 0 ]; then
+    zowe zosmf check status
+else
+    zowe "$@"
+fi
 exit $?

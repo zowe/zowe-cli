@@ -9,6 +9,7 @@
 *
 */
 
+import * as fs from "fs";
 import { CliUtils, ImperativeConfig, TextUtils } from "../../../utilities";
 import { ICommandArguments, IHandlerParameters } from "../../../cmd";
 import { ImperativeError } from "../../../error";
@@ -319,7 +320,7 @@ export class ConnectionPropsForSessCfg {
                 connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_APIML;
             }
             else {
-                 connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+                connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
             }
         }
 
@@ -485,6 +486,13 @@ export class ConnectionPropsForSessCfg {
                     answer = Number(answer);
                     if (isNaN(answer)) {
                         throw new ImperativeError({ msg: `Specified ${cfgPropNm} was not a number.` });
+                    }
+                }
+                if (profileSchema[cfgPropNm]?.type === "existingLocalFile" ||
+                    ["cert", "certKey", "certFile", "certKeyFile"].includes(cfgPropNm) ||
+                    ["cert", "certKey", "certFile", "certKeyFile"].includes(sessPropNm)) {
+                    if (typeof answer === "string" && !fs.existsSync(answer)) {
+                        throw new ImperativeError({ msg: `Specified ${cfgPropNm} file does not exist: ${answer}` });
                     }
                 }
                 answers[sessPropNm] = answer;
