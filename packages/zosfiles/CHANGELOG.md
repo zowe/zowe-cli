@@ -8,6 +8,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - Enhancement: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 - BugFix: Added validation for data set names to the `List` class's `resolveAlias` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 - BugFix: Added validation for data set names to the `Delete` class's `vsam` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+- BugFix: Added more validation for `Create` class's `vsam` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 
 ## `8.37.0`
 

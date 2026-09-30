@@ -45,6 +45,9 @@ export class ZosFilesUtils {
 
     public static readonly SEGMENT_REGEX = /^[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}$/;
     public static readonly MEMBER_MATCH_REGEX = /(?<=\()[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}(?=\))/;
+    public static readonly GENERIC_CHARACTERISTIC_REGEX = /^[A-Za-z0-9]{1,8}$/;
+    public static readonly RETAINTO_REGEX = /^[0-9]{7}$/;
+    public static readonly VOLSER_REGEX = /^[A-Za-z0-9]{1,6}$/;
 
     /**
      * Break up a dataset name of either:
