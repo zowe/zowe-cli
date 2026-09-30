@@ -153,6 +153,9 @@ Destination: %s",
   "invalidAttributesSyntax": Object {
     "message": "Syntax error on line {{lineNumber}} - expected <pattern> <local encoding> <remote encoding>.",
   },
+  "invalidDatasetName": Object {
+    "message": "The data set name provided does not conform to the z/OS data set naming rules.",
+  },
   "invalidDsntypeOption": Object {
     "message": "Invalid zos-files create command 'dsntype' option: ",
   },
