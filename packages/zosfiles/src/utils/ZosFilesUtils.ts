@@ -351,7 +351,7 @@ export class ZosFilesUtils {
         if (name.length > this.MAX_FQDSN_LENGTH) { return false; }
         if (this.MEMBER_MATCH_REGEX.test(name)) {
             const memberNames = [...name.matchAll(new RegExp(this.MEMBER_MATCH_REGEX, "g"))];
-            if (memberNames == null || memberNames.length !== 1 || !name.endsWith(")")) { return false; }
+            if (memberNames.length !== 1 || !name.endsWith(")")) { return false; }
             modifiedName = modifiedName.split("(")[0];
         }
 
