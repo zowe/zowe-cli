@@ -174,71 +174,54 @@ export class ConnectionPropsForSessCfg {
         if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
             !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
         {
-            const allowedLoginMethod = sessCfgToUse.allowedLoginMethod?.toLowerCase();
-            const basicCreds = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
-                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC;
-            const certCreds = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM ||
-                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
+            const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
 
-            if (basicCreds) {
-                if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
-                    promptForValues.push("user");
-                }
-                if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
-                    promptForValues.push("password");
-                }
-            } else if (certCreds) {
-                // Check if certAccount is available (for keychain-based certs)
-                const certAccount = sessCfgToUse._authCache?.availableCreds?.certAccount;
+            // When allowedLoginMethod is "prompt" or unset, we use the first type in the authOrder.
+            let credTypeToPromptFor = sessCfgToUse.authTypeOrder[0];
+            if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC) {
+                credTypeToPromptFor = SessConstants.AUTH_TYPE_BASIC;
+            } else if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM ||
+                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
+                credTypeToPromptFor = SessConstants.AUTH_TYPE_CERT_PEM;
+            }
 
-                // Only prompt for cert/certKey if certAccount is not available
-                if (!certAccount) {
-                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
-                        promptForValues.push("cert");
+            switch (credTypeToPromptFor) {
+                case SessConstants.AUTH_TYPE_BASIC:
+                    if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
+                        promptForValues.push("user");
                     }
-                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
-                        promptForValues.push("certKey");
+                    if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
+                        promptForValues.push("password");
                     }
-                }
-            } else {
-                // allowedLoginMethod is "prompt" or unset, continue with existing behavior.
-                switch (sessCfgToUse.authTypeOrder[0]) {
-                    case SessConstants.AUTH_TYPE_BASIC:
-                        if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
-                            promptForValues.push("user");
-                        }
-                        if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
-                            promptForValues.push("password");
-                        }
-                        break;
-                    case SessConstants.AUTH_TYPE_TOKEN:
-                        if (!sessCfgToUse._authCache?.availableCreds?.tokenType && !doNotPromptForValues.includes("tokenType")) {
-                            promptForValues.push("tokenType");
-                        }
-                        if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
-                            promptForValues.push("tokenValue");
-                        }
-                        break;
-                    case SessConstants.AUTH_TYPE_BEARER:
-                        if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
-                            promptForValues.push("tokenValue");
-                        }
-                        break;
-                    case SessConstants.AUTH_TYPE_CERT_PEM: {
-                        // Check if certAccount is available (for keychain-based certs)
-                        const hasCertAccount = sessCfgToUse._authCache?.availableCreds?.certAccount;
+                    break;
+                case SessConstants.AUTH_TYPE_TOKEN:
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenType && !doNotPromptForValues.includes("tokenType")) {
+                        promptForValues.push("tokenType");
+                    }
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
+                        promptForValues.push("tokenValue");
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_BEARER:
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
+                        promptForValues.push("tokenValue");
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_CERT_PEM: {
+                    // Check if certAccount is available (for keychain-based certs)
+                    const hasCertAccount = sessCfgToUse._authCache?.availableCreds?.certAccount;
 
-                        // Only prompt for cert/certKey if certAccount is not available
-                        if (!hasCertAccount) {
-                            if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
-                                promptForValues.push("cert");
-                            }
-                            if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
-                                promptForValues.push("certKey");
-                            }
+                    // Only prompt for cert/certKey if certAccount is not available
+                    if (!hasCertAccount) {
+                        if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
+                            promptForValues.push("cert");
                         }
-                        break;
+                        if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
+                            promptForValues.push("certKey");
+                        }
                     }
+                    break;
                 }
             }
         }
@@ -314,14 +297,15 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
+        const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(
+            ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
+                    cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod);
+        const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
             // When allowedLoginMethod is apiml-basic or apiml-cert-pem, the credentials
             // supplied by the user must be exchanged for an APIML token, just like an
             // explicit `zowe auth login apiml` would do.
-            const allowedLoginMethod = (ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
-                cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod)?.toLowerCase();
-            const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
-                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
             const hasTokenValue = ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue) ||
                 ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) ||
                 ConnectionPropsForSessCfg.propHasValue(sessCfg._authCache?.availableCreds?.tokenValue);
@@ -331,7 +315,12 @@ export class ConnectionPropsForSessCfg {
             connOpts.doPrompting = true;
         }
         if (!Object.prototype.hasOwnProperty.call(connOpts, "defaultTokenType")) {
-            connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+            if(isApimlLoginMethod) {
+                connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_APIML;
+            }
+            else {
+                 connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+            }
         }
 
         if (connOpts.requestToken) {
@@ -534,6 +523,21 @@ export class ConnectionPropsForSessCfg {
      */
     private static propHasValue(propToTest: any) {
         return propToTest != null && propToTest !== "";
+    }
+
+    // ***********************************************************************
+    /**
+     * Get an allowedLoginMethod value in lower case.
+     *
+     * @param loginMethod
+     *       the allowedLoginMethod value to be normalized.
+     *
+     * @returns the lower case value, or undefined when the value is not a string
+     *          (for example, an array, which is not a legal value). An undefined
+     *          result makes the caller treat allowedLoginMethod as unset.
+     */
+    private static normalizeLoginMethod(loginMethod: unknown): string | undefined {
+        return typeof loginMethod === "string" ? loginMethod.toLowerCase() : undefined;
     }
 
     /**

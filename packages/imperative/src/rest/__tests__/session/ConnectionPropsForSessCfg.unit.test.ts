@@ -1543,6 +1543,50 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.allowedLoginMethod).toBe("apiml-basic");
     });
 
+    it("should not throw or request a token when allowedLoginMethod is not a string", () => {
+        const sessCfg: ISession = { hostname: "SomeHost" };
+        const args = { $0: "zowe", _: [""], allowedLoginMethod: ["direct-basic", "apiml-basic"] };
+        const connOpts: IOptionsForAddConnProps = {};
+
+        expect(() => ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, args, connOpts)).not.toThrow();
+        expect(connOpts.requestToken).toBe(false);
+    });
+
+    it("should treat a non-string allowedLoginMethod as unset and keep the default prompting", async () => {
+        const promptCalls: string[] = [];
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn((text: string) => {
+            promptCalls.push(text);
+            return Promise.resolve(text.includes("user") ? "FakeUser" : "FakePassword");
+        });
+
+        const initialSessCfg: ISession = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            type: SessConstants.AUTH_TYPE_NONE,
+            authTypeOrder: [SessConstants.AUTH_TYPE_NONE]
+        };
+        const args = { $0: "zowe", _: [""], allowedLoginMethod: ["direct-basic", "apiml-basic"] };
+
+        let sessCfgWithConnProps: ISession;
+        try {
+            sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(initialSessCfg, args);
+        } finally {
+            CliUtils.sleep = sleepReal;
+            CliUtils.readPrompt = readPromptReal;
+        }
+
+        expect(sessCfgWithConnProps.user).toBe("FakeUser");
+        expect(sessCfgWithConnProps.password).toBe("FakePassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(promptCalls.length).toBe(2);
+    });
+
     it("get host name from prompt with custom service description", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
