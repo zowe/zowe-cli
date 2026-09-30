@@ -85,4 +85,19 @@ export interface ISshSession {
      */
     insecure?: boolean;
 
+    /**
+     * Path to ssh-agent's UNIX socket for ssh-agent-based user authentication.
+     * Windows users: set to 'pageant' for authenticating with Pageant or path to a cygwin UNIX socket.
+     * @type {string}
+     * @memberof ISshSession
+     */
+    identityAgent?: string;
+
+    /**
+     * Set to `true` to use OpenSSH agent forwarding for the life of the connection.
+     * `agent` must also be set to use this feature.
+     * @type {boolean}
+     * @memberof ISshSession
+     */
+    forwardAgent?: boolean;
 }
