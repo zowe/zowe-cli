@@ -172,7 +172,12 @@ export class ConfigAutoStore {
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
-        const shouldFetchToken = hasBasicCreds || hasCertCreds && isApimlLoginMethod;
+        // A direct-* login method means the user's credentials go straight to the service,
+        // so they must never be exchanged for a token, even if basePath or tokenType exist.
+        const isDirectLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM;
+
+        const shouldFetchToken = !isDirectLoginMethod && (hasBasicCreds || hasCertCreds && isApimlLoginMethod);
 
         if (shouldFetchToken && await this._fetchTokenForSessCfg({ ...opts, profilePath })) {
             const credProps = ["user", "password", "cert", "certKey", "certFile", "certKeyFile", "certAccount"];
