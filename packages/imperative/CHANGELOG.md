@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `brace-expansion` and `markdown-it` dependencies for technical currency. [#2913](https://github.com/zowe/zowe-cli/pull/2913)
+
 ## `8.38.0`
 
 - Enhancement: Added an `allowedLoginMethod` base profile property that lets administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service, so entered credentials comply with site requirements. Defaults to `prompt` (existing behavior) when method is not chosen. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
