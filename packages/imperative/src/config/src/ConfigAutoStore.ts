@@ -19,7 +19,6 @@ import { ImperativeConfig } from "../../utilities";
 import { ISession } from "../../rest/src/session/doc/ISession";
 import { Session } from "../../rest/src/session/Session";
 import * as SessConstants from "../../rest/src/session/SessConstants";
-import { AUTH_TYPE_TOKEN, TOKEN_TYPE_APIML } from "../../rest/src/session/SessConstants";
 import { AuthOrder, PropUse } from "../../rest/src/session/AuthOrder";
 import { Logger } from "../../logger";
 import {
@@ -54,10 +53,7 @@ export class ConfigAutoStore {
 
         for (const profType of profileTypes) {
             const profileMatch = ImperativeConfig.instance.loadedConfig.profiles?.find(p => p.type === profType);
-            if (profileMatch != null && opts.profileProps.every(propName =>
-                propName in profileMatch.schema.properties ||
-                AuthOrder.getPropNmFor(propName, PropUse.IN_SESS) in profileMatch.schema.properties
-            )) {
+            if (profileMatch != null && opts.profileProps.every(propName => propName in profileMatch.schema.properties)) {
                 return [profType, ConfigUtils.getActiveProfileName(profType, opts.params?.arguments, opts.defaultProfileName)];
             }
         }
@@ -125,9 +121,8 @@ export class ConfigAutoStore {
 
             if (authHandlerClass instanceof AbstractAuthHandler) {
                 const { promptParams } = authHandlerClass.getAuthHandlerApi();
-                if (effectiveTokenType == null ||
-                    effectiveTokenType === promptParams.defaultTokenType ||
-                    effectiveTokenType.startsWith(TOKEN_TYPE_APIML) ||
+                if (effectiveTokenType === promptParams.defaultTokenType ||
+                    effectiveTokenType.startsWith(SessConstants.TOKEN_TYPE_APIML) ||
                     isApimlLoginMethod) {
                     return authHandlerClass;  // Auth service must have matching token type
                 }
@@ -164,6 +159,9 @@ export class ConfigAutoStore {
         }
         const [profileType, profileName] = profileData ?? [opts.profileType, opts.profileName];
         const profilePath = config.api.profiles.getProfilePathFromName(profileName);
+        const profileObj = config.api.profiles.get(profileName, false);
+        const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.params?.arguments, opts.defaultBaseProfileName);
+        const baseProfileObj = config.api.profiles.get(baseProfileName, false);
 
         // Replace user/password or cert properties with tokenValue if token login succeeded
         const hasBasicCreds = profileProps.includes("user") && profileProps.includes("password");
@@ -182,25 +180,17 @@ export class ConfigAutoStore {
             if (!profileProps.includes("tokenValue")) {
                 profileProps.push("tokenValue");
             }
-            if (opts.sessCfg.tokenType && !profileProps.includes("tokenType")) {
-                const profileObj = config.api.profiles.get(profileName, false);
-                const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.params?.arguments, opts.defaultBaseProfileName);
-                const baseProfileObj = config.api.profiles.get(baseProfileName, false);
-                if (!profileObj?.tokenType && !baseProfileObj?.tokenType) {
-                    profileProps.push("tokenType");
-                }
+            if (opts.sessCfg.tokenType && !profileProps.includes("tokenType") &&
+                !profileObj?.tokenType && !baseProfileObj?.tokenType) {
+                profileProps.push("tokenType");
             }
         }
 
         const beforeLayer = config.api.layers.get();
 
-
-        const profileObj = config.api.profiles.get(profileName, false);
         const profileSchema = ImperativeConfig.instance.loadedConfig.profiles?.find(p => p.type === profileType)?.schema;
         const profileSecureProps = config.api.secure.securePropsForProfile(profileName);
 
-        const baseProfileName = ConfigUtils.getActiveProfileName("base", opts.params?.arguments, opts.defaultBaseProfileName);
-        const baseProfileObj = config.api.profiles.get(baseProfileName, false);
         const baseProfileSchema = ImperativeConfig.instance.loadedConfig.baseProfile.schema;
         const baseProfileSecureProps = config.api.secure.securePropsForProfile(baseProfileName);
 
@@ -241,10 +231,7 @@ export class ConfigAutoStore {
 
             const sessCfgPropName = propName === "host" ? "hostname" : AuthOrder.getPropNmFor(propName, PropUse.IN_SESS);
             const propVal = opts.sessCfg[sessCfgPropName] ?? opts.sessCfg[propName];
-            const targetPropName = profileSchema?.properties[propName] == null &&
-                profileSchema?.properties[AuthOrder.getPropNmFor(propName, PropUse.IN_SESS)] != null ?
-                AuthOrder.getPropNmFor(propName, PropUse.IN_SESS) : propName;
-            config.set(`${propProfilePath}.properties.${targetPropName}`, propVal, {
+            config.set(`${propProfilePath}.properties.${propName}`, propVal, {
                 secure: opts.setSecure ?? isSecureProp
             });
         }
@@ -288,7 +275,7 @@ export class ConfigAutoStore {
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
         const api = authHandlerClass.getAuthHandlerApi();
-        opts.sessCfg.type = AUTH_TYPE_TOKEN;
+        opts.sessCfg.type = SessConstants.AUTH_TYPE_TOKEN;
         opts.sessCfg.tokenType = opts.params?.arguments?.tokenType ??
             (isApimlLoginMethod ? SessConstants.TOKEN_TYPE_APIML : api.promptParams.defaultTokenType);
         const baseSessCfg: ISession = { type: opts.sessCfg.type };
