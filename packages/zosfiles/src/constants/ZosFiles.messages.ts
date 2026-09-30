@@ -142,6 +142,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set name is invalid
+     * @type {IMessageDefinition}
+     */
+    invalidDatasetName: {
+        message: "The data set name provided does not conform to the z/OS data set naming rules."
+    },
+
+    /**
      * Message indicating that a new target data set was created and copied into
      * @type {IMessageDefinition}
      */

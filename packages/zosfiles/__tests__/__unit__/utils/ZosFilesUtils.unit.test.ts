@@ -415,8 +415,18 @@ describe("ZosFilesUtils", () => {
             expect(result).toEqual(false);
         });
 
+        it("should fail with an accented character", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SÉT");
+            expect(result).toEqual(false);
+        });
+
         it("should succeed with a properly formatted name", () => {
             const result = ZosFilesUtils.validateDSN("DATA.SET");
+            expect(result).toEqual(true);
+        });
+
+        it("should succeed with a properly formatted name in lower case", () => {
+            const result = ZosFilesUtils.validateDSN("data.set");
             expect(result).toEqual(true);
         });
     });
@@ -427,6 +437,11 @@ describe("ZosFilesUtils", () => {
             expect(result).toEqual(true);
         });
 
+        it("should handle a good lower case member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("member");
+            expect(result).toEqual(true);
+        });
+
         it("should handle a too long member name", () => {
             const result = ZosFilesUtils.validateDSMemberName("MEMBERLONG");
             expect(result).toEqual(false);
@@ -434,6 +449,11 @@ describe("ZosFilesUtils", () => {
 
         it("should handle a member name starting with numeric", () => {
             const result = ZosFilesUtils.validateDSMemberName("1MEMBER");
+            expect(result).toEqual(false);
+        });
+
+        it("should handle an accented character", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MÉMBER");
             expect(result).toEqual(false);
         });
     });
@@ -485,7 +505,7 @@ describe("ZosFilesUtils", () => {
         });
 
         it("should detect a bad data set name with data after the member", () => {
-            const name = "TEST.SOMEBADDATA.SET(MEMBER)DATA";
+            const name = "TEST.BADDATA.SET(MEMBER)DATA";
             const result = ZosFilesUtils.validateFQDSN(name);
             expect(result).toEqual(false);
             expect(validateDSNSpy).not.toHaveBeenCalled();
