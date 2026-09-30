@@ -153,6 +153,9 @@ Destination: %s",
   "invalidAttributesSyntax": Object {
     "message": "Syntax error on line {{lineNumber}} - expected <pattern> <local encoding> <remote encoding>.",
   },
+  "invalidDataType": Object {
+    "message": "The option {{optionName}} provided data with type {{providedType}} when {{expectedType}} was expected.",
+  },
   "invalidDatasetName": Object {
     "message": "The data set name provided does not conform to the z/OS data set naming rules.",
   },
@@ -185,6 +188,9 @@ Destination: %s",
   },
   "invalidRecfmOption": Object {
     "message": "Invalid zos-files create command 'recfm' option: ",
+  },
+  "invalidVolser": Object {
+    "message": "The provided volser is not valid.",
   },
   "longAmsStatement": Object {
     "message": "Line %d is longer than %d characters (maximum allowed length)
@@ -326,6 +332,9 @@ Destination: %s",
   },
   "ussFileUploadedSuccessfully": Object {
     "message": "USS file uploaded successfully.",
+  },
+  "validationError": Object {
+    "message": "The {{optionName}} value = '{{value}}' failed validation.",
   },
   "valueOutOfBounds": Object {
     "message": "The {{optionName}} value = '{{value}}' must be between {{minValue}} and {{maxValue}}.",

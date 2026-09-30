@@ -136,6 +136,29 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set name is invalid
+     * @type {IMessageDefinition}
+     */
+    invalidDatasetName: {
+        message: "The data set name provided does not conform to the z/OS data set naming rules."
+    },
+
+    /**
+     * Message indicating the data type is wrong for an option
+     * @type {IMessageDefinition}
+     */
+    invalidDataType: {
+        message: "The option {{optionName}} provided data with type {{providedType}} when {{expectedType}} was expected."
+    },
+
+    /**
+     * Message indicating that a new target data set was created and copied into
+     * @type {IMessageDefinition}
+     */
+    dataSetCopiedIntoNew: {
+        message: `Source contents were successfully copied into a new data set - %s`
+    },
+    /**
      * Message indicating that the data set was created successfully
      * @type {IMessageDefinition}
      */
@@ -314,6 +337,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the volser is incorrect.
+     * @type {IMessageDefinition}
+     */
+    invalidVolser: {
+        message: "The provided volser is not valid."
+    },
+
+    /**
      * Message indicating the maximum allocation quantity has been exceeded
      * @type {IMessageDefinition}
      */
@@ -351,6 +382,13 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     valueOutOfBounds: {
         message: "The {{optionName}} value = '{{value}}' must be between {{minValue}} and {{maxValue}}."
+    },
+
+    /** Message indicating that the option provided failed validation
+     * @type {IMessageDefinition}
+     */
+    validationError: {
+        message: "The {{optionName}} value = '{{value}}' failed validation."
     },
 
     /**

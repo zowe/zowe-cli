@@ -417,6 +417,7 @@ export class Create {
         : Promise<IZosFilesResponse> {
         // We require the dataset name
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(ZosFilesUtils.validateDSN(dataSetName), false, ZosFilesMessages.invalidDatasetName.message);
 
         const idcamsOptions: ICreateVsamOptions = this.vsamConvertToIdcamsOptions(options);
 
@@ -558,7 +559,7 @@ export class Create {
             matchArray = idcamsOptions.size.match(/[0-9]+/g);
             if (matchArray) {
                 // the numeric part of size is the primary space
-                idcamsOptions.primary = matchArray[0];
+                idcamsOptions.primary = Number(matchArray[0]);
             }
 
             delete idcamsOptions.size;
@@ -652,7 +653,16 @@ export class Create {
 
                     case "primary":
                     case "secondary":
-                    // Validate maximum allocation quantity
+                        if (typeof options[option] !== "number") {
+                            throw new ImperativeError({
+                                msg: TextUtils.formatMessage(ZosFilesMessages.invalidDataType.message, {
+                                    optionName: option,
+                                    providedType: typeof options[option],
+                                    expectedType: "number"
+                                })
+                            });
+                        }
+                        // Validate maximum allocation quantity
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
@@ -674,13 +684,58 @@ export class Create {
                                 })
                             });
                         }
+                        if (typeof options[option] !== "number") {
+                            throw new ImperativeError({
+                                msg: TextUtils.formatMessage(ZosFilesMessages.invalidDataType.message, {
+                                    optionName: option,
+                                    providedType: typeof options[option],
+                                    expectedType: "number"
+                                })
+                            });
+                        }
                         break;
 
                     case "retainTo":
-                    case "volumes":
+                        if (!ZosFilesUtils.RETAINTO_REGEX.test(options[option] as string)) {
+                            throw new ImperativeError({
+                                msg: TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                                    optionName: option,
+                                    value: options[option]
+                                })
+                            });
+                        }
+                        break;
+                    case "volumes": {
+                        let volumesArray: string[] = [];
+                        if (options[option]?.includes(" ") || options[option]?.includes(",")) {
+                            volumesArray = options[option].split(/[ ,]+/);
+                            volumesArray = volumesArray.filter(item => item !== "" && item != null);
+
+                        } else {
+                            volumesArray.push(options[option] as string);
+                        }
+
+                        for (const vol of volumesArray) {
+                            if (!ZosFilesUtils.VOLSER_REGEX.test(vol)) {
+                                throw new ImperativeError({
+                                    msg: ZosFilesMessages.invalidVolser.message
+                                });
+                            }
+                        }
+                        break;
+                    }
                     case "storclass":
                     case "mgntclass":
                     case "dataclass":
+                        if (!ZosFilesUtils.GENERIC_CHARACTERISTIC_REGEX.test(options[option] as string)) {
+                            throw new ImperativeError({
+                                msg: TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                                    optionName: option,
+                                    value: options[option]
+                                })
+                            });
+                        }
+                        break;
                     case "responseTimeout":
                     // no validation at this time
                         break;
