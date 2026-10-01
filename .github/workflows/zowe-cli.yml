@@ -184,7 +184,7 @@ jobs:
 
     - name: Comment on PR
       if: ${{ always() && steps.find-pr.outputs.number != '' }}
-      uses: marocchino/sticky-pull-request-comment@v2
+      uses: marocchino/sticky-pull-request-comment@v3
       with:
         header: Client artifacts
         number: ${{ steps.find-pr.outputs.number }}
