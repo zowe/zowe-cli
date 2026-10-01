@@ -82,6 +82,30 @@ pub fn util_get_nodejs_zowe_path() -> String {
 }
 
 /**
+ * Get the absolute path to an executable in the Windows System32 directory.
+ *
+ * @param exe_name
+ *      The file name of the program (e.g., "ping.exe").
+ *
+ * @returns Absolute path to the program. The Windows directory is taken from
+ *          %SystemRoot% (or %windir%) when that is an absolute path. Otherwise
+ *          it defaults to C:\Windows.
+ */
+pub fn util_get_win_system32_exe(exe_name: &str) -> String {
+    let win_dir: PathBuf = ["SystemRoot", "windir"]
+        .iter()
+        .filter_map(|var_nm| env::var_os(var_nm))
+        .map(PathBuf::from)
+        .find(|win_dir| win_dir.is_absolute())
+        .unwrap_or_else(|| PathBuf::from("C:\\Windows"));
+
+    let mut exe_path = win_dir;
+    exe_path.push("System32");
+    exe_path.push(exe_name);
+    exe_path.to_string_lossy().to_string()
+}
+
+/**
  * Get the path to the zowe daemon directory (defaults to ~/.zowe/daemon).
  * Ensures that the directory exists, or we create it.
  *
