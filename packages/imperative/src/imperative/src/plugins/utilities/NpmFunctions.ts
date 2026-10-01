@@ -94,8 +94,13 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
         try {
-            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
-            packageName = JSON.parse(execOutput.toString())[0].name;
+            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]).toString();
+            const parsedOutput = JSON.parse(execOutput);
+            // npm v12 changed `npm pack --json`'s output from an array of package objects to a
+            // single object keyed by package name. Branched based off the output (rather than
+            // checking the installed npm version) to avoid an extra command invocation, which can
+            // be slow in some environments to determine the npm version
+            packageName = Array.isArray(parsedOutput) ? parsedOutput[0].name : Object.keys(parsedOutput)[0];
         } catch (err) {
             throw new ImperativeError({
                 msg: `Failed to fetch metadata for package: ${pkgSpec}`,

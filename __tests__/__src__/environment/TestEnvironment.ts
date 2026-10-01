@@ -97,7 +97,10 @@ export class TestEnvironment extends BaseTestEnvironment {
             port: defaultSystem.ssh.port,
             privateKey: defaultSystem.ssh.privateKey,
             keyPassphrase: defaultSystem.ssh.keyPassphrase,
-            handshakeTimeout: defaultSystem.ssh.handshakeTimeout
+            handshakeTimeout: defaultSystem.ssh.handshakeTimeout,
+            // System tests have no terminal to confirm a host key, so skip
+            // verification here (the equivalent of --insecure)
+            insecure: true
         });
     }
 }

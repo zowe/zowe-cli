@@ -176,7 +176,7 @@ export class Logger {
      * @returns {any}
      */
     public trace(message: string, ...args: any[]): string {
-        const finalMessage = TextUtils.formatMessage.apply(this, [message].concat(args));
+        const finalMessage = LoggerUtils.censorRawData(TextUtils.formatMessage.apply(this, [message].concat(args)), this.category);
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
             this.logService.trace(this.getCallerFileAndLineTag() + finalMessage);
         } else {

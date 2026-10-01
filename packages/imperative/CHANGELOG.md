@@ -2,6 +2,18 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
+- BugFix: Addressed an issue that caused the `npm pack` command to fail, since `npm` v12 changed the command's JSON output from an array to an object. [#2840](https://github.com/zowe/zowe-cli/pull/2840)
+- BugFix: Updated `diff2html` dependency for technical currency. [#2876](https://github.com/zowe/zowe-cli/pull/2876)
+
+## `5.27.23`
+
+- BugFix: Routed messages passed to the `Logger.trace` function through the `LoggerUtils.censorRawData` function, so secure config property values are redacted before written to the trace log. [#2822](https://github.com/zowe/zowe-cli/pull/2822)
+- BugFix: Censored certain fields, and redacted token value from logs in `AbstractRestClient`. [#2816](https://github.com/zowe/zowe-cli/pull/2816)
+- BugFix: Added a `IO.hasOwnerOnlyAccess` utility function to check whether a file or directory's access is restricted to the current user only, cross-platform (POSIX mode bits/owner; Windows `icacls` ACL). [#2826](https://github.com/zowe/zowe-cli/pull/2826)
+ 
 ## `5.27.22`
 
 - BugFix: Recomputed the set of secure property paths to redact on every log call instead of caching it at first use. [#2803](https://github.com/zowe/zowe-cli/pull/2803)

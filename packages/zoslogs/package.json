@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-logs-for-zowe-sdk",
-  "version": "7.29.31",
+  "version": "7.29.32",
   "description": "Zowe SDK to interact with the z/OS logs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -41,13 +41,12 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "prepack": "node ../../scripts/prepareLicenses.js"
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "7.29.31",
-    "@zowe/core-for-zowe-sdk": "7.29.31",
-    "@zowe/imperative": "5.27.22"
+    "@zowe/cli-test-utils": "7.29.32",
+    "@zowe/core-for-zowe-sdk": "7.29.32",
+    "@zowe/imperative": "5.27.23"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^7.0.0",

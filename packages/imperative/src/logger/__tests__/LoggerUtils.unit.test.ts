@@ -248,7 +248,7 @@ describe("LoggerUtils tests", () => {
         });
 
         // A persistent daemon reloads the active team config before each command, so a change
-        // to the on-disk "secure" arrays has to take effect on the next command rather than 
+        // to the on-disk "secure" arrays has to take effect on the next command rather than
         // being frozen at first use.
         describe("should reflect on-disk secure arrays on every call (daemon cache invalidation)", () => {
             beforeEach(() => {

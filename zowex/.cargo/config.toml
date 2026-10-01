@@ -1,2 +1,0 @@
-[target.'cfg(all(windows, target_env = "msvc"))']
-rustflags = ["-Ctarget-feature=+crt-static"]
