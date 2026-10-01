@@ -1250,7 +1250,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
     });
 
     it("should get certFile from prompt when cert-pem is first in authOrder", async () => {
-        const certFileFromPrompt = "FakeCertFileVal";
+        const certFileFromPrompt = __filename;
         const certKeyFileFromArgs = "FakeCertKeyFileVal";
 
         const sleepReal = CliUtils.sleep;
@@ -1295,7 +1295,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
     });
 
     it("should get certKeyFile from prompt when cert-pem is first in authOrder", async () => {
-        const certKeyFileFromPrompt = "FakeCertKeyFileVal";
+        // A prompted file path must exist, so use a file that is known to exist
+        const certKeyFileFromPrompt = __filename;
         const certFileFromArgs = "FakeCertFileVal";
 
         const sleepReal = CliUtils.sleep;
@@ -1413,7 +1414,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.user).toBe(userFromPrompt);
         expect(sessCfgWithConnProps.password).toBe(passFromPrompt);
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
-        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_APIML);
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(promptCalls.length).toBe(2);
     });

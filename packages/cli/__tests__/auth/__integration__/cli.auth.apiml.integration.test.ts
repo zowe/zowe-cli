@@ -147,6 +147,9 @@ describe("allowedLoginMethod schema validation and runtime execution", () => {
         const schemaPath = path.join(TEST_ENVIRONMENT_SCHEMA.workingDir, "zowe.schema.json");
         const schemaJson = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
 
+        // ajv 6 only knows the draft-07 meta-schema, so it cannot resolve the draft 2020-12 $schema URL
+        delete schemaJson.$schema;
+
         const Ajv = require("ajv");
         const ajv = new Ajv({ allErrors: true, schemaId: "auto" });
         ajv.addMetaSchema(require("ajv/lib/refs/json-schema-draft-06.json"));
@@ -253,7 +256,9 @@ describe("allowedLoginMethod option validation and environment variable", () => 
         );
 
         const output = response.stderr.toString() + response.stdout.toString();
-        expect(output).toMatch(/Allowed values:|is not valid|Must be one of/i);
+        expect(output).toMatch(/Invalid value specified for option|must match one of the following options/i);
+        expect(output).toContain("--allowed-login-method");
+        expect(output).toContain("bogus");
     });
 
     it("Environment variable (ZOWE_OPT_ALLOWED_LOGIN_METHOD=direct-basic is picked up as option value)", () => {
@@ -300,6 +305,10 @@ describe("Service profile overrides base", () => {
             port: 443,
             allowedLoginMethod: "direct-basic"
         });
+
+        // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
+        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_OVERRIDE, ["config", "update-schemas"]);
+        expect(updateResponse.status).toBe(0);
 
         const profInfo = new ProfileInfo("zowe");
         await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_OVERRIDE.workingDir });
@@ -369,16 +378,17 @@ describe("Users overriding the admin value", () => {
     });
 
     it("allows user to bypass admin value via user config layer (zowe.config.user.json)", async () => {
-        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
+        const profileName = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
             host: "example.com",
             port: 443,
             allowedLoginMethod: "apiml-basic"
         });
 
+        // The user layer must override the profile that was just created, so it has to use that profile's generated name
         const userConfigPath = path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.user.json");
         const userConfig = {
             profiles: {
-                zosmf: {
+                [profileName]: {
                     properties: {
                         allowedLoginMethod: "direct-basic"
                     }
@@ -386,6 +396,10 @@ describe("Users overriding the admin value", () => {
             }
         };
         fs.writeFileSync(userConfigPath, JSON.stringify(userConfig, null, 2));
+
+        // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
+        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_USER_OVERRIDE, ["config", "update-schemas"]);
+        expect(updateResponse.status).toBe(0);
 
         const profInfo = new ProfileInfo("zowe");
         await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_USER_OVERRIDE.workingDir });
@@ -419,7 +433,7 @@ describe("Help text tests", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_HELP,
-            ["--help"]
+            ["zosmf", "check", "status", "--help"]
         );
 
         expect(response.status).toBe(0);
