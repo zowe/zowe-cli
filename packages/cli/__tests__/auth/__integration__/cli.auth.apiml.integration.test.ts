@@ -388,20 +388,21 @@ describe("Users overriding the admin value", () => {
     });
 
     it("allows user to bypass admin value via user config layer (zowe.config.user.json)", async () => {
-        const profileName = await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
+        await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_USER_OVERRIDE, "zosmf", {
             host: "example.com",
             port: 443,
             allowedLoginMethod: "apiml-basic"
         });
 
-        // The user layer must override the profile that was just created, so it has to use that profile's generated name
+        const configPath = path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.json");
+        const defaultZosmfName = JSON.parse(fs.readFileSync(configPath, "utf8")).defaults.zosmf;
         const userConfigPath = path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.user.json");
         // ProfileInfo loads a profile's schema from the layer the profile resolves to (here the user layer),
         // so the user config needs its own $schema reference
         const userConfig = {
             $schema: "./zowe.schema.json",
             profiles: {
-                [profileName]: {
+                [defaultZosmfName]: {
                     properties: {
                         allowedLoginMethod: "direct-basic"
                     }
