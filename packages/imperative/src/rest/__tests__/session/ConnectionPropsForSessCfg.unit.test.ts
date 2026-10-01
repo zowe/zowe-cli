@@ -1295,7 +1295,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
     });
 
     it("should get certKeyFile from prompt when cert-pem is first in authOrder", async () => {
-        // A prompted file path must exist, so use a file that is known to exist
         const certKeyFileFromPrompt = __filename;
         const certFileFromArgs = "FakeCertFileVal";
 

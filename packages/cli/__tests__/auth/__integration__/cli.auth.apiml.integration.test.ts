@@ -19,6 +19,15 @@ import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properti
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
+/**
+ * `zowe config update-schemas` writes zowe.schema.json but does not add a `$schema`
+ * reference to the config file, and ProfileInfo skips any config layer that has none.
+ */
+function addSchemaRef(configPath: string): void {
+    const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+    fs.writeFileSync(configPath, JSON.stringify({ $schema: "./zowe.schema.json", ...config }, null, 4));
+}
+
 describe("auth login/logout apiml help", () => {
 
     // Create the unique test environment
@@ -309,6 +318,7 @@ describe("Service profile overrides base", () => {
         // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
         const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_OVERRIDE, ["config", "update-schemas"]);
         expect(updateResponse.status).toBe(0);
+        addSchemaRef(path.join(TEST_ENVIRONMENT_OVERRIDE.workingDir, "zowe.config.json"));
 
         const profInfo = new ProfileInfo("zowe");
         await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_OVERRIDE.workingDir });
@@ -386,7 +396,10 @@ describe("Users overriding the admin value", () => {
 
         // The user layer must override the profile that was just created, so it has to use that profile's generated name
         const userConfigPath = path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.user.json");
+        // ProfileInfo loads a profile's schema from the layer the profile resolves to (here the user layer),
+        // so the user config needs its own $schema reference
         const userConfig = {
+            $schema: "./zowe.schema.json",
             profiles: {
                 [profileName]: {
                     properties: {
@@ -400,6 +413,7 @@ describe("Users overriding the admin value", () => {
         // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
         const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_USER_OVERRIDE, ["config", "update-schemas"]);
         expect(updateResponse.status).toBe(0);
+        addSchemaRef(path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.json"));
 
         const profInfo = new ProfileInfo("zowe");
         await profInfo.readProfilesFromDisk({ projectDir: TEST_ENVIRONMENT_USER_OVERRIDE.workingDir });
