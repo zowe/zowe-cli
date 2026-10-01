@@ -166,7 +166,7 @@ jobs:
     - name: Archive CLI Package
       id: cli-artifact-upload
       if: ${{ always() && steps.package.outcome == 'success' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: zowe-cli
         path: packages/cli/zowe-cli-*.tgz
