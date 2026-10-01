@@ -19,7 +19,7 @@ jobs:
         fetch-depth: 0
 
     - name: Configure Sonar Scan
-      uses: zowe-actions/octorelease/script@e0672bf28f74f36219713afe75915ea2dc7bf85b # v1
+      uses: zowe-actions/octorelease/script@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1
       env:
         COVERAGE_ARTIFACT: "Linux-20.x-results:__tests__/__results__"
       with:
