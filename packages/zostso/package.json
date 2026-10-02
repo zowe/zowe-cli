@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-tso-for-zowe-sdk",
-  "version": "7.29.32",
+  "version": "7.29.33",
   "description": "Zowe SDK to interact with TSO on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -44,12 +44,12 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/zosmf-for-zowe-sdk": "7.29.32"
+    "@zowe/zosmf-for-zowe-sdk": "7.29.33"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "7.29.32",
-    "@zowe/core-for-zowe-sdk": "7.29.32",
-    "@zowe/imperative": "5.27.23"
+    "@zowe/cli-test-utils": "7.29.33",
+    "@zowe/core-for-zowe-sdk": "7.29.33",
+    "@zowe/imperative": "5.27.24"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^7.0.0",

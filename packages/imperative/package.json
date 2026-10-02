@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.27.23",
+  "version": "5.27.24",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -100,7 +100,7 @@
     "@types/rimraf": "^3.0.2",
     "@types/sanitize-html": "^2.16.1",
     "@types/stack-trace": "^0.0.29",
-    "@zowe/secrets-for-zowe-sdk": "^7.18.0",
+    "@zowe/secrets-for-zowe-sdk": "^7.29.33",
     "concurrently": "^7.5.0",
     "cowsay": "^1.2.1",
     "deep-diff": "^0.3.8",

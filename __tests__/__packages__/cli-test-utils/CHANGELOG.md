@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## Recent Changes
+## `7.29.33`
 
 - BugFix: Updated and removed dependencies for technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
 

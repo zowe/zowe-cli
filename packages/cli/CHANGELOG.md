@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.33`
 
 - BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
 - BugFix: Updated `tar` dependency to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)

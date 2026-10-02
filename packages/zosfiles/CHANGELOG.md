@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.33`
 
 - BugFix: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2923](https://github.com/zowe/zowe-cli/pull/2923)
 - BugFix: Added validation for data set names to the `Delete` class's `vsam` function. [#2923](https://github.com/zowe/zowe-cli/pull/2923)

@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.33`
 
 - BugFix: Added validation for job names, job IDs, and spool file IDs before they are used in a z/OSMF REST request. [#2927](https://github.com/zowe/zowe-cli/pull/2927)
 

@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.24`
 
 - BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871) [#2926](https://github.com/zowe/zowe-cli/pull/2926)
