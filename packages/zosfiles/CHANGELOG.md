@@ -2,11 +2,16 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2923](https://github.com/zowe/zowe-cli/pull/2923)
+- BugFix: Added validation for data set names to the `Delete` class's `vsam` function. [#2923](https://github.com/zowe/zowe-cli/pull/2923)
+- BugFix: Added more validation for `Create` class's `vsam` function. [#2923](https://github.com/zowe/zowe-cli/pull/2923)
+
 ## `7.29.26`
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
 - BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
-
 
 ## `7.29.23`
 
