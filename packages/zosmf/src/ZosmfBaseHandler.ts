@@ -25,7 +25,6 @@ import {
     ConnectionPropsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "./ZosmfSession";
-import { Login } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -68,12 +67,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         );
 
         this.mSession = new Session(sessCfgWithCreds);
-
-        if(this.mSession.isUsingApiml() && !sessCfg.tokenValue) {
-            await Login.apimlLogin(this.mSession);
-            return;
-        }
-
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }
