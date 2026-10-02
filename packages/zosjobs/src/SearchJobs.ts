@@ -18,6 +18,7 @@ import { ISearchJobsParms } from "./doc/input/ISearchJobsParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { IJob } from "./doc/response/IJob";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosJobsMessages } from "./JobsMessages";
 
 /**
@@ -138,6 +139,8 @@ export class SearchJobs {
         startingLine: number) {
         Logger.getAppLogger().trace("SearchJobs.searchSpoolContentCommon()");
         const headers: any[] = [Headers.TEXT_PLAIN_UTF8];
+        JobsUtils.validateJobNameAndId(jobFile.jobname, jobFile.jobid);
+        JobsUtils.validateSpoolId(jobFile.id);
 
         let parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + jobFile.jobname + "/" + jobFile.jobid +
