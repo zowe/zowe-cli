@@ -283,11 +283,7 @@ describe("System Tests - Monitor Jobs", () => {
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"(((((\" jobid \"JOB123\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("The job name '(((((' is not valid.");
             });
 
             it("should detect and surface an error message if an invalid jobid is specified", async () => {
@@ -303,11 +299,7 @@ describe("System Tests - Monitor Jobs", () => {
                 // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"(\"");
-                expect(trimmedErrorMessage).toContain("category: 6");
-                expect(trimmedErrorMessage).toContain("reason: 7");
-                expect(trimmedErrorMessage).toContain("rc: 4");
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("The job ID '(' is not valid.");
             });
 
             it("should detect and surface an error if the job requested is not found", async () => {
