@@ -409,7 +409,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     invalidVolser: {
-        message: "The provided volser is not valid."
+        message: "The provided volume serial is not valid."
     },
 
     /**
