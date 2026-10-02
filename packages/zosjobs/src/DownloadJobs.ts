@@ -11,6 +11,7 @@
 
 import { AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -101,6 +102,8 @@ export class DownloadJobs {
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
         const job = parms.jobFile;
+        JobsUtils.validateJobNameAndId(job.jobname, job.jobid);
+        JobsUtils.validateSpoolId(job.id);
 
         let debugMessage = `Downloading spool file ${job.ddname} for job ${job.jobname}(${job.jobid})`;
         let file: string;

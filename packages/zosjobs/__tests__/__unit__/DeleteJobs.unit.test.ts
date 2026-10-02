@@ -316,6 +316,32 @@ describe("Delete Jobs unit tests", () => {
             expect(err instanceof ImperativeError).toEqual(true);
             expect(err.message).toContain("jobid");
         });
+
+        it("should reject a jobname that would change the request path without sending a request", async () => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn();
+            let err: Error | ImperativeError;
+            try {
+                await DeleteJobs.deleteJob(fakeSession, "../../../../zosmf/restfiles/ds/PROD.APP.CONFIG", "JOB00001");
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeInstanceOf(ImperativeError);
+            expect(err.message).toContain("The job name");
+            expect(ZosmfRestClient.deleteExpectJSON).not.toHaveBeenCalled();
+        });
+
+        it("should reject a jobid that would change the request path without sending a request", async () => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn();
+            let err: Error | ImperativeError;
+            try {
+                await DeleteJobs.deleteJobForJob(fakeSession, { ...fakeJob, jobid: "JOB1/../../../../zosmf/restfiles/ds/PROD.APP.CONFIG" });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeInstanceOf(ImperativeError);
+            expect(err.message).toContain("The job ID");
+            expect(ZosmfRestClient.deleteExpectJSON).not.toHaveBeenCalled();
+        });
     });
 
 });
