@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies to resolve technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
 - BugFix: Addressed an issue that caused the `npm pack` command to fail, since `npm` v12 changed the command's JSON output from an array to an object. [#2840](https://github.com/zowe/zowe-cli/pull/2840)
 - BugFix: Updated `diff2html` dependency for technical currency. [#2876](https://github.com/zowe/zowe-cli/pull/2876)

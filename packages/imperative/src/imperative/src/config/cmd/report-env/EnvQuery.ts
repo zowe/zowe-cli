@@ -158,10 +158,7 @@ export class EnvQuery {
      * @returns True if we find a problem. False otherwise.
      */
     private static detectProbVal(value: string, probTest: IProbTest): boolean {
-        /* eslint-disable unused-imports/no-unused-vars */
-        const semver = require('semver');
-        const probExprWithVals = probTest.probExpr.replace(/{val}/g, value);
-        return eval(probExprWithVals);
+        return probTest.probExpr(value);
     }
 
     // __________________________________________________________________________
