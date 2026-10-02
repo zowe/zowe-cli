@@ -48,7 +48,7 @@ describe("SearchJobs tests", () => {
             request.response.headers = headers;
             (ZosmfRestClient.getExpectFullResponse as any) = mockSearchJobsJSONData(request);
             (GetJobs.getJobsByPrefix as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
-            (GetJobs.getSpoolFilesForJob as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB]);
+            (GetJobs.getSpoolFilesForJob as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_JOB_FILE]);
 
             const output = await SearchJobs.searchJobs(pretendSession,
                 {jobName: "testjob", searchString: searchText, searchLimit: 2, fileLimit: 2});
@@ -69,6 +69,18 @@ describe("SearchJobs tests", () => {
             }
             expect(err).toBeDefined();
             expect(err.message).toEqual(errorText);
+        });
+
+        it("should reject a spool file with an invalid job ID without sending a request", async () => {
+            (ZosmfRestClient.getExpectFullResponse as any) = jest.fn();
+            (GetJobs.getJobsByPrefix as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB]);
+            (GetJobs.getSpoolFilesForJob as any) = mockGetJobsJSONData([
+                {...GetJobsData.SAMPLE_JOB_FILE, jobid: "JOB1/../../../../zosmf/restfiles/ds/PROD.APP.CONFIG"}
+            ]);
+
+            await expect(SearchJobs.searchJobs(pretendSession,
+                {jobName: "testjob", searchString: "BluhBluh", searchLimit: 2, fileLimit: 2})).rejects.toThrow("The job ID");
+            expect(ZosmfRestClient.getExpectFullResponse).not.toHaveBeenCalled();
         });
     });
 });

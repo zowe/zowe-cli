@@ -486,29 +486,19 @@ describe("Get Jobs - System Tests", () => {
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(err.message).toContain("The job name '))))))))' is not valid.");
                 });
 
                 it("should detect and surface an error for an invalid jobid", async () => {
                     let err;
                     try {
-                        await GetJobs.getStatus(REAL_SESSION, "***REMOVED***1", "))))))))))");
+                        await GetJobs.getStatus(REAL_SESSION, "JOB1", "))))))))))");
                     } catch (e) {
                         err = e;
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(err.message).toContain("The job ID '))))))))))' is not valid.");
                 });
             });
 
@@ -606,30 +596,19 @@ describe("Get Jobs - System Tests", () => {
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
-                    expect(trimmedErrorMessage).toContain("JOB123");
+                    expect(err.message).toContain("The job name '))))))))' is not valid.");
                 });
 
                 it("should detect and surface an error for an invalid jobid", async () => {
                     let err;
                     try {
-                        await GetJobs.getStatusCommon(REAL_SESSION, {jobname: "***REMOVED***1", jobid: "))))))))))"});
+                        await GetJobs.getStatusCommon(REAL_SESSION, {jobname: "JOB1", jobid: "))))))))))"});
                     } catch (e) {
                         err = e;
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(err.message).toContain("The job ID '))))))))))' is not valid.");
                 });
             });
 
@@ -746,29 +725,19 @@ describe("Get Jobs - System Tests", () => {
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(err.message).toContain("The job name '))))))))' is not valid.");
                 });
 
                 it("should detect and surface an error for an invalid jobid", async () => {
                     let err;
                     try {
-                        await GetJobs.getStatusForJob(REAL_SESSION, {jobname: "***REMOVED***1", jobid: "))))))))))"} as any);
+                        await GetJobs.getStatusForJob(REAL_SESSION, {jobname: "JOB1", jobid: "))))))))))"} as any);
                     } catch (e) {
                         err = e;
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    const trimmedErrorMessage = trimMessage(err.message);
-                    const jsonCauseErrors = JSON.parse(err.causeErrors);
-                    expect(jsonCauseErrors.category).toEqual(6);
-                    expect(jsonCauseErrors.reason).toEqual(7);
-                    expect(jsonCauseErrors.rc).toEqual(4);
-                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(err.message).toContain("The job ID '))))))))))' is not valid.");
                 });
             });
 
