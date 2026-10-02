@@ -26,6 +26,7 @@ import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { List } from "../list";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 // const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);

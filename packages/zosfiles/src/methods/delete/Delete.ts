@@ -14,6 +14,7 @@ import { AbstractSession, EncodeUri, ImperativeExpect, Logger } from "@zowe/impe
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { Invoke } from "../invoke";
 
