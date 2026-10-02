@@ -18,19 +18,8 @@ jobs:
     if: github.event.workflow_run.conclusion == 'success'
 
     steps:
-    # Trusted scanner configuration comes from the base repo (this workflow runs from its default branch)
-    - name: Checkout Trusted Config
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        path: trusted
-        persist-credentials: false
-        sparse-checkout: |
-          sonar-project.properties
-          lerna.json
-          package.json
-        sparse-checkout-cone-mode: false
-
     # PR head is only checked out as source code for analysis and is never executed
+    # This must run first: checking out into the workspace root runs "git clean -ffdx", which would delete the trusted checkout
     - name: Checkout Source
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
@@ -38,6 +27,18 @@ jobs:
         ref: ${{ github.event.workflow_run.head_sha }}
         fetch-depth: 0
         persist-credentials: false
+
+    # Trusted scanner configuration comes from the base repo (this workflow runs from its default branch)
+    - name: Checkout Trusted Config
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        path: trusted
+        persist-credentials: false
+        sparse-checkout: |
+          /sonar-project.properties
+          /lerna.json
+          /package.json
+        sparse-checkout-cone-mode: false
 
     # Replace every file that feeds scanner configuration with the trusted copy
     - name: Restore Trusted Config
