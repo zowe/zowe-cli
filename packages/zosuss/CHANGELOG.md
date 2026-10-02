@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `identityAgent` and `forwardAgent` properties to the `ISshSession` interface to configure agent options for SSH connections. [#2912](https://github.com/zowe/zowe-cli/pull/2912)
+
 ## `8.35.1`
 
 - **Breaking**: `SshSession` now verifies the server's host key before sending credentials, using the `hostKey` and `insecure` session properties and an optional interactive `hostVerifier` hook; an unknown or changed key is rejected. [#2813](https://github.com/zowe/zowe-cli/pull/2813)
