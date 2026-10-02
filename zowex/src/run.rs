@@ -157,7 +157,8 @@ fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
 /**
  * Launch a zowe script in the background so that our EXE can exit before
  * the zowe node.js program (which we launch) writes (or deletes) our EXE.
- * On Windows We use ping to cause a delay since CMD.exe has no 'sleep'.
+ * On Windows We use ping (by absolute path) to cause a delay since CMD.exe
+ * has no 'sleep'.
  *
  * When our EXE exits, the user will get a new prompt immediately, but the
  * background output will be displayed after that prompt.
@@ -466,7 +467,7 @@ fn arg_vec_to_string(arg_vec: &[String]) -> String {
  * @returns The command shell program that we will launch in the
  *          background to run our script.
  */
-fn form_cmd_script_arg_vec<'a>(
+pub(crate) fn form_cmd_script_arg_vec<'a>(
     zowe_cmd_args: &'a [String],
     njs_zowe_path: &'a str,
     curr_cmd_shell: &CmdShell,
@@ -481,6 +482,7 @@ fn form_cmd_script_arg_vec<'a>(
             zowe_cmd_args,
             njs_zowe_path,
             curr_cmd_shell,
+            script_string,
             SCRIPT_WAIT_MSG,
             SCRIPT_PROMPT_MSG_FIXED,
             script_arg_vec,
@@ -574,6 +576,10 @@ fn form_bash_cmd_script_arg_vec<'a>(
  * @param curr_cmd_shell
  *      The current command shell under which we are running.
  *
+ * @param script_string
+ *      A string into which we place the absolute path to ping.exe. It must
+ *      outlive the script_arg_vec elements that refer to it.
+ *
  * @param script_wait_msg
  *      A text message telling the user to wait for our background process.
  *
@@ -583,17 +589,21 @@ fn form_bash_cmd_script_arg_vec<'a>(
  * @param script_arg_vec
  *      An empty vector into which we place command script arguments.
  *
- * @returns The command shell program that we will launch in the
- *          background to run our script.
+ * @returns The absolute path to the command shell program that we will launch
+ *          in the background to run our script.
  */
 fn form_win_cmd_script_arg_vec<'a>(
     zowe_cmd_args: &'a [String],
     njs_zowe_path: &'a str,
     curr_cmd_shell: &CmdShell,
+    script_string: &'a mut String,
     script_wait_msg: &'a str,
     script_prompt_msg_fixed: &'a str,
     script_arg_vec: &mut Vec<&'a str>,
 ) -> String {
+    *script_string = util_get_win_system32_exe("ping.exe");
+    let ping_path: &'a str = script_string.as_str();
+
     // add any required newlines to create some space
     script_arg_vec.push("/C");
     script_arg_vec.push("echo.");
@@ -609,8 +619,9 @@ fn form_win_cmd_script_arg_vec<'a>(
             script_arg_vec.push("&&");
         }
     } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
-        // Bash shell on windows needs a delay and a newline in its spacing
-        for next_arg in "sleep 1 && echo. &&".split_whitespace() {
+        // Bash shell on windows needs a delay (about 1 second) and a newline in its spacing
+        script_arg_vec.push(ping_path);
+        for next_arg in "127.0.0.1 -n 2 >nul && echo. &&".split_whitespace() {
             script_arg_vec.push(next_arg);
         }
     }
@@ -622,7 +633,8 @@ fn form_win_cmd_script_arg_vec<'a>(
     script_arg_vec.push("&&");
 
     // make script delay so the EXE can exit
-    for next_arg in "ping 127.0.0.1 -n 1 >nul &&".split_whitespace() {
+    script_arg_vec.push(ping_path);
+    for next_arg in "127.0.0.1 -n 1 >nul &&".split_whitespace() {
         script_arg_vec.push(next_arg);
     }
 
@@ -649,8 +661,8 @@ fn form_win_cmd_script_arg_vec<'a>(
         script_arg_vec.push("prompt.");
     }
 
-    // return the shell program that we will launch
-    "CMD".to_string()
+    // return the absolute path to the shell program that we will launch
+    util_get_win_system32_exe("cmd.exe")
 }
 
 #[cfg(target_family = "windows")]
