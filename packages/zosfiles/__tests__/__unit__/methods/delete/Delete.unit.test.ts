@@ -163,7 +163,7 @@ describe("Delete", () => {
         };
 
         const invokeAmsSpy = jest.spyOn(Invoke, "ams");
-        const dsName = "ABCD";
+        const dsName = "ABCD.EFGH";
 
         /**
          * Testing utility to generate the control statements that should be sent to the AMS command
@@ -222,6 +222,19 @@ describe("Delete", () => {
 
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain(ZosFilesMessages.missingDatasetName.message);
+        });
+
+        it("should throw an error if data set name is invalid", async () => {
+            let caughtError;
+
+            try {
+                await Delete.vsam(dummySession, "DATA.SET.INVALIDNAME");
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.invalidDatasetName.message);
         });
 
         it("should work with defaults", async () => {
