@@ -190,7 +190,7 @@ Destination: %s",
     "message": "Invalid zos-files create command 'recfm' option: ",
   },
   "invalidVolser": Object {
-    "message": "The provided volser is not valid.",
+    "message": "The provided volume serial is not valid.",
   },
   "longAmsStatement": Object {
     "message": "Line %d is longer than %d characters (maximum allowed length)
