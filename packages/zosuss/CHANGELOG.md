@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `8.39.0`
 
 - Enhancement: Added `identityAgent` and `forwardAgent` properties to the `ISshSession` interface to configure agent options for SSH connections. [#2912](https://github.com/zowe/zowe-cli/pull/2912)
 
