@@ -579,6 +579,39 @@ describe("DownloadJobs", () => {
             expect(err.message.toLowerCase()).toContain("job file");
         });
 
+        it("should reject calls to downloadSpoolContentCommon with an invalid job name without sending a request", async () => {
+            ZosmfRestClient.getStreamed = jest.fn();
+            let err: Error | ImperativeError;
+            try {
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
+                    jobFile: {...jobFiles[0], jobname: "../../../../zosmf/restfiles/ds/PROD.APP.CONFIG"},
+                    stream: new Writable()
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeInstanceOf(ImperativeError);
+            expect(err.message).toContain("The job name");
+            expect(ZosmfRestClient.getStreamed).not.toHaveBeenCalled();
+        });
+
+        it("should reject calls to downloadSpoolContentCommon with an invalid spool file ID before creating a file", async () => {
+            ZosmfRestClient.getStreamed = jest.fn();
+            (IO.createFileSync as jest.Mock).mockClear();
+            let err: Error | ImperativeError;
+            try {
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
+                    jobFile: {...jobFiles[0], id: "1/../../../../zosmf/restfiles/ds/PROD.APP.CONFIG" as any}
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeInstanceOf(ImperativeError);
+            expect(err.message).toContain("The spool file ID");
+            expect(IO.createFileSync).not.toHaveBeenCalled();
+            expect(ZosmfRestClient.getStreamed).not.toHaveBeenCalled();
+        });
+
     });
 
     describe("Download destination tests", () => {

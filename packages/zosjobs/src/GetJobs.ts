@@ -13,6 +13,7 @@ import {
     AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, Logger, NextVerFeatures, RestClient
 } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";
 
@@ -265,6 +266,7 @@ export class GetJobs {
     public static async getStatusCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getStatusCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
         const parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid
             // + Jobs.QUERY_ID + Jobs.STEP_DATA;
@@ -313,6 +315,7 @@ export class GetJobs {
     public static async getSpoolFilesCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getSpoolFilesCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
         const parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES
         );
@@ -360,6 +363,7 @@ export class GetJobs {
     public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
         const parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES +
             JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT
@@ -397,6 +401,8 @@ export class GetJobs {
         ImperativeExpect.toNotBeNullOrUndefined(jobname, "Required parameter jobname must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(jobid, "Required parameter jobid must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(spoolId, "Required parameter spoolId must be defined");
+        JobsUtils.validateJobNameAndId(jobname, jobid);
+        JobsUtils.validateSpoolId(spoolId);
         let parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + jobname + "/" + jobid + JobsConstants.RESOURCE_SPOOL_FILES +
             "/" + spoolId + JobsConstants.RESOURCE_SPOOL_CONTENT
@@ -421,6 +427,8 @@ export class GetJobs {
     public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(jobFile, "Required job file object must be defined");
+        JobsUtils.validateJobNameAndId(jobFile.jobname, jobFile.jobid);
+        JobsUtils.validateSpoolId(jobFile.id);
         let parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + jobFile.jobname + "/" + jobFile.jobid + JobsConstants.RESOURCE_SPOOL_FILES +
             "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT
