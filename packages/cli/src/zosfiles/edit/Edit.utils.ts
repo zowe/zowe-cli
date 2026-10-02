@@ -129,7 +129,11 @@ export class EditUtilities {
             return path.join(ussDir, path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
         const dsDir = EditUtilities.ensureEditTempDir("ds");
-        return path.join(dsDir, lfFile.fileName + ext);
+        const fullPath = path.join(dsDir, lfFile.fileName + ext);
+        if (IO.fileEvaluatesToDir(lfFile.fileName) || IO.containsBacktrack(lfFile.fileName + ext) || !IO.isSubPath(dsDir, fullPath)) {
+            throw new ImperativeError({msg: "The data set name contains illegal characters."});
+        }
+        return fullPath;
     }
 
     /**
