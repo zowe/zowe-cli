@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
+
 ## `8.37.1`
 
 - BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
