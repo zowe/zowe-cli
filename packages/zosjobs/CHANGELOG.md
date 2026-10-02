@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## Recent Changes
 
-- BugFix: Added validation for job names, job IDs, and spool file IDs before they are used in a z/OSMF REST request. Values that contain characters not allowed in z/OS job names and job IDs, such as `/` or `.`, now result in an error. [#2911](https://github.com/zowe/zowe-cli/pull/2911)
+- BugFix: Added validation for job names, job IDs, and spool file IDs before they are used in a z/OSMF REST request. [#2927](https://github.com/zowe/zowe-cli/pull/2927)
 
 ## `7.29.26`
 
