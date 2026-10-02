@@ -12,6 +12,7 @@
 import * as path from "path";
 import { AbstractSession, EncodeUri, ImperativeExpect, ImperativeError, IO, Logger, Headers} from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -104,6 +105,8 @@ export class DownloadJobs {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
+        JobsUtils.validateJobNameAndId(parms.jobFile.jobname, parms.jobFile.jobid);
+        JobsUtils.validateSpoolId(parms.jobFile.id);
 
         //waiting for job to be active before continuing with job download
         if (parms.waitForActive) {
