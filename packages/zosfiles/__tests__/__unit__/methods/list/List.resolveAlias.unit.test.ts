@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { Invoke, List, ZosFilesMessages } from "../../../../src";
+import { Invoke, List, ZosFilesMessages, ZosFilesUtils } from "../../../../src";
 
 describe("List.resolveAlias", () => {
     const dummySession = new Session({
@@ -98,11 +98,11 @@ describe("List.resolveAlias", () => {
             }
         });
 
-        await List.resolveAlias(dummySession, "my.lowercase.alias");
+        await List.resolveAlias(dummySession, "my.lower.alias");
 
         expect(amsSpy).toHaveBeenCalledWith(
             dummySession,
-            ["LISTCAT ENTRIES('MY.LOWERCASE.ALIAS') ALL"],
+            ["LISTCAT ENTRIES('MY.LOWER.ALIAS') ALL"],
             undefined
         );
     });
@@ -139,6 +139,21 @@ describe("List.resolveAlias", () => {
 
         expect(error).toBeDefined();
         expect(error?.message).toContain(ZosFilesMessages.missingDatasetName.message);
+    });
+
+    it("should throw an error when alias name does not conform to z/OS data set naming standards", async () => {
+        let error: ImperativeError | undefined;
+        const validateDSNSpy = jest.spyOn(ZosFilesUtils, "validateDSN");
+        try {
+            await List.resolveAlias(dummySession, "MY.4LIAS.NAME");
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error).toBeDefined();
+        expect(error?.message).toContain(ZosFilesMessages.invalidDatasetName.message);
+        expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        expect(validateDSNSpy).toHaveReturnedWith(false);
     });
 
     it("should throw an error when alias name is empty", async () => {

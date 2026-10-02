@@ -547,6 +547,7 @@ export class List {
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(aliasName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(aliasName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(ZosFilesUtils.validateDSN(aliasName), false, ZosFilesMessages.invalidDatasetName.message);
 
         try {
             const listcatStmt = `LISTCAT ENTRIES('${aliasName.toUpperCase()}') ALL`;
