@@ -420,6 +420,23 @@ describe("Session tests", () => {
             expect(session.isUsingApiml()).toBe(true);
         });
 
+        it("should handle mixed-case allowedLoginMethod values (e.g., APIML-BASIC)", () => {
+            const sessionUpper = new Session({
+                hostname: "localhost",
+                allowedLoginMethod: "APIML-BASIC" as any
+            });
+            expect(sessionUpper.isUsingApiml()).toBe(true);
+            expect(sessionUpper.getApimlDecision().reason).toBe(ApimlDecisionReason.ALLOWED_LOGIN_METHOD_APIML);
+
+            const sessionDirectUpper = new Session({
+                hostname: "localhost",
+                basePath: "/some/base/path",
+                allowedLoginMethod: "DIRECT-BASIC" as any
+            });
+            expect(sessionDirectUpper.isUsingApiml()).toBe(false);
+            expect(sessionDirectUpper.getApimlDecision().reason).toBe(ApimlDecisionReason.ALLOWED_LOGIN_METHOD_DIRECT);
+        });
+
         it("should return false when allowedLoginMethod is direct-basic, even though a basePath exists", () => {
             const session = new Session({
                 hostname: "localhost",

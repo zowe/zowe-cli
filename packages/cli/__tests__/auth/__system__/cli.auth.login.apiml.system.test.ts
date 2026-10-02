@@ -9,7 +9,9 @@
 *
 */
 
-import { ConfigUtils } from "@zowe/imperative";
+import * as fs from "fs";
+import * as path from "path";
+import { Config, ConfigUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -337,5 +339,242 @@ describe("auth login/logout apiml with pem cert", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
         }
+    });
+});
+
+describe("direct-* authentication method", () => {
+    describe("direct-* with an APIML base path", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+        let user: string;
+        let apimlBasePath: string;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "direct_with_apiml_base_path"
+            });
+
+            const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+            user = systemProps.zosmf.user;
+            apimlBasePath = systemProps.zosmf.basePath || "ibmzosmf/api/v1";
+
+            // Create zosmf profile with direct-basic allowedLoginMethod but basePath routing through APIML
+            await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "zosmf", {
+                host: systemProps.base?.host || systemProps.zosmf.host,
+                port: systemProps.base?.port || systemProps.zosmf.port,
+                basePath: apimlBasePath,
+                allowedLoginMethod: "direct-basic",
+                user: systemProps.zosmf.user,
+                password: systemProps.zosmf.password,
+                rejectUnauthorized: systemProps.zosmf.rejectUnauthorized
+            });
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("direct-basic on a profile whose basePath routes through APIML - use a pound sign in a data set name that isn't encoded - results in HTTP 400 from APIML", () => {
+            const dsNameWithPound = `${user}.#TEST.DATA`;
+            const response = runCliScript(__dirname + "/__scripts__/auth_direct_apiml_base_path.sh", TEST_ENVIRONMENT, [dsNameWithPound]);
+
+            // The command should fail (HTTP 400 from APIML due to unencoded pound sign)
+            expect(response.status).not.toBe(0);
+            const combinedOutput = response.stdout.toString() + response.stderr.toString();
+            expect(combinedOutput).toMatch(/400|Bad Request|RestError|error/i);
+        });
+    });
+
+    describe("direct-* goes direct to the service", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+        let user: string;
+        let password: string;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "direct_goes_direct_to_service"
+            });
+
+            const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+            user = systemProps.zosmf.user;
+            password = systemProps.zosmf.password;
+
+            // Create zosmf profile with direct-basic allowedLoginMethod without stored credentials
+            await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT, "zosmf", {
+                host: systemProps.zosmf.host,
+                port: systemProps.zosmf.port,
+                rejectUnauthorized: systemProps.zosmf.rejectUnauthorized,
+                allowedLoginMethod: "direct-basic"
+            });
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("The command authenticates to the service with the prompted credentials. No APIML login request is made and no token is requested", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/auth_direct_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
+
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("successfully connected to z/OSMF");
+
+            // Verify no APIML token was stored in the active profile
+            const config = await Config.load("zowe", { homeDir: TEST_ENVIRONMENT.workingDir });
+            const zosmfProfile: any = config.api.profiles.get("zosmf", false);
+            expect(zosmfProfile).toBeDefined();
+            expect(zosmfProfile?.properties?.tokenValue).toBeUndefined();
+            expect(zosmfProfile?.properties?.tokenType).toBeUndefined();
+        });
+    });
+});
+
+describe("apiml-* authentication method", () => {
+    /**
+     * Create a base profile (the APIML gateway) and a zosmf profile that sends its requests through APIML
+     * with allowedLoginMethod set to apiml-basic. The zosmf profile has no stored credentials unless
+     * extra properties are supplied. createV2Profile does not turn on autoStore, and nothing is stored
+     * without it, so we turn it on here. It also does not write a `type` for each profile, and the token
+     * exchange only happens for a profile whose type is in the config file, so we write each type here.
+     */
+    async function createApimlProfiles(env: ITestEnvironment<ITestPropertiesSchema>, extraZosmfProps: Record<string, any> = {}) {
+        const systemProps = env.systemTestProperties;
+        await TempTestProfiles.createV2Profile(env, "base", {
+            host: systemProps.base.host,
+            port: systemProps.base.port,
+            rejectUnauthorized: systemProps.base.rejectUnauthorized
+        });
+        await TempTestProfiles.createV2Profile(env, "zosmf", {
+            basePath: systemProps.zosmf.basePath || "ibmzosmf/api/v1",
+            allowedLoginMethod: "apiml-basic",
+            ...extraZosmfProps
+        });
+
+        const configPath = path.join(env.workingDir, "zowe.config.json");
+        const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+        for (const [profileType, profileName] of Object.entries<string>(config.defaults)) {
+            config.profiles[profileName] = { type: profileType, ...config.profiles[profileName] };
+        }
+        fs.writeFileSync(configPath, JSON.stringify({ ...config, autoStore: true }, null, 4));
+    }
+
+    /** Read the default zosmf profile straight from the config file, so nothing depends on a credential manager. */
+    function readZosmfProfile(env: ITestEnvironment<ITestPropertiesSchema>): any {
+        const config = JSON.parse(fs.readFileSync(path.join(env.workingDir, "zowe.config.json"), "utf8"));
+        const profile = config.profiles[config.defaults.zosmf];
+        expect(profile).toBeDefined();
+        return profile;
+    }
+
+    /** A property is stored when it is in the profile's properties, or listed in its secure array. */
+    const isStored = (profile: any, propName: string): boolean =>
+        profile.properties?.[propName] !== undefined || profile.secure?.includes(propName) === true;
+
+    describe("apiml-* with no token", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "apiml_no_token"
+            });
+            await createApimlProfiles(TEST_ENVIRONMENT);
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("The command prompts for credentials, runs the APIML login itself, and stores only a token", () => {
+            const { user, password } = TEST_ENVIRONMENT.systemTestProperties.base;
+            const response = runCliScript(__dirname + "/__scripts__/auth_apiml_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
+
+            expect(response.status).toBe(0);
+            const stdout = response.stdout.toString();
+            expect(stdout).toContain("successfully connected to z/OSMF");
+            expect(stdout).toContain("Stored properties in");
+
+            // The credentials were exchanged for a token, so only the token is stored
+            const profile = readZosmfProfile(TEST_ENVIRONMENT);
+            expect(profile.properties?.tokenType).toBe("apimlAuthenticationToken");
+            expect(isStored(profile, "tokenValue")).toBe(true);
+            expect(isStored(profile, "user")).toBe(false);
+            expect(isStored(profile, "password")).toBe(false);
+        });
+    });
+
+    describe("apiml-* failed login", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "apiml_failed_login"
+            });
+            await createApimlProfiles(TEST_ENVIRONMENT);
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("Invalid credentials result in a clear error and nothing is saved", () => {
+            // Use a user ID that does not exist, rather than a real ID with a wrong password,
+            // so that a test run can never count against a real user's failed-logon limit.
+            const response = runCliScript(__dirname + "/__scripts__/auth_apiml_prompt_credentials.sh", TEST_ENVIRONMENT,
+                ["NOSUCHUSR", "NotTheRealPassword1"]);
+
+            expect(response.status).not.toBe(0);
+            const output = response.stdout.toString() + response.stderr.toString();
+            expect(output).toContain("This operation requires authentication");
+            expect(output).not.toContain("Stored properties in");
+
+            const profile = readZosmfProfile(TEST_ENVIRONMENT);
+            expect(isStored(profile, "user")).toBe(false);
+            expect(isStored(profile, "password")).toBe(false);
+            expect(isStored(profile, "tokenValue")).toBe(false);
+            expect(isStored(profile, "tokenType")).toBe(false);
+        });
+    });
+
+    describe("apiml-* with an expired token", () => {
+        let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+        let expiredToken: string;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "apiml_expired_token"
+            });
+
+            const encode = (obj: object) => Buffer.from(JSON.stringify(obj)).toString("base64url");
+            expiredToken = [
+                encode({ alg: "HS256", typ: "JWT" }),
+                encode({ sub: "expireduser", exp: Math.floor(Date.now() / 1000) - 3600 }),
+                "invalidsignature"
+            ].join(".");
+
+            await createApimlProfiles(TEST_ENVIRONMENT, {
+                tokenType: "apimlAuthenticationToken",
+                tokenValue: expiredToken
+            });
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
+        it("Fails with an authentication error, does not prompt to log in again, and leaves the stored token alone", () => {
+            expect(ConfigUtils.hasTokenExpired(expiredToken)).toBe(true);
+
+            const response = runCliScript(__dirname + "/__scripts__/auth_apiml_no_stdin.sh", TEST_ENVIRONMENT);
+
+            expect(response.status).not.toBe(0);
+            const output = response.stdout.toString() + response.stderr.toString();
+            expect(output).toContain("This operation requires authentication");
+            expect(output).toContain("is not valid, token is invalid, or token is expired");
+
+            // No prompt for credentials was shown, so no login was attempted
+            expect(output).not.toContain("Required connection properties are missing");
+            expect(output).not.toMatch(/Enter the (user name|password) for/);
+
+            // The expired token was neither replaced nor removed
+            expect(readZosmfProfile(TEST_ENVIRONMENT).properties?.tokenValue).toBe(expiredToken);
+        });
     });
 });
