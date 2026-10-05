@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails.
+
 ## `8.39.0`
 
 - BugFix: Updated the `brace-expansion` and `markdown-it` dependencies for technical currency. [#2913](https://github.com/zowe/zowe-cli/pull/2913)
