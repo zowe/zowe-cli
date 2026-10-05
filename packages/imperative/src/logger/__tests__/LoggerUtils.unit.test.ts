@@ -400,4 +400,39 @@ describe("LoggerUtils tests", () => {
             }
         });
     });
+    describe("censorObject", () => {
+        let impConfigSpy: jest.SpyInstance = null;
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get");
+            LoggerUtils.setProfileSchemas(new Map());
+        });
+
+        it("should censor values of secure option keys at any depth without modifying the original", () => {
+            impConfigSpy.mockReturnValue({ config: { exists: false } });
+            const original = { password: "pw", nested: { tokenValue: "tv", list: [{ passphrase: "pp" }], keep: "visible" } };
+            const received = LoggerUtils.censorObject(original) as any;
+            expect(received.password).toEqual(LoggerUtils.CENSOR_RESPONSE);
+            expect(received.nested.tokenValue).toEqual(LoggerUtils.CENSOR_RESPONSE);
+            expect(received.nested.list).toEqual([{ passphrase: LoggerUtils.CENSOR_RESPONSE }]);
+            expect(JSON.stringify(received)).not.toMatch(/"(pw|tv|pp)"/);
+            expect(received.nested.keep).toEqual("visible");
+            expect(original.password).toEqual("pw");
+            expect(original.nested.tokenValue).toEqual("tv");
+        });
+
+        it("should censor values matching secure config values, even under non-secure keys", () => {
+            impConfigSpy.mockReturnValue({
+                config: {
+                    exists: true,
+                    api: {
+                        layers: { get: jest.fn().mockReturnValue({ properties: { profiles: { a: { properties: { apiKey: "cfgSecret" } } } } }) },
+                        secure: { secureFields: jest.fn().mockReturnValue(["profiles.a.properties.apiKey"]) }
+                    }
+                }
+            });
+            const received = LoggerUtils.censorObject({ custom: "cfgSecret", other: "visible" });
+            expect(received).toEqual({ custom: LoggerUtils.CENSOR_RESPONSE, other: "visible" });
+        });
+    });
 });

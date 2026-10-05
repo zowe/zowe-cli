@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+
 ## `5.27.24`
 
 - BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
