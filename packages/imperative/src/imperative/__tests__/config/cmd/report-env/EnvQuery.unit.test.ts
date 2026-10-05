@@ -336,14 +336,14 @@ describe("Tests for EnvQuery module", () => {
         });
 
         it("should not use a shell to run commands", async () => {
-           const spawn = require("cross-spawn");
-           const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValue({
-               stdout: Buffer.from("fake example output"),
-               stderr: Buffer.from("")
-           });
+            const spawn = require("cross-spawn");
+            const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValue({
+                stdout: Buffer.from("fake example output"),
+                stderr: Buffer.from("")
+            });
 
-           await EnvQuery["getCmdOutput"]("npm", ["--help"]);
-           expect(spawnSyncSpy).toHaveBeenCalledWith("npm", ["--help"], expect.not.objectContaining({ shell: true }));
+            await EnvQuery["getCmdOutput"]("npm", ["--help"]);
+            expect(spawnSyncSpy).toHaveBeenCalledWith("npm", ["--help"], expect.not.objectContaining({ shell: true }));
         });
     }); // end getCmdOutput function
 }); // end Handler

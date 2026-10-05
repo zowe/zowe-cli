@@ -111,6 +111,77 @@ describe("Shell", () => {
         checkMockFunctionsWithCommand(command);
     });
 
+    describe("SSH agent options", () => {
+        const fakeSshSessionAgent = new SshSession({
+            hostname: "localhost",
+            port: 22,
+            user: "testuser",
+            identityAgent: "/path/to/ssh-agent.sock",
+            forwardAgent: true
+        });
+
+        it("Should execute ssh command with identityAgent and forwardAgent", async () => {
+            const command = "commandtest";
+            await Shell.executeSsh(fakeSshSessionAgent, command, stdoutHandler);
+
+            checkMockFunctionsWithCommand(command);
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBe(true);
+        });
+
+        it("Should pass identityAgent when forwardAgent is not specified", async () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "/path/to/ssh-agent.sock"
+            });
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+
+            expect(mockConnect).toHaveBeenCalled();
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBeUndefined();
+        });
+
+        it("Should support pageant for Windows ssh-agent", async () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "pageant",
+                forwardAgent: true
+            });
+            await Shell.executeSsh(session, "commandtest", stdoutHandler);
+
+            expect(mockConnect).toHaveBeenCalled();
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("pageant");
+            expect(connectConfig.agentForward).toBe(true);
+        });
+
+        it("Should pass undefined for agent options when not specified", async () => {
+            await Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler);
+
+            expect(mockConnect).toHaveBeenCalled();
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBeUndefined();
+            expect(connectConfig.agentForward).toBeUndefined();
+        });
+
+        it("Should execute ssh command with cwd and agent options", async () => {
+            const cwd = "/";
+            const command = "commandtest";
+            await Shell.executeSshCwd(fakeSshSessionAgent, command, cwd, stdoutHandler);
+
+            checkMockFunctionsWithCommand(command);
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBe(true);
+        });
+    });
+
     describe("Host key verification", () => {
         // Build a realistic SSH public key blob: 4-byte big-endian length, algorithm name, then key data
         function makeKeyBlob(algorithm: string, keyData = "key-material"): Buffer {
@@ -289,6 +360,20 @@ describe("Shell", () => {
             await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow(
                 ZosUssMessages.hostKeyVerificationFailed.message);
         });
+        it("should pass agent options during connection validation", async () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "/path/to/ssh-agent.sock",
+                forwardAgent: true
+            });
+            const response = await Shell.isConnectionValid(session);
+            expect(response).toBe(true);
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBe(true);
+        });
     });
 
     describe("Error handling", () => {
@@ -455,6 +540,45 @@ describe("Shell", () => {
             const cwd = "/tmp";
             const result = await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler, false, true);
 
+            expect(mockExec).toHaveBeenCalledWith(`cd '${cwd}' && ${command}`, expect.any(Function));
+            expect(result).toBe(0);
+        });
+
+        it("Should pass agent and agentForward options using exec mode", async () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "/path/to/ssh-agent.sock",
+                forwardAgent: true
+            });
+            const command = "pwd";
+            const result = await Shell.executeExec(session, command, stdoutHandler);
+
+            expect(mockConnect).toHaveBeenCalled();
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBe(true);
+            expect(mockExec).toHaveBeenCalledWith(command, expect.any(Function));
+            expect(result).toBe(0);
+        });
+
+        it("Should pass agent and agentForward options with cwd option using exec mode", async () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "/path/to/ssh-agent.sock",
+                forwardAgent: true
+            });
+            const command = "pwd";
+            const cwd = "/tmp";
+            const result = await Shell.executeExecCwd(session, command, cwd, stdoutHandler);
+
+            expect(mockConnect).toHaveBeenCalled();
+            const connectConfig = mockConnect.mock.calls[0][0];
+            expect(connectConfig.agent).toBe("/path/to/ssh-agent.sock");
+            expect(connectConfig.agentForward).toBe(true);
             expect(mockExec).toHaveBeenCalledWith(`cd '${cwd}' && ${command}`, expect.any(Function));
             expect(result).toBe(0);
         });
