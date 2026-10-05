@@ -205,6 +205,7 @@ export class ZosmfSession {
             requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
             socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
             certAccount: args.certAccount,
+            allowedLoginMethod: args.allowedLoginMethod
         };
     }
 
