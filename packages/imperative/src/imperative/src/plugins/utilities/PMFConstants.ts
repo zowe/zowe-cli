@@ -10,7 +10,7 @@
 */
 
 import { ImperativeConfig } from "../../../../utilities";
-import { dirname, join } from "path";
+import { join } from "path";
 import { Config } from "../../../../config";
 import { EnvironmentalVariableSettings } from "../../env/EnvironmentalVariableSettings";
 
@@ -134,15 +134,6 @@ export class PMFConstants {
             );
         }
 
-        // Build the paths to find the modules based on the config
-        const modPaths: string[] = [];
-        if (this.PLUGIN_USING_CONFIG) {
-            this.PLUGIN_CONFIG.paths.forEach((path: string) => {
-                const dir = dirname(path);
-                modPaths.push(join(dir, process.platform !== "win32" ? "lib" : "", "node_modules"));
-            });
-        }
-        modPaths.push(this.PLUGIN_HOME_LOCATION);
-        this.PLUGIN_NODE_MODULE_LOCATION = Array.from(new Set(modPaths));
+        this.PLUGIN_NODE_MODULE_LOCATION = [this.PLUGIN_HOME_LOCATION];
     }
 }
