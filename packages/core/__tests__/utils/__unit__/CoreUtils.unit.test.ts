@@ -11,6 +11,9 @@
 
 /* eslint-disable deprecation/deprecation */
 import * as CoreUtils from "../../../src/utils/CoreUtils";
+import { Logger } from "@zowe/imperative";
+import { PassThrough } from "stream";
+import { format } from "util";
 
 jest.mock("fs");
 const fs = require("fs");
@@ -24,6 +27,49 @@ describe("CoreUtils", () => {
     });
 
     const dummyString = "test";
+    describe("readStdin", () => {
+        it("should preserve stdin bytes without logging payload content", async () => {
+            const stream = new PassThrough();
+            const log = Logger.getAppLogger();
+            const messages: string[] = [];
+            const levels = ["trace", "debug", "info", "warn", "error", "fatal"] as const;
+            const logSpies = levels.map((level) => jest.spyOn(log, level).mockImplementation((message: string, ...args: unknown[]) => {
+                const text = format(message, ...args);
+                messages.push(text);
+                return text;
+            }));
+            const stdinProcess: { readonly stdin: NodeJS.ReadableStream } = process;
+            const stdinSpy = jest.spyOn(stdinProcess, "stdin", "get").mockReturnValue(stream);
+            const loggerSpy = jest.spyOn(Logger, "getAppLogger").mockReturnValue(log);
+
+            try {
+                const chunks = [
+                    Buffer.from("//STDIN JOB (ACCT),'stdin-test-password'\r\n"),
+                    Buffer.from("stdin-test-file-content\n"),
+                    Buffer.from([0x00, 0xff, 0x01, 0xc3, 0xa9])
+                ];
+                const result = CoreUtils.readStdin();
+                for (const chunk of chunks) {
+                    stream.write(chunk);
+                }
+                stream.end();
+
+                expect(await result).toEqual(Buffer.concat(chunks));
+                const loggedOutput = messages.join("\n");
+                for (const chunk of chunks) {
+                    expect(loggedOutput).not.toContain(chunk.toString());
+                }
+            } finally {
+                stdinSpy.mockRestore();
+                loggerSpy.mockRestore();
+                for (const spy of logSpies) {
+                    spy.mockRestore();
+                }
+                stream.destroy();
+            }
+        });
+    });
+
     describe("padLeft", () => {
         it("should throw an error if we try to pad with 0 characters", () => {
             let result;
