@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2937](https://github.com/zowe/zowe-cli/pull/2937)
+
 ## `5.27.24`
 
 - BugFix: Fixed a performance issue when evaluating set log levels and Node version warnings. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
