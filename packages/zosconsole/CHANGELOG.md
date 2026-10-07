@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS console SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the `zowe zos-console collect sync-responses` command did not stop collecting console output after the expected keyword was found or the follow-up attempts ran out. [#]()
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
