@@ -186,8 +186,9 @@ export class ConfigAutoStore {
             if (!profileProps.includes("tokenValue")) {
                 profileProps.push("tokenValue");
             }
+            const existingTokenType = profileObj?.tokenType ?? baseProfileObj?.tokenType;
             if (opts.sessCfg.tokenType && !profileProps.includes("tokenType") &&
-                !profileObj?.tokenType && !baseProfileObj?.tokenType) {
+                opts.sessCfg.tokenType !== existingTokenType) {
                 profileProps.push("tokenType");
             }
         }
