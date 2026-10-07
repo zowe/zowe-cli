@@ -299,6 +299,16 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toBe("");
         });
 
+        it("should censor an environment variable that satisfies Censor.isSecureEnvName", async () => {
+            process.env["ZOWE_CLIENT_SECRET"] = "abc123";
+            process.env["ZOWE_API_KEY"] = "zomg_an_api_key-ohno";
+            process.env["ZOWE_CRED_STRING"] = "bababooey";
+            const itemObj = await EnvQuery.getEnvItemVal(ItemId.OTHER_ZOWE_VARS);
+            expect(itemObj.itemValMsg).toContain("ZOWE_CLIENT_SECRET = ******");
+            expect(itemObj.itemValMsg).toContain("ZOWE_API_KEY = ******");
+            expect(itemObj.itemValMsg).toContain("ZOWE_CRED_STRING = ******");
+        });
+
     }); // end getEnvItemVal function
 
     describe("test getCmdOutput", () => {
