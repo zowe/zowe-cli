@@ -588,6 +588,41 @@ describe("ConfigAutoStore tests", () => {
                 });
             });
 
+            it("should handle mixed-case allowedLoginMethod values", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: "APIML-BASIC"
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: "APIML-BASIC",
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+            });
+
             it("should store user and password, not a token, when allowedLoginMethod is direct-basic even with basePath and tokenType", async () => {
                 await setupConfigToLoad({
                     profiles: {
