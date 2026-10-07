@@ -206,7 +206,7 @@ export class ZosmfSession {
             socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
             certAccount: args.certAccount,
             allowedLoginMethod: args.allowedLoginMethod,
-            authTypeOrder: args.authTypeOrder
+            authTypeOrder: args.authOrder
         };
     }
 
