@@ -307,6 +307,7 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemValMsg).toContain("ZOWE_CLIENT_SECRET = ******");
             expect(itemObj.itemValMsg).toContain("ZOWE_API_KEY = ******");
             expect(itemObj.itemValMsg).toContain("ZOWE_CRED_STRING = ******");
+            process.env["ZOWE_CLIENT_SECRET"] = process.env["ZOWE_API_KEY"] = process.env["ZOWE_CRED_STRING"] = undefined;
         });
 
     }); // end getEnvItemVal function
