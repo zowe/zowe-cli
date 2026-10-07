@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Replaced trace log for data chunks with a byte-count message to keep log size minimal. [#2931](https://github.com/zowe/zowe-cli/pull/2931)
+
 ## `7.29.32`
 
 - BugFix: Improved the handling of APIML service base paths in the `Services.getServicesByConfig` function. [#2820](https://github.com/zowe/zowe-cli/pull/2820)
