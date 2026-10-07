@@ -26,6 +26,7 @@ import {
     IConfigAutoStoreFindAuthHandlerForProfileOpts,
     IConfigAutoStoreStoreSessCfgPropsOpts
 } from "./doc/IConfigAutoStoreOpts";
+import { ConnectionPropsForSessCfg } from "../../rest";
 
 /**
  * Class to manage automatic storage of properties in team config.
@@ -168,7 +169,7 @@ export class ConfigAutoStore {
         const hasCertCreds = profileProps.includes("cert") && profileProps.includes("certKey") ||
             profileProps.includes("certFile") && profileProps.includes("certKeyFile");
 
-        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod;
+        const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(opts.sessCfg?.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 

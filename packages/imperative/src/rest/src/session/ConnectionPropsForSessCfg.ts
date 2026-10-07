@@ -544,7 +544,7 @@ export class ConnectionPropsForSessCfg {
      *          (for example, an array, which is not a legal value). An undefined
      *          result makes the caller treat allowedLoginMethod as unset.
      */
-    private static normalizeLoginMethod(loginMethod: unknown): string | undefined {
+    public static normalizeLoginMethod(loginMethod: unknown): string | undefined {
         return typeof loginMethod === "string" ? loginMethod.toLowerCase() : undefined;
     }
 

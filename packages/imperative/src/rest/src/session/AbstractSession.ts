@@ -16,7 +16,7 @@ import { ImperativeExpect } from "../../../expect";
 import * as SessConstants from "./SessConstants";
 import { AuthOrder } from "./AuthOrder";
 import { ApimlDecisionReason, IApimlDecision } from "./doc/IApimlDecision";
-import type { Agent } from "https";
+import { ConnectionPropsForSessCfg } from "./ConnectionPropsForSessCfg";
 
 /**
  * The API session object, serves as the base for sessions and contains the fields that are required by
@@ -195,7 +195,7 @@ export abstract class AbstractSession {
      * @memberof AbstractSession
      */
     public getApimlDecision(): IApimlDecision {
-        const allowedLoginMethod = this.ISession.allowedLoginMethod?.toLowerCase();
+        const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(this.ISession.allowedLoginMethod);
         if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
             return {
