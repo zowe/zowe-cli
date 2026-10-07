@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS console SDK package will be documented in t
 
 ## Recent Changes
 
-- BugFix: Fixed reversed loop condition in `CollectCommand` so that collecting console output stops once the keyword is detected or follow-up attempts are exhausted. [#2932](https://github.com/zowe/zowe-cli/pull/2932)
+- BugFix: Fixed an issue where the `zowe zos-console collect sync-responses` command did not stop collecting console output after the expected keyword was found or the follow-up attempts ran out. [#2932](https://github.com/zowe/zowe-cli/pull/2932)
 
 ## `8.27.4`
 
