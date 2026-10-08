@@ -65,6 +65,7 @@ import { Config } from "../../config/src/Config";
 import { CompleteAutoInitCommandBuilder } from "./config/cmd/auto-init/builders/CompleteAutoInitCommandBuilder";
 import { ICommandProfileAutoInitConfig } from "../../cmd/src/doc/profiles/definition/ICommandProfileAutoInitConfig";
 import { EnvFileUtils } from "../../utilities/src/EnvFileUtils";
+import { Censor } from "../../censor/src/Censor";
 
 export class Imperative {
 
@@ -333,7 +334,7 @@ export class Imperative {
                 imperativeLogger.fatal("Diagnostic information:\n" +
                     "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                     "Node versions: '%s'",
-                os.platform(), os.arch(), process.argv.join(" "),
+                os.platform(), os.arch(), Censor.censorCLIArgs(process.argv).join(" "),
                 JSON.stringify(process.versions, null, 2)
                 );
                 Logger.writeInMemoryMessages(debugFilePath);
