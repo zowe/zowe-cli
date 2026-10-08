@@ -9,7 +9,7 @@
 *
 */
 
-import * as DeepMerge from "deepmerge";
+import deepmerge = require("deepmerge");
 import { existsSync } from "fs";
 import { ISettingsFile } from "./doc/ISettingsFile";
 import { Logger } from "../../logger";
@@ -59,7 +59,7 @@ export class AppSettings {
             }
         }
 
-        const initialSettings = DeepMerge(defaults, settings);
+        const initialSettings = deepmerge(defaults, settings);
 
         AppSettings.mInstance = new AppSettings(
             persistence,

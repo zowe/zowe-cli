@@ -12,7 +12,7 @@
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import * as deepmerge from "deepmerge";
+import deepmerge = require("deepmerge");
 import * as findUp from "find-up";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
