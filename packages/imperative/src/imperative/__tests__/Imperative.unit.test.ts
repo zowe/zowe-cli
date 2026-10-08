@@ -20,7 +20,6 @@ import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
 import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as fs from "fs";
-import { Logger } from "../../logger/src/Logger";
 import { Censor } from "../../censor";
 
 describe("Imperative", () => {
@@ -207,7 +206,7 @@ describe("Imperative", () => {
         });
 
         it("should censor process.argv before logging it", async () => {
-            const setLogInMemoryMock = jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementation(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
+            jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementationOnce(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
             const loggerFatalMock = jest.fn();
             mocks.Logger.getImperativeLogger.mockReturnValue({ fatal: loggerFatalMock } as any);
             process.argv = [
