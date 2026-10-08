@@ -175,7 +175,7 @@ export class ConnectionPropsForSessCfg {
         if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
             !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
         {
-            const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
+            const allowedLoginMethod = AuthOrder.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
 
             // When allowedLoginMethod is "prompt" or unset, we use the first type in the authOrder.
             let credTypeToPromptFor = sessCfgToUse.authTypeOrder[0];
@@ -298,7 +298,7 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
-        const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(
+        const allowedLoginMethod = AuthOrder.normalizeLoginMethod(
             ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
                     cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
@@ -531,21 +531,6 @@ export class ConnectionPropsForSessCfg {
      */
     private static propHasValue(propToTest: any) {
         return propToTest != null && propToTest !== "";
-    }
-
-    // ***********************************************************************
-    /**
-     * Get an allowedLoginMethod value in lower case.
-     *
-     * @param loginMethod
-     *       the allowedLoginMethod value to be normalized.
-     *
-     * @returns the lower case value, or undefined when the value is not a string
-     *          (for example, an array, which is not a legal value). An undefined
-     *          result makes the caller treat allowedLoginMethod as unset.
-     */
-    public static normalizeLoginMethod(loginMethod: unknown): string | undefined {
-        return typeof loginMethod === "string" ? loginMethod.toLowerCase() : undefined;
     }
 
     /**

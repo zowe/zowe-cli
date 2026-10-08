@@ -26,7 +26,6 @@ import {
     IConfigAutoStoreFindAuthHandlerForProfileOpts,
     IConfigAutoStoreStoreSessCfgPropsOpts
 } from "./doc/IConfigAutoStoreOpts";
-import { ConnectionPropsForSessCfg } from "../../rest";
 
 /**
  * Class to manage automatic storage of properties in team config.
@@ -169,7 +168,7 @@ export class ConfigAutoStore {
         const hasCertCreds = profileProps.includes("cert") && profileProps.includes("certKey") ||
             profileProps.includes("certFile") && profileProps.includes("certKeyFile");
 
-        const allowedLoginMethod = ConnectionPropsForSessCfg.normalizeLoginMethod(opts.sessCfg?.allowedLoginMethod);
+        const allowedLoginMethod = AuthOrder.normalizeLoginMethod(opts.sessCfg?.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
@@ -287,6 +286,12 @@ export class ConfigAutoStore {
             (isApimlLoginMethod ? SessConstants.TOKEN_TYPE_APIML : api.promptParams.defaultTokenType);
         const baseSessCfg: ISession = { type: opts.sessCfg.type };
 
+        // An apiml-cert-pem login is not a token-type session, so the REST client would
+        // not keep the token cookie unless we ask it to (as BaseAuthHandler does).
+        if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
+            baseSessCfg.storeCookie = true;
+        }
+
         if (opts.sessCfg.allowedLoginMethod != null) {
             baseSessCfg.allowedLoginMethod = opts.sessCfg.allowedLoginMethod;
         }
@@ -304,6 +309,7 @@ export class ConfigAutoStore {
         opts.sessCfg.user = opts.sessCfg.password = undefined;
         opts.sessCfg.cert = opts.sessCfg.certKey = opts.sessCfg.certFile = opts.sessCfg.certKeyFile = opts.sessCfg.certAccount = undefined;
         AuthOrder.removeRequestForToken(opts.sessCfg);
+        baseSessCfg.storeCookie = false;
         return true;
     }
 }
