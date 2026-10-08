@@ -5,6 +5,8 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
 
 ## `8.39.0`
 
