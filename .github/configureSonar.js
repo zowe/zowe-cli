@@ -2,7 +2,7 @@ const fs = require("fs");
 
 function rewriteCoverageReports({ logger }, sonarPropsContents) {
     // Workaround for https://community.sonarsource.com/t/code-coverage-doesnt-work-with-github-action/16747
-    const reportPaths = /^sonar\.javascript\.lcov\.reportPaths=(.+)$/.match(sonarPropsContents)?.[1];
+    const reportPaths = sonarPropsContents.match(/^sonar\.javascript\.lcov\.reportPaths=(.+)$/m)?.[1];
     if (typeof reportPaths !== "string") {
         logger.info("Unable to find the property: 'sonar.javascript.lcov.reportPaths'");
         return;

@@ -44,6 +44,7 @@ jobs:
     # Replace every file that feeds scanner configuration with the trusted copy
     - name: Restore Trusted Config
       run: |
+        cp -f trusted/.github/configureSonar.js .github/configureSonar.js
         cp -f trusted/sonar-project.properties sonar-project.properties
         cp -f trusted/package.json package.json
         if [ -f trusted/lerna.json ]; then cp -f trusted/lerna.json lerna.json; else rm -f lerna.json; fi
@@ -58,7 +59,7 @@ jobs:
     - name: Configure Sonar Scan
       uses: zowe-actions/octorelease/script@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1
       with:
-        script: ./trusted/.github/configureSonar.js
+        script: ${{ github.workspace }}/.github/configureSonar.js
 
     # Command-line properties take precedence over sonar-project.properties, so pin host and project identity
     - name: SonarCloud Scan
