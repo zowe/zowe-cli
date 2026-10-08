@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+
 ## `8.39.0`
 
 - BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
