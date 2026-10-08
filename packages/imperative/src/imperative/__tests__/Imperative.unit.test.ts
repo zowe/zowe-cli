@@ -20,6 +20,8 @@ import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
 import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as fs from "fs";
+import { Logger } from "../../logger/src/Logger";
+import { Censor } from "../../censor";
 
 describe("Imperative", () => {
     const loadImperative = () => {
@@ -150,7 +152,10 @@ describe("Imperative", () => {
             }
         };
 
+        let backupArgv = process.argv;
+
         beforeEach(() => {
+            backupArgv = process.argv;
             defaultConfig = {
                 name: "test-cli",
                 allowPlugins: false,
@@ -169,6 +174,10 @@ describe("Imperative", () => {
             mocks.Config.load.mockResolvedValue({});
         });
 
+        afterEach(() => {
+           process.argv = backupArgv;
+        });
+
         it("should work when passed with nothing", async () => {
             // the thing that we really want to test
             const result = await Imperative.init();
@@ -177,6 +186,24 @@ describe("Imperative", () => {
             expect(mocks.Config.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample", zoweVersion: "V99" });
+        });
+
+        it("should censor process.argv before logging it", async () => {
+            const setLogInMemoryMock = jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementation(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
+            const loggerFatalMock = jest.fn();
+            mocks.Logger.getImperativeLogger.mockReturnValue({ fatal: loggerFatalMock } as any);
+            process.argv = [
+                "node",
+                "/usr/local/bin/zowe", "zosmf", "check", "status",
+                "--password", "zowe1234",
+                "--token-value", "abc.def.123"
+            ];
+            await expect(Imperative.init()).rejects.toThrow("Unexpected Error Encountered");
+
+            const diagCall = loggerFatalMock.mock.calls.find(c => String(c[0]).startsWith("Diagnostic information"));
+            expect(diagCall).toBeDefined();
+            expect(diagCall[3]).toContain("--password " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("zowe1234");
         });
 
         describe("AppSettings", () => {
