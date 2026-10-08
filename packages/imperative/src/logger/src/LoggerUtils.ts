@@ -317,4 +317,50 @@ export class LoggerUtils {
         }
         return LoggerUtils.censorRawData(JSON.stringify(censored, null, 2));
     }
+
+    /**
+     * Copy and censor an arbitrary object before logging/printing. Values of any key listed in
+     * {@link LoggerUtils.CENSORED_OPTIONS}, and any value matching a secure value stored in the active team config,
+     * are replaced (at any nesting depth). The original object is not modified.
+     * @param {Record<string, unknown>} data - the data to censor
+     * @returns {Record<string, unknown>} - a censored copy of the data
+     */
+    public static censorObject(data: Record<string, unknown>): Record<string, unknown> {
+        const secureValues: unknown[] = [];
+        const config = ImperativeConfig.instance.config;
+        if (config?.exists) {
+            const layer = LoggerUtils.layer;
+            for (const prop of LoggerUtils.secureFields) {
+                const sec = lodash.get(layer.properties, prop);
+                if (sec && typeof sec !== "object" && !LoggerUtils.isSpecialValue(prop)) {
+                    secureValues.push(sec);
+                }
+            }
+        }
+        return LoggerUtils.censorObjectValue(data, secureValues) as Record<string, unknown>;
+    }
+
+    /**
+     * Recursively build a censored copy of a value. Arrays remain arrays.
+     * @param {unknown} value - the value to censor
+     * @param {unknown[]} secureValues - config-derived secure values to mask wherever they appear
+     * @returns {unknown} - the censored copy
+     */
+    private static censorObjectValue(value: unknown, secureValues: unknown[]): unknown {
+        if (secureValues.includes(value)) {
+            return LoggerUtils.CENSOR_RESPONSE;
+        }
+        if (Array.isArray(value)) {
+            return value.map((item) => LoggerUtils.censorObjectValue(item, secureValues));
+        }
+        if (value != null && typeof value === "object") {
+            const newData: Record<string, unknown> = {};
+            for (const [key, item] of Object.entries(value)) {
+                newData[key] = LoggerUtils.CENSORED_OPTIONS.includes(key) ?
+                    LoggerUtils.CENSOR_RESPONSE : LoggerUtils.censorObjectValue(item, secureValues);
+            }
+            return newData;
+        }
+        return value;
+    }
 }
