@@ -113,6 +113,9 @@ describe("PMFConstants", () => {
                 });
 
                 const mockedPath = require("path") as jest.Mocked<typeof import("path")>;
+                // ESLint thinks there are extra parens below around the second instance of "path,"
+                // but dropping them causes runtime errors in test runner
+                // eslint-disable-next-line no-extra-parens
                 const actualPath = jest.requireActual<typeof import("path")>("path");
 
                 mockedPath.join.mockImplementation(actualPath.join);
