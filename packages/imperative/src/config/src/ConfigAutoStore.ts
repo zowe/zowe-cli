@@ -286,8 +286,6 @@ export class ConfigAutoStore {
             (isApimlLoginMethod ? SessConstants.TOKEN_TYPE_APIML : api.promptParams.defaultTokenType);
         const baseSessCfg: ISession = { type: opts.sessCfg.type };
 
-        // An apiml-cert-pem login is not a token-type session, so the REST client would
-        // not keep the token cookie unless we ask it to (as BaseAuthHandler does).
         if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
             baseSessCfg.storeCookie = true;
         }

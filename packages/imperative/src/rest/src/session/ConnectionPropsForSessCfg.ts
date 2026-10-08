@@ -253,9 +253,24 @@ export class ConnectionPropsForSessCfg {
                 }
             }
 
-            //
+            // When an apiml-* login method has its creds stored already (nothing was prompted),
+            // we still pass them to the auto-store logic, which exchanges them for a token.
+            const propsToStore: string[] = [...promptForValues];
+            const availableCreds: any = sessCfgToUse._authCache?.availableCreds ?? {};
+            const loginMethod = AuthOrder.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
+            const credsToExchange = loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ? ["user", "password"] :
+                loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM ? ["cert", "certKey"] : [];
+            if (connOptsToUse.requestToken && sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_TOKEN) &&
+                !availableCreds.tokenValue && credsToExchange.length > 0 && credsToExchange.every(name => availableCreds[name]))
+            {
+                credsToExchange.forEach(name => {
+                    (sessCfgToUse as any)[name] = availableCreds[name];
+                    if (!propsToStore.includes(name)) propsToStore.push(name);
+                });
+            }
+
             if (connOptsToUse.autoStore !== false && connOptsToUse.parms != null) {
-                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, promptForValues);
+                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, propsToStore);
             }
         }
 
