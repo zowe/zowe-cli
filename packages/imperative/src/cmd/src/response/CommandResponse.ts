@@ -647,7 +647,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * completely overwritten.
                  */
                 public setObj(data: any, merge = false) {
-                    outer.mData = (merge) ? deepmerge(outer.mData, data) : data;
+                    outer.mData = merge ? deepmerge(outer.mData, data) : data;
                 }
 
                 /**
