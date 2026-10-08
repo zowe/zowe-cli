@@ -83,7 +83,7 @@ export class ConfigAutoStore {
             return;
         }
 
-        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod ?? profile.allowedLoginMethod;
+        const allowedLoginMethod = AuthOrder.normalizeLoginMethod(opts.sessCfg?.allowedLoginMethod ?? profile.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
@@ -276,7 +276,7 @@ export class ConfigAutoStore {
             return false;
         }
 
-        const allowedLoginMethod = opts.sessCfg?.allowedLoginMethod;
+        const allowedLoginMethod = AuthOrder.normalizeLoginMethod(opts.sessCfg?.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
 
