@@ -33,9 +33,6 @@
     "scripts",
     "web-help-logo.png"
   ],
-  "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-  },
   "imperative": {
     "configurationModule": "lib/imperative.js"
   },
