@@ -20,7 +20,7 @@ import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
 import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as fs from "fs";
-import { Censor } from "../../censor";
+import { LoggerUtils } from "../../logger/src/LoggerUtils";
 
 describe("Imperative", () => {
     // eslint-disable-next-line deprecation/deprecation
@@ -219,7 +219,7 @@ describe("Imperative", () => {
 
             const diagCall = loggerFatalMock.mock.calls.find(c => String(c[0]).startsWith("Diagnostic information"));
             expect(diagCall).toBeDefined();
-            expect(diagCall[3]).toContain("--password " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).toContain("--password " + LoggerUtils.CENSOR_RESPONSE);
             expect(diagCall[3]).not.toContain("zowe1234");
         });
 
