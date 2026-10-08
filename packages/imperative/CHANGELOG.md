@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2944](https://github.com/zowe/zowe-cli/pull/2944)
 - BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2934](https://github.com/zowe/zowe-cli/pull/2934)
 
 ## `5.27.24`
