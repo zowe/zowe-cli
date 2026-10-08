@@ -72,7 +72,11 @@ describe("Comma-separated authOrder", () => {
     });
 
     it("should accept --auth-order 'token, bearer' as a command-line option", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_order_cmd_option.sh", TEST_ENVIRONMENT_AUTH_ORDER);
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_AUTH_ORDER,
+            ["zosmf", "check", "status", "--auth-order", "token, bearer", "--host", "example.com"]
+        );
         const stderr = response.stderr.toString();
 
         expect(stderr).not.toContain("is not valid and will be ignored");
@@ -358,7 +362,7 @@ describe("Users overriding the admin value", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_USER_OVERRIDE,
-            ["--allowed-login-method", "direct-basic"]
+            ["zosmf", "check", "status", "--allowed-login-method", "direct-basic"]
         );
 
         const stderr = response.stderr.toString();

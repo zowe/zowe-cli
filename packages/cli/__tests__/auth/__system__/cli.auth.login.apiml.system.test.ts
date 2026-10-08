@@ -412,7 +412,7 @@ describe("direct-* authentication method", () => {
         });
 
         it("The command authenticates to the service with the prompted credentials. No APIML login request is made and no token is requested", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/auth_direct_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
+            const response = runCliScript(__dirname + "/__scripts__/auth_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
 
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("successfully connected to z/OSMF");
@@ -484,7 +484,7 @@ describe("apiml-* authentication method", () => {
 
         it("The command prompts for credentials, runs the APIML login itself, and stores only a token", () => {
             const { user, password } = TEST_ENVIRONMENT.systemTestProperties.base;
-            const response = runCliScript(__dirname + "/__scripts__/auth_apiml_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
+            const response = runCliScript(__dirname + "/__scripts__/auth_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
 
             expect(response.status).toBe(0);
             const stdout = response.stdout.toString();
@@ -517,7 +517,7 @@ describe("apiml-* authentication method", () => {
         it("Invalid credentials result in a clear error and nothing is saved", () => {
             // Use a user ID that does not exist, rather than a real ID with a wrong password,
             // so that a test run can never count against a real user's failed-logon limit.
-            const response = runCliScript(__dirname + "/__scripts__/auth_apiml_prompt_credentials.sh", TEST_ENVIRONMENT,
+            const response = runCliScript(__dirname + "/__scripts__/auth_prompt_credentials.sh", TEST_ENVIRONMENT,
                 ["NOSUCHUSR", "NotTheRealPassword1"]);
 
             expect(response.status).not.toBe(0);
