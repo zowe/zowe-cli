@@ -22,6 +22,7 @@ import { IO } from "../../../../../io";
 import { ImperativeConfig , TextUtils } from "../../../../../utilities";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../../../operations";
 import { CliUtils } from "../../../../../utilities/src/CliUtils";
+import { LoggerUtils } from "../../../../../logger/src/LoggerUtils";
 
 import { IPluginJson } from "../../../plugins/doc/IPluginJson";
 import { PluginIssues } from "../../../plugins/utilities/PluginIssues";
@@ -524,7 +525,7 @@ export class EnvQuery {
                 nextVar != "ZOWE_APP_LOG_LEVEL" && nextVar != "ZOWE_IMPERATIVE_LOG_LEVEL")
             {
                 getResult.itemValMsg += nextVar + " = " ;
-                if (nextVar.toUpperCase().includes("PASSWORD") ||
+                if (LoggerUtils.isSecureEnvName(nextVar) || nextVar.toUpperCase().includes("PASSWORD") ||
                     nextVar.toUpperCase().includes("TOKEN"))
                 {
                     getResult.itemValMsg += "******";
