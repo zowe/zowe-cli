@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Replaced trace log for data chunks with a byte-count message to keep log size minimal. [#2931](https://github.com/zowe/zowe-cli/pull/2931)
+
 ## `8.38.0`
 
 - Enhancement: Added an `allowedLoginMethod` property to the base profile schema, letting administrators restrict which credential type (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`) users are prompted for when logging into a service. Defaults to `prompt` (existing behavior) when method is not chosen. If you already have a `zowe.schema.json` file, run the `zowe config update-schemas` command (or `zowe config init` again) after upgrading to pick up the new `allowedLoginMethod` and `authOrder` properties. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
