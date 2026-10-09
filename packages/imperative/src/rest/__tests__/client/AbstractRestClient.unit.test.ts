@@ -55,6 +55,10 @@ describe("AbstractRestClient tests", () => {
         setPasswordAuthSpy.mockReturnValue(true);
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it("should not append any headers to a request by default", () => {
         const client = new RestClient(new Session({hostname: "test"}));
         expect((client as any).appendHeaders(["Test"])).toMatchSnapshot();
