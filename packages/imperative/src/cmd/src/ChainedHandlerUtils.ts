@@ -15,6 +15,7 @@ import { IChainedHandlerArgumentMapping } from "./doc/handler/IChainedHandlerArg
 import { ImperativeError } from "../../error";
 import { TextUtils } from "../../utilities";
 import { Logger } from "../../logger";
+import { Censor } from "../../censor/src/Censor";
 
 const DataObjectParser = require("dataobject-parser");
 
@@ -91,7 +92,7 @@ export class ChainedHandlerService {
                                     throw new ImperativeError({
                                         msg: TextUtils.formatMessage("Attempted to retrieve the argument: '%s' " +
                                             "from the arguments of the overall command, which failed. ", mapping.from),
-                                        additionalDetails: "Arguments: " + JSON.stringify(overallArguments)
+                                        additionalDetails: "Arguments: " + ChainedHandlerService.censorForDiagnostics(overallArguments)
                                     });
                                 }
                             }
@@ -103,7 +104,7 @@ export class ChainedHandlerService {
                                     throw new ImperativeError({
                                         msg: TextUtils.formatMessage("Attempted to retrieve the field: '%s' " +
                                             "from the response object, which failed. ", mapping.from),
-                                        additionalDetails: "Response object: " + JSON.stringify(response)
+                                        additionalDetails: "Response object: " + ChainedHandlerService.censorForDiagnostics(response)
                                     });
                                 }
                             }
@@ -119,5 +120,18 @@ export class ChainedHandlerService {
             }
         }
         return args;
+    }
+
+    /**
+     * Serialize data for inclusion in error diagnostics with any secure values censored.
+     * @param data - the arguments or response object to serialize
+     * @returns {string} censored JSON representation of the data
+     */
+    private static censorForDiagnostics(data: any): string {
+        if (data != null && typeof data === "object") {
+            return JSON.stringify(Censor.censorObject(data));
+        }
+        const serialized = JSON.stringify(data);
+        return serialized == null ? serialized : Censor.censorRawData(serialized);
     }
 }
