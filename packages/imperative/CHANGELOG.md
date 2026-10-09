@@ -4,7 +4,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+- BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
+- BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
 
 ## `8.39.0`
