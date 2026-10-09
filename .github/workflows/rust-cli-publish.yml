@@ -43,7 +43,7 @@ jobs:
         path: release-assets
         merge-multiple: true
 
-    - name: Pin and Verify Build Digests
+    - name: Verify Build Digests
       working-directory: release-assets
       env:
         LINUX_SHA256: ${{ needs.build.outputs.LINUX_SHA256 }}
@@ -53,22 +53,20 @@ jobs:
         for digest in "$LINUX_SHA256" "$MACOS_SHA256" "$WINDOWS_SHA256"; do
           [[ "$digest" =~ ^[0-9a-f]{64}$ ]] || exit 1
         done
-        # Bind the signed manifest to the version and source commit as well as the bytes.
-        printf '# %s\n# source %s\n%s  zowe-linux.tgz\n%s  zowe-macos.tgz\n%s  zowe-windows.tgz\n' \
-          "$RELEASE_TAG" "$GITHUB_SHA" "$LINUX_SHA256" "$MACOS_SHA256" "$WINDOWS_SHA256" > SHA256SUMS
-        tail -n +3 SHA256SUMS | sha256sum --strict -c -
+        printf '%s  zowe-linux.tgz\n%s  zowe-macos.tgz\n%s  zowe-windows.tgz\n' \
+          "$LINUX_SHA256" "$MACOS_SHA256" "$WINDOWS_SHA256" | sha256sum --strict -c -
 
-    - name: Attest Release Assets and Pinned Digests
+    - name: Attest Release Assets
       uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
       with:
-        subject-path: 'release-assets/*'
+        subject-path: 'release-assets/zowe-*.tgz'
 
     - name: Create and Publish Complete Release
       run: |
         gh release create "$RELEASE_TAG" --draft --target "$GITHUB_SHA" \
           --notes "Native Zowe CLI client which communicates with a 'daemon' version of Zowe CLI." \
           --title "Native Client Release ${RELEASE_TAG#native-v}" \
-          release-assets/zowe-*.tgz release-assets/SHA256SUMS
+          release-assets/zowe-*.tgz
         # Enable Settings > Releases > Enable release immutability before using this workflow.
         # All assets must be attached while the release is still a draft.
         gh release edit "$RELEASE_TAG" --draft=false
