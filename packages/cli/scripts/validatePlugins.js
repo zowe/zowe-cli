@@ -31,7 +31,10 @@ function validatePlugins() {
     const zowePgm = process.cwd() + "/lib/main.js";
     if (fs.existsSync(zowePgm)) {
         console.log("Since you re-installed Zowe CLI, we are re-validating any plugins.");
-        spawnSync("node " + zowePgm + " plugins validate --no-fail-on-error", {shell: true, stdio: "inherit", cwd: process.cwd(), windowsHide: true});
+        // Do not use a shell: the install path is passed as a single argv element and is never shell-parsed.
+        // process.execPath is the absolute path of the running node binary.
+        spawnSync(process.execPath, [zowePgm, "plugins", "validate", "--no-fail-on-error"],
+            {stdio: "inherit", cwd: process.cwd(), windowsHide: true});
     }
 }
 

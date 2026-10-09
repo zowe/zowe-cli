@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed the `postinstall` plugin validation script so that it no longer runs through a shell. [#2948] (https://github.com/zowe/zowe-cli/pull/2948)
+
 ## `8.39.0`
 
 - BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
