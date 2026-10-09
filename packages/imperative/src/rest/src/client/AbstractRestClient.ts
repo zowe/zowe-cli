@@ -328,7 +328,7 @@ export abstract class AbstractRestClient {
                  */
                 if (this.mIsJson) {
                     this.log.debug("writing JSON for request");
-                    this.log.trace("JSON body: %s", JSON.stringify(options.writeData));
+                    this.log.trace("JSON body: %s", JSON.stringify(LoggerUtils.censorObject(options.writeData)));
                     clientRequest.write(JSON.stringify(options.writeData));
                 } else {
                     clientRequest.write(options.writeData);
