@@ -6,6 +6,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
 - BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+- BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
+- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
 
 ## `8.39.0`
