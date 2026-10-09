@@ -9,7 +9,9 @@
 *
 */
 
+import * as jsonfile from "jsonfile";
 import { IssueSeverity, PluginIssues } from "../../../src/plugins/utilities/PluginIssues";
+import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 
 describe("PluginIssues", () => {
 
@@ -117,6 +119,44 @@ describe("PluginIssues", () => {
                 expect(pluginIssues.getIssueListForPlugin(pluginName)[1].issueSev).toBe(IssueSeverity.CMD_ERROR);
                 expect(pluginIssues.getIssueListForPlugin(pluginName)[1].issueText).toBe("test");
             });
+        });
+
+        describe("getInstalledPlugins", () => {
+            afterEach(() => {
+                jest.restoreAllMocks();
+            });
+
+            it.each([true, false])(
+                "should ignore team config plug-ins when managed plug-ins exist: %s",
+                (hasPlugin) => {
+                    const pluginJson = "/test/plugins/plugins.json";
+                    const expected = hasPlugin ? {
+                        "test-plugin": {
+                            package: "test-plugin",
+                            location: "https://registry.npmjs.org",
+                            version: "1.0.0"
+                        }
+                    } : {};
+
+                    jest.spyOn(PMFConstants, "instance", "get").mockReturnValue({
+                        PLUGIN_JSON: pluginJson,
+                        PLUGIN_USING_CONFIG: true,
+                        PLUGIN_CONFIG: {
+                            api: {
+                                plugins: {
+                                    get: () => ["project-plugin"]
+                                }
+                            }
+                        }
+                    } as any);
+
+                    jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce({ ...expected });
+                    const installed = new PluginIssues().getInstalledPlugins();
+
+                    expect(installed).toEqual(expected);
+                    expect(jsonfile.readFileSync).toHaveBeenCalledWith(pluginJson);
+                }
+            );
         });
     });
 });
