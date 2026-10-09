@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added a `braces` override to resolve technical currency. [#2947](https://github.com/zowe/zowe-cli/pull/2947)
+
 ## `8.39.0`
 
 - BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
