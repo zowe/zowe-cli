@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ConnectionPropsForSessCfg, ImperativeConfig } from "@zowe/imperative";
+import { IHandlerParameters, ConnectionPropsForSessCfg, ImperativeConfig, SessConstants } from "@zowe/imperative";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { join, normalize } from "path";
 import { Shell } from "../../src/Shell";
@@ -86,6 +86,23 @@ describe("issue ssh handler tests", () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+    });
+
+    it("should process SSH command without error when allowedLoginMethod is set on profile arguments", async () => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
+            stdoutHandler(testOutput);
+        });
+        const handler = new myHandler();
+        const params = Object.assign({}, DEFAULT_PARAMETERS);
+        params.arguments = {
+            ...UNIT_TEST_SSH_PROF_OPTS,
+            $0: "zowe",
+            _: [],
+            command: "ls",
+            allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC
+        };
+        await handler.process(params);
+        expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
     });
 
     it("should be able to get stdout", async () => {

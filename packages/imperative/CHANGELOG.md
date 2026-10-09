@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Updated connection prompting logic to honor the allowedLoginMethod property. A user is now prompted only for the credentials that the method allows (direct-basic, direct-cert-pem, apiml-basic, apiml-cert-pem, or prompt), apiml-* methods exchange credentials for an APIML token and store only that token, and direct-* methods store credentials directly. Defaults to prompt when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
 - BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
 - BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 

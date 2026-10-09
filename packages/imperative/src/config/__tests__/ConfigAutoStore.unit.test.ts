@@ -31,6 +31,8 @@ describe("ConfigAutoStore tests", () => {
                     host: { type: "string" },
                     user: { type: "string", secure: true },
                     password: { type: "string", secure: true },
+                    certFile: { type: "string" },
+                    certKeyFile: { type: "string" },
                     protocol: { type: "string" },
                     tokenType: { type: "string" },
                     tokenValue: { type: "string", secure: true }
@@ -484,6 +486,213 @@ describe("ConfigAutoStore tests", () => {
                     tokenValue: "fakeToken"
                 });
                 expect(ImperativeConfig.instance.config.properties.profiles.fruit.secure).toEqual(["tokenValue"]);
+            });
+
+            it("should store token value when allowedLoginMethod is apiml-basic", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+            });
+
+            it("should store only a token, and not the user and password, when allowedLoginMethod is apiml-basic", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: { type: "fruit", properties: { allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC } },
+                        base: { type: "base", properties: { host: "example.com" } }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"]);
+
+                const fruitProfile = ImperativeConfig.instance.config.properties.profiles.fruit;
+                expect(fruitProfile.properties).toMatchObject({
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+                expect(fruitProfile.properties).not.toHaveProperty("user");
+                expect(fruitProfile.properties).not.toHaveProperty("password");
+                expect(fruitProfile.secure).toEqual(["tokenValue"]);
+            });
+
+            it("should store token value when allowedLoginMethod is apiml-cert-pem", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM,
+                    cert: "/path/to/cert.pem",
+                    certKey: "/path/to/key.pem"
+                }, ["cert", "certKey"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM,
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+            });
+
+            it("should handle mixed-case allowedLoginMethod values", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: "APIML-BASIC"
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: "APIML-BASIC",
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+            });
+
+            it("should store tokenType when resulting tokenType differs from existing tokenType on profile", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                                tokenType: "jwt"
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                expect(ImperativeConfig.instance.config.properties.profiles.fruit.properties).toMatchObject({
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                });
+            });
+
+            it("should store user and password, not a token, when allowedLoginMethod is direct-basic even with basePath and tokenType", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: {
+                            type: "fruit",
+                            properties: {
+                                allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC,
+                                basePath: "/apple/api/v1",
+                                tokenType: SessConstants.TOKEN_TYPE_APIML
+                            }
+                        },
+                        base: {
+                            type: "base",
+                            properties: {
+                                host: "example.com"
+                            }
+                        }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+
+                await ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC,
+                    user: "admin",
+                    password: "123456"
+                }, ["user", "password"]);
+
+                expect(ImperativeConfig.instance.config.save).toHaveBeenCalled();
+                const fruitProps = ImperativeConfig.instance.config.properties.profiles.fruit.properties;
+                expect(fruitProps).toMatchObject({ user: "admin", password: "123456" });
+                expect(fruitProps).not.toHaveProperty("tokenValue");
             });
         });
 

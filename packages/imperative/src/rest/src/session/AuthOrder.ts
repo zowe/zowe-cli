@@ -285,6 +285,23 @@ export class AuthOrder {
 
     // ***********************************************************************
     /**
+     * Get an allowedLoginMethod value in lower case.
+     *
+     * @internal - Cannot be used outside of the imperative package
+     *
+     * @param loginMethod
+     *       the allowedLoginMethod value to be normalized.
+     *
+     * @returns the lower case value, or undefined when the value is not a string
+     *          (for example, an array, which is not a legal value). An undefined
+     *          result makes the caller treat allowedLoginMethod as unset.
+     */
+    public static normalizeLoginMethod(loginMethod: unknown): string | undefined {
+        return typeof loginMethod === "string" ? loginMethod.toLowerCase() : undefined;
+    }
+
+    // ***********************************************************************
+    /**
      * Find the highest auth type (according to the authOrder) that exists
      * in availableCreds within the supplied session config.
      * Then place the credentials associated with that auth type into the
