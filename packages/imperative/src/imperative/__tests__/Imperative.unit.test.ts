@@ -203,6 +203,8 @@ describe("Imperative", () => {
             expect(diagCall).toBeDefined();
             expect(diagCall[3]).toContain("--password " + Censor.CENSOR_RESPONSE);
             expect(diagCall[3]).not.toContain("zowe1234");
+            expect(diagCall[3]).toContain("--token-value " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("abc.def.123");
         });
 
         describe("AppSettings", () => {
