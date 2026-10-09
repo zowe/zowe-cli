@@ -284,7 +284,7 @@ describe("Tests for EnvQuery module", () => {
         });
 
         it("should report an unknown item id", async () => {
-            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999);
+            const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(999 as ItemId);
             expect(itemObj.itemProbMsg).toBe("An unknown item ID was supplied = 999");
         });
 
@@ -370,6 +370,17 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemValMsg).toContain(zosmfProfDir + prof2);
             expect(itemObj.itemValMsg).toContain(zosmfProfDir + prof3);
             expect(itemObj.itemProbMsg).toBe("");
+        });
+
+        it("should censor an environment variable that satisfies LoggerUtils.isSecureEnvName", async () => {
+            process.env["ZOWE_CLIENT_SECRET"] = "abc123";
+            process.env["ZOWE_API_KEY"] = "zomg_an_api_key-ohno";
+            process.env["ZOWE_CRED_STRING"] = "bababooey";
+            const itemObj = await EnvQuery.getEnvItemVal(ItemId.OTHER_ZOWE_VARS);
+            expect(itemObj.itemValMsg).toContain("ZOWE_CLIENT_SECRET = ******");
+            expect(itemObj.itemValMsg).toContain("ZOWE_API_KEY = ******");
+            expect(itemObj.itemValMsg).toContain("ZOWE_CRED_STRING = ******");
+            process.env["ZOWE_CLIENT_SECRET"] = process.env["ZOWE_API_KEY"] = process.env["ZOWE_CRED_STRING"] = undefined;
         });
     }); // end getEnvItemVal function
 
