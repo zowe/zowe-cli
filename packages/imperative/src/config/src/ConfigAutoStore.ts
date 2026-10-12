@@ -222,6 +222,15 @@ export class ConfigAutoStore {
                 isSecureProp = baseProfileSchema.properties[propName].secure || baseProfileSecureProps.includes(propName);
             }
 
+            const parentPath = profilePath.includes(".profiles.") ? profilePath.slice(0, profilePath.lastIndexOf(".profiles.")) : undefined;
+            if (isApimlLoginMethod && (propName === "tokenValue" || propName === "tokenType") && parentPath != null &&
+                propProfilePath === profilePath && profileObj[propName] == null && !profileSecureProps.includes(propName))
+            {
+                propProfilePath = parentPath;
+                isSecureProp = baseProfileSchema.properties[propName]?.secure ||
+                    config.api.secure.securePropsForProfile(config.api.profiles.getProfileNameFromPath(parentPath)).includes(propName);
+            }
+
             // If secure array at higher level includes this property, then property should be stored at higher level
             if (isSecureProp) {
                 const secureProfile = config.api.secure.secureInfoForProp(`${propProfilePath}.properties.${propName}`, true);
