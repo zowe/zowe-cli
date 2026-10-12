@@ -1624,6 +1624,52 @@ describe("AbstractRestClient tests", () => {
             if ((Censor as any).mCensoredOptions.has("tokenType")) { (Censor as any).mCensoredOptions.delete("tokenType"); }
         });
 
+        describe("populateError", () => {
+            const makeClient = (headers: any, writeData: any): any => {
+                const client: any = new RestClient(new Session({ hostname: "FakeHostName" }));
+                client.mReqHeaders = headers;
+                client.mWriteData = writeData;
+                return client;
+            };
+
+            it("should censor sensitive request headers in the error", () => {
+                const client = makeClient({ Authorization: "Basic secretvalue", "X-Other": "visible" }, undefined);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.headers.Authorization).toEqual(Censor.CENSOR_RESPONSE);
+                expect(err.mDetails.headers["X-Other"]).toEqual("visible");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+            });
+
+            it("should censor sensitive values in an object payload", () => {
+                const client = makeClient({}, { password: "secretvalue", name: "visible" });
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.payload.password).toEqual(Censor.CENSOR_RESPONSE);
+                expect(err.mDetails.payload.name).toEqual("visible");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+            });
+
+            it("should leave string and buffer payloads unchanged", () => {
+                const buf = Buffer.from("data");
+                expect(makeClient({}, "plain").populateError({ msg: "f", source: "client" }).mDetails.payload).toEqual("plain");
+                expect(makeClient({}, buf).populateError({ msg: "f", source: "client" }).mDetails.payload).toBe(buf);
+            });
+
+            it("should return the censor response if censoring throws", () => {
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const errorSpy = jest.spyOn(zoweLogger, "error");
+                jest.spyOn(Censor, "censorObject").mockImplementationOnce(() => { throw new Error("censor failure"); });
+
+                const client = makeClient({ Authorization: "Basic secretvalue" }, undefined);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.headers).toEqual(Censor.CENSOR_RESPONSE);
+                expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("censor REST request details"), expect.any(String));
+            });
+        });
+
         describe("setTokenAuth", () => {
             it("should return true when a session specifies a token", () => {
                 // pretend that the session was created for a token
