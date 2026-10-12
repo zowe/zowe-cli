@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Run a command that needs credentials without anything on stdin,
-# so any attempt to prompt for credentials shows up in the output.
-zowe zosmf check status < /dev/null
+
+zowe zos-files list data-set "test.dataset.*" < /dev/null
 exit $?
