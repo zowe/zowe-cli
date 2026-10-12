@@ -5,5 +5,5 @@
 user=$1
 pass=$2
 
-printf "%s\n%s\n" "$user" "$pass" | zowe zosmf check status
+(printf "%s\n" "$user"; sleep 2; printf "%s\n" "$pass") | zowe zosmf check status
 exit $?
