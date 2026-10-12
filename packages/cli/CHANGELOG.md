@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
+- Enhancement: Updated Node.js types to version 22 for technical currency. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
+
 ## `8.30.2`
 
 - BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
+
 ## `8.28.0`
 
 - Enhancement: Added `encoding` property to `GetJobs.getJclCommon` method for retrieving JCL with custom encoding. [Zowe Explorer #3826](https://github.com/zowe/zowe-explorer-vscode/issues/3826)

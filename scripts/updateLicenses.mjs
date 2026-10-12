@@ -12,7 +12,6 @@
 const fs = await import("fs");
 const os = await import("os");
 const chalk = (await import("chalk")).default;
-const fastGlob = (await import("fast-glob")).default;
 
 // turn the license file into a multi line comment
 let alreadyContainedCopyright = 0;
@@ -20,9 +19,9 @@ const header = "/*\n" + fs.readFileSync("LICENSE_HEADER").toString()
     .split(/\r?\n/g).map((line) => {
         return ("* " + line).trim();
     }).join(os.EOL) + os.EOL + "*/" + os.EOL + os.EOL;
-const paths = fastGlob.sync(
+const paths = fs.globSync(
     ["{__mocks__,packages,__tests__,jenkins}{/**/*.js,/**/*.ts}"],
-    {"ignore":['**/node_modules/**','**/lib/**','**/*.d.ts','**/__tests__/__results__/**','**/web-help/dist/**']});
+    {"exclude":['**/node_modules/**','**/lib/**','**/*.d.ts','**/__tests__/__results__/**','**/web-help/dist/**']});
     
 for (const filePath of paths) {
     const file = fs.readFileSync(filePath);
