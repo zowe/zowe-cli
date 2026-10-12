@@ -18,7 +18,7 @@ import {
 } from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
-import { NextVerFeatures, ProcessUtils } from "../../../utilities";
+import { ImperativeConfig, NextVerFeatures, ProcessUtils } from "../../../utilities";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { EventEmitter } from "events";
 import { ImperativeError } from "../../../error";
@@ -33,6 +33,8 @@ import { join } from "path";
 import { IO } from "../../../io";
 import { Proxy } from "../../src/client/Proxy";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import { Logger } from "../../../logger";
+import { format } from "util";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -51,6 +53,10 @@ describe("AbstractRestClient tests", () => {
         // pretend that basic auth was successfully set
         setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
         setPasswordAuthSpy.mockReturnValue(true);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     it("should not append any headers to a request by default", () => {
@@ -187,6 +193,61 @@ describe("AbstractRestClient tests", () => {
             hostname: "test",
         }), "/resource", [Headers.APPLICATION_JSON], payload);
         expect(data).toMatchSnapshot();
+    });
+
+    it("redacts JSON passwords from traces but sends the original body", async () => {
+        const body = {
+            user: "TESTUSER",
+            password: "dummy-request-only-secret",
+            description: "visible"
+        };
+        const original = { ...body };
+        const traces: string[] = [];
+
+        const logger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(logger);
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: { exists: false },
+            envVariablePrefix: "ZOWE"
+        } as any);
+
+        const traceSpy = jest.spyOn(logger, "trace").mockImplementation((message, ...args) => {
+            const rendered = format(message, ...args);
+            traces.push(rendered);
+            return rendered;
+        });
+
+        const request = new MockHttpRequestResponse();
+        const writeSpy = jest.spyOn(request, "write");
+
+        jest.spyOn(https, "request").mockImplementation(((options: any, callback: any) => {
+            ProcessUtils.nextTick(() => {
+                const response = new MockHttpRequestResponse();
+                callback(response);
+
+                ProcessUtils.nextTick(() => {
+                    response.emit("data", Buffer.from('{"success":true}', "utf8"));
+                    response.emit("end");
+                });
+            });
+
+            return request;
+        }) as any);
+
+        await RestClient.putExpectJSON(
+            new Session({ hostname: "example.local" }),
+            "/resource",
+            [Headers.APPLICATION_JSON],
+            body
+        );
+
+        const transmitted = writeSpy.mock.calls
+            .map(([chunk]) => chunk)
+            .join("");
+
+        expect(JSON.parse(transmitted)).toEqual(original);
+        expect(body).toEqual(original);
+        expect(traces.join("\n")).not.toContain(original.password);
     });
 
     it("should error with request rejection when status code is not in 200 range", async () => {
