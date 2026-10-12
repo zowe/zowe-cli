@@ -35,7 +35,7 @@ export class Censor {
     * NOTE(Harn): This list should be kept in sync with the base profile secure definitions and MUST be in camel case.
     */
     private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "base64EncodedAuth", "certFilePassphrase", "credentials",
-        "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
+        "pw", "pass", "password", "passphrase", "tv", "tokenValue", "oldPwd", "newPwd"];
 
     private static readonly MAIN_CENSORED_HEADERS = ["Authorization", "Cookie", "Proxy-Authorization"];
 
