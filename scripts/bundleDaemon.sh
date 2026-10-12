@@ -7,8 +7,6 @@ daemonVersion=$(cd zowex && cargo metadata --no-deps --format-version 1 | jq -er
 releaseTag="native-v$daemonVersion"
 repository=zowe/zowe-cli
 
-export GH_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
-
 stagingDir=$(mktemp -d)
 trap 'rm -rf "$stagingDir"' EXIT
 cd "$stagingDir"
