@@ -1306,6 +1306,22 @@ export abstract class AbstractRestClient {
     }
 
     /**
+     * Censor request headers/payload so sensitive values are not serialized into errors or logs.
+     * Non-object data (strings, buffers) is returned unchanged.
+     */
+    private censorRequestData(data: any): any {
+        if (data == null || typeof data !== "object" || Buffer.isBuffer(data)) {
+            return data;
+        }
+        try {
+            return Censor.censorObject(data);
+        } catch (censorError) {
+            this.log.error("Error encountered trying to censor REST request details:\n %s", inspect(censorError, { depth: null }));
+            return Censor.CENSOR_RESPONSE;
+        }
+    }
+
+    /**
      * Construct a throwable rest client error with all "relevant" diagnostic information.
      * The caller should have the session, so not all input fields are present on the error
      * response. Only the set required to understand "what may have gone wrong".
@@ -1331,11 +1347,14 @@ export abstract class AbstractRestClient {
 
         // start off by coercing the request details to string in case an error is encountered trying
         // to stringify / inspect them
-        let headerDetails: string = this.mReqHeaders + "";
-        let payloadDetails: string = this.mWriteData + "";
+        // Censor sensitive request material so it is never serialized into error text
+        const censoredHeaders = this.censorRequestData(this.mReqHeaders);
+        const censoredPayload = this.censorRequestData(this.mWriteData);
+        let headerDetails: string = censoredHeaders + "";
+        let payloadDetails: string = censoredPayload + "";
         try {
-            headerDetails = JSON.stringify(this.mReqHeaders);
-            payloadDetails = inspect(this.mWriteData, { depth: null });
+            headerDetails = JSON.stringify(censoredHeaders);
+            payloadDetails = inspect(censoredPayload, { depth: null });
         } catch (stringifyError) {
             this.log.error("Error encountered trying to parse details for REST request error:\n %s", inspect(stringifyError, { depth: null }));
         }
@@ -1352,8 +1371,8 @@ export abstract class AbstractRestClient {
         finalError.httpStatus = httpStatus;
         finalError.errno = nodeClientError != null ? nodeClientError.errno : undefined;
         finalError.syscall = nodeClientError != null ? nodeClientError.syscall : undefined;
-        finalError.payload = this.mWriteData;
-        finalError.headers = this.mReqHeaders;
+        finalError.payload = censoredPayload;
+        finalError.headers = censoredHeaders;
         finalError.resource = this.mResource;
         finalError.request = this.mRequest;
 
