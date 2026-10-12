@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed `ZosmfSession.createSessCfgFromArgs` to include the `allowedLoginMethod` and `authOrder` properties into the session, so `isUsingApiml` and `getApimlDecision` reflect them for sessions built directly from command arguments. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
+
 ## `8.38.0`
 
 - Enhancement: Added `allowedLoginMethod` and `AuthOrder` options to the z/OSMF profile/schema, allowing users to specifiy those properties to use for z/OSMF operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)

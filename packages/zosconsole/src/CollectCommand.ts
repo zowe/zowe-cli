@@ -103,7 +103,7 @@ export class CollectCommand {
                 response = ConsoleResponseService.populateError(error, response);
                 followUpCounter = 0;
             }
-        } while (followUpCounter > 0 || response.keywordDetected);
+        } while (followUpCounter > 0 && !response.keywordDetected);
         return response;
     }
 
