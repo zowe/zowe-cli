@@ -102,10 +102,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,
@@ -194,7 +202,13 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: undefined,
@@ -299,10 +313,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: true,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,
@@ -402,10 +424,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: true,
                 maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,
@@ -505,10 +535,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: 5,
                 progressTask: {
                     percentComplete: 0,
@@ -608,10 +646,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: undefined
+                    encoding: undefined,
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: 5,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,
@@ -711,10 +757,18 @@ describe("Search Datasets handler", () => {
                 searchString,
                 caseSensitive: undefined,
                 getOptions: {
-                    encoding: "IBM-037"
+                    encoding: "IBM-037",
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
+                },
+                listOptions: {
+                    tsoAccount: undefined,
+                    tsoProcedure: undefined
                 },
                 mainframeSearch: undefined,
                 maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: undefined,
                 timeout: undefined,
                 progressTask: {
                     percentComplete: 0,

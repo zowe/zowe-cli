@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { Censor, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { ArchiveWorkflow, ListWorkflows, IWorkflowsInfo, IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
@@ -111,7 +111,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 throw new ImperativeError({
                     msg: `Internal create error: Unable to determine the the criteria by which to run workflow archive action. ` +
                     `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(Censor.censorObject(params.arguments))
                 });
         }
     }

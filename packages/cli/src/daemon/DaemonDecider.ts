@@ -9,6 +9,7 @@
 *
 */
 
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
@@ -64,6 +65,16 @@ export class DaemonDecider {
     private mUser: string;
 
     /**
+     * Secret token that authenticates daemon clients as the owner of this
+     * daemon. Generated once per daemon process and stored in the owner-only
+     * PID file so that only the owner can read it.
+     * @private
+     * @type {string}
+     * @memberof DaemonDecider
+     */
+    private mDaemonToken: string;
+
+    /**
      * Indicator for whether or not to start the server
      * @private
      * @type {boolean}
@@ -86,8 +97,14 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
+            const tokenLength = 32;
+            // Generate a fresh, high-entropy token for this daemon process. It is
+            // stored in the owner-only PID file (see recordDaemonPid) and required
+            // on every client request, so that only the user who can read that file
+            // is able to drive this daemon.
+            this.mDaemonToken = crypto.randomBytes(tokenLength).toString("hex");
             this.mServer = net.createServer((c) => {
-                new DaemonClient(c, this.mServer, this.mUser).run();
+                new DaemonClient(c, this.mServer, this.mUser, this.mDaemonToken).run();
             });
 
             this.mServer.on('error', this.error.bind(this));
@@ -113,7 +130,19 @@ export class DaemonDecider {
             });
 
             this.mServer.maxConnections = 1;
+
             this.mServer.listen(this.mSocket, () => {
+                // On POSIX systems the socket is a file on disk that is created with
+                // umask-derived permissions. Restrict it to the owner so that other
+                // local users cannot connect to our daemon and run commands as us.
+                // On Windows the socket is a named pipe (not a file), so this is skipped.
+                if (process.platform !== "win32") {
+                    try {
+                        IO.giveAccessOnlyToOwner(this.mSocket);
+                    } catch (err) {
+                        Imperative.api.appLogger.error(`Unable to restrict access to daemon socket ${this.mSocket}: ${err.message}`);
+                    }
+                }
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
                 new Console(`info`).info(`server bound ${this.mSocket}`);
             });
@@ -132,23 +161,25 @@ export class DaemonDecider {
     private recordDaemonPid() {
         const pidForUser: IDaemonPidForUser = {
             user: this.mUser,
-            pid: process.pid
+            pid: process.pid,
+            token: this.mDaemonToken
         };
 
         const pidFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_pid.json");
         const pidForUserStr = JSON.stringify(pidForUser, null, 2);
 
         try {
-            fs.writeFileSync(pidFilePath, pidForUserStr);
-            const ownerReadWrite = 0o600;
-            fs.chmodSync(pidFilePath, ownerReadWrite);
+            // Create the file with owner-only permissions up front to avoid a brief
+            // window where it exists with default (umask-derived) permissions.
+            fs.writeFileSync(pidFilePath, pidForUserStr, { mode: 0o600 });
+            // Enforce owner-only access cross-platform (icacls on Windows, chmod on POSIX),
+            // and in case the file already existed with looser permissions.
+            IO.giveAccessOnlyToOwner(pidFilePath);
         } catch(err) {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
         }
 
-        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +
-            "\n" + pidForUserStr
-        );
+        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath);
     }
 
     /**

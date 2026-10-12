@@ -73,7 +73,7 @@ export class Config {
         const config: IConfig = {
             profiles: {},
             defaults: {}
-        }
+        };
         return config;
     }
 }

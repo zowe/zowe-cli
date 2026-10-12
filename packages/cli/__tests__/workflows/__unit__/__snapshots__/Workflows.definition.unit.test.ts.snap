@@ -104,6 +104,12 @@ Object {
           "type": "existingLocalFile",
         },
         Object {
+          "description": "The account name for PKCS 12 certificate stored in credential manager",
+          "group": "Zosmf Connection Options",
+          "name": "cert-account",
+          "type": "string",
+        },
+        Object {
           "aliases": Array [
             "cto",
           ],

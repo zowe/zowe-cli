@@ -52,15 +52,14 @@ export function runValidatePlugin(pluginName: string): string {
 
     // Debug trace information
     impLogger.trace(`Command Output: ${valOutputJsonTxt}`);
-
     let valResultJsonObj;
     try {
         valResultJsonObj = JSON.parse(valOutputJsonTxt);
     } catch(thrownErr) {
         throw new ImperativeError({
-            msg: "Unable to parse the JSON output of the 'plugins validate' command." +
-            "\nReason = " + thrownErr.message +
-            "\nText that was being parsed:\n" + valOutputJsonTxt
+            msg: "Unable to parse the JSON output of the 'plugins validate' command.",
+            additionalDetails: "JSON.parse error = " + (thrownErr as Error).message +
+                "\nText that failed to parse:\n" + valOutputJsonTxt
         });
     }
     return formValidateMsg(valResultJsonObj);

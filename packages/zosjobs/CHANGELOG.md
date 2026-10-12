@@ -6,6 +6,18 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
 
+## `8.39.0`
+
+- BugFix: Added validation for job names, job IDs, and spool file IDs before they are used in a z/OSMF REST request. Values that contain characters not allowed in z/OS job names and job IDs, such as `/` or `.`, now result in an error. [#2911](https://github.com/zowe/zowe-cli/pull/2911)
+
+## `8.33.1`
+
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+
+## `8.32.3`
+
+- BugFix: Added extra filesystem checks when downloading job spool. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+
 ## `8.28.0`
 
 - Enhancement: Added `encoding` property to `GetJobs.getJclCommon` method for retrieving JCL with custom encoding. [Zowe Explorer #3826](https://github.com/zowe/zowe-explorer-vscode/issues/3826)

@@ -139,6 +139,16 @@ export interface ISession {
     passphrase?: string;
 
     /**
+     * The subject name for a client certificate stored in the credential manager.
+     * When specified, the certificate and private key will be retrieved from the
+     * system keychain instead of from files.
+     * (supported for macOS & Windows only)
+     * @type {string}
+     * @memberof ISession
+     */
+    certAccount?: string;
+
+    /**
      * todo
      * @type {string}
      * @memberof ISession
@@ -188,6 +198,18 @@ export interface ISession {
      * @memberof ISession
      */
     authTypeOrder?: SessConstants.AUTH_TYPE_CHOICES[];
+
+    /**
+     * Restricts which credentials a user should be prompted for when logging into a service,
+     * so that they are compliant with a site's requirements and backend configuration.
+     *
+     * Values are specified using SessConstants.ALLOWED_LOGIN_METHOD_XXX values.
+     * When unset, the value defaults to SessConstants.ALLOWED_LOGIN_METHOD_PROMPT.
+     *
+     * @type {string}
+     * @memberof ISession
+     */
+    allowedLoginMethod?: SessConstants.ALLOWED_LOGIN_METHOD_CHOICES;
 
     /**
      * The _authCache property contains a cache of credentials which are available

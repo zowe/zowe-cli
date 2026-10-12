@@ -9,8 +9,9 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { ICancelJobParms } from "./doc/input/ICancelJobParms";
@@ -66,6 +67,7 @@ export class CancelJobs {
         this.log.trace("cancelJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
 
         if (parms.version !== "1.0") {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
@@ -79,8 +81,10 @@ export class CancelJobs {
             version: parms.version
         };
 
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
-        const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+        const responseJson = await ZosmfRestClient.putExpectJSON(session,
+            EncodeUri.encUriPathForZos(session, JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            headers, request
+        );
 
         if (parms.version === "2.0") {
             //"2.0" indicates an synchronous request

@@ -20,6 +20,7 @@ export * from "./src/client/Headers";
 export * from "./src/client/ProxySettings";
 export * from "./src/client/AbstractRestClient";
 // export * from "./src/client/CompressionUtils";
+export * from "./src/client/EncodeUri";
 export * from "./src/client/RestClient";
 export * from "./src/client/RestConstants";
 // export * from "./src/client/RestStandAloneUtils";
@@ -27,6 +28,7 @@ export * from "./src/client/RestClientError";
 
 export * as SessConstants from "./src/session/SessConstants";
 
+export * from "./src/session/doc/IApimlDecision";
 export * from "./src/session/doc/IAuthCache";
 export * from "./src/session/doc/IScrtData";
 export * from "./src/session/doc/ISession";

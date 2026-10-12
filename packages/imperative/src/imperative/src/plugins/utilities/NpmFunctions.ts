@@ -57,35 +57,43 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
         })(Logger.getAppLogger());
         args.push(`--loglevel=${logLevel}`, "--foreground-scripts");
     }
-    for (const [k, v] of Object.entries(npmArgs)) {
+    // allowScripts is handled below instead of in this loop, because the npm option name uses
+    // dashes (--allow-scripts) and does not match the property name.
+    const { allowScripts, ...registryArgs } = npmArgs;
+    for (const [k, v] of Object.entries(registryArgs)) {
         if (v != null) {
             // If npm arg starts with @ like @zowe:registry, must use = as separator
             args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
         }
     }
-    let execOutput = "";
-    const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
-    try {
-        if (verbose && daemonStream == null) {
-            ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
-                cwd: PMFConstants.instance.PMF_ROOT,
-            });
+    if (allowScripts != null) {
+        const allowedPackages = allowScripts.split(",").map((pkg) => pkg.trim()).filter((pkg) => pkg.length > 0);
+        if (allowedPackages.length > 0) {
+            // npm 12 blocks install scripts unless the package is in this list, so we pass the
+            // list to npm and let npm decide. Older versions of npm do not know this option and
+            // ignore it, so they keep working the same way. We add nothing to the command when
+            // the user did not name any package.
+            args.push(`--allow-scripts=${allowedPackages.join(",")}`);
         } else {
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
-                cwd: PMFConstants.instance.PMF_ROOT,
-                stdio: pipe
-            }).toString();
-
-            if (verbose && daemonStream != null) {
-                daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
-            }
+            Logger.getImperativeLogger().warn(
+                "The --allow-scripts option was specified without any package names, so it will be ignored."
+            );
         }
     }
-    catch (error) {
-        if (daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stderr: error.message }));
-        } else {
-            process.stderr.write(error.message);
+    let execOutput = "";
+    const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
+    if (verbose && daemonStream == null) {
+        ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+        });
+    } else {
+        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+            stdio: pipe
+        }).toString();
+
+        if (verbose && daemonStream != null) {
+            daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
         }
     }
     return execOutput;
@@ -98,15 +106,63 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
 export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
     let packageName = pkgInfo.name;
+
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
+        const maxOutputInx = 200;
+        let truncationMsg = "\n<Additional output not displayed>";
+        let execOutput:string = "No npm pack output was retrieved";
+
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        const maxBuffer = 1024 * 1024 * 10; // 10MB
+        execOutput = ExecUtils.spawnAndGetOutput(
+            npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
+        ).toString();
+
+        // In test pipelines, parallel tests use Git to retrieve source to compile and to
+        // run CodeQL analysis. Some conflict causes <YourSourceCodeRootDirectory>/.git/config.lock
+        // to be left around. As a result, when the pipeline spawns 'npm pack' to get the contents
+        // of package.json, an error message that looks like the following may be displayed before
+        // the correct contents of package.json.
+        //
+        //      "error: could not lock config file .git/config: File exists"
+        //          or
+        //      "warning: unable to access '.git/config': Permission denied"
+        //
+        // JSON.parse() fails to parse the output because of that error message.
+        // A successful 'npm pack' command always displays its results in an array.
+        // The following code looks for the start of an array and removes any text
+        // that occurs before the array of valid JSON. This allows
+        // the JSON to be successfully parsed. Any removed text is logged.
+        let startOfJsonInx = execOutput.indexOf("\n[");
+        if (startOfJsonInx > 0) {
+            // we had some text before a JSON array
+            Logger.getImperativeLogger().error(
+                "The following errors were displayed by 'npm pack' before its JSON output:\n" +
+                execOutput.substring(0, startOfJsonInx)
+            );
+
+            // discard the errors, and keep the JSON array
+            startOfJsonInx++;
+            execOutput = execOutput.substring(startOfJsonInx);
+        }
+
+        // parse the json output of the npm pack command
         try {
-            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
-            packageName = JSON.parse(execOutput.toString())[0].name;
+            const parsedOutput = JSON.parse(execOutput);
+            // npm v12 changed `npm pack --json`'s output from an array of package objects to a
+            // single object keyed by package name. Branched based off the output (rather than
+            // checking the installed npm version) to avoid an extra command invocation, which can
+            // be slow in some environments to determine the npm version
+            packageName = Array.isArray(parsedOutput) ? parsedOutput[0].name : Object.keys(parsedOutput)[0];
         } catch (err) {
+            if (execOutput.length < maxOutputInx) {
+                truncationMsg = "";
+            }
             throw new ImperativeError({
-                msg: `Failed to fetch metadata for package: ${pkgSpec}`,
-                additionalDetails: (err as Error).message,
+                msg: `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'`,
+                additionalDetails: "JSON.parse error = " + (err as Error).message +
+                    "\nOutput of 'npm pack':\n" + execOutput.substring(0, maxOutputInx) + truncationMsg
             });
         }
     }

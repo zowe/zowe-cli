@@ -9,9 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
-
-import { posix } from "path";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -22,8 +20,8 @@ import { Invoke } from "../invoke";
 import { IDeleteDatasetOptions } from "./doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
-import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -53,20 +51,18 @@ export class Delete {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+                endpoint += `/-(${options.volume})`;
             }
+            endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
+            Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+                .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
             if (options && options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
-
-            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
-
-            Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             // Since there is a bug with the deleteExpectJSON (doesn't handle 204 no content) we will be using the expect
             // string api since that doesn't seem to complain.
@@ -102,6 +98,7 @@ export class Delete {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(ZosFilesUtils.validateDSN(dataSetName), false, ZosFilesMessages.invalidDatasetName.message);
 
         // Create the control statements
         const amsControlStatements = [
@@ -147,13 +144,13 @@ export class Delete {
         ImperativeExpect.toNotBeEqual(fileName, "", ZosFilesMessages.missingUSSFileName.message);
 
         // Format the endpoint to send the request to
-        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES);
-
-        fileName = ZosFilesUtils.sanitizeUssPathForRestCall(fileName);
-        endpoint = posix.join(endpoint, fileName);
+        const endpoint = EncodeUri.encUriPathForUss(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + fileName
+        );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }
@@ -191,8 +188,11 @@ export class Delete {
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
         // Format the endpoint to send the request to
-        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const endpoint = EncodeUri.encUriPathForZos(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName
+        );
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING]
+            .concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }

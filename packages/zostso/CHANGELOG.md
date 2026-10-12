@@ -6,6 +6,14 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
 
+## `8.35.3`
+
+- BugFix: Added a default timeout while collecting TSO responses, and a 100 ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)
+
+## `8.33.0`
+
+- Enhancement: Added a new optional boolean field `useLegacyApi` to the `IIssueTsoCmdOpts` interface used to call the `IssueTso.issueTsoCmd` method. For more details, see [the CLI changelog](../cli/CHANGELOG.md). [#2738](https://github.com/zowe/zowe-cli/issues/2738)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

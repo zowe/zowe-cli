@@ -1,0 +1,42 @@
+
+zowe zos-files create data-set-sequential "YOUR.HLQ.T@#$-EST.JCL" --zosmf-profile zosmf
+zowe files upload file-to-data-set .\hello_world_bpxbatch.jcl "YOUR.HLQ.T@#$-EST.JCL" --zosmf-profile zosmf
+zowe files upload file-to-data-set .\hello_world_bpxbatch.jcl "YOUR.HLQ.T@#$-EST.JCL" --volume-serial 'U@#$-01' --zosmf-profile apiml
+zowe files upload file-to-data-set .\hello_world_bpxbatch.jcl "YOUR.HLQ.JCLPDS(T@#`$EST)" --zosmf-profile apiml
+zowe files list data-set "YOUR.HLQ.T@#$-*" --zosmf-profile zosmf
+
+zowe zos-files create data-set-sequential "YOUR.HLQ.T@#$-EST.COP" --zosmf-profile apiml
+zowe files copy data-set "YOUR.HLQ.T@#$-EST.JCL" "YOUR.HLQ.T@#$-EST.COP" --zosmf-profile zosmf
+zowe files list data-set "YOUR.HLQ.T@#$-*" --zosmf-profile apiml
+
+zowe files rename data-set "YOUR.HLQ.T@#$-EST.JCL" "YOUR.HLQ.T@#$-EST.REN" --zosmf-profile zosmf
+zowe files rename data-set "YOUR.HLQ.T@#$-EST.REN" "YOUR.HLQ.T@#$-EST.JCL" --zosmf-profile apiml
+
+zowe files download data-set "YOUR.HLQ.T@#$-EST.COP" --file "t:\downloaded_T@#$-EST.COP" --zosmf-profile zosmf
+zowe files download data-set "YOUR.HLQ.T@#$-EST.JCL" --file "t:\downloaded_T@#$-EST.JCL" --zosmf-profile apiml
+
+zowe zos-jobs submit data-set "YOUR.HLQ.T@#$-EST.JCL" --zosmf-profile zosmf
+zowe zos-jobs submit data-set "YOUR.HLQ.T@#$-EST.JCL" --zosmf-profile apiml
+zowe zos-jobs list jobs --prefix "T@#$-EST*" --zosmf-profile zosmf
+zowe zos-jobs list jobs --prefix "T@#$-EST*" --zosmf-profile apiml
+zowe zos-jobs download output JOB40969 --directory t:\jobs --zosmf-profile zosmf
+zowe zos-jobs delete job JOB26939 --zosmf-profile zosmf
+
+zowe zos-files delete data-set "YOUR.HLQ.T@#$-EST.JCL" --for-sure --zosmf-profile zosmf
+zowe zos-files delete data-set "YOUR.HLQ.T@#$-EST.COP" --for-sure --zosmf-profile apiml
+
+zowe zos-files mount file-system YOUR.HLQ.ENCO#ED /your/uss/dir/fs_dir --zosmf-profile apiml
+zowe zos-files unmount file-system YOUR.HLQ.ENCO#ED --zosmf-profile apiml
+
+zowe files create uss-file  '/your/uss/dir/test"XXX' --zosmf-profile apiml
+zowe files list uss-files '/your/uss/dir/test#XXX' --zosmf-profile apiml
+zowe files delete uss-file  '/your/uss/dir/test#XXX' --zosmf-profile apiml --for-sure
+
+zowe files create uss-file  '/your/uss/dir/test-=~,.!:''&$@*_% +?#;<>[]^{|}' --zosmf-profile apiml
+zowe files list uss-files '/your/uss/dir/test-=~,.!:''&$@*_% +?#;<>[]^{|}' --zosmf-profile apiml
+zowe files upload file-to-uss .\hello_world_bpxbatch.jcl '/your/uss/dir/test-=~,.!:''&$@*_% +?#;<>[]^{|}' --zosmf-profile apiml
+zowe files download uss-file '/your/uss/dir/test-=~,.!:''&$@*_% +?#;<>[]^{|}' --file t:\download.txt  --zosmf-profile apiml
+zowe files delete uss-file  '/your/uss/dir/test-=~,.!:''&$@*_% +?#;<>[]^{|}' --zosmf-profile apiml --for-sure
+
+zowe files list uss "/your/uss/dir/bin" --max 7
+

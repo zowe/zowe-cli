@@ -9,8 +9,9 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IModifyJobParms } from "./doc/input/IModifyJobParms";
 import { IModifyJobOptions } from "./doc/input/IModifyJobOptions";
@@ -63,9 +64,12 @@ export class ModifyJobs {
 
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobid", "jobname"],
             "You must specify both the jobname and jobid for the job you want to modify.");
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
 
         const headers: any = [Headers.APPLICATION_JSON];
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
+        const parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid
+        );
         let response: IJobFeedback;
         let request: IModifyJob;
         let mergedMessage: string = "";
@@ -77,7 +81,7 @@ export class ModifyJobs {
                     request = { request: "release"};
                 }
                 try{
-                    response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+                    response = await ZosmfRestClient.putExpectJSON(session, parameters, headers, request);
                     mergedMessage = mergedMessage + '\n' + response.message;
                 }
                 catch(err){
@@ -90,7 +94,7 @@ export class ModifyJobs {
                 request = {
                     class: options.jobclass,
                 };
-                response = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+                response = await ZosmfRestClient.putExpectJSON(session, parameters, headers, request);
                 mergedMessage = mergedMessage + '\n' + response.message;
             }
             response.message = mergedMessage;

@@ -19,6 +19,8 @@ import { IImperativeEnvironmentalVariableSettings } from "..";
 import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
 import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
+import * as fs from "fs";
+import { Censor } from "../../censor";
 
 describe("Imperative", () => {
     const loadImperative = () => {
@@ -149,7 +151,10 @@ describe("Imperative", () => {
             }
         };
 
+        let backupArgv = process.argv;
+
         beforeEach(() => {
+            backupArgv = process.argv;
             defaultConfig = {
                 name: "test-cli",
                 allowPlugins: false,
@@ -168,6 +173,10 @@ describe("Imperative", () => {
             mocks.Config.load.mockResolvedValue({});
         });
 
+        afterEach(() => {
+           process.argv = backupArgv;
+        });
+
         it("should work when passed with nothing", async () => {
             // the thing that we really want to test
             const result = await Imperative.init();
@@ -176,6 +185,26 @@ describe("Imperative", () => {
             expect(mocks.Config.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample", zoweVersion: "V99" });
+        });
+
+        it("should censor process.argv before logging it", async () => {
+            jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementationOnce(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
+            const loggerFatalMock = jest.fn();
+            mocks.Logger.getImperativeLogger.mockReturnValue({ fatal: loggerFatalMock } as any);
+            process.argv = [
+                "node",
+                "/usr/local/bin/zowe", "zosmf", "check", "status",
+                "--password", "zowe1234",
+                "--token-value", "abc.def.123"
+            ];
+            await expect(Imperative.init()).rejects.toThrow("Unexpected Error Encountered");
+
+            const diagCall = loggerFatalMock.mock.calls.find(c => String(c[0]).startsWith("Diagnostic information"));
+            expect(diagCall).toBeDefined();
+            expect(diagCall[3]).toContain("--password " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("zowe1234");
+            expect(diagCall[3]).toContain("--token-value " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("abc.def.123");
         });
 
         describe("AppSettings", () => {
@@ -443,6 +472,90 @@ describe("Imperative", () => {
         let ImperativeError = loadImperativeError();
         beforeEach(() => {
             ImperativeError = loadImperativeError();
+        });
+
+        it("should place debug log in Zowe logs directory after catching error when ImperativeConfig is initialized", async () => {
+            const fakeDbgRpt = "Fake Debug Report";
+            const fakeErr = new Error("A fake error from setLogInMemory");
+            (fakeErr as any).report = fakeDbgRpt;
+
+            // pick an early function so that test hacks do throw a different error before our fakeErr
+            jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementation(() => {
+                throw fakeErr;
+            });
+
+            // loadedConfig is a getter of a property, so we mock the property.
+            const fakeCliHome = "/fake/zowe/cli/home";
+            Object.defineProperty(mocks.ImperativeConfig.instance, "loadedConfig", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        defaultHome: fakeCliHome
+                    };
+                })
+            });
+            jest.spyOn(mocks.ImperativeConfig.instance, "cliHome", "get").mockReturnValue(fakeCliHome);
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => { return; });
+
+            try {
+                await Imperative.init();
+            } catch (e) {
+                // don't need to do anything;
+            }
+
+            const debugLogFilePath = join(fakeCliHome, "logs", "imperative_debug.log");
+            expect(mocks.Logger.writeInMemoryMessages).toHaveBeenCalledWith(debugLogFilePath);
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(debugLogFilePath, fakeDbgRpt);
+        });
+
+        it("should place debug log in user home directory after catching error when no logs dir exists", async () => {
+            const fakeErr = new Error("A fake error from defineCommands");
+            (Imperative as any).defineCommands = jest.fn(() => {
+                throw fakeErr;
+            });
+
+            // loadedConfig is a getter of a property, so we mock the property.
+            const fakeCliHome = "/fake/zowe/cli/home";
+            Object.defineProperty(mocks.ImperativeConfig.instance, "loadedConfig", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        defaultHome: fakeCliHome
+                    };
+                })
+            });
+            jest.spyOn(mocks.ImperativeConfig.instance, "cliHome", "get").mockReturnValue(fakeCliHome);
+
+            // this fools the app into think that no logs directory exists
+            jest.spyOn(fs, "existsSync").mockReturnValue(false);
+
+            try {
+                await Imperative.init();
+            } catch (e) {
+                // don't need to do anything;
+            }
+
+            expect(mocks.Logger.writeInMemoryMessages).toHaveBeenCalledWith(
+                join(require('os').homedir(), "imperative_debug.log")
+            );
+        });
+
+        it("should place debug log in user home directory after catching error before ImperativeConfig is initialized", async () => {
+            const fakeErr = new Error("A fake error from ConfigurationLoader.load");
+            mocks.ConfigurationLoader.load.mockImplementationOnce(() => {
+                throw fakeErr;
+            });
+
+            try {
+                await Imperative.init();
+            } catch (e) {
+                // don't need to do anything;
+            }
+
+            expect(mocks.Logger.writeInMemoryMessages).toHaveBeenCalledWith(
+                join(require('os').homedir(), "imperative_debug.log")
+            );
         });
 
         it("handles a non imperative error", async () => {

@@ -1716,6 +1716,27 @@ describe("TeamConfig ProfileInfo tests", () => {
                 (profInfo as any).updateSchemaAtLayer("dummy", {}, testCfgLayer);
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
+
+            // case 3: $schema escapes the config layer directory; refuse to write
+            it("does not write schema outside the config layer directory", async () => {
+                const blockMocks = getBlockMocks();
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                blockMocks.buildSchema.mockReturnValueOnce({} as any);
+                const loggerSpy = jest.spyOn(Logger.prototype, "trace");
+                const existsSyncSpy = jest.spyOn(fs, "existsSync");
+                writeFileSyncMock.mockClear();
+                const maliciousLayer = {
+                    ...testCfgLayer,
+                    properties: { ...testCfgLayer.properties, $schema: "../../../../../../../../evil.schema.json" },
+                };
+                expect((profInfo as any).updateSchemaAtLayer("dummy", {}, maliciousLayer)).toBe(false);
+                expect(loggerSpy).toHaveBeenCalledWith(
+                    "ProfileInfo.updateSchemaAtLayer returned false: the schema path escapes the config layer directory."
+                );
+                expect(existsSyncSpy).not.toHaveBeenCalled();
+                expect(writeFileSyncMock).not.toHaveBeenCalled();
+            });
         });
 
         describe("addProfileToConfig", () => {

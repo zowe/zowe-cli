@@ -9,6 +9,7 @@
 *
 */
 
+import * as path from "path";
 import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
@@ -16,6 +17,7 @@ import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { Logger } from "../../../../logger";
+import { ImperativeError } from "../../../../error";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -46,6 +48,47 @@ describe("NpmFunctions", () => {
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--prefix", "fakePrefix"]));
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--registry", fakeRegistry]));
         expect(result).toBe(stdoutBuffer.toString());
+    });
+
+    it("installPackages should pass allowScripts to npm as --allow-scripts", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync")
+            .mockReturnValueOnce({ status: 0, stdout: Buffer.from("install output") } as any);
+
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", allowScripts: "pkg1, pkg2 ,,ibm_db" });
+
+        // Only one npm command should run, and the package names should be trimmed
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["install", "samplePlugin"]));
+        expect(spawnSyncSpy.mock.calls[0][1]).toContain("--allow-scripts=pkg1,pkg2,ibm_db");
+        // The property name should never be used as an npm option
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--allowScripts");
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--ignore-scripts");
+        expect(result).toBe("install output");
+    });
+
+    it("installPackages should not pass --allow-scripts when allowScripts has no package names", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0, stdout: Buffer.from("install output") } as any);
+        const warnSpy = jest.spyOn(Logger.prototype, "warn").mockReturnValue("");
+
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", allowScripts: "  , ," });
+
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        expect(spawnSyncSpy.mock.calls[0][1].join(" ")).not.toContain("--allow-scripts");
+        // The user gets a warning explaining why the option had no effect, instead of a silent no-op
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("--allow-scripts option was specified without any package names"));
+        expect(result).toBe("install output");
+    });
+
+    it("installPackages should not pass any script option when allowScripts is not given", () => {
+        jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({ PMF_ROOT: __dirname } as any);
+        const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0, stdout: Buffer.from("") } as any);
+        npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix" });
+        expect(spawnSyncSpy).toHaveBeenCalledTimes(1);
+        // npm should decide what to do when the user did not use the option
+        expect(spawnSyncSpy.mock.calls[0][1].join(" ")).not.toContain("--allow-scripts");
+        expect(spawnSyncSpy.mock.calls[0][1]).not.toContain("--ignore-scripts");
     });
 
     it("getRegistry should run npm config command", () => {
@@ -106,7 +149,28 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
+        });
+
+        it("should extract package name from array format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
+            );
+        });
+
+        it("should extract package name from object format npm pack output", () => {
+            const pkgSpec = "./imperative";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify({ [expectedInfo.name]: expectedInfo }));
+            npmFunctions.getPackageInfo(pkgSpec);
+            expect(jsonfile.readFileSync).toHaveBeenCalledWith(
+                expect.stringContaining(expectedInfo.name.replace(/\//g, path.sep))
+            );
         });
 
         it("should fetch info for package installed from local TGZ", () => {
@@ -116,7 +180,37 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
+        });
+
+        it("should discard error message text before valid JSON output", () => {
+            let logMsg = "";
+            jest.spyOn(Logger, "getImperativeLogger").mockReturnValueOnce({
+                error: jest.fn((errMsg) => {
+                    logMsg = errMsg;
+                })
+            } as any);
+
+            const pkgSpec = "imperative.tgz";
+            expect(npmPackageArg(pkgSpec).type).toEqual("file");
+
+            const fakeErrText = "Fake error text that should be logged";
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(
+                fakeErrText + "\n" + JSON.stringify([expectedInfo])
+            );
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
+            expect(logMsg).toContain(
+                "The following errors were displayed by 'npm pack' before its JSON output:"
+            );
+            expect(logMsg).toContain(fakeErrText);
+            expect(actualInfo).toEqual(expectedInfo);
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("should fetch info for package installed from Git URL", () => {
@@ -126,7 +220,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("should fetch info for package installed from remote TGZ", () => {
@@ -136,7 +233,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("getScopeRegistry() should return registry for 'test' scope", () => {
@@ -147,12 +247,53 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should throw error if fetching package metadata fails", () => {
+        it("should throw error if unable to spawn npm pack command", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
-            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("[]");
-            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow("Failed to fetch metadata for package");
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync returns some vague message";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
+            });
+
+            let caughtError: ImperativeError = {} as ImperativeError;
+            try {
+                npmFunctions.getPackageInfo(pkgSpec);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
+        });
+
+        it("should throw error if npm pack output is not parsable JSON", () => {
+            const pkgSpec = "imperative.tgz";
+            expect(npmPackageArg(pkgSpec).type).toEqual("file");
+
+            const badJsonString = "{bogus: [}";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(badJsonString);
+
+            let caughtError: ImperativeError = {} as ImperativeError;
+            try {
+                npmFunctions.getPackageInfo(pkgSpec);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(
+                `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'`
+            );
+            expect(caughtError.additionalDetails).toContain(
+                "JSON.parse error = Expected property name or '}' in JSON at position 1"
+            );
+            expect(caughtError.additionalDetails).toContain("Output of 'npm pack':");
+            expect(caughtError.additionalDetails).toContain(badJsonString);
+
         });
     });
 
@@ -311,8 +452,6 @@ describe("NpmFunctions", () => {
         it("should handle errors in verbose mode with daemon stream", () => {
             const writeMock = jest.fn();
             const mockDaemonStream = { write: writeMock };
-            const errorMessage = "Install failed";
-
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 envVariablePrefix: "MOCK_PREFIX",
                 cliHome: "/mock/home",
@@ -321,21 +460,34 @@ describe("NpmFunctions", () => {
                 }
             } as any);
 
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync message during verbose with daemon stream";
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
-                throw new Error(errorMessage);
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
             });
 
-            const result = npmFunctions.installPackages("samplePlugin", {
-                prefix: "fakePrefix"
-            }, true);
-
-            expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stderr: errorMessage }));
-            expect(result).toBe("");
+            let caughtError: ImperativeError = {} as ImperativeError;
+            const neverSetValue = "result should never be set";
+            let result = neverSetValue;
+            try {
+                result = npmFunctions.installPackages("samplePlugin", {
+                    prefix: "fakePrefix"
+                }, true);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(result).toBe(neverSetValue);
+            expect(writeMock).not.toHaveBeenCalledWith();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
         });
 
         it("should handle errors in verbose mode without daemon stream", () => {
             const stderrWriteSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
-            const errorMessage = "Install failed";
 
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 envVariablePrefix: "MOCK_PREFIX",
@@ -343,16 +495,31 @@ describe("NpmFunctions", () => {
                 daemonContext: null
             } as any);
 
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync message during verbose with no daemon stream";
             jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockImplementation(() => {
-                throw new Error(errorMessage);
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
             });
 
-            const result = npmFunctions.installPackages("samplePlugin", {
-                prefix: "fakePrefix"
-            }, true);
+            let caughtError: ImperativeError = {} as ImperativeError;
+            const neverSetValue = "result should never be set";
+            let result = neverSetValue;
+            try {
+                result = npmFunctions.installPackages("samplePlugin", {
+                    prefix: "fakePrefix"
+                }, true);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
 
-            expect(stderrWriteSpy).toHaveBeenCalledWith(errorMessage);
-            expect(result).toBe("");
+            expect(result).toBe(neverSetValue);
+            expect(stderrWriteSpy).not.toHaveBeenCalledWith();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
 
             stderrWriteSpy.mockRestore();
         });

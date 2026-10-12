@@ -45,7 +45,8 @@ describe("zos-tso ping address-space", () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/as_error_ping.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
         expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stderr.toString()).toContain('Unable to perform this operation due to the following problem');
+        expect(response.stderr.toString()).toContain('IZUG1126E: z/OSMF cannot correlate the request for key');
     });
 
     it("should successfully issue the command", async () => {

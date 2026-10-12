@@ -9,9 +9,9 @@
 *
 */
 
-import * as path from "path";
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IDeleteJobParms } from "./doc/input/IDeleteJobParms";
@@ -66,6 +66,7 @@ export class DeleteJobs {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
         this.log.info("Deleting job %s (%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.modifyVersion + "");
         const headers: any = [];
 
@@ -76,8 +77,10 @@ export class DeleteJobs {
             headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
         }
 
-        const parameters: string = path.posix.sep + encodeURIComponent(parms.jobname) + path.posix.sep + encodeURIComponent(parms.jobid);
-        const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
+        const responseJson = await ZosmfRestClient.deleteExpectJSON(session,
+            EncodeUri.encUriPathForZos(session, JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            headers
+        );
 
         if (parms.modifyVersion === "1.0") {
             return undefined;

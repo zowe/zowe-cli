@@ -823,7 +823,7 @@ describe("Command Processor", () => {
 
     it("should mask sensitive CLI options like user and password in log output 2", async () => {
         const realCensoredOptions = Censor.CENSORED_OPTIONS;
-        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValueOnce([...realCensoredOptions, "u"]);
+        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValue([...realCensoredOptions, "u"]);
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -856,6 +856,82 @@ describe("Command Processor", () => {
 
         expect(mockLogInfo).toHaveBeenCalled();
         expect(logOutput).toContain("-u **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+    });
+
+    it("should mask sensitive CLI options supplied in the equals-separated form in log output", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "--user fakeUser --password=fakePass --token-value=fakeToken " +
+                "--cert-file-passphrase=fakePassphrase --cert-key-file /fake/path",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+        expect(logOutput).not.toContain("fakePass");
+        expect(logOutput).not.toContain("fakeToken");
+        expect(logOutput).not.toContain("fakePassphrase");
+    });
+
+    it("should mask a sensitive value containing embedded whitespace using the parsed arguments", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "--password two words",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = {
+            arguments: { _: [], $0: "", password: "two words", syntaxThrow: true },
+            responseFormat: "json",
+            silent: true
+        };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+        expect(logOutput).not.toContain("two words");
+        expect(logOutput).not.toMatch(/\bwords\b/);
     });
 
     it("should handle not being able to instantiate the handler", async () => {
@@ -1043,6 +1119,98 @@ describe("Command Processor", () => {
         expect(commandResponse.message).toEqual("\tTab!\tTab again!\nLine should not be indented");
         expect(commandResponse.error?.msg).toEqual("\tTab!\tTab again!\nLine should not be indented");
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
+    });
+
+    it("should redact sensitive environment variables from the handler-error diagnostic log", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_REAL_HANDLER,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        // Capture everything written at ERROR level (the diagnostic block uses printf-style args)
+        let errorOutput = "";
+        const mockLogError = jest.fn((...args) => { errorOutput += args.join(" ") + "\n"; });
+        Object.defineProperty(processor, "log", {
+            get: () => ({ debug: jest.fn(), error: mockLogError, info: jest.fn(), trace: jest.fn() })
+        });
+
+        process.env.ZOWE_OPT_PASSWORD = "superSecretPwd";
+        process.env.MY_DIAG_TEST_HOST = "visibleHostValue";
+        // Inject an equals-form credential into argv to prove the diagnostic argv line is censored too
+        const originalArgv = process.argv;
+        process.argv = [...process.argv, "--password=argvSecretPwd"];
+        try {
+            const parms: any = {
+                arguments: { _: ["check", "for", "banana"], $0: "", valid: true, throwImperative: true },
+                responseFormat: "json",
+                silent: true
+            };
+            await processor.invoke(parms);
+
+            expect(errorOutput).toContain("Environmental variables:");
+            // Sensitive env value must be redacted; non-sensitive value preserved
+            expect(errorOutput).not.toContain("superSecretPwd");
+            expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
+            expect(errorOutput).toContain("visibleHostValue");
+            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            expect(errorOutput).not.toContain("argvSecretPwd");
+            expect(errorOutput).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+        } finally {
+            process.argv = originalArgv;
+            delete process.env.ZOWE_OPT_PASSWORD;
+            delete process.env.MY_DIAG_TEST_HOST;
+        }
+    });
+
+    it("should redact sensitive environment variables from the handler-load-failure diagnostic log", async () => {
+        // SAMPLE_COMMAND_DEFINITION points at a non-existent handler, exercising attemptHandlerLoad's error path
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        let errorOutput = "";
+        const mockLogError = jest.fn((...args) => { errorOutput += args.join(" ") + "\n"; });
+        Object.defineProperty(processor, "log", {
+            get: () => ({ debug: jest.fn(), error: mockLogError, info: jest.fn(), trace: jest.fn() })
+        });
+
+        process.env.AWS_SECRET_ACCESS_KEY = "awsSuperSecret";
+        process.env.MY_DIAG_TEST_PORT = "visiblePortValue";
+        // Inject an equals-form credential into argv to prove the diagnostic argv line is censored too
+        const originalArgv = process.argv;
+        process.argv = [...process.argv, "--token-value=argvSecretToken"];
+        try {
+            const parms: any = {
+                arguments: { _: ["check", "for", "banana"], $0: "", valid: true },
+                responseFormat: "json",
+                silent: true
+            };
+            await processor.invoke(parms);
+
+            expect(errorOutput).toContain("Environmental variables:");
+            expect(errorOutput).not.toContain("awsSuperSecret");
+            expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
+            expect(errorOutput).toContain("visiblePortValue");
+            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            expect(errorOutput).not.toContain("argvSecretToken");
+            expect(errorOutput).toContain(`--token-value ${Censor.CENSOR_RESPONSE}`);
+        } finally {
+            process.argv = originalArgv;
+            delete process.env.AWS_SECRET_ACCESS_KEY;
+            delete process.env.MY_DIAG_TEST_PORT;
+        }
     });
 
     it("should handle an imperative error with JSON causeErrors", async () => {

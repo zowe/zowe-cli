@@ -16,4 +16,13 @@
 export interface IDaemonPidForUser {
     user: string;
     pid: number;
+
+    /**
+     * Secret token that authenticates a daemon client as the owner of this
+     * daemon. The daemon generates a fresh random token each time it starts
+     * and writes it into this owner-only file. Because only the owner can read
+     * the file, a client that can echo this token back has proven it is the
+     * owner. The client sends it on every request (see {@link IDaemonResponse}).
+     */
+    token?: string;
 }

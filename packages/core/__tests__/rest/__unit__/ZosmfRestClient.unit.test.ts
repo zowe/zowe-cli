@@ -11,9 +11,64 @@
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { AuthOrder, IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
+import { AuthOrder, Constants, IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    describe("Request Queue", () => {
+        beforeEach(() => {
+            // Reset after each test
+            (ZosmfRestClient as any).mRequestQueue = undefined;
+        });
+
+        it("should initialize a static request queue", () => {
+            expect((ZosmfRestClient as any).mRequestQueue).not.toBeDefined();
+            const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));
+            jest.spyOn((zosmfRestClient as any), "_request").mockImplementation();
+            zosmfRestClient.request({resource: "fake", request: "GET"});
+            expect((ZosmfRestClient as any).mRequestQueue).toBeDefined();
+            expect((ZosmfRestClient as any).mRequestQueue.mMaxConcurrentRequests).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((ZosmfRestClient as any).mRequestQueue.mQueueTimeout).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+        });
+
+        it("should return the queue to a derivative class", () => {
+            expect((ZosmfRestClient as any).mRequestQueue).not.toBeDefined();
+            const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));
+            const requestQueue = (zosmfRestClient as any).requestQueue;
+            expect((ZosmfRestClient as any).mRequestQueue).toBeDefined();
+            expect((ZosmfRestClient as any).mRequestQueue.mMaxConcurrentRequests).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((ZosmfRestClient as any).mRequestQueue.mQueueTimeout).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect(requestQueue).toBe((ZosmfRestClient as any).mRequestQueue);
+        });
+
+        it("should create a request queue and set throttling options if provided", () => {
+            expect((ZosmfRestClient as any).mRequestQueue).not.toBeDefined();
+            ZosmfRestClient.setThrottlingOptions({maxConcurrentRequests: 1, queueTimeout: 1});
+            expect((ZosmfRestClient as any).mRequestQueue).toBeDefined();
+            expect((ZosmfRestClient as any).mRequestQueue.mMaxConcurrentRequests).toEqual(1);
+            expect((ZosmfRestClient as any).mRequestQueue.mQueueTimeout).toEqual(1);
+        });
+
+        it("should use an existing request queue and set throttling options if provided", () => {
+            expect((ZosmfRestClient as any).mRequestQueue).not.toBeDefined();
+            const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));
+            const requestQueue = (zosmfRestClient as any).requestQueue;
+            expect((ZosmfRestClient as any).mRequestQueue).toBeDefined();
+            expect((ZosmfRestClient as any).mRequestQueue.mMaxConcurrentRequests).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((ZosmfRestClient as any).mRequestQueue.mQueueTimeout).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect(requestQueue).toBe((ZosmfRestClient as any).mRequestQueue);
+
+            ZosmfRestClient.setThrottlingOptions({maxConcurrentRequests: 1, queueTimeout: 1});
+            expect((ZosmfRestClient as any).mRequestQueue).toBeDefined();
+            expect((ZosmfRestClient as any).mRequestQueue.mMaxConcurrentRequests).toEqual(1);
+            expect((ZosmfRestClient as any).mRequestQueue.mQueueTimeout).toEqual(1);
+            expect(requestQueue).toBe((ZosmfRestClient as any).mRequestQueue);
+        });
+    });
 
     it("should append the csrf header to all requests", () => {
         const zosmfRestClient = new ZosmfRestClient(new Session({ hostname: "dummy" }));

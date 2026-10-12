@@ -113,9 +113,9 @@ Object {
 }
 `;
 
-exports[`Session tests should require cert for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'cert' must be defined"`;
+exports[`Session tests should require cert for 'cert-pem' type 1`] = `"Certificate authentication requires either 'cert' and 'certKey' OR 'certAccount'."`;
 
-exports[`Session tests should require certKey for 'cert-pem' type 1`] = `"Expect Error: Required parameter 'certKey' must be defined"`;
+exports[`Session tests should require certKey for 'cert-pem' type 1`] = `"Certificate authentication requires either 'cert' and 'certKey' OR 'certAccount'."`;
 
 exports[`Session tests should require password for 'basic' type 1`] = `"Must have user & password OR base64 encoded credentials"`;
 

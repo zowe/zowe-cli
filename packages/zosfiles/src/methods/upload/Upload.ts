@@ -9,8 +9,10 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
-    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, IO, Logger,
+    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse
+} from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -79,7 +81,6 @@ export class Upload {
         });
 
         await promise;
-
         return this.pathToDataSet(session, inputFile, dataSetName, options);
     }
 
@@ -157,11 +158,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -227,11 +228,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -254,7 +255,7 @@ export class Upload {
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: inspect(fileStream, { showHidden: false, depth: -1}),
+            from: inspect(fileStream, { showHidden: false, depth: -1 }),
             to: dataSetName
         };
 
@@ -339,7 +340,7 @@ export class Upload {
 
         // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
-        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName, recall: "wait"});
+        const listResponse = await List.dataSet(session, dataSetName, { attributes: true, maxLength: 1, start: dataSetName, recall: "wait" });
         if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
             // Look for the index of the data set in the response from the List API
             const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :
@@ -348,7 +349,7 @@ export class Upload {
                 // If dsnameIndex === -1, it means we could not find the given data set.
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
-                if(dsInfo.dsorg?.startsWith("PO")) {
+                if (dsInfo.dsorg?.startsWith("PO")) {
                     isUploadToPds = true;
                 }
                 else {
@@ -469,9 +470,6 @@ export class Upload {
         options.binary = options.binary ? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         const origUssname = ussname;
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-
-        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
 
         if (!options.binary) {
@@ -480,7 +478,9 @@ export class Upload {
 
         // Options to use the buffer to write a file
         const requestOptions: IOptionsFullResponse = {
-            resource: endpoint,
+            resource: EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            ),
             reqHeaders,
             writeData: fileBuffer
         };
@@ -510,9 +510,11 @@ export class Upload {
         }
 
         if (options.encoding != null) {
-            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         } else if (options.binary) {
-            await Utilities.chtag(session, origUssname, Tag.BINARY);
+            await Utilities.chtag(session, origUssname, Tag.BINARY, undefined,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         }
 
         return {
@@ -537,13 +539,13 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         const origUssname = ussname;
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "stream");
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {
-            resource: ZosFilesConstants.RESOURCE + parameters,
+            resource: EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            ),
             reqHeaders,
             requestStream: uploadStream,
             normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not in binary mode*/
@@ -556,15 +558,17 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
 
         if (options.encoding != null) {
-            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         } else if (options.binary) {
-            await Utilities.chtag(session, origUssname, Tag.BINARY);
+            await Utilities.chtag(session, origUssname, Tag.BINARY, undefined,
+                options.responseTimeout, options.tsoAccount, options.tsoProcedure);
         }
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: inspect(uploadStream, { showHidden: false, depth: -1}),
+            from: inspect(uploadStream, { showHidden: false, depth: -1 }),
             to: origUssname
         };
 
@@ -595,6 +599,42 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+
+        // User knows the target is already a file
+        const skipDirCheck = options.skipDirectoryCheck === true;
+
+        // Check if ussname is a directory (ends with '/') or if it exists as a directory on z/OS
+        const isUssDirectory = ussname.endsWith('/');
+
+        // If path ends with '/', it's a directory - append the filename
+        if (isUssDirectory) {
+            const baseName = path.basename(inputFile);
+            ussname = path.posix.join(ussname, baseName);
+        } else if (!skipDirCheck && !options.makeDir) {
+            try {
+                const existsAsDir = await this.isDirectoryExist(session, ussname);
+                if (existsAsDir) {
+                    const baseName = path.basename(inputFile);
+                    if (path.posix.basename(ussname) !== baseName) {
+                        ussname = path.posix.join(ussname, baseName);
+                    }
+                }
+            } catch {
+                // Directory check failed, continue with ussname as-is
+            }
+        }
+
+        if (options.makeDir) {
+            const parentDir = path.posix.dirname(ussname);
+
+            if (!parentDir || parentDir === ussname || parentDir === '.') {
+                throw new ImperativeError({
+                    msg: "Invalid parent directory resolution for USS upload"
+                });
+            }
+
+            await this.createDirectoriesRecursively(session, parentDir, skipDirCheck);
+        }
 
         const promise = new Promise((resolve, reject) => {
             fs.lstat(inputFile, (err, stats) => {
@@ -639,6 +679,49 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    private static async createDirectoriesRecursively(
+        session: AbstractSession,
+        dirPath: string,
+        skipCheck: boolean = false
+    ): Promise<void> {
+        while (dirPath.endsWith('/')) {
+            dirPath = dirPath.slice(0, -1);
+        }
+        if (!dirPath || dirPath === '/' || dirPath === '.' || dirPath === '/u') return;
+
+        const parentDir = path.posix.dirname(dirPath);
+        if (parentDir === dirPath) return;
+
+        await this.createDirectoriesRecursively(session, parentDir, skipCheck);
+
+        if (skipCheck) {
+            await Create.uss(session, dirPath, "directory").catch((err) => {
+                if (err?.mDetails?.msg?.includes("already exists")) {
+                    return;
+                }
+                // Provide a more descriptive error message when directory creation fails
+                const errorMsg = err?.mDetails?.msg || err?.message || "";
+                let helpText = "Verify that the parent path exists and is a valid directory.";
+
+                // Check if error indicates a file exists where we're trying to create a directory
+                if (errorMsg.includes("Not a directory") || errorMsg.includes("EDC5135I")) {
+                    helpText = "A file may exist in the path where a directory is expected. " +
+                        "Check that all path components are directories, not files.";
+                }
+
+                throw new ImperativeError({
+                    msg: `Failed to create directory "${dirPath}". ${errorMsg}. ${helpText}`,
+                    causeErrors: err
+                });
+            });
+        } else {
+            const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
+            if (!exists) {
+                await Create.uss(session, dirPath, "directory");
+            }
+        }
     }
 
     /**
@@ -710,7 +793,7 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(session,fileName, ussFilePath,
+                return this.uploadFile(session, fileName, ussFilePath,
                     { ...options, binary: file.binary });
             };
 
@@ -744,13 +827,14 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = encodeURIComponent("/") + ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
-            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
-                [ZosmfHeaders.ACCEPT_ENCODING]);
-            if (response.items) {
-                return true;
+            const response: any = await ZosmfRestClient.getExpectJSON(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES +
+                `?path=${EncodeUri.encUriQueryForUss(ussname)}`,
+                [ZosmfHeaders.ACCEPT_ENCODING]
+            );
+            if (response.items && response.items.length > 0) {
+                return response.items[0].mode?.startsWith("d") ?? false;
             }
         } catch (err) {
             if (err) {
@@ -900,17 +984,17 @@ export class Upload {
             tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
 
-            if(remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
-            else if(remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
+            if (remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
+            else if (remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
 
             if (!tempOptions.binary) {
                 tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
-        } else if(options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
+        } else if (options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
             tempOptions.binary = options.filesMap.binary;
 
             // Reset encoding to undefined if binary is true to avoid file tagging issues
-            if(tempOptions.binary) tempOptions.encoding = undefined;
+            if (tempOptions.binary) tempOptions.encoding = undefined;
         }
 
         return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
@@ -1003,7 +1087,7 @@ export class Upload {
                 }
                 reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {
-                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                    reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
                 }
                 break;
             default: {
@@ -1038,12 +1122,13 @@ export class Upload {
         }
 
         if (options.etag) {
-            reqHeaders.push({"If-Match" : options.etag});
+            reqHeaders.push({ "If-Match": options.etag });
         }
 
         if (options.returnEtag) {
             reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
         }
-        return reqHeaders;
+
+        return reqHeaders.concat(ZosFilesUtils.generateTsoHeaders(options));
     }
 }

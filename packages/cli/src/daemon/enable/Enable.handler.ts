@@ -116,10 +116,23 @@ export default class EnableDaemonHandler implements ICommandHandler {
                     msg: `The existing file '${pathToZoweBin}' must be a directory.`
                 });
             }
+            // The directory already exists. Re-restrict it to the current user in case
+            // it was previously created with permissions that allow group/other access.
+            try {
+                IO.giveAccessOnlyToOwner(pathToZoweBin);
+            }
+            catch(err) {
+                throw new ImperativeError({
+                    msg: `Unable to restrict access to directory '${pathToZoweBin}'.\nReason: ${err}`
+                });
+            }
         } else {
             // create the directory
             try {
                 IO.createDirSync(pathToZoweBin);
+                // Restrict the bin directory to the current user only.
+                // On Windows this sets an owner-only ACL; on POSIX it sets mode 0o700.
+                IO.giveAccessOnlyToOwner(pathToZoweBin);
             }
             catch(err) {
                 throw new ImperativeError({
@@ -142,6 +155,13 @@ export default class EnableDaemonHandler implements ICommandHandler {
         // display the version of the executable
         let userInfoMsg: string = "Zowe CLI native executable version = ";
         const zoweExePath = nodeJsPath.resolve(pathToZoweBin, exeFileName);
+
+        // Restrict the extracted executable to the current user only. On Windows this sets
+        // an owner-only ACL; on POSIX it enforces 0o700 regardless of the process umask.
+        if (IO.existsSync(zoweExePath)) {
+            IO.giveAccessOnlyToOwner(zoweExePath);
+        }
+
         const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
             const spawnResult = spawnSync(zoweExePath, ["--version-exe"], {
@@ -194,12 +214,12 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @returns A void promise to synchronize this operation.
      */
     private async unzipTgz(tgzFile: string, toDir: string, fileToExtract: string): Promise<void> {
-        return new Promise<void>((resolve) => {
+        return new Promise<void>((resolve, reject) => {
             fs.createReadStream(tgzFile)
                 .on('error', function(err: any) {
-                    throw new ImperativeError({
+                    reject(new ImperativeError({
                         msg: err
-                    });
+                    }));
                 })
                 .pipe(new tar.Parser())
                 .on('entry', function(entry: any) {
@@ -207,8 +227,8 @@ export default class EnableDaemonHandler implements ICommandHandler {
                         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
                         let fileCreateOpts: any = {};
                         if (sysInfo.platform == "linux" || sysInfo.platform == "darwin") {
-                            // set file permissions to read, write and execute for user, read and execute for group, in octal
-                            fileCreateOpts = { mode: 0o750 };
+                            // restrict the executable to the owner only (rwx------), in octal
+                            fileCreateOpts = { mode: 0o700 };
                         }
                         // do not include any path structure from the tgz, just the exe name
                         entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path)), fileCreateOpts));
@@ -223,7 +243,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
     /**
      * Add our .zowe/bin directory to the user's PATH.
      *
-     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
+     * @param pathToZoweBin The absolute path to our .zowe/bin directory.
      *
      * @param {IDaemonEnableQuestions} userQuestions Questions for user (if permitted)
      *

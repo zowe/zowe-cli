@@ -1,10 +1,13 @@
-use crate::os::mac::error::{handle_os_status, Error};
+use crate::os::mac::error::{handle_os_status, Error, ERR_SEC_ITEM_NOT_FOUND};
 use crate::os::mac::ffi::{
-    SecKeychainAddGenericPassword, SecKeychainCopyDefault, SecKeychainFindGenericPassword,
-    SecKeychainGetTypeID, SecKeychainRef,
+    errSecDataNotAvailable, SecCertificateCopyData, SecCertificateCopySubjectSummary, SecIdentityCopyCertificate,
+    SecIdentityCopyPrivateKey, SecItemExport, SecKeychainAddGenericPassword, SecKeychainCopyDefault,
+    SecKeychainFindGenericPassword, SecKeychainGetTypeID, SecKeychainRef, kSecFormatOpenSSL,
 };
 use crate::os::mac::keychain_item::SecKeychainItem;
-use core_foundation::{base::TCFType, declare_TCFType, impl_TCFType};
+use crate::os::mac::keychain_search::{KeychainSearch, Reference, SearchResult};
+use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
+use core_foundation::{base::TCFType, data::CFData, string::CFString, declare_TCFType, impl_TCFType};
 use std::ops::Deref;
 
 /*
@@ -109,6 +112,146 @@ impl SecKeychain {
                 },
                 SecKeychainItem::wrap_under_create_rule(item),
             ))
+        }
+    }
+
+    ///
+    /// find_identity  
+    /// Attempts to find an identity (certificate + private key) within the keychain
+    /// where the subject contains the given account string.
+    ///
+    /// Returns:
+    /// - A `SecIdentity` object if the identity was found, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn find_identity(&self, subject: &str) -> Result<SecIdentity, Error> {
+        let results = KeychainSearch::new()
+            .class_identity()
+            .subject_contains(subject)
+            .with_refs()
+            .execute()?;
+
+        for result in results {
+            if let SearchResult::Ref(Reference::Identity(identity)) = result {
+                // Validate this identity has exact subject match
+                if let Ok(cert) = self.get_certificate(&identity) {
+                    unsafe {
+                        let subject_summary = SecCertificateCopySubjectSummary(cert.as_concrete_TypeRef());
+                        if !subject_summary.is_null() {
+                            let cf_summary = CFString::wrap_under_create_rule(subject_summary);
+                            if cf_summary.to_string() == subject {
+                                return Ok(identity);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND))
+    }
+
+    ///
+    /// get_certificate_data  
+    /// Retrieves the certificate data (DER-encoded) from an identity.
+    ///
+    /// Returns:
+    /// - A `Vec<u8>` containing the certificate bytes in DER format, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_certificate_data(&self, identity: &SecIdentity) -> Result<Vec<u8>, Error> {
+        let mut cert_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyCertificate(
+                identity.as_concrete_TypeRef(),
+                &mut cert_ref,
+            ))?;
+
+            let certificate = SecCertificate::wrap_under_create_rule(cert_ref);
+            let data_ref = SecCertificateCopyData(certificate.as_concrete_TypeRef());
+            
+            if data_ref.is_null() {
+                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
+            }
+
+            let cf_data = CFData::wrap_under_create_rule(data_ref as *const _);
+            Ok(cf_data.bytes().to_vec())
+        }
+    }
+
+    ///
+    /// get_certificate
+    /// Retrieves the certificate object from an identity.
+    ///
+    /// Returns:
+    /// - A `SecCertificate` object, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_certificate(&self, identity: &SecIdentity) -> Result<SecCertificate, Error> {
+        let mut cert_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyCertificate(
+                identity.as_concrete_TypeRef(),
+                &mut cert_ref,
+            ))?;
+
+            Ok(SecCertificate::wrap_under_create_rule(cert_ref))
+        }
+    }
+
+    ///
+    /// get_private_key  
+    /// Retrieves the private key reference from an identity (non-exportable).
+    ///
+    /// Returns:
+    /// - A `SecKey` object representing the private key, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_private_key(&self, identity: &SecIdentity) -> Result<SecKey, Error> {
+        let mut key_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyPrivateKey(
+                identity.as_concrete_TypeRef(),
+                &mut key_ref,
+            ))?;
+
+            Ok(SecKey::wrap_under_create_rule(key_ref))
+        }
+    }
+
+    ///
+    /// export_private_key_data
+    /// Attempts to export the private key data in OpenSSL format.
+    /// This will fail with errSecDataNotAvailable (-25316) if the key is non-exportable.
+    ///
+    /// Returns:
+    /// - A `Vec<u8>` containing the private key data in OpenSSL format, or
+    /// - An `Error` object if an error was encountered (including non-exportable keys)
+    ///
+    pub fn export_private_key_data(&self, key: &SecKey) -> Result<Vec<u8>, Error> {
+        unsafe {
+            let mut data_ref: core_foundation_sys::base::CFTypeRef = std::ptr::null_mut();
+            let status = SecItemExport(
+                key.as_CFTypeRef(),
+                kSecFormatOpenSSL,
+                0, // flags
+                std::ptr::null(),
+                &mut data_ref,
+            );
+
+            // Check if the key is non-exportable
+            if status == errSecDataNotAvailable {
+                return Err(Error::from_code(errSecDataNotAvailable));
+            }
+
+            handle_os_status(status)?;
+
+            if data_ref.is_null() {
+                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
+            }
+
+            let cf_data = CFData::wrap_under_create_rule(data_ref as *const _);
+            Ok(cf_data.bytes().to_vec())
         }
     }
 }

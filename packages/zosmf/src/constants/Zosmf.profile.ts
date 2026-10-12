@@ -10,6 +10,7 @@
 */
 
 import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
+import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
 import { ZosmfSession } from "../ZosmfSession";
 import { ZosFilesOptions } from "./Zosmf.constants";
 
@@ -57,6 +58,10 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
                 type: "string",
                 optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
             },
+            certAccount: {
+                type: "string",
+                optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_ACCOUNT
+            },
             // certFilePassphrase: {
             //     type: "string",
             //     secure: true,
@@ -83,6 +88,22 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
             responseTimeout: {
                 type: "number",
                 optionDefinition: ZosFilesOptions.responseTimeout
+            },
+            allowedLoginMethod: {
+                type: "string",
+                optionDefinition: ProfileConstants.BASE_OPTION_ALLOWED_LOGIN_METHOD
+            },
+            authOrder: {
+                type: "string",
+                optionDefinition: ProfileConstants.BASE_OPTION_AUTH_ORDER
+            },
+            tsoAccount: {
+                type: "string",
+                optionDefinition: ZosFilesOptions.tsoAccount
+            },
+            tsoProcedure: {
+                type: "string",
+                optionDefinition: ZosFilesOptions.tsoProcedure
             }
         },
         required: []

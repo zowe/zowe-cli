@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build ./tsconfig.json",
     "watch": "tsc --build ./tsconfig.json -w",
-    "deps:lockfile": "node ../../../scripts/rewriteShrinkwrap.js package-lock.json"
+    "deps:lockfile": "node ../../../scripts/rewriteLockfile.js"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,6 @@
   "devDependencies": {
     "@types/jquery": "^3.5.30",
     "@types/jstree": "^3.3.46",
-    "postcss": "^8.4.41",
-    "postcss-url": "^10.1.3"
+    "postcss": "^8.4.41"
   }
 }

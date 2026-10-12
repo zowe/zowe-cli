@@ -24,6 +24,7 @@ import * as fs from "fs";
 import { IO } from "../../io";
 import * as dayjs from "dayjs";
 import { defaultPrintfFormat } from "../src/log4jsToWinston";
+import { Censor } from "../../censor";
 
 jest.mock("../../io", () => ({
     IO: {
@@ -225,6 +226,27 @@ describe("Logger tests", () => {
         expect((logger as any).logService.log).toHaveBeenCalledWith(
             "fatal",
             expect.any(String)
+        );
+    });
+
+    it("Should apply Censor.censorRawData to trace() just like every other log level", () => {
+        const config = LoggingConfigurer.configureLogger(fakeHome, { name });
+        const logger = Logger.initLogger(config);
+        (logger as any).logService.log = jest.fn<string, any>(
+            (_level: string, data: string) => data
+        );
+
+        const sensitiveMessage = "password=s3cr3t";
+        const censoredMessage = "password=****";
+        const censorSpy = jest.spyOn(Censor, "censorRawData").mockReturnValue(censoredMessage);
+
+        const result = logger.trace(sensitiveMessage);
+
+        expect(censorSpy).toHaveBeenCalledWith(sensitiveMessage, (logger as any).category);
+        expect(result).toBe(censoredMessage);
+        expect((logger as any).logService.log).toHaveBeenCalledWith(
+            "trace",
+            expect.stringContaining(censoredMessage)
         );
     });
 

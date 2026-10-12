@@ -90,9 +90,9 @@ export default class InstallHandler implements ICommandHandler {
 
                 params.response.console.log(
                     "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
-                    `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
+                    "control of the `" + ImperativeConfig.instance.rootCommandName + "` CLI application " +
                     "during the execution of every command.\n" +
-                    "Install 3rd party plug-ins at your own risk.\n"
+                    "Install third-party plug-ins at your own risk."
                 );
 
                 // This section determines which npm logic needs to take place
@@ -107,7 +107,7 @@ export default class InstallHandler implements ICommandHandler {
                     const packageJson: IPluginJson = readFileSync(configFile);
 
                     if (Object.keys(packageJson).length === 0) {
-                        params.response.console.log("No packages were found in " +
+                        params.response.console.log("\nNo packages were found in " +
                             configFile + ", so no plugins were installed.");
                         return;
                     }
@@ -137,7 +137,9 @@ export default class InstallHandler implements ICommandHandler {
 
                             params.response.console.log(`\n${divider}`);
                             params.response.console.log("Location = " + packageInfo.location + "\n");
-                            const pluginName = await install(packageArgument, registryInfo, true, params.arguments.verbose);
+                            const pluginName = await install(
+                                packageArgument, registryInfo, true, params.arguments.verbose, params.arguments.allowScripts
+                            );
                             if (params.arguments.verbose) {
                                 params.response.console.log(divider);
                             }
@@ -152,7 +154,9 @@ export default class InstallHandler implements ICommandHandler {
                         params.response.console.log(`\n${divider}`);
                         const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
                         params.response.console.log("Location = " + registryInfo.location + "\n");
-                        const pluginName = await install(packageString, registryInfo, false, params.arguments.verbose);
+                        const pluginName = await install(
+                            packageString, registryInfo, false, params.arguments.verbose, params.arguments.allowScripts
+                        );
                         if (params.arguments.verbose) {
                             params.response.console.log(divider);
                         }
@@ -161,7 +165,7 @@ export default class InstallHandler implements ICommandHandler {
                     }
                 }
             } catch (e) {
-                let installResultMsg = "Install Failed";
+                let installResultMsg = "Plug-in installation failed.";
                 /* When we fail to create symbolic links to core and imperative,
                  * give a special message, as per UX request.
                  */
@@ -175,11 +179,7 @@ export default class InstallHandler implements ICommandHandler {
                         installResultMsg = "Installation completed. However, due to the following error, the plugin will not operate correctly.";
                     }
                 }
-                throw new ImperativeError({
-                    msg: installResultMsg,
-                    causeErrors: e,
-                    additionalDetails: e.message
-                });
+                throw ImperativeError.newImpErrorFromExistingError(e, installResultMsg);
             }
         }
     }

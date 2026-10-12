@@ -11,26 +11,7 @@
 
 import { ICommandDefinition } from "../../../../../cmd";
 import { join } from "path";
-
-const pluginDescription =
-  "The name of the plug-in to update.\n\n" +
-  "If the plug-in argument is omitted, no action is taken.";
-
-const registryDescription =
-  "The npm registry that is used when installing remote packages. When this value is omitted, the " +
-  "value returned by `npm config get registry` is used.\n" +
-  "\n" +
-  "For more information about npm registries, see: " +
-  "https://docs.npmjs.com/misc/registry";
-
-const loginDescription =
-    "The flag to add a registry user account to install from secure registry. It saves credentials " +
-    "to the .npmrc file using `npm login`. When this value is omitted, credentials from .npmrc file is used. " +
-    "If you used this flag once for specific registry, you don't have to use it again, it uses credentials from .npmrc file.\n" +
-    "\n" +
-    "For more information about npm registries, see: \n" +
-    "https://docs.npmjs.com/cli/login for NPM >= 9\n" +
-    "https://docs.npmjs.com/cli/adduser for NPM < 9";
+import { PluginCmdConstants } from "../PluginCmdConstants";
 
 /**
  * Definition of the update command.
@@ -46,7 +27,7 @@ export const updateDefinition: ICommandDefinition = {
         {
             name: "plugin...",
             type: "string",
-            description: pluginDescription,
+            description: PluginCmdConstants.UPDATE_PLUGIN_DESCRIPTION,
             required: false
         }
     ],
@@ -54,15 +35,21 @@ export const updateDefinition: ICommandDefinition = {
         {
             name: "registry",
             type: "string",
-            description: registryDescription,
+            description: PluginCmdConstants.REGISTRY_DESCRIPTION,
             required: false
         },
         {
             name: "login",
             type: "boolean",
-            description: loginDescription,
+            description: PluginCmdConstants.LOGIN_DESCRIPTION,
             required: false,
             implies: ["registry"]
+        },
+        {
+            name: "allow-scripts",
+            type: "string",
+            description: PluginCmdConstants.ALLOW_SCRIPTS_DESCRIPTION,
+            required: false
         }
     ],
     examples: [
@@ -74,6 +61,10 @@ export const updateDefinition: ICommandDefinition = {
             description: "Update a remote plug-in from the registry which requires authorization" +
       "(don't need to use this flag if you have already logged in before)",
             options: "my-plugin --registry https://registry.npmjs.org/ --login"
+        },
+        {
+            description: "Update a plug-in and let one of its dependencies run its npm install scripts",
+            options: "my-plugin --allow-scripts=\"ibm_db\""
         }
     ]
 };

@@ -122,7 +122,7 @@ In your user-specific file, notice that the top level defaults and secure fields
 
 After the initial setup, you can define additional mainframe services to your team or user config.
 
-Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The profiles object should contain connection and other frequently needed information for accessing various services. For example:
+Open the `<The User Home Directory>/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The profiles object should contain connection and other frequently needed information for accessing various services. For example:
 
 ```json
 {
@@ -337,7 +337,7 @@ The base array is a useful tool for sharing option values between services. You 
 ## Sharing team configuration
 
 You might want to share configuration in the following scenarios:
-- Share team config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
+- Share team config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `<The User Home Directory>/.zowe` folder before issuing CLI commands.
 - Add team config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project's config scheme.
 - Enable test automation and CI/CD, letting your pipelines make use of the project configuration.
 

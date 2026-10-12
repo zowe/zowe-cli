@@ -13,7 +13,7 @@
 
 use std::collections::HashMap;
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 extern crate home;
 use home::home_dir;
@@ -82,6 +82,30 @@ pub fn util_get_nodejs_zowe_path() -> String {
 }
 
 /**
+ * Get the absolute path to an executable in the Windows System32 directory.
+ *
+ * @param exe_name
+ *      The file name of the program (e.g., "ping.exe").
+ *
+ * @returns Absolute path to the program. The Windows directory is taken from
+ *          %SystemRoot% (or %windir%) when that is an absolute path. Otherwise
+ *          it defaults to C:\Windows.
+ */
+pub fn util_get_win_system32_exe(exe_name: &str) -> String {
+    let win_dir: PathBuf = ["SystemRoot", "windir"]
+        .iter()
+        .filter_map(|var_nm| env::var_os(var_nm))
+        .map(PathBuf::from)
+        .find(|win_dir| win_dir.is_absolute())
+        .unwrap_or_else(|| PathBuf::from("C:\\Windows"));
+
+    let mut exe_path = win_dir;
+    exe_path.push("System32");
+    exe_path.push(exe_name);
+    exe_path.to_string_lossy().to_string()
+}
+
+/**
  * Get the path to the zowe daemon directory (defaults to ~/.zowe/daemon).
  * Ensures that the directory exists, or we create it.
  *
@@ -115,7 +139,119 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
         }
     }
 
+    // Restrict the daemon directory to the current user only, since it can hold
+    // sensitive runtime artifacts (pid file, socket, lock file). We do this for
+    // existing directories too, in case one was previously created with
+    // permissions that allow group/other access.
+    util_restrict_path_to_owner(&daemon_dir)?;
+
     Ok(daemon_dir)
+}
+
+/**
+ * Read the secret daemon token from the owner-only pid file in the supplied
+ * daemon directory.
+ *
+ * The daemon stores a freshly generated token in `daemon_pid.json` (which is
+ * restricted to the owner) every time it starts. We echo this token back to the
+ * daemon on every request to prove that we are the user that owns the daemon.
+ * Only the owner can read the pid file, so only the owner can learn the token.
+ *
+ * This must be called only after we have established a connection to the daemon,
+ * because the daemon writes the pid file (with the token) as it starts up. If we
+ * read it too early we could get a stale token from a previous daemon.
+ *
+ * @param daemon_dir The daemon directory that contains `daemon_pid.json`.
+ *
+ * @returns The token on success, or None if it could not be read (e.g. when
+ *          talking to an older daemon that does not write a token).
+ */
+pub(crate) fn util_get_daemon_token_from_dir(daemon_dir: &Path) -> Option<String> {
+    let mut pid_file_path = daemon_dir.to_path_buf();
+    pid_file_path.push("daemon_pid.json");
+
+    let pid_file = std::fs::File::open(&pid_file_path).ok()?;
+    let pid_reader = std::io::BufReader::new(pid_file);
+    let daemon_pid_for_user: DaemonPidForUser = serde_json::from_reader(pid_reader).ok()?;
+    daemon_pid_for_user.token
+}
+
+/**
+ * Restrict the ~/.zowe/bin directory and the zowe executable within it so that
+ * only the current user has access. The running executable resides in that bin
+ * directory, so we derive both paths from our own executable path.
+ *
+ * This is best-effort: any failure is reported as a warning and ignored so that
+ * a daemon restart is never prevented by a permission-change error.
+ */
+pub fn util_restrict_zowe_bin_to_owner() {
+    let my_exe_path = match env::current_exe() {
+        Ok(ok_val) => ok_val,
+        Err(err_val) => {
+            eprintln!("Warning: unable to determine the path to the zowe executable.");
+            eprintln!("Reason = {}.", err_val);
+            return;
+        }
+    };
+
+    // restrict the zowe executable itself (owner-only, retains execute on POSIX)
+    let _ = util_restrict_path_to_owner(&my_exe_path);
+
+    // restrict the bin directory that contains the executable
+    if let Some(bin_dir) = my_exe_path.parent() {
+        let _ = util_restrict_path_to_owner(bin_dir);
+    }
+}
+
+/**
+ * Restrict access to a file or directory so that only the current user can
+ * access it. On POSIX systems this sets the mode to 0o700 (rwx for the owner,
+ * which retains execute access required for directories and executables). On
+ * Windows it uses icacls to grant full control to only the current user
+ * (best-effort).
+ *
+ * @param fs_path The path to the file or directory to secure.
+ *
+ * @returns Ok on success, or a failure exit code on a POSIX permission error.
+ */
+#[cfg(target_family = "unix")]
+pub(crate) fn util_restrict_path_to_owner(fs_path: &Path) -> Result<(), i32> {
+    use std::os::unix::fs::PermissionsExt;
+    if let Err(err_val) =
+        std::fs::set_permissions(fs_path, std::fs::Permissions::from_mode(0o700))
+    {
+        eprintln!(
+            "Unable to restrict access to path = {}.",
+            fs_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+        return Err(EXIT_CODE_FILE_IO_ERROR);
+    }
+    Ok(())
+}
+
+#[cfg(target_family = "windows")]
+pub(crate) fn util_restrict_path_to_owner(fs_path: &Path) -> Result<(), i32> {
+    use std::process::Command;
+    // Best-effort: remove inherited permissions and grant full control only to the
+    // current user. We only warn on failure so that a missing/locked-down icacls
+    // does not prevent the daemon from functioning.
+    let grant_arg = format!("{}:(OI)(CI)F", util_get_username());
+    if let Err(err_val) = Command::new("icacls")
+        .arg(fs_path)
+        .arg("/inheritancelevel:r")
+        .arg("/grant:r")
+        .arg(grant_arg)
+        .arg("/c")
+        .output()
+    {
+        eprintln!(
+            "Warning: unable to restrict access to path = {}.",
+            fs_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+    }
+    Ok(())
 }
 
 #[cfg(target_family = "unix")]

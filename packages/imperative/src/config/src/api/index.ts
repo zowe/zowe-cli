@@ -12,4 +12,5 @@
 export * from "./ConfigLayers";
 export * from "./ConfigPlugins";
 export * from "./ConfigProfiles";
+export * from "./ConfigRedact";
 export * from "./ConfigSecure";

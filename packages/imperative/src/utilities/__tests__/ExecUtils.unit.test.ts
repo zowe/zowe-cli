@@ -47,7 +47,8 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], undefined);
-            expect(caughtError.message).toBe(errMsg);
+            expect(caughtError.message).toBe(`Failed to launch the following command:\n    cat ${filename}`);
+            expect(caughtError.additionalDetails).toBe("Error: " + errMsg);
         });
 
         it("throws error if command fails with non-zero status", () => {
@@ -64,7 +65,14 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], undefined);
-            expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
+            expect(caughtError.message).toBe("Errors occurred in this program: cat");
+            expect(caughtError.additionalDetails).toBe(
+                "Command that failed:\n" +
+                "    cat invalid.txt\n" +
+                "Exit code = 1\n\n" +
+                "Command's standard error stream:\n" +
+                "cat: invalid.txt: No such file or directory\n"
+            );
         });
     });
 
@@ -98,7 +106,8 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], { stdio: "inherit" });
-            expect(caughtError.message).toBe(errMsg);
+            expect(caughtError.message).toBe(`Failed to launch the following command:\n    cat ${filename}`);
+            expect(caughtError.additionalDetails).toBe("Error: " + errMsg);
         });
 
         it("throws error if command fails with non-zero status", () => {
@@ -115,7 +124,14 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], { stdio: "inherit" });
-            expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
+            expect(caughtError.message).toBe("Errors occurred in this program: cat");
+            expect(caughtError.additionalDetails).toBe(
+                "Command that failed:\n" +
+                "    cat invalid.txt\n" +
+                "Exit code = 1\n\n" +
+                "Command's standard error stream:\n" +
+                "cat: invalid.txt: No such file or directory\n"
+            );
         });
     });
 });

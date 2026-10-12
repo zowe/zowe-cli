@@ -22,8 +22,13 @@ import { INpmRegistryInfo } from "../../doc/INpmRegistryInfo";
  *
  * @param {INpmRegistryInfo} registryInfo The npm registry to use.
  *
+ * @param {string} [allowScripts] A comma-separated list of package names that are allowed to run
+ *                                their npm install scripts. Zowe passes this list to npm as its
+ *                                own `--allow-scripts` option. npm 12 blocks these scripts unless
+ *                                the package is in the list. Older versions of npm ignore it.
+ *
  */
-export async function update(packageName: string, registryInfo: INpmRegistryInfo) {
+export async function update(packageName: string, registryInfo: INpmRegistryInfo, allowScripts?: string) {
     const iConsole = Logger.getImperativeLogger();
     const npmPackage = packageName;
 
@@ -35,6 +40,7 @@ export async function update(packageName: string, registryInfo: INpmRegistryInfo
     installPackages(npmPackage, {
         prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
         ...registryInfo.npmArgs,
+        allowScripts,
     });
 
     // We fetch the package version of newly installed plugin

@@ -563,6 +563,17 @@ export default {
                     EX2: "To list filesystems mounted to a specific path",
                     EX3: "To list filesystems mounted with a specific name"
                 }
+            },
+            ALIAS: {
+                SUMMARY: "Resolve a data set alias",
+                DESCRIPTION: "Resolve a data set alias to find the target data set it points to. " +
+                    "Uses IDCAMS LISTCAT to look up the alias in the catalog and return the associated data set name.",
+                POSITIONALS: {
+                    ALIASNAME: "The name of the data set alias that you want to resolve"
+                },
+                EXAMPLES: {
+                    EX1: `Resolve the alias "SHARE.ALIAS.NAME" to find its target data set`
+                }
             }
         },
         OPTIONS: {
@@ -621,7 +632,11 @@ export default {
     },
     OPTIONS: {
         RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
-        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+        TSOACCOUNT: "If specified, this value will be sent in the header X-IBM-Request-Acctnum" +
+        " for z/OSMF data set and file operations that support it.",
+        TSOPROCEDURE: "If specified, this value will be sent in the header X-IBM-Request-Proc" +
+        " for z/OSMF data set and file operations that support it."
     },
     SEARCH: {
         SUMMARY: "Search Files",
@@ -830,7 +845,10 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
                 " without a maximum number of concurrent requests. ",
-            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot."
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot.",
+            MAKE_DIR: "Create the target directory if it does not already exist.",
+            SKIP_DIRECTORY_CHECK: "Specifies whether to skip checking if the target path is a directory before uploading. " +
+             "When set to true, the upload will proceed assuming the target is a file path."
         }
     },
     VIEW: {

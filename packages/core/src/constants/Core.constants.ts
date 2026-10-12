@@ -120,6 +120,16 @@ export class ProfileConstants {
     };
 
     /**
+     * Option used to specify the account name for PKCS 12 certificate stored in credential manager
+     */
+    public static readonly BASE_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        name: "cert-account",
+        description: "The account name for PKCS 12 certificate stored in credential manager",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Option used to specify the path to the certificate file for authentication
      */
     // public static readonly BASE_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
@@ -128,7 +138,30 @@ export class ProfileConstants {
     //     type: "string",
     //     group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
     // };
+    /**
+     * Option used in profile creation and commands for allowedLoginMethod
+     */
+    public static readonly BASE_OPTION_ALLOWED_LOGIN_METHOD: ICommandOptionDefinition = {
+        name: "allowed-login-method",
+        description: "Restricts which credentials a user is prompted for when logging into a " +
+        "service or updating stored credentials, so that they comply with site requirements. " +
+        "Defaults to 'prompt' when omitted.",
+        type: "string",
+        allowableValues: { values: SessConstants.ALL_ALLOWED_LOGIN_METHODS },
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
 
+    /**
+     * Option used in profile creation and commands for authOrder
+     */
+    public static readonly BASE_OPTION_AUTH_ORDER: ICommandOptionDefinition = {
+        name: "auth-order",
+        description: "A comma separated list of authentication types, in order of precedence, " +
+        "that should be used to authenticate to a service. Accepted values are 'basic', 'bearer', " +
+        "'token', 'cert-pem', and 'none'.",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
 
     public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
 
@@ -210,6 +243,15 @@ export class ProfileConstants {
     public static AUTO_INIT_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
         ...ProfileConstants.BASE_OPTION_CERT_KEY_FILE,
         description: "The file path to a certificate key file to use to authenticate to the API Mediation Layer",
+        group: ProfileConstants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for cert account
+     */
+    public static AUTO_INIT_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        ...ProfileConstants.BASE_OPTION_CERT_ACCOUNT,
+        description: "The account name for PKCS 12 certificate stored in credential manager for the API Mediation Layer",
         group: ProfileConstants.AUTO_INIT_OPTION_GROUP
     };
 
@@ -373,11 +415,23 @@ export class ProfileConstants {
                 certKeyFile: {
                     type: "string",
                     optionDefinition: ProfileConstants.BASE_OPTION_CERT_KEY_FILE
+                },
+                certAccount: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_CERT_ACCOUNT
                     // },
                     // certFilePassphrase: {
                     //     type: "string",
                     //     secure: true,
                     //     optionDefinition: BASE_OPTION_CERT_FILE_PASSPHRASE
+                },
+                allowedLoginMethod: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_ALLOWED_LOGIN_METHOD
+                },
+                authOrder: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_AUTH_ORDER
                 }
             },
             required: []

@@ -29,4 +29,10 @@ export interface IDownloadUssDirResult {
      * Object containing key-value pairs of files and errors for uss files that failed to download.
      */
     failedWithErrors: { [key: string]: Error };
+
+    /**
+     * Total number of files that could have been downloaded,
+     * including those that were skipped, failed or did not download due to it being cancelled.
+     */
+    totalCount?: number;
 }

@@ -51,6 +51,7 @@ export const expectedSchemaObject = {
                             uniqueItems: true
                         }
                     },
+                    additionalProperties: false,
                     allOf: [
                         {
                             if: {

@@ -69,7 +69,8 @@ const config: IImperativeConfig = {
                         ProfileConstants.BASE_OPTION_PASSWORD,
                         ProfileConstants.BASE_OPTION_REJECT_UNAUTHORIZED,
                         ProfileConstants.BASE_OPTION_CERT_FILE,
-                        ProfileConstants.BASE_OPTION_CERT_KEY_FILE
+                        ProfileConstants.BASE_OPTION_CERT_KEY_FILE,
+                        ProfileConstants.BASE_OPTION_CERT_ACCOUNT
                     ]
                 },
                 logout: {
@@ -109,7 +110,8 @@ const config: IImperativeConfig = {
                 ProfileConstants.AUTO_INIT_OPTION_TOKEN_TYPE,
                 ProfileConstants.AUTO_INIT_OPTION_TOKEN_VALUE,
                 ProfileConstants.AUTO_INIT_OPTION_CERT_FILE,
-                ProfileConstants.AUTO_INIT_OPTION_CERT_KEY_FILE
+                ProfileConstants.AUTO_INIT_OPTION_CERT_KEY_FILE,
+                ProfileConstants.AUTO_INIT_OPTION_CERT_ACCOUNT
             ]
         },
         profileType: "base"

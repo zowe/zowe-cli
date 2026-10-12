@@ -140,9 +140,14 @@ export class Services {
                 .reduce((a, b) => a.filter(x => b.includes(x)));
 
             if (commonGatewayUrls.length > 0) {
-                const serviceIdPrefix = new RegExp(`^/${profInfo.profName}/`);
-                profInfo.basePaths = profInfo.basePaths.filter(basePath =>
-                    commonGatewayUrls.includes(basePath.replace(serviceIdPrefix, "")));
+                // Strip the literal "/<serviceId>/" prefix from each base path.
+                const serviceIdPrefix = `/${profInfo.profName}/`;
+                profInfo.basePaths = profInfo.basePaths.filter(basePath => {
+                    const strippedBasePath = basePath.startsWith(serviceIdPrefix)
+                        ? basePath.slice(serviceIdPrefix.length)
+                        : basePath;
+                    return commonGatewayUrls.includes(strippedBasePath);
+                });
                 profInfo.gatewayUrlConflicts = {};
             }
         }
@@ -209,7 +214,8 @@ export class Services {
             if (elements == null || elements.length === 0) return "";
 
             return elements.reduce((all, current: string, _index) => {
-                return all.concat(key.includes("base") ? `\n//"${key}": "${current}"` : `\n//"${key}": "${current}",`);
+                const escapeCurrent = JSON.stringify(current).slice(1, -1);
+                return all.concat(key.includes("base") ? `\n//"${key}": "${escapeCurrent}"` : `\n//"${key}": "${escapeCurrent}",`);
             }, "");
         };
 
@@ -242,9 +248,14 @@ export class Services {
                 const basePathConflicts = Object.keys(profileInfo.gatewayUrlConflicts);
                 let conflictingPluginsList = "";
                 basePathConflicts.forEach((element) => {
+                    // Escape to prevent breaking out of the comment (newlines/quotes)
+                    const escapedElement = JSON.stringify(element).slice(1, -1);
+                    const escapedGatewayUrls = profileInfo.gatewayUrlConflicts[element]
+                        .map((url) => JSON.stringify(url).slice(1, -1))
+                        .join('", "');
                     // The new-line before the // "element"  is required in order to properly format the comment-json object
                     conflictingPluginsList += `
-                    //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
+                    //     "${escapedElement}": "${escapedGatewayUrls}"`;
                 });
 
                 // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -262,7 +273,7 @@ export class Services {
                     {
                         ${basePathConflicts.length > 0 ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
-                        "basePath": "${defaultBasePath}"
+                        "basePath": ${JSON.stringify(defaultBasePath)}
                     }`
                 ) as any;
             }
@@ -285,9 +296,11 @@ export class Services {
                         // Multiple services were detected.
                         // Uncomment one of the lines below to set a different default.`;
                 }
+                // Escape to prevent breaking out of the comment/JSON key via embedded newlines or quotes in the profile type.
+                const escapedDefaultKey = JSON.stringify(defaultKey).slice(1, -1);
                 jsonString += `
-                    ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
-                    "${defaultKey}": "${trueDefault}"`;
+                    ${_genCommentsHelper(escapedDefaultKey, conflictingDefaults[defaultKey])}
+                    "${escapedDefaultKey}": ${JSON.stringify(trueDefault)}`;
                 // Terminate the JSON string
                 jsonString += '\n}';
                 configDefaults = JSONC.parse(jsonString) as any;

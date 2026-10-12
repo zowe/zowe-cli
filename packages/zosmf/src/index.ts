@@ -14,10 +14,12 @@ export * from "./constants/Zosmf.messages";
 export * from "./constants/Zosmf.profile";
 
 export * from "./doc/IDefinedSystem";
+export * from "./doc/IZosmfChangePasswordResponse";
 export * from "./doc/IZosmfInfoResponse";
 export * from "./doc/IZosmfListDefinedSystemsResponse";
 export * from "./doc/IZosmfPluginInfo";
 
+export * from "./ChangePassword";
 export * from "./CheckStatus";
 export * from "./ListDefinedSystems";
 export * from "./ZosmfBaseHandler";

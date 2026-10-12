@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { Censor, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { ListWorkflows, IWorkflowInfo, IStepSummary, PropertiesWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 
@@ -49,7 +49,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             if(!workflowKey) {
                 throw new ImperativeError({
                     msg: `No workflows match the provided workflow name.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(Censor.censorObject(params.arguments))
                 });
             }
         }

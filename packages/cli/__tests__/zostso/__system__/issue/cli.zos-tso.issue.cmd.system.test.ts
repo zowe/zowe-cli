@@ -50,7 +50,13 @@ describe("zos-tso issue command", () => {
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     });
-
+    it("should successfully issue command = \"time\" with the --legacy flag", async () => {
+        const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
+        const response = runCliScript(__dirname + "/__scripts__/as/issue_command_legacy.sh", TEST_ENVIRONMENT);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+    });
     it("should honor the logon proc specified in the profile", async () => {
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
         const fakeProc = "F4K3PR0C";

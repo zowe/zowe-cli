@@ -11,7 +11,9 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import * as crypto from "crypto";
+import { userInfo } from "os";
+import { IO, Logger, IHeaderContent, EncodeUri, AbstractSession, ImperativeExpect, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
@@ -19,6 +21,7 @@ import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { IDataSet } from "../doc/IDataSet";
+import { IZosFilesOptions } from "../doc/IZosFilesOptions";
 
 /**
  * Common IO utilities
@@ -37,6 +40,14 @@ export class ZosFilesUtils {
     public static readonly DEFAULT_FILE_EXTENSION: string = "txt";
 
     public static readonly MAX_MEMBER_LENGTH: number = 8;
+    public static readonly MAX_DSN_LENGTH: number = 44;
+    public static readonly MAX_FQDSN_LENGTH: number = 54;
+
+    public static readonly SEGMENT_REGEX = /^[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}$/;
+    public static readonly MEMBER_MATCH_REGEX = /(?<=\()[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}(?=\))/;
+    public static readonly GENERIC_CHARACTERISTIC_REGEX = /^[A-Za-z0-9]{1,8}$/;
+    public static readonly RETAINTO_REGEX = /^\d{7}$/;
+    public static readonly VOLSER_REGEX = /^[A-Za-z0-9]{1,6}$/;
 
     /**
      * Break up a dataset name of either:
@@ -44,16 +55,70 @@ export class ZosFilesUtils {
      * Or:
      *  USER.WORK.PS to user/work/ps
      * @param  {string} dataSet - data set to break up into folders
+     * @throws {ImperativeError} - when a generated directory structure contains backtracking characters
      */
     public static getDirsFromDataSet(dataSet: string) {
+        if (IO.fileEvaluatesToDir(dataSet)) {
+            throw new ImperativeError({ msg: "The data set name contains illegal characters." });
+        }
         let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), path.posix.sep).toLowerCase();
         if (localDirectory.indexOf("(") >= 0 && localDirectory.indexOf(")") >= 0) {
             localDirectory = localDirectory.replace(/\(/, path.posix.sep);
             localDirectory = localDirectory.slice(0, -1);
         }
+        if (IO.containsBacktrack(localDirectory) || localDirectory.includes(path.posix.sep + path.posix.sep)) {
+            throw new ImperativeError({ msg: "The generated data set file path contains illegal backtracking." });
+        }
         return localDirectory;
     }
 
+    /**
+     * Returns a short, filesystem-safe token that is unique per OS user, for building per-user
+     * temp directory names. Deriving the name from the user (rather than a random per-run value)
+     * keeps the path stable across invocations - so features like edit stash-resume still work -
+     * while ensuring co-tenants on a shared temp location get separate directories. The username
+     * is hashed so the token is path-safe for any username and works on every platform (numeric
+     * uids aren't available on Windows).
+     * @returns {string} - a hex token derived from the current OS user
+     */
+    public static getUserTempToken(): string {
+        let id = "default";
+        try {
+            id = userInfo().username;
+        } catch (err) {
+            // userInfo() can throw when the current user has no OS account entry; fall back to uid or a constant
+            if (typeof process.getuid === "function") {
+                id = String(process.getuid());
+            }
+        }
+        const tokenLen = 10;
+        return crypto.createHash("sha256").update(id).digest("hex").slice(0, tokenLen);
+    }
+
+    /**
+     * Ensures a temp directory exists and is safe to use, creating it if necessary.
+     * Ownership and permissions are always verified after the creation attempt, whether or not the
+     * directory already existed, so a directory planted by another local user sharing the same tmp
+     * location is rejected.
+     * @param {string} dir - the temp directory to validate or create
+     * @throws {ImperativeError} - when the directory exists but is not safe to use
+     */
+    public static ensureSafeTempDir(dir: string): void {
+        try {
+            fs.mkdirSync(dir, { recursive: false, mode: 0o700 });
+            if (process.platform === "win32") {
+                IO.giveAccessOnlyToOwner(dir);
+            }
+        } catch (err) {
+            if (err.code !== "EEXIST") {
+                throw err;
+            }
+        }
+        // Reject a planted symlink/non-directory (lstat does not follow symlinks) before checking access.
+        if (!fs.lstatSync(dir).isDirectory() || !IO.hasOwnerOnlyAccess(dir)) {
+            throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dir}` });
+        }
+    }
 
     /**
      * Get fullpath name from input path.
@@ -147,10 +212,26 @@ export class ZosFilesUtils {
         }
 
         if (options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
         }
 
         return reqHeaders;
+    }
+
+    /**
+     * Get optional z/OSMF headers related to the tsoAccount and tsoProcedure z/OSMF profile options.
+     * @param options ZosFilesOptions which may contain tsoAccount or tsoProcedure
+     * @returns {IHeaderContent[]} any z/OSMF headers you should add to your request based on the options.
+     */
+    public static generateTsoHeaders(options: IZosFilesOptions): IHeaderContent[] {
+        const headers: IHeaderContent[] = [];
+        if (options.tsoAccount) {
+            headers.push({ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: options.tsoAccount });
+        }
+        if (options.tsoProcedure) {
+            headers.push({ [ZosmfHeaders.X_IBM_REQUEST_PROC]: options.tsoProcedure });
+        }
+        return headers;
     }
 
     /**
@@ -201,17 +282,22 @@ export class ZosFilesUtils {
     }
 
     /**
-     * Normanize and URL-encode a USS path to be passed to z/OSMF
+     * Normalize and URL-encode a USS path to be passed to z/OSMF
+     * @deprecated - Use EncodeUri.encodeUriQueryForUss or EncodeUri.encodeUriPathForUss as appropriate.
      * @param ussPath path to sanitize
      */
     public static sanitizeUssPathForRestCall(ussPath: string): string {
         let sanitizedPath = path.posix.normalize(ussPath);
-        sanitizedPath = this.formatUnixFilepath(sanitizedPath);
+        if (sanitizedPath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            sanitizedPath = sanitizedPath.substring(1);
+        }
         return encodeURIComponent(sanitizedPath);
     }
 
     /**
      * Format USS filepaths in the way that the APIs expect (no leading /)
+     * @deprecated - EncodeUri.encodeUriPathForUss should eliminate the need for this function.
      * @param {string} usspath - the path to format
      */
     public static formatUnixFilepath(usspath: string) {
@@ -241,7 +327,9 @@ export class ZosFilesUtils {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName));
+            const endpoint = EncodeUri.encUriPathForZos(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
+            );
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -262,8 +350,10 @@ export class ZosFilesUtils {
             ];
 
             if (options.responseTimeout != null) {
-                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                headers.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString() });
             }
+
+            headers.push(...ZosFilesUtils.generateTsoHeaders(options));
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
@@ -293,5 +383,44 @@ export class ZosFilesUtils {
                 dsn: name
             };
         }
+    }
+
+    /**
+     * Validate a data set name is valid per the IBM z/OS data set naming rules
+     * @param {string} name - the data set name
+     * @return {boolean} if the data set name is valid
+     */
+    public static validateDSN(name: string): boolean {
+        if (name.length > this.MAX_DSN_LENGTH) { return false; }
+
+        const segments = name.split(".");
+        if (segments.length < 2) { return false; }
+
+        for (const segment of segments) {
+            if (!this.SEGMENT_REGEX.test(segment)) { return false; }
+        }
+        return true;
+    }
+
+    /**
+     * Validate a member name is valid per the IBM z/OS data set naming rules
+     * @param {string} name - the member name
+     * @return {boolean} if the member name is valid
+     */
+    public static validateDSMemberName(name: string): boolean {
+        return this.SEGMENT_REGEX.test(name);
+    }
+
+    /**
+     * Validate a fully qualified data set name with member
+     * @param {string} name - the fully qualified data set name
+     * @return {boolean} if the name is valid
+     */
+    public static validateFQDSN(name: string): boolean {
+        if (name.length > this.MAX_FQDSN_LENGTH) { return false; }
+        const memberNames = [...name.matchAll(new RegExp(this.MEMBER_MATCH_REGEX, "g"))];
+        if (memberNames.length === 0) { return this.validateDSN(name); }
+        if (memberNames.length !== 1 || memberNames[0].index + memberNames[0][0].length + 1 != name.length) { return false; }
+        return this.validateDSN(name.split("(")[0]);
     }
 }

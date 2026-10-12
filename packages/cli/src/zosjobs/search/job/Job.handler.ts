@@ -43,10 +43,10 @@ export default class JobHandler extends ZosmfBaseHandler {
             fileLimit: this.arguments.fileLimit};
 
         if( this.arguments.searchString != undefined)
-            searchParms.searchString = encodeURI(this.arguments.searchString);
+            searchParms.searchString = encodeURIComponent(this.arguments.searchString);
 
         if(this.arguments.searchRegex != undefined)
-            searchParms.searchRegex = encodeURI(this.arguments.searchRegex);
+            searchParms.searchRegex = encodeURIComponent(this.arguments.searchRegex);
 
         // Get the job details
         const dsContentBuf:string = await SearchJobs.searchJobs(this.mSession, searchParms);

@@ -190,6 +190,39 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a sequential data set (PS) with tsoAccount and tsoProcedure", async () => {
+
+            dsOptions.dsntype = "PDS";
+            dsOptions.tsoAccount = "TSO1234";
+            dsOptions.tsoProcedure = "MYPROC";
+            let response: IZosFilesResponse;
+
+            try {
+                response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+            } finally {
+                dsOptions.tsoAccount = undefined;
+                dsOptions.tsoProcedure = undefined;
+            }
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING,
+                    { [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" },
+                    { [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" }],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        tsoAccount: "TSO1234",
+                        tsoProcedure: "MYPROC",
+                        secondary: 1
+                    }
+                })
+            );
+        });
+
         it("should be able to allocate like from a sequential data set", async () => {
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -1223,7 +1256,7 @@ describe("Create data set  Validator", () => {
 
 describe("Create VSAM Data Set", () => {
     const dummySession: any = {};
-    const dataSetName = "TESTING";
+    const dataSetName = "TESTING.DATASET";
     const TEN: number = 10;
     const THIRTY: number = 30;
     let dsOptions: ICreateVsamOptions = {};
@@ -1313,11 +1346,11 @@ describe("Create VSAM Data Set", () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -\nVOLUMES(STG100) -` +
-                `\nSTORAGECLASS(STORE) -\nMANAGEMENTCLASS(MANAGEMENT) -\nDATACLASS(DATA) -\n)`];
+                `\nSTORAGECLASS(STORE) -\nMANAGEMENTCLASS(MGMT) -\nDATACLASS(DATA) -\n)`];
             const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.storclass = "STORE";
-            dsOptions.mgntclass = "MANAGEMENT";
+            dsOptions.mgntclass = "MGMT";
             dsOptions.dataclass = "DATA";
             dsOptions.volumes = "STG100";
 
@@ -1416,6 +1449,21 @@ describe("Create VSAM Data Set", () => {
             expect(mySpy).not.toHaveBeenCalled();
         });
 
+        it("should fail if data set name is invalid", async () => {
+
+            const dataSetNameLocal: string = "DATA.SET.INVALIDNAME";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetNameLocal, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(ZosFilesMessages.invalidDatasetName.message);
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
         it("should fail if passed an invalid 'alcunit'", async () => {
 
             dsOptions.alcunit = "MBCYL";
@@ -1446,6 +1494,108 @@ describe("Create VSAM Data Set", () => {
             expect(mySpy).not.toHaveBeenCalled();
         });
 
+        it("should fail if passed an invalid 'volumes' 1", async () => {
+
+            dsOptions.volumes = "INVALID";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(ZosFilesMessages.invalidVolser.message);
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if passed an invalid 'volumes' 2", async () => {
+
+            dsOptions.volumes = "VOLUME, INVALID";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(ZosFilesMessages.invalidVolser.message);
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if passed an invalid 'storclass'", async () => {
+
+            dsOptions.storclass = "BADCLASS1";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                optionName: 'storclass',
+                value: 'BADCLASS1'
+            }));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if passed an invalid 'mgntclass'", async () => {
+
+            dsOptions.mgntclass = "BADCLASS1";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                optionName: 'mgntclass',
+                value: 'BADCLASS1'
+            }));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if passed an invalid 'dataclass'", async () => {
+
+            dsOptions.dataclass = "BADCLASS1";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                optionName: 'dataclass',
+                value: 'BADCLASS1'
+            }));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if passed an invalid 'retainTo'", async () => {
+
+            dsOptions.retainTo = "INVALID";
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.validationError.message, {
+                optionName: 'retainTo',
+                value: 'INVALID'
+            }));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
         it("should fail if 'primary' exceeds maximum", async () => {
 
             dsOptions.primary = ZosFilesConstants.MAX_ALLOC_QUANTITY + 1;
@@ -1462,6 +1612,25 @@ describe("Create VSAM Data Set", () => {
             expect(mySpy).not.toHaveBeenCalled();
         });
 
+        it("should fail if 'primary' isn't a number", async () => {
+
+            dsOptions.primary = "Ten" as any;
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.invalidDataType.message, {
+                optionName: "primary",
+                providedType: "string",
+                expectedType: "number"
+            }));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
         it("should fail if 'secondary' exceeds maximum", async () => {
 
             dsOptions.secondary = ZosFilesConstants.MAX_ALLOC_QUANTITY + 1;
@@ -1475,6 +1644,25 @@ describe("Create VSAM Data Set", () => {
 
             expect(error).toContain(ZosFilesMessages.maximumAllocationQuantityExceeded.message +
                 " for 'secondary' with value = " + dsOptions.secondary + ".");
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if 'secondary' isn't a number", async () => {
+
+            dsOptions.secondary = "Ten" as any;
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.invalidDataType.message, {
+                optionName: "secondary",
+                providedType: "string",
+                expectedType: "number"
+            }));
             expect(mySpy).not.toHaveBeenCalled();
         });
 
@@ -1513,6 +1701,25 @@ describe("Create VSAM Data Set", () => {
                 value: dsOptions.retainFor,
                 minValue: ZosFilesConstants.MIN_RETAIN_DAYS,
                 maxValue: ZosFilesConstants.MAX_RETAIN_DAYS}));
+            expect(mySpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail if 'retain-for' isn't a number", async () => {
+
+            dsOptions.retainFor = "Ten" as any;
+
+            let error;
+            try {
+                await Create.vsam(dummySession, dataSetName, dsOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(TextUtils.formatMessage(ZosFilesMessages.invalidDataType.message, {
+                optionName: "retainFor",
+                providedType: "string",
+                expectedType: "number"
+            }));
             expect(mySpy).not.toHaveBeenCalled();
         });
 
@@ -1681,6 +1888,41 @@ describe("Create ZFS", () => {
             dummySession,
             endpoint,
             [{[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }, ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length }],
+            JSON.stringify(options)
+        );
+
+    });
+
+    it("should add tsoAccount and tsoProcedure headers when supplied in Create.zfs", async () => {
+        let caughtError: undefined;
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName + "?timeout=5";
+        const options: any = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 5,
+            tsoAccount: "TSO1234",
+            tsoProcedure: "MYPROC",
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            caughtError = e;
+        }
+
+        delete options.timeout;
+        delete options.tsoAccount;
+        delete options.tsoProcedure;
+        options.JSONversion = 1;
+        const jsonContent = JSON.stringify(options);
+
+        expect(caughtError).toBeUndefined();
+        expect(mySpy).toHaveBeenCalledWith(
+            dummySession,
+            endpoint,
+            [{ [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: "TSO1234" }, { [ZosmfHeaders.X_IBM_REQUEST_PROC]: "MYPROC" },
+                ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length }],
             JSON.stringify(options)
         );
 

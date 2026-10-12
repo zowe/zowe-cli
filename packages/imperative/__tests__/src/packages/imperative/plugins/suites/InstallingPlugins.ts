@@ -117,7 +117,7 @@ describe("Installing Plugins", () => {
     const defaultCredMgrDisplayNm = "TestCLI";
     const knownCredMgr = CredentialManagerOverride.getKnownCredMgrs()[1];
     const knownCredMgrDisplayNm = knownCredMgr.credMgrDisplayName as string;
-    const knownCredMgrPluginNm = knownCredMgr.credMgrPluginName as string;
+    const knownCredMgrPluginNm = knownCredMgr.credMgrPluginName;
 
     /**
      * Change the pluginLifeCycle property in a plugin's Imperative configuration
@@ -307,11 +307,18 @@ describe("Installing Plugins", () => {
         // Now that we have installed, remove lifecycle option for future tests
         changeLifeCycleInPkgJson(plugins.override.location, "remove");
 
-        expect(result.stderr).toContain(
-            `Unable to perform the post-install action for plugin '${plugins.override.name}'.`
-        );
-        expect(result.stderr).toContain("Reason: The credential manager name");
+        expect(result.stderr).toContain("Unable to perform this operation due to the following problem");
+        expect(result.stderr).toContain("Plug-in installation failed");
+        expect(result.stderr).toContain("Response From Service");
+        expect(result.stderr).toContain(`The plug-in '${plugins.override.name}' was installed, but the plug-in's post-install action failed.`);
+        expect(result.stderr).toContain("Diagnostic Information");
+        expect(result.stderr).toContain("The credential manager name");
         expect(result.stderr).toContain("is an unknown credential manager.");
+        expect(result.stderr).toContain("The previous credential manager will NOT be overridden. Valid credential managers are:");
+        expect(result.stderr).toContain("@zowe/cli");
+        expect(result.stderr).toContain("Secrets for Kubernetes");
+        expect(result.stderr).toContain("false");
+        expect(result.stderr).toContain("No further details are available");
 
         // settings/imperative.json should still contain the default credMgr
         expect(getCurrCredMgr()).toEqual(defaultCredMgrDisplayNm);
@@ -337,9 +344,12 @@ describe("Installing Plugins", () => {
         // Now that we have installed, remove lifecycle option for future tests
         changeLifeCycleInPkgJson(plugins.override.location, "remove");
 
-        expect(result.stderr).toContain("Install Failed");
-        expect(result.stderr).toContain(`Unable to perform the post-install action for plugin '${plugins.override.name}'.`);
-        expect(result.stderr).toContain("Reason: lifeCycleInstance.postInstall is not a function");
+        expect(result.stderr).toContain("Unable to perform this operation due to the following problem");
+        expect(result.stderr).toContain("Plug-in installation failed");
+        expect(result.stderr).toContain("Response From Service");
+        expect(result.stderr).toContain(`The plug-in '${plugins.override.name}' was installed, but the plug-in's post-install action failed`);
+        expect(result.stderr).toContain("Diagnostic Information");
+        expect(result.stderr).toContain("lifeCycleInstance.postInstall is not a function");
 
         // settings/imperative.json should still contain the default credMgr
         expect(getCurrCredMgr()).toEqual(defaultCredMgrDisplayNm);

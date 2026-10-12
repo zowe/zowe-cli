@@ -13,6 +13,7 @@
 
 #[cfg(test)]
 use std::env;
+use std::io;
 use std::thread;
 use std::time::Duration;
 
@@ -74,7 +75,7 @@ fn unit_test_util_get_socket_string() {
     // expect to override pipe name with env on Windows
     #[cfg(target_family = "windows")]
     {
-        env::set_var("ZOWE_DAEMON_PIPE", "FakePipePath");
+        unsafe { env::set_var("ZOWE_DAEMON_PIPE", "FakePipePath") };
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("\\\\.\\pipe\\FakePipePath"));
@@ -87,13 +88,15 @@ fn unit_test_util_get_socket_string() {
                 );
             }
         }
-        env::remove_var("ZOWE_DAEMON_PIPE");
+        unsafe { env::remove_var("ZOWE_DAEMON_PIPE") };
     }
 
     // expect to override socket string with env on Linux
     #[cfg(target_family = "unix")]
     {
-        env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
+        unsafe {
+            env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
+        }
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));
@@ -106,8 +109,45 @@ fn unit_test_util_get_socket_string() {
                 );
             }
         }
-        env::remove_var("ZOWE_DAEMON_DIR");
+        unsafe { env::remove_var("ZOWE_DAEMON_DIR") };
     }
+}
+
+#[test]
+fn unit_test_util_get_daemon_token_from_dir() {
+    use std::fs;
+    use std::path::PathBuf;
+
+    // Use an isolated daemon dir and read it directly (not via ZOWE_DAEMON_DIR)
+    // so this test does not race with other tests that mutate that env variable.
+    let mut token_test_dir: PathBuf = env::temp_dir();
+    token_test_dir.push(format!("zowe_daemon_token_test_{}", std::process::id()));
+    let _ = fs::remove_dir_all(&token_test_dir);
+    fs::create_dir_all(&token_test_dir).unwrap();
+
+    let mut pid_file_path = token_test_dir.clone();
+    pid_file_path.push("daemon_pid.json");
+
+    // when no pid file exists, we should get None (no token)
+    assert_eq!(util_get_daemon_token_from_dir(&token_test_dir), None);
+
+    // when the pid file contains a token, we should read it back exactly
+    fs::write(
+        &pid_file_path,
+        r#"{ "user": "fakeUser", "pid": 1234, "token": "abc123" }"#,
+    )
+    .unwrap();
+    assert_eq!(
+        util_get_daemon_token_from_dir(&token_test_dir),
+        Some("abc123".to_string())
+    );
+
+    // when the pid file omits the token (older daemon), we should get None
+    fs::write(&pid_file_path, r#"{ "user": "fakeUser", "pid": 1234 }"#).unwrap();
+    assert_eq!(util_get_daemon_token_from_dir(&token_test_dir), None);
+
+    // cleanup
+    let _ = fs::remove_dir_all(&token_test_dir);
 }
 
 #[test]
@@ -115,35 +155,306 @@ fn unit_test_get_zowe_env() {
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("ZOWE_EDITOR"), None);
 
-    env::set_var("ZOWE_EDITOR", "nano");
+    unsafe { env::set_var("ZOWE_EDITOR", "nano") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("ZOWE_EDITOR"), Some(&"nano".to_owned()));
-    env::remove_var("ZOWE_EDITOR");
+    unsafe { env::remove_var("ZOWE_EDITOR") };
 
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
     let environment = util_get_zowe_env();
     let color = util_terminal_supports_color();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&color.to_string()));
 
-    env::set_var("FORCE_COLOR", "0");
+    unsafe { env::set_var("FORCE_COLOR", "0") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"0".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "1");
+    unsafe { env::set_var("FORCE_COLOR", "1") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"1".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "2");
+    unsafe { env::set_var("FORCE_COLOR", "2") };
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("FORCE_COLOR"), Some(&"2".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
 
-    env::set_var("FORCE_COLOR", "3");
+    unsafe { env::set_var("FORCE_COLOR", "3") };
     let env = util_get_zowe_env();
     assert_eq!(env.get("FORCE_COLOR"), Some(&"3".to_owned()));
-    env::remove_var("FORCE_COLOR");
+    unsafe { env::remove_var("FORCE_COLOR") };
+}
+
+#[cfg(target_family = "unix")]
+#[test]
+fn unit_test_util_restrict_path_to_owner() {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    // create a temp directory with wide-open permissions
+    let mut test_dir = env::temp_dir();
+    test_dir.push(format!("zowe_restrict_test_{}", std::process::id()));
+    let _ = fs::remove_dir_all(&test_dir);
+    fs::create_dir_all(&test_dir).expect("failed to create test dir");
+    fs::set_permissions(&test_dir, fs::Permissions::from_mode(0o777))
+        .expect("failed to loosen test dir perms");
+
+    // create a file inside it with wide-open permissions
+    let mut test_file = test_dir.clone();
+    test_file.push("some_artifact");
+    fs::write(&test_file, b"data").expect("failed to write test file");
+    fs::set_permissions(&test_file, fs::Permissions::from_mode(0o666))
+        .expect("failed to loosen test file perms");
+
+    // restricting the directory should make it owner-only (0o700)
+    assert!(util_restrict_path_to_owner(&test_dir).is_ok());
+    let dir_mode = fs::metadata(&test_dir).unwrap().permissions().mode() & 0o777;
+    assert_eq!(dir_mode, 0o700, "directory should be restricted to 0o700");
+
+    // restricting the file should make it owner-only (0o700)
+    assert!(util_restrict_path_to_owner(&test_file).is_ok());
+    let file_mode = fs::metadata(&test_file).unwrap().permissions().mode() & 0o777;
+    assert_eq!(file_mode, 0o700, "file should be restricted to 0o700");
+
+    // cleanup
+    let _ = fs::remove_dir_all(&test_dir);
+}
+
+#[test]
+fn unit_test_util_restrict_zowe_bin_to_owner() {
+    // The running test executable stands in for the zowe binary that lives in
+    // ~/.zowe/bin. This is best-effort and returns no error, so we simply
+    // confirm that it completes without panicking and that our own executable
+    // (and the directory that contains it) are still accessible afterward.
+    util_restrict_zowe_bin_to_owner();
+
+    let my_exe = env::current_exe().expect("should be able to get current exe path");
+    assert!(my_exe.exists(), "the executable should still exist after restriction");
+    assert!(
+        my_exe.parent().unwrap().exists(),
+        "the bin directory should still exist after restriction"
+    );
+}
+
+#[cfg(target_family = "windows")]
+#[test]
+fn unit_test_util_get_win_system32_exe() {
+    let exe_path = std::path::PathBuf::from(util_get_win_system32_exe("ping.exe"));
+    assert!(exe_path.is_absolute(), "path must be absolute: {:?}", exe_path);
+    assert!(exe_path.ends_with("System32/ping.exe"), "unexpected path: {:?}", exe_path);
+}
+
+#[cfg(target_family = "windows")]
+#[test]
+fn unit_test_win_background_script_uses_absolute_paths() {
+    use crate::defs::CmdShell;
+
+    // Bash on Windows additionally needs a delay, which used to be a bare 'sleep'
+    for curr_cmd_shell in [CmdShell::Bash, CmdShell::Sh, CmdShell::WindowsCmd, CmdShell::PowerShellExe] {
+        let zowe_cmd_args = vec!["daemon".to_string(), "enable".to_string()];
+        let mut script_string = String::new();
+        let mut script_arg_vec: Vec<&str> = vec![];
+        let shell = form_cmd_script_arg_vec(
+            &zowe_cmd_args,
+            "C:\\zowe\\zowe.cmd",
+            &curr_cmd_shell,
+            &mut script_string,
+            &mut script_arg_vec,
+        );
+
+        assert!(
+            std::path::Path::new(&shell).is_absolute(),
+            "shell must be an absolute path: {}",
+            shell
+        );
+
+        // no external command may be referenced by a bare name
+        for bare_cmd in ["ping", "ping.exe", "sleep", "sleep.exe"] {
+            assert!(
+                !script_arg_vec.iter().any(|arg| arg.eq_ignore_ascii_case(bare_cmd)),
+                "script must not contain bare '{}': {:?}",
+                bare_cmd,
+                script_arg_vec
+            );
+        }
+        assert!(
+            script_arg_vec
+                .iter()
+                .any(|arg| arg.to_lowercase().ends_with("system32\\ping.exe")),
+            "script must contain an absolute ping path: {:?}",
+            script_arg_vec
+        );
+    }
+}
+
+#[cfg(target_family = "unix")]
+#[tokio::test]
+async fn unit_test_comm_peer_is_current_user() {
+    use crate::comm::comm_peer_is_current_user;
+    use tokio::net::{UnixListener, UnixStream};
+
+    // Both ends of this socket belong to the process running the test, so the
+    // check must accept them. The negative case (a socket served by a different
+    // user) cannot be produced without a second account, so it is not covered.
+    let sock_path = env::temp_dir().join("zowe_test_comm_peer_cred.sock");
+    std::fs::remove_file(&sock_path).ok();
+
+    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
+
+    // Accept concurrently, so that our own connect can complete.
+    let accept_task = tokio::spawn(async move { listener.accept().await });
+    let client_end = UnixStream::connect(&sock_path)
+        .await
+        .expect("should connect to the test socket");
+    let (server_end, _addr) = accept_task
+        .await
+        .expect("the accept task should not panic")
+        .expect("should accept the test connection");
+
+    println!("--- test_comm_peer_is_current_user: socket path = {}", sock_path.display());
+    assert!(
+        comm_peer_is_current_user(&client_end),
+        "the client end should trust a peer running as the current user"
+    );
+    assert!(
+        comm_peer_is_current_user(&server_end),
+        "the server end should trust a peer running as the current user"
+    );
+
+    drop(client_end);
+    drop(server_end);
+    std::fs::remove_file(&sock_path).ok();
+}
+
+
+// Run comm_talk against a fake daemon that writes a single canned response
+// and then closes the connection, and return comm_talk's result.
+#[cfg(target_family = "unix")]
+async fn comm_talk_with_fake_daemon_response(test_name: &str, response: &'static [u8]) -> io::Result<i32> {
+    use crate::comm::comm_talk;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::{UnixListener, UnixStream};
+
+    let sock_path = env::temp_dir().join(format!("zowe_test_{}.sock", test_name));
+    std::fs::remove_file(&sock_path).ok();
+
+    let listener = UnixListener::bind(&sock_path).expect("should bind the test socket");
+
+    let daemon_task = tokio::spawn(async move {
+        let (mut server_end, _addr) = listener
+            .accept()
+            .await
+            .expect("should accept the test connection");
+
+        let mut request_buf = [0u8; 2];
+        server_end
+            .read_exact(&mut request_buf)
+            .await
+            .expect("should read the fake client request");
+
+        server_end
+            .write_all(response)
+            .await
+            .expect("should write the fake daemon response");
+        server_end
+            .flush()
+            .await
+            .expect("should flush the fake daemon response");
+        drop(server_end);
+    });
+
+    let mut client_end = UnixStream::connect(&sock_path)
+        .await
+        .expect("should connect to the test socket");
+
+    let result = comm_talk(b"{}", &mut client_end).await;
+
+    daemon_task.await.expect("the fake daemon task should not panic");
+    std::fs::remove_file(&sock_path).ok();
+
+    result
+}
+
+/// Windows counterpart of [comm_talk_with_fake_daemon_response] using a named pipe.
+#[cfg(target_family = "windows")]
+async fn comm_talk_with_fake_daemon_response(test_name: &str, response: &'static [u8]) -> io::Result<i32> {
+    use crate::comm::comm_talk;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::windows::named_pipe::{ClientOptions, ServerOptions};
+
+    let pipe_name = format!(r"\\.\pipe\zowe_test_{}", test_name);
+
+    let mut server = ServerOptions::new()
+        .create(&pipe_name)
+        .expect("should create the test pipe");
+
+    let daemon_task = tokio::spawn(async move {
+        server
+            .connect()
+            .await
+            .expect("should accept the test connection");
+
+        let mut request_buf = [0u8; 2];
+        server
+            .read_exact(&mut request_buf)
+            .await
+            .expect("should read the fake client request");
+
+        server
+            .write_all(response)
+            .await
+            .expect("should write the fake daemon response");
+        server
+            .flush()
+            .await
+            .expect("should flush the fake daemon response");
+        drop(server);
+    });
+
+    let mut client_end = ClientOptions::new()
+        .open(&pipe_name)
+        .expect("should connect to the test pipe");
+
+    let result = comm_talk(b"{}", &mut client_end).await;
+
+    daemon_task.await.expect("the fake daemon task should not panic");
+
+    result
+}
+
+#[tokio::test]
+async fn unit_test_comm_talk_errors_on_eof_without_exit_code() {
+    let result = comm_talk_with_fake_daemon_response(
+        "comm_talk_eof_no_exit",
+        b"{\"stdout\":\"partial output\"}\x0c",
+    )
+    .await;
+
+    match result {
+        Err(err_val) => {
+            assert_eq!(
+                err_val.kind(),
+                std::io::ErrorKind::UnexpectedEof,
+                "an EOF without an exit code should surface as UnexpectedEof, got: {}",
+                err_val
+            );
+        }
+        Ok(exit_code) => {
+            panic!("comm_talk should not report success on an unexpected EOF, got exit code {}", exit_code);
+        }
+    }
+}
+
+#[tokio::test]
+async fn unit_test_comm_talk_returns_exit_code_before_eof() {
+    let result =
+        comm_talk_with_fake_daemon_response("comm_talk_eof_with_exit", b"{\"exitCode\":42}\x0c").await;
+
+    assert_eq!(
+        result.expect("comm_talk should succeed when the daemon sends an exit code"),
+        42
+    );
 }
 
 #[tokio::test]

@@ -9,8 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
-import { posix } from "path";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -18,6 +17,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * Class to handle renaming data sets
@@ -86,10 +86,8 @@ export class Rename {
         { dsn: beforeDataSetName, member: beforeMemberName }: IDataSet,
         options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
-        const endpoint: string = posix.join(
-            ZosFilesConstants.RESOURCE,
-            ZosFilesConstants.RES_DS_FILES,
-            encodeURIComponent(afterDataSetName)
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + afterDataSetName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -105,7 +103,7 @@ export class Rename {
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
-        ];
+        ].concat(options ? ZosFilesUtils.generateTsoHeaders(options) : []);
 
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});

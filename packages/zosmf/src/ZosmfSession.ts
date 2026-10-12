@@ -130,6 +130,16 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used to specify the account name for PKCS 12 certificate stored in credential manager
+     */
+    public static ZOSMF_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        name: "cert-account",
+        description: "The account name for PKCS 12 certificate stored in credential manager",
+        type: "string",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Option used to specify the path to the certificate file for authentication
      */
     // public static ZOSMF_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
@@ -175,6 +185,7 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_PROTOCOL,
         ZosmfSession.ZOSMF_OPTION_CERT_FILE,
         ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE,
+        ZosmfSession.ZOSMF_OPTION_CERT_ACCOUNT,
         ZosmfSession.ZOSMF_OPTION_COMPLETION_TIMEOUT,
         ZosmfSession.ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT,
         // ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
@@ -184,7 +195,7 @@ export class ZosmfSession {
      * Given command line arguments, create an session configuration object.
      * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISession} - A session configuration to be used for a session.
-     */
+    */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         const msToSecs = 1000;
         return {
@@ -193,6 +204,9 @@ export class ZosmfSession {
             protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
             requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
             socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
+            certAccount: args.certAccount,
+            allowedLoginMethod: args.allowedLoginMethod,
+            authTypeOrder: args.authOrder
         };
     }
 

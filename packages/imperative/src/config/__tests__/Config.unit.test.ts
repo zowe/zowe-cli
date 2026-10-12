@@ -552,6 +552,26 @@ describe("Config tests", () => {
             expect(jsonText.match(/^{\s*"\$schema":/)).not.toBeNull();
         });
 
+        it("should not save schema to disk if $schema escapes the config directory via traversal", async () => {
+            const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            layer.properties.$schema = "./../../../../../../../../evil.schema.json";
+            config.setSchema({ title: "malicious" });
+            expect(writeFileSpy).not.toHaveBeenCalled();
+            writeFileSpy.mockRestore();
+        });
+
+        it("should not save schema to disk if $schema is an absolute path outside the config directory", async () => {
+            const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            layer.properties.$schema = path.resolve(path.sep, "evil.schema.json");
+            config.setSchema({ title: "malicious" });
+            expect(writeFileSpy).not.toHaveBeenCalled();
+            writeFileSpy.mockRestore();
+        });
+
         it("should add a new layer when one is specified in the set", async () => {
             const config = await Config.load(MY_APP);
             config.set("profiles.fruit.profiles.mango.properties.color", "orange");
@@ -575,6 +595,73 @@ describe("Config tests", () => {
 
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toBe("The secure option is only valid when setting a single property");
+        });
+
+        describe("prototype pollution", () => {
+            // Regression test for the auto-store prototype-pollution vector: a
+            // malicious project config could resolve a profile name to
+            // "__proto__", causing the auto-store path to call
+            // config.set("profiles.__proto__.properties.<prop>", value) and
+            // walk onto Object.prototype.
+            afterEach(() => {
+                // Ensure a leaked pollution in one assertion can't mask another
+                delete (Object.prototype as any).properties;
+            });
+
+            it.each([
+                "profiles.__proto__.properties.host",
+                "profiles.constructor.properties.host",
+                "profiles.prototype.properties.host",
+                "__proto__.polluted"
+            ])("should reject the reserved path segment in '%s'", async (badPath) => {
+                const config = await Config.load(MY_APP);
+                let caughtError: Error;
+                try {
+                    config.set(badPath, "attacker-value");
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain("reserved property names");
+                // The core guarantee: Object.prototype was NOT polluted
+                expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("properties");
+                expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("polluted");
+                expect(({} as any).properties).toBeUndefined();
+            });
+
+            it("should not pollute the prototype and should not create the malicious profile", async () => {
+                const config = await Config.load(MY_APP);
+                expect(() => config.set("profiles.__proto__.properties.host", "evil")).toThrow();
+                // A freshly created, unrelated object must not inherit anything
+                expect(({} as any).properties).toBeUndefined();
+                // Nothing was written into the active layer either
+                const layer = (config as any).layerActive();
+                expect(Object.getOwnPropertyNames(layer.properties.profiles)).not.toContain("__proto__");
+            });
+
+            it("should still set a legitimate property whose profile is literally named 'profiles'", async () => {
+                const config = await Config.load(MY_APP);
+                // "profiles" is a legal (if unusual) profile name and must not be blocked
+                config.set("profiles.profiles.properties.color", "green");
+                expect(config.properties.profiles.profiles.properties.color).toBe("green");
+            });
+
+            it.each([
+                "",
+                ".profiles.lpar1.properties.host",
+                "profiles.lpar1.properties.host.",
+                "profiles..properties.host"
+            ])("should reject the empty path segment in '%s'", async (badPath) => {
+                const config = await Config.load(MY_APP);
+                let caughtError: Error;
+                try {
+                    config.set(badPath, "some-value");
+                } catch (error) {
+                    caughtError = error;
+                }
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain("may not be empty");
+            });
         });
     });
 
@@ -872,6 +959,47 @@ describe("Config tests", () => {
                 resolved: schemaPath,
             });
             expect(spyOnFsWriteFileSync).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("reload path normalization", () => {
+        it("should normalize projectDir using realpathSync.native on Windows", async () => {
+            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+
+            const rawPath = "C:/users/test/../project";
+            const normalizedPath = "C:\\users\\project";
+            const realPathSpy = jest.spyOn(fs.realpathSync, "native").mockReturnValue(normalizedPath as any);
+
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            config.mLayers = [];
+
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ projectDir: rawPath });
+
+            expect(realPathSpy).toHaveBeenCalledWith(rawPath);
+            expect(config.mProjectDir).toBe(normalizedPath);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+
+        it("should NOT normalize projectDir if not on Windows", async () => {
+            Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+            const testPath = "/home/user/project";
+            const realPathSpy = jest.spyOn(fs.realpathSync, "native");
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ projectDir: testPath });
+
+            expect(realPathSpy).not.toHaveBeenCalled();
+            expect(config.mProjectDir).toBe(testPath);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
         });
     });
 });

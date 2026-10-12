@@ -55,6 +55,9 @@ export class WebDiffManager implements IWebDiffManager {
      * @memberof WebDiffManager
      */
     public async openDiffs(patchDiff: string) {
+        // Lazy load this package since it requires ESM and importing at top of file can break CJS
+        const sanitize = await import("sanitize-html") as unknown as typeof import("sanitize-html");
+        const sanitizedPatchDiff = sanitize(patchDiff);
         const doWeHaveGui = ProcessUtils.isGuiAvailable();
         if (doWeHaveGui !== GuiResult.GUI_AVAILABLE) {
             let errMsg = "You are running in an environment with no graphical interface." +
@@ -79,7 +82,7 @@ export class WebDiffManager implements IWebDiffManager {
 
         if (!fs.existsSync(this.webDiffDir)) await new WebDiffGenerator(ImperativeConfig.instance, this.webDiffDir).buildDiffDir();
 
-        const htmlDiff = html(patchDiff, {
+        const htmlDiff = html(sanitizedPatchDiff, {
             outputFormat: "side-by-side",
             matching: "lines",
             diffStyle: "char",
@@ -108,6 +111,24 @@ export class WebDiffManager implements IWebDiffManager {
      */
     private get webDiffDir(): string {
         return path.join(ImperativeConfig.instance.cliHome, Constants.WEB_DIFF_DIR);
+    }
+
+    /**
+     * Encodes a string so it can be safely embedded inside an inline `<script>`
+     * element. `JSON.stringify` produces a valid JavaScript string literal, and
+     * the additional replacements prevent the value from terminating the script
+     * element (e.g. a `</script>` sequence in the diff content) or introducing
+     * line terminators that are illegal inside JS string literals (U+2028/U+2029).
+     * @private
+     * @param str - the raw string to embed in a script context
+     * @returns A safely-encoded JavaScript string literal
+     */
+    private encodeForScript(str: string): string {
+        const base16 = 16;
+        return JSON.stringify(str)
+            .replaceAll("<", "\\u003c")
+            .replaceAll(">", "\\u003e")
+            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(base16));
     }
 
     /**
@@ -146,7 +167,7 @@ export class WebDiffManager implements IWebDiffManager {
                 })
 
                 fr.readAsText()
-            const diffString = ${unifiedStringDiff}
+            const diffString = ${this.encodeForScript(unifiedStringDiff)}
 
               document.addEventListener('DOMContentLoaded', function () {
                 var targetElement = document.getElementsByClassName('d2h-file-list-wrapper')[0];

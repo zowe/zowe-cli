@@ -18,7 +18,10 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const options: IDeleteDatasetOptions = {};
+        const options: IDeleteDatasetOptions = {
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
+        };
 
         if (commandParameters.arguments.volume) {
             options.volume = commandParameters.arguments.volume;

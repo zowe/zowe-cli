@@ -20,4 +20,16 @@ export interface IZosFilesOptions {
      * @type {number}
      */
     responseTimeout?: number;
+    /**
+     * If specified, this value will be sent in the header X-IBM-Request-Acctnum
+     * for z/OSMF data set and file operations that support it.
+     * @type {string}
+     */
+    tsoAccount?: string;
+    /**
+     * If specified, this value will be sent in the header X-IBM-Request-Proc
+     * for z/OSMF data set and file operations that support it.
+     * @type {string}
+     */
+    tsoProcedure?: string;
 }

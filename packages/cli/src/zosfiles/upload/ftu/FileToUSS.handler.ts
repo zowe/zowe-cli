@@ -43,6 +43,10 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
             task: task,
             responseTimeout: commandParameters.arguments.responseTimeout,
             includeHidden: commandParameters.arguments.includeHidden,
+            makeDir: commandParameters.arguments.makeDir,
+            skipDirectoryCheck: commandParameters.arguments.skipDirectoryCheck,
+            tsoAccount: commandParameters.arguments.tsoAccount,
+            tsoProcedure: commandParameters.arguments.tsoProcedure,
         };
 
         const attributes = ZosFilesAttributes.loadFromFile(
@@ -52,7 +56,6 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
         if (attributes != null) {
             uploadOptions.attributes = attributes;
         }
-
         const response = await Upload.uploadFile(
             session,
             commandParameters.arguments.inputfile,

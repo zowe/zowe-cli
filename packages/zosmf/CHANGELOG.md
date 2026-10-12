@@ -6,6 +6,23 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
 
+## Recent Changes
+
+- BugFix: Fixed `ZosmfSession.createSessCfgFromArgs` to include the `allowedLoginMethod` and `authOrder` properties into the session, so `isUsingApiml` and `getApimlDecision` reflect them for sessions built directly from command arguments. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
+
+## `8.38.0`
+
+- Enhancement: Added `allowedLoginMethod` and `AuthOrder` options to the z/OSMF profile/schema, allowing users to specifiy those properties to use for z/OSMF operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+
+## `8.37.0`
+
+- Enhancement: Added `tsoAccount` and `tsoProcedure` options to the zosmf profile/schema, allowing users to specify a TSO account number and logon procedure to use for z/OSMF data set and file operations. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+
+## `8.32.0`
+
+- Enhancement: Added `certAccount` option to z/OSMF connection options to support client certificate authentication using certificates stored in system keystores on macOS and Windows platforms.
+- Enhancement: Added `ZosmfChangePassword.changePassword` function which allows changing the z/OSMF password or passphrase. [#2703](https://github.com/zowe/zowe-cli/pull/2703)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

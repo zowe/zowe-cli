@@ -122,6 +122,40 @@ describe("Config secure tests", () => {
         expect(mockSecureSave).toHaveBeenCalledTimes(0);
     });
 
+    describe("prototype pollution (defense-in-depth)", () => {
+        afterEach(() => {
+            delete (Object.prototype as any).polluted;
+        });
+
+        it("loadCached should skip a secure path that contains a reserved segment", () => {
+            const config = new (Config as any)();
+            config.mLayers = [{ user: false, global: false, path: "fakePath", properties: { profiles: {} } }];
+            config.mVault = mockVault;
+            config.mEnvVarManaged = [];
+            // Without the guard, walking "__proto__.polluted" would assign onto Object.prototype
+            config.mSecure = { fakePath: { "__proto__.polluted": "evil" } };
+            jest.spyOn(config.api.secure, "secureFields").mockReturnValue(["__proto__.polluted"]);
+
+            (config.api.secure as any).loadCached({ user: false, global: false });
+
+            expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("polluted");
+            expect(({} as any).polluted).toBeUndefined();
+        });
+
+        it("cacheAndPrune should skip a secure path that contains a reserved segment", () => {
+            const config = new (Config as any)();
+            config.mLayers = [{ user: false, global: false, path: "fakePath", properties: { profiles: {} } }];
+            config.mVault = mockVault;
+            config.mSecure = {};
+            config.mEnvVarManaged = [];
+            jest.spyOn(config.api.secure, "secureFields").mockReturnValue(["__proto__.polluted"]);
+
+            expect(() => (config.api.secure as any).cacheAndPrune({ user: false, global: false })).not.toThrow();
+            expect(config.mSecure.fakePath).toBeUndefined();
+            expect(Object.getOwnPropertyNames(Object.prototype)).not.toContain("polluted");
+        });
+    });
+
     it("should load and save all secure properties", async () => {
         jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigPath);
         jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);

@@ -31,12 +31,29 @@ export const SshDefinition: ICommandDefinition = {
             name: "cwd",
             description: "Working directory in which to execute the command.",
             type: "string"
+        },
+        {
+            name: "exec",
+            type: "boolean",
+            description: "Use exec channel instead of interactive shell. Faster but does not load ~/.profile or ~/.bashrc.",
+            defaultValue: false,
+            aliases: ["e"]
         }],
     profile: {
         optional: ["ssh"]
     },
-    examples: [{
-        description: "Issue a simple command, giving the working directory",
-        options: "\"npm install express\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp "
-    }]
+    examples: [
+        {
+            description: "Issue a simple command, giving the working directory",
+            options: "\"npm install express\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp"
+        },
+        {
+            description: "Issue a command using exec mode (faster, does not load profile files)",
+            options: "\"ls -la\" --exec"
+        },
+        {
+            description: "Issue a command in exec mode with working directory",
+            options: "\"pwd\" --cwd /u/myuser/project --exec"
+        }
+    ]
 };

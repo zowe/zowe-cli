@@ -21,9 +21,19 @@ use tokio::io::AsyncWriteExt;
 use tokio::io::BufReader;
 
 #[cfg(target_family = "windows")]
+use std::os::windows::io::AsRawHandle;
+#[cfg(target_family = "windows")]
 use tokio::net::windows::named_pipe::{ClientOptions, NamedPipeClient};
 #[cfg(target_family = "windows")]
-use windows_sys::Win32::Foundation::ERROR_PIPE_BUSY;
+use windows_sys::Win32::Foundation::{CloseHandle, ERROR_PIPE_BUSY, HANDLE};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::Security::{EqualSid, GetTokenInformation, TokenUser, TOKEN_QUERY, TOKEN_USER};
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::System::Pipes::GetNamedPipeServerProcessId;
+#[cfg(target_family = "windows")]
+use windows_sys::Win32::System::Threading::{
+    GetCurrentProcess, OpenProcess, OpenProcessToken, PROCESS_QUERY_LIMITED_INFORMATION,
+};
 
 extern crate base64;
 use base64::prelude::*;
@@ -37,7 +47,7 @@ use rpassword::read_password;
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::proc::*;
-use crate::util::util_get_username;
+use crate::util::{util_get_daemon_dir, util_get_daemon_token_from_dir, util_get_username};
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
@@ -71,13 +81,51 @@ pub async fn comm_establish_connection(
     let stream = loop {
         #[cfg(target_family = "unix")]
         if let Ok(good_stream) = DaemonClient::connect(daemon_socket).await {
-            // We made our connection. Break with the actual stream value
-            break good_stream;
+            if comm_peer_is_current_user(&good_stream) {
+                // We made our connection. Break with the actual stream value
+                break good_stream;
+            }
+            // A socket with our daemon's name exists, but it is not served by a
+            // process running as the current user. The daemon directory is
+            // normally restricted to its owner, so this should not happen, but
+            // a socket left in a relaxed ZOWE_DAEMON_DIR (or created during the
+            // window before the directory was restricted) could be served by
+            // another local account in order to capture what we would otherwise
+            // send to it. Drop this connection and keep retrying/starting our
+            // own daemon instead of trusting it. Only warn once, since this
+            // branch is reached on every retry.
+            static WARNED_UNTRUSTED_SOCKET: std::sync::Once = std::sync::Once::new();
+            WARNED_UNTRUSTED_SOCKET.call_once(|| {
+                eprintln!(
+                    "Warning: The Zowe daemon socket at {} does not belong to the current user. Ignoring it.",
+                    daemon_socket
+                );
+            });
+            drop(good_stream);
         }
 
         #[cfg(target_family = "windows")]
         match ClientOptions::new().open(daemon_socket) {
-            Ok(stream) => break stream,
+            Ok(stream) => {
+                if comm_peer_is_current_user(&stream) {
+                    break stream;
+                }
+                // A pipe with our daemon's name exists, but it is not served by a
+                // process running as the current user. Since the pipe name is
+                // predictable, another local account could have squatted on it
+                // before our real daemon started, in order to capture what we
+                // would otherwise send to it. Drop this connection and keep
+                // retrying/starting our own daemon instead of trusting it. Only
+                // warn once, since this branch is reached on every retry.
+                static WARNED_UNTRUSTED_PIPE: std::sync::Once = std::sync::Once::new();
+                WARNED_UNTRUSTED_PIPE.call_once(|| {
+                    eprintln!(
+                        "Warning: The Zowe daemon pipe at {} does not belong to the current user. Ignoring it.",
+                        daemon_socket
+                    );
+                });
+                drop(stream);
+            }
             // Two possible errors when calling ClientOptions::open:
             // https://docs.rs/tokio/latest/tokio/net/windows/named_pipe/struct.ClientOptions.html#method.open
             Err(e)
@@ -153,6 +201,155 @@ pub async fn comm_establish_connection(
 }
 
 /**
+ * Confirm that the process serving the other end of our connection runs as the
+ * current user, so that we never hand our command line, environment, stdin, or
+ * secure prompt replies to a daemon impersonated by another local account.
+ *
+ * The comparison is made against the OS-reported identity of the peer process
+ * rather than against the ownership of the socket or pipe in the file system,
+ * because only the former identifies the process that will actually read what
+ * we send. Any failure to positively confirm a match is treated as untrusted.
+ * On Unix, `UnixStream::peer_cred` reports the credentials the peer held when
+ * the connection was established, so the answer cannot be invalidated by a
+ * later change on the peer side.
+ *
+ * @param stream
+ *      The already-connected socket or pipe client.
+ *
+ * @returns
+ *      true only if the process serving the connection runs as the current user.
+ */
+#[cfg(target_family = "unix")]
+pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
+    match stream.peer_cred() {
+        // SAFETY: geteuid takes no arguments and is documented as always
+        // succeeding, so there is no error case to handle.
+        Ok(peer_cred) => peer_cred.uid() == unsafe { libc::geteuid() },
+        Err(e) => {
+            eprintln!(
+                "Warning: Unable to verify the owner of the Zowe daemon socket. Details = {}",
+                e
+            );
+            false
+        }
+    }
+}
+
+#[cfg(target_family = "windows")]
+pub fn comm_peer_is_current_user(stream: &DaemonClient) -> bool {
+    windows_pipe_owned_by_current_user(stream)
+}
+
+/**
+ * Confirm that the named pipe we just connected to is being served by a
+ * process running as the current Windows user.
+ *
+ * The pipe name is derived from the user name by default (see
+ * util_get_socket_string), though it can be overridden via the
+ * ZOWE_DAEMON_PIPE environment variable. The default name is guessable by
+ * any other local account on a shared host, which could squat on it before
+ * our real daemon starts, causing us to hand it the command line,
+ * environment, stdin, and secure prompt replies that we intend for our own
+ * daemon. We identify the process on the other end of the pipe and compare
+ * its user SID to our own, treating any failure to positively confirm a
+ * match as untrusted.
+ *
+ * @param stream
+ *      The already-connected pipe client.
+ *
+ * @returns
+ *      true only if the process serving the pipe runs as the current user.
+ */
+#[cfg(target_family = "windows")]
+fn windows_pipe_owned_by_current_user(stream: &NamedPipeClient) -> bool {
+    unsafe {
+        let pipe_handle = stream.as_raw_handle() as HANDLE;
+
+        let mut server_pid: u32 = 0;
+        if GetNamedPipeServerProcessId(pipe_handle, &mut server_pid) == 0 {
+            eprintln!("Warning: Unable to determine the process serving the Zowe daemon pipe.");
+            return false;
+        }
+
+        let server_process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, 0, server_pid);
+        if server_process == 0 {
+            eprintln!("Warning: Unable to open the process serving the Zowe daemon pipe.");
+            return false;
+        }
+        let server_user_sid = windows_process_user_sid(server_process);
+        CloseHandle(server_process);
+
+        let current_user_sid = windows_process_user_sid(GetCurrentProcess());
+
+        match (server_user_sid, current_user_sid) {
+            (Some(server_user_sid_buf), Some(current_user_sid_buf)) => {
+                // Both TOKEN_USER.User.Sid pointers point into their own
+                // buffer, so both buffers must outlive this EqualSid call.
+                let server_sid =
+                    std::ptr::read_unaligned(server_user_sid_buf.as_ptr() as *const TOKEN_USER)
+                        .User
+                        .Sid;
+                let current_sid =
+                    std::ptr::read_unaligned(current_user_sid_buf.as_ptr() as *const TOKEN_USER)
+                        .User
+                        .Sid;
+                EqualSid(server_sid, current_sid) != 0
+            }
+            _ => {
+                eprintln!("Warning: Unable to verify the owner of the Zowe daemon pipe.");
+                false
+            }
+        }
+    }
+}
+
+/**
+ * Fetch the raw TOKEN_USER bytes (SID and attributes) for the user running
+ * the given process.
+ *
+ * The returned buffer owns the memory that the contained SID pointer points
+ * into, so it must be kept alive for as long as that SID is used.
+ *
+ * @param process_handle
+ *      A handle to the process whose user identity we want. This may be a
+ *      pseudo-handle, such as the one returned by GetCurrentProcess.
+ *
+ * @returns
+ *      The raw TOKEN_USER buffer on success, or None on any failure.
+ */
+#[cfg(target_family = "windows")]
+unsafe fn windows_process_user_sid(process_handle: HANDLE) -> Option<Vec<u8>> {
+    let mut token_handle: HANDLE = 0;
+    if OpenProcessToken(process_handle, TOKEN_QUERY, &mut token_handle) == 0 {
+        return None;
+    }
+
+    let mut token_user_len: u32 = 0;
+    GetTokenInformation(
+        token_handle,
+        TokenUser,
+        std::ptr::null_mut(),
+        0,
+        &mut token_user_len,
+    );
+    let mut token_user_buf: Vec<u8> = vec![0; token_user_len as usize];
+    let got_token_user = GetTokenInformation(
+        token_handle,
+        TokenUser,
+        token_user_buf.as_mut_ptr() as *mut core::ffi::c_void,
+        token_user_len,
+        &mut token_user_len,
+    );
+    CloseHandle(token_handle);
+
+    if got_token_user == 0 || (token_user_len as usize) < std::mem::size_of::<TOKEN_USER>() {
+        return None;
+    }
+
+    Some(token_user_buf)
+}
+
+/**
  * Send a request to the server and optionally read a response.
  *
  * @param message
@@ -172,6 +369,19 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
      */
     stream.writable().await?;
 
+    /* Re-verify the peer immediately before we disclose anything to it. The
+     * request carries our command line, environment, and daemon token, so we
+     * check here as well as at connection time rather than relying on the
+     * caller having handed us a stream that was already vetted.
+     */
+    if !comm_peer_is_current_user(stream) {
+        return Err(io::Error::new(
+            io::ErrorKind::PermissionDenied,
+            "The Zowe daemon is not being served by a process running as the current user. \
+             Refusing to send the command to it.",
+        ));
+    }
+
     // write request to daemon
     stream.write_all(message).await?;
 
@@ -180,7 +390,16 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
     let mut reader = BufReader::new(stream);
 
     let mut exit_code = EXIT_CODE_SUCCESS;
+    let mut got_exit_code = false;
     let mut _progress = false;
+
+    // get the daemon directory so we can read the token from its pid file later on
+    let daemon_dir = util_get_daemon_dir().map_err(|exit_code| {
+        io::Error::new(
+            io::ErrorKind::Other,
+            format!("Unable to get the zowe daemon directory (exit code {exit_code})"),
+        )
+    })?;
 
     loop {
         let mut reply: Option<String> = None;
@@ -228,6 +447,21 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                         io::stderr().flush().unwrap();
                     }
 
+                    /* A prompt asks us to collect input from the user and send
+                     * it onward, which for securePrompt is a credential typed in
+                     * response to text that the peer controls. Verify the peer
+                     * once more before we display that text or read the reply.
+                     */
+                    if (p.prompt.is_some() || p.securePrompt.is_some())
+                        && !comm_peer_is_current_user(reader.get_ref())
+                    {
+                        return Err(io::Error::new(
+                            io::ErrorKind::PermissionDenied,
+                            "The Zowe daemon is not being served by a process running as the \
+                             current user. Refusing to supply the requested input.",
+                        ));
+                    }
+
                     if let Some(s) = p.prompt {
                         print!("{}", s);
                         io::stdout().flush().unwrap();
@@ -252,11 +486,18 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             stdinLength: None,
                             stdin: Some(s),
                             user: Some(BASE64_STANDARD.encode(executor)),
+                            // We are already connected, so the pid file (and its
+                            // token) is present. Echo the token back so the daemon
+                            // accepts our prompt reply.
+                            token: util_get_daemon_token_from_dir(&daemon_dir),
                         };
                         let v = serde_json::to_string(&response)?;
                         reader.get_mut().write_all(v.as_bytes()).await?;
                     }
 
+                    if p.exitCode.is_some() {
+                        got_exit_code = true;
+                    }
                     exit_code = p.exitCode.unwrap_or(EXIT_CODE_SUCCESS);
                     _progress = p.progress.unwrap_or(false);
 
@@ -268,6 +509,12 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                     }
                 } else {
                     // end of reading
+                    if !got_exit_code {
+                        return Err(io::Error::new(
+                            io::ErrorKind::UnexpectedEof,
+                            "The Zowe daemon closed the connection before returning an exit code.",
+                        ));
+                    }
                     break;
                 }
             }

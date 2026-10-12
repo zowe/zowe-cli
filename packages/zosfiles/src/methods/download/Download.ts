@@ -9,10 +9,12 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
+    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse
+} from "@zowe/imperative";
 
-import { posix, join, relative } from "path";
+import { posix, win32, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
@@ -89,17 +91,14 @@ export class Download {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+                endpoint += `/-(${options.volume})`;
             }
-
-            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
+            endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
             if (options.queryParams) {
                 endpoint += options.queryParams;
             }
-
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -247,6 +246,10 @@ export class Download {
             // Otherwise use default directory generated from data set name.
             const baseDir = (() => {
                 if (options.directory) {
+                    // Prevent double slashes
+                    if ((options.directory.endsWith(posix.sep) || options.directory.endsWith(win32.sep)) && !IO.isRootDir(options.directory)) {
+                        return options.directory.slice(0, -1);
+                    }
                     return options.directory;
                 }
 
@@ -263,6 +266,8 @@ export class Download {
             const downloadErrors: Error[] = [];
             const failedMembers: string[] = [];
             const skippedMembers: string[] = [];
+            let cancelledCount = 0;
+            let downloadCancelled = false;
             let downloadsInitiated = 0;
 
             let defaultExtension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -275,6 +280,12 @@ export class Download {
              * @param mem - an object with a "member" field containing the name of the data set member
              */
             const createDownloadPromise = (mem: { member: string }) => {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    cancelledCount++;
+                    return Promise.resolve();
+                }
+
                 // update the progress bar if any
                 if (options.task != null) {
                     options.task.statusMessage = "Downloading " + mem.member;
@@ -297,6 +308,9 @@ export class Download {
                 }
 
                 const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+                if (!IO.isSubPath(baseDir, memberFilePath) || IO.fileEvaluatesToDir(mem.member)) {
+                    throw new ImperativeError({msg: "The generated data set file path contains illegal characters."});
+                }
                 const memberExistedBefore = IO.existsSync(memberFilePath);
 
                 // Check if file exists and should not be overwritten
@@ -340,6 +354,10 @@ export class Download {
                 await asyncPool(maxConcurrentRequests, memberList, createDownloadPromise);
             }
 
+            if (downloadCancelled && options.task != null) {
+                options.task.statusMessage = "Operation cancelled";
+            }
+
             // Handle failed downloads if no errors were thrown yet
             if (downloadErrors.length > 0) {
                 throw new ImperativeError({
@@ -350,7 +368,7 @@ export class Download {
                 });
             }
 
-            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
+            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length - cancelledCount;
             let responseMessage = "";
             if (downloadedCount > 0) {
                 responseMessage = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloadedCount, baseDir);
@@ -363,6 +381,10 @@ export class Download {
                 responseMessage += util.format(ZosFilesMessages.memberDownloadSkipped.message, skippedMembers.length);
             }
 
+            if (downloadCancelled) {
+                responseMessage = "The download was cancelled.\n" + responseMessage;
+            }
+
             const downloadResult: IDownloadAmResult = {
                 downloaded: downloadedCount,
                 skipped: skippedMembers.length,
@@ -373,7 +395,7 @@ export class Download {
             };
 
             return {
-                success: true,
+                success: !downloadCancelled,
                 commandResponse: responseMessage,
                 apiResponse: {
                     ...response.apiResponse,
@@ -419,6 +441,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(dataSetObjs.length, 0, ZosFilesMessages.missingDataSets.message);
         const result = this.emptyDownloadDsmResult();
         const zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
+        let downloadCancelled = false;
 
         try {
             // Download data sets
@@ -427,6 +450,9 @@ export class Download {
             const mutableOptions: IDownloadOptions = { ...options, task: undefined };
 
             for (const dataSetObj of zosmfResponses) {
+                if (IO.fileEvaluatesToDir(dataSetObj.dsname)) {
+                    throw new ImperativeError({msg: "The data set name contains illegal characters."});
+                }
                 let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
                 if (!options.preserveOriginalLetterCase) {
                     llq = llq.toLowerCase();
@@ -525,6 +551,11 @@ export class Download {
 
             let downloadsInitiated = 0;
             const createDownloadPromise = (task: IDownloadDsmTask) => {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    return Promise.resolve();
+                }
+
                 if (options.task != null) {
                     options.task.statusMessage = "Downloading data set " + task.dsname;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
@@ -569,6 +600,10 @@ export class Download {
             // We execute the promises sequentially to make sure that
             // we do not exceed `--mcr` when downloading multiple members
             for (const task of poDownloadTasks) {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    break;
+                }
                 await createDownloadPromise(task);
             }
 
@@ -579,6 +614,10 @@ export class Download {
             } else {
                 await asyncPool(maxConcurrentRequests, psDownloadTasks, createDownloadPromise);
             }
+
+            if (downloadCancelled && options.task != null) {
+                options.task.statusMessage = "Operation cancelled";
+            }
         } catch (error) {
             Logger.getAppLogger().error(error);
 
@@ -586,7 +625,7 @@ export class Download {
         }
 
         // Handle failed downloads if no errors were thrown yet
-        if (Object.keys(result.failedWithErrors).length > 0) {
+        if (!downloadCancelled && Object.keys(result.failedWithErrors).length > 0) {
             throw new ImperativeError({
                 msg: ZosFilesMessages.datasetDownloadFailed.message + Object.keys(result.failedWithErrors).join("\n"),
                 causeErrors: Object.values(result.failedWithErrors),
@@ -595,9 +634,13 @@ export class Download {
         }
 
         const numFailed = result.failedArchived.length + result.failedUnsupported.length + Object.keys(result.failedWithErrors).length;
+        const commandResponse = downloadCancelled
+            ? "The download was cancelled.\n" + this.buildDownloadDsmResponse(result, options)
+            : this.buildDownloadDsmResponse(result, options);
+
         return {
-            success: numFailed === 0,
-            commandResponse: this.buildDownloadDsmResponse(result, options),
+            success: !downloadCancelled && numFailed === 0,
+            commandResponse,
             apiResponse: zosmfResponses,
             errorMessage: numFailed > 0 ? ZosFilesMessages.someDownloadsFailed.message : undefined
         };
@@ -658,8 +701,9 @@ export class Download {
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
-            ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
+            const endpoint = EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussFileName
+            );
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
@@ -724,6 +768,7 @@ export class Download {
         const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
+        let downloadCancelled = false;
         let downloadsInitiated = 0;
         let downloadsTotal = 0;
 
@@ -736,6 +781,11 @@ export class Download {
         };
 
         const createFilePromise = (task: IDownloadUssTask) => {
+            if (downloadCancelled || fileOptions.abortDownload?.()) {
+                downloadCancelled = true;
+                return Promise.resolve();
+            }
+
             if (fileOptions.task != null) {
                 fileOptions.task.statusMessage = "Downloading file: " + task.file;
                 fileOptions.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (downloadsInitiated / downloadsTotal));
@@ -764,6 +814,11 @@ export class Download {
         };
 
         const createDirPromise = (task: IDownloadUssTask) => {
+            if (downloadCancelled || fileOptions.abortDownload?.()) {
+                downloadCancelled = true;
+                return Promise.resolve();
+            }
+
             return fs.promises.mkdir(task.dirName, { recursive: true }).then(
                 () => {
                     result.downloaded.push(task.dirName);
@@ -801,6 +856,10 @@ export class Download {
                         // If .zosattributes says to ignore the file, skip it
                         continue;
                     }
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
                     mutableOptions.file = join(workingDirectory, item.name);
                     downloadTasks.push({
                         file: item.name,
@@ -811,6 +870,11 @@ export class Download {
                     });
                     downloadsTotal++;
                 } else if (item.mode.startsWith("d")) {
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
+
                     // If mode starts with d, the item is a directory, create it
                     downloadTasks.push({
                         dirName: join(workingDirectory, item.name),
@@ -827,10 +891,26 @@ export class Download {
                 await asyncPool(maxConcurrentRequests, downloadTasks, createPromise);
             }
 
+            if (downloadCancelled && fileOptions.task != null) {
+                fileOptions.task.statusMessage = "Operation cancelled";
+            }
+
+            const commandResponse = downloadCancelled
+                ? "The download was cancelled.\n" + this.buildDownloadUssDirResponse(result, fileOptions)
+                : this.buildDownloadUssDirResponse(result, fileOptions);
+
+            result.totalCount = downloadsTotal;
+
+            // Because apiResponse was never originally being returned as an object,
+            // this is required to add the downloadResult to the apiResponse without breaking changes to consumers
+            // TODO: In next major release, make apiResponse consistently an object in the future and remove this workaround
+            const apiResponse: any = responses;
+            apiResponse.downloadResult = result;
+
             return {
-                success: Object.keys(result.failedWithErrors).length === 0,
-                commandResponse: this.buildDownloadUssDirResponse(result, fileOptions),
-                apiResponse: responses
+                success: !downloadCancelled && Object.keys(result.failedWithErrors).length === 0,
+                commandResponse,
+                apiResponse,
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -968,7 +1048,7 @@ export class Download {
     }
 
     private static generateHeadersBasedOnOptions(options: IDownloadOptions) {
-        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options).concat(ZosFilesUtils.generateTsoHeaders(options));
         if (!options.binary && !options.record) {
             if (options.localEncoding) {
                 reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });

@@ -12,6 +12,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -22,6 +23,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -32,6 +34,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -73,6 +76,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -83,6 +87,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -93,6 +98,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -132,6 +138,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -142,6 +149,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "extraOne": Object {
@@ -152,6 +160,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "extraTwo": Object {
@@ -162,6 +171,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -172,6 +182,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -223,6 +234,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -233,6 +245,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -243,6 +256,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -282,6 +296,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -292,6 +307,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -302,6 +318,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -341,6 +358,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -351,6 +369,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -361,6 +380,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },
@@ -400,6 +420,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "default": Object {
@@ -410,6 +431,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
       "imperative": Object {
@@ -420,6 +442,7 @@ Object {
           "type": "pattern",
         },
         "maxLogSize": 10000000,
+        "mode": 384,
         "type": "fileSync",
       },
     },

@@ -10,8 +10,9 @@
 */
 
 import * as path from "path";
-import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, ImperativeError, IO, Logger, Headers} from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -104,6 +105,8 @@ export class DownloadJobs {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
+        JobsUtils.validateJobNameAndId(parms.jobFile.jobname, parms.jobFile.jobid);
+        JobsUtils.validateSpoolId(parms.jobFile.id);
 
         //waiting for job to be active before continuing with job download
         if (parms.waitForActive) {
@@ -130,8 +133,10 @@ export class DownloadJobs {
 
         this.log.debug(debugMessage);
 
-        let parameters: string = "/" + encodeURIComponent(job.jobname) + "/" + encodeURIComponent(job.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(job.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + job.jobname + "/" + job.jobid +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + job.id + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
 
         if (parms.binary) {
             parameters += "?mode=binary";
@@ -166,8 +171,7 @@ export class DownloadJobs {
 
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         const normalizeResponseNewLines = !(parms.binary || parms.record);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, headers, writeStream,
-            normalizeResponseNewLines);
+        await ZosmfRestClient.getStreamed(session, parameters, headers, writeStream, normalizeResponseNewLines);
     }
 
     /**
@@ -182,6 +186,7 @@ export class DownloadJobs {
             JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
 
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
+        const parentDirectory = directory;
 
         if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
             directory += path.posix.sep + parms.jobFile.jobid;
@@ -196,8 +201,13 @@ export class DownloadJobs {
         }
 
         const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+        const finalPath = directory + path.posix.sep + parms.jobFile.ddname + extension;
 
-        return directory + path.posix.sep + parms.jobFile.ddname + extension;
+        if (IO.containsBacktrack(finalPath) || !IO.isSubPath(parentDirectory, finalPath)) {
+            throw new ImperativeError({msg: "The generated file path contains illegal characters."});
+        }
+
+        return finalPath;
     }
 
     /**

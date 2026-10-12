@@ -36,6 +36,7 @@ export class LoggerConfigBuilder {
     public static readonly DEFAULT_LOG_FILE_EXT = ".log";
     public static readonly DEFAULT_LOG_FILE_MAX_SIZE = 10000000;  // 10MB log size
     public static readonly DEFAULT_LOG_FILE_BACKUPS = 5;
+    public static readonly DEFAULT_LOG_FILE_MODE = 0o600;
 
 
     /**
@@ -94,6 +95,7 @@ export class LoggerConfigBuilder {
             type: LoggerConfigBuilder.DEFAULT_LOG_TYPE_FILE_SYNC,
             maxLogSize: LoggerConfigBuilder.DEFAULT_LOG_FILE_MAX_SIZE,
             backups: LoggerConfigBuilder.DEFAULT_LOG_FILE_BACKUPS,
+            mode: LoggerConfigBuilder.DEFAULT_LOG_FILE_MODE,
             layout: {
                 type: LoggerConfigBuilder.DEFAULT_LOG_TYPE_PAT,
                 pattern: LoggerConfigBuilder.DEFAULT_LOG_LAYOUT,

@@ -15,17 +15,20 @@ import * as net from "net";
 import * as stream from "stream";
 import { text } from "stream/consumers";
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
-import { IDaemonResponse, Imperative, IO } from "@zowe/imperative";
+import { IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
 
 describe("DaemonClient tests", () => {
-
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+    const fakeToken = "fakeToken";
     it("should process data when received", () => {
 
         const log = jest.fn(() => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -49,14 +52,15 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
             env: { FORCE_COLOR: "0" },
             stdinLength: 0,
             stdin: null,
-            user: Buffer.from("fake").toString('base64')
+            user: Buffer.from("fake").toString('base64'),
+            token: fakeToken
         };
 
         daemonClient.run();
@@ -76,7 +80,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -100,7 +104,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const stdinData = String.fromCharCode(...Array(1024).keys());
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐱"],
@@ -108,7 +112,8 @@ describe("DaemonClient tests", () => {
             env: {},
             stdinLength: stdinData.length,
             stdin: null,
-            user: Buffer.from("fake").toString('base64')
+            user: Buffer.from("fake").toString('base64'),
+            token: fakeToken
         };
         const createStdinStreamSpy = jest.spyOn(daemonClient as any, "createStdinStream").mockResolvedValueOnce(undefined);
 
@@ -130,7 +135,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -154,7 +159,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
@@ -173,7 +178,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (_data, _context) => {
+        const parse = jest.fn((_data, _context) => {
             // do nothing
         });
 
@@ -196,12 +201,12 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64') };
+        const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64'), token: fakeToken };
         const stringData = JSON.stringify(promptResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
@@ -216,7 +221,7 @@ describe("DaemonClient tests", () => {
             recordedLogMsg = logMsg;
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -246,12 +251,12 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server as any, "fake");
+        const daemonClient = new DaemonClient(client as any, server as any, "fake", fakeToken);
         const shutdownSpy = jest.spyOn(daemonClient as any, "shutdown");
 
         // fool our function into thinking that a PID file exists and must be deleted
         const existsSyncSpy = jest.spyOn(IO, "existsSync");
-        existsSyncSpy.mockImplementation(() => {return true;});
+        existsSyncSpy.mockImplementation(() => { return true; });
 
         // fool our function into thinking that the delete fails
         const pidFileName = "daemon_pid.json";
@@ -267,7 +272,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
 
         // force `data` call and verify write method is called with termination message
-        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64') };
+        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64'), token: fakeToken };
         const stringData = JSON.stringify(shutdownResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
@@ -298,7 +303,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         daemonClient.run();
         (daemonClient as any).end();
         expect(log).toHaveBeenLastCalledWith('daemon client disconnected');
@@ -321,7 +326,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         daemonClient.run();
         (daemonClient as any).close();
         expect(log).toHaveBeenLastCalledWith('client closed');
@@ -333,7 +338,7 @@ describe("DaemonClient tests", () => {
         const server: net.Server = undefined;
         const client = stream.Readable.from(chunks, { objectMode: false });
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const firstChunk = await new Promise((resolve) => {
             client.once("readable", () => resolve(client.read()));
         });
@@ -347,7 +352,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -371,14 +376,15 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
             stdin: null,
-            user: Buffer.from("ekaf").toString('base64')
+            user: Buffer.from("ekaf").toString('base64'),
+            token: fakeToken
         };
 
         daemonClient.run();
@@ -399,7 +405,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -423,13 +429,14 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
-            stdin: null
+            stdin: null,
+            token: fakeToken
         };
 
         daemonClient.run();
@@ -450,7 +457,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn((data, context) => {
             expect(data).toMatchSnapshot();
             expect(context).toMatchSnapshot();
         });
@@ -474,14 +481,15 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonClient = new DaemonClient(client as any, server, "fake", fakeToken);
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
             stdin: null,
-            user: "ekaf"
+            user: "ekaf",
+            token: fakeToken
         };
 
         daemonClient.run();
@@ -492,6 +500,207 @@ describe("DaemonClient tests", () => {
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'zF�' attempted to connect.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should fail to initialize the DaemonClient if no token is provided", () => {
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const errorMsg = "Unable to initialize the Daemon Client without a proper token";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const makeClient = (token: any) => new DaemonClient(client as any, undefined as any, "fake", token);
+
+        // ImperativeError is mocked, so toThrow() checks something was thrown;
+        // the constructor call args verify the right message was used.
+        expect(() => makeClient(null)).toThrow();
+        expect(ImperativeError).toHaveBeenLastCalledWith({ msg: errorMsg });
+        expect(() => makeClient(undefined)).toThrow();
+        expect(ImperativeError).toHaveBeenLastCalledWith({ msg: errorMsg });
+        expect(() => makeClient("")).toThrow();
+        expect(ImperativeError).toHaveBeenLastCalledWith({ msg: errorMsg });
+    });
+
+    it("should process data when a valid token is supplied", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn((data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonToken = "a".repeat(64);
+        const daemonClient = new DaemonClient(client as any, server, "fake", daemonToken);
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: { FORCE_COLOR: "0" },
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64'),
+            token: daemonToken
+        };
+
+        daemonClient.run();
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
+
+        expect(log).toHaveBeenLastCalledWith('daemon input command: feed 🐶');
+        expect(parse).toHaveBeenCalled();
+        expect(client.end).not.toHaveBeenCalled();
+    });
+
+    it("should not process data when the token is missing", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64')
+            // no token supplied
+        };
+
+        daemonClient.run();
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
+
+        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon token.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should not process data when the token is invalid", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64'),
+            // a forged token of a different value (and different length)
+            token: "b".repeat(32)
+        };
+
+        daemonClient.run();
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
+
+        expect(log).toHaveBeenLastCalledWith("A connection was attempted with a missing or invalid daemon token.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should not process data when a valid user supplies a wrong same-length token", () => {
+        // Guards against the most likely real attack: another local user who can
+        // open the pipe and knows our user name, but cannot read the token. Use a
+        // same-length token so the timing-safe comparison itself is exercised.
+        const log = jest.fn();
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake", "a".repeat(64));
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("fake").toString('base64'),
+            token: "c".repeat(64)
+        };
+
+        daemonClient.run();
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
         expect(parse).not.toHaveBeenCalled();
         expect(client.end).toHaveBeenCalled();
     });

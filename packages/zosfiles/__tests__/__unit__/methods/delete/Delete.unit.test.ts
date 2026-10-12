@@ -111,7 +111,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
                 [ZosmfHeaders.ACCEPT_ENCODING]
             );
         });
@@ -132,8 +132,32 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
                 [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}]
+            );
+        });
+
+        it("should send a request with tsoAccount and tsoProcedure", async () => {
+            const options: IDeleteDatasetOptions = {
+                volume: "ABCD",
+                tsoAccount: "TSO1234",
+                tsoProcedure: "MYPROC"
+            };
+
+            const apiResponse = await Delete.dataSet(dummySession, dataset, options);
+
+            expect(apiResponse).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+            });
+
+            expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
+                [ZosmfHeaders.ACCEPT_ENCODING,
+                    {"X-IBM-Request-Acctnum": "TSO1234"},
+                    {"X-IBM-Request-Proc": "MYPROC"}]
             );
         });
 
@@ -163,7 +187,7 @@ describe("Delete", () => {
         };
 
         const invokeAmsSpy = jest.spyOn(Invoke, "ams");
-        const dsName = "ABCD";
+        const dsName = "ABCD.EFGH";
 
         /**
          * Testing utility to generate the control statements that should be sent to the AMS command
@@ -222,6 +246,19 @@ describe("Delete", () => {
 
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain(ZosFilesMessages.missingDatasetName.message);
+        });
+
+        it("should throw an error if data set name is invalid", async () => {
+            let caughtError;
+
+            try {
+                await Delete.vsam(dummySession, "DATA.SET.INVALIDNAME");
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.invalidDatasetName.message);
         });
 
         it("should work with defaults", async () => {

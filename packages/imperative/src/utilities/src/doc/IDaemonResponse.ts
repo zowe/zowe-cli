@@ -47,4 +47,16 @@ export interface IDaemonResponse {
      * The user that initiated the request from the daemon client.
      */
     user?: string;
+
+    /**
+     * Secret token that proves the daemon client could read the owner-only
+     * daemon PID file (and is therefore the user that owns this daemon).
+     * The daemon generates this token at startup and stores it in the
+     * owner-restricted `daemon_pid.json` file. The client echoes it back on
+     * every request. This is the authoritative authentication check, since
+     * the `user` field above is self-asserted and can be spoofed by another
+     * local user (most relevant on Windows, where the named pipe can be
+     * opened by users other than the owner).
+     */
+    token?: string;
 }

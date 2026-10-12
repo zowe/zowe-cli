@@ -3,11 +3,11 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum KeyringError {
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "windows"))]
     #[error("[keyring] Invalid parameter provided for '{argument:?}'. Details:\n\n{details:?}")]
     InvalidArg { argument: String, details: String },
 
-    #[cfg(any(target_os = "macos", target_os = "linux", target_os = "freebsd"))]
+    #[cfg(any(target_os = "macos", target_os = "windows", target_os = "linux", target_os = "freebsd"))]
     #[error("[keyring] {name:?} library returned an error:\n\n{details:?}")]
     Library { name: String, details: String },
 

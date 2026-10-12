@@ -38,6 +38,7 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
+import { Queue } from "./../../../utilities/src/queue";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -49,6 +50,17 @@ export type RestClientResolve = (data: string) => void;
  * @class AbstractRestClient
  */
 export abstract class AbstractRestClient {
+
+    /**
+     * Default number of milliseconds to wait for a REST request to complete when no
+     * explicit requestCompletionTimeout was set on the session or via environment variable
+     * @private
+     * @static
+     * @type {number}
+     * @memberof AbstractRestClient
+     */
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    private static readonly DEFAULT_REQUEST_COMPLETION_TIMEOUT: number = 30 * 60 * 1000;
 
     /**
      * Contains REST chucks
@@ -287,6 +299,38 @@ export abstract class AbstractRestClient {
     }
 
     /**
+     * Getter for the request queue, if one exists.
+     * Must be implemented at the end Rest Client level to be static.
+     * @memberof AbstractRestClient
+     * @returns {Queue | undefined}
+     */
+    protected get requestQueue(): Queue | undefined {
+        return undefined; // Must be implemented
+    }
+
+    /**
+     * Wrap the request for a request into a request queue.
+     * Use the standard implementation if there is no request queue.
+     * @param {IRestOptions} options
+     * @returns {Promise<string>}
+     * @throws  if the request gets a status code outside of the 200 range
+     *          or other connection problems occur (e.g. connection refused)
+     * @memberof AbstractRestClient
+     */
+
+    public request(options: IRestOptions): Promise<string> {
+        if (this.requestQueue) {
+            let requestPool: string = undefined;
+            if (this.session.ISession.hostname) {
+                requestPool = this.session.ISession.hostname;
+                if (this.session.ISession.port) { requestPool += ":" + this.session.ISession.port.toString(); }
+            }
+            return this.requestQueue.enqueue(this._request.bind(this, options), requestPool);
+        }
+        return this._request(options);
+    }
+
+    /**
      * Perform the actual http REST call with appropriate user input
      * @param {IRestOptions} options
      * @returns {Promise<string>}
@@ -294,7 +338,7 @@ export abstract class AbstractRestClient {
      *          or other connection problems occur (e.g. connection refused)
      * @memberof AbstractRestClient
      */
-    public request(options: IRestOptions): Promise<string> {
+    protected _request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
             // save for logging
             this.mResource = options.resource;
@@ -359,7 +403,7 @@ export abstract class AbstractRestClient {
                  */
                 if (this.mIsJson) {
                     this.log.debug("writing JSON for request");
-                    this.log.trace("JSON body: %s", JSON.stringify(options.writeData));
+                    this.log.trace("JSON body: %s", JSON.stringify(Censor.censorObject(options.writeData)));
                     clientRequest.write(JSON.stringify(options.writeData));
                 } else {
                     clientRequest.write(options.writeData);
@@ -387,7 +431,7 @@ export abstract class AbstractRestClient {
             clientRequest.on("error", (errorResponse: any) => {
                 // Handle the HTTP 1.1 Keep-Alive race condition
                 if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
-                    this.request(options).then((response: string) => {
+                    this._request(options).then((response: string) => {
                         resolve(response);
                     }).catch((err) => {
                         reject(err);
@@ -540,11 +584,14 @@ export abstract class AbstractRestClient {
             }
 
             this.session.ISession.requestCompletionTimeout ??= isNaN(Number(requestCompletionTimeout)) ? undefined : Number(requestCompletionTimeout);
-            if (this.session.ISession.requestCompletionTimeout != null) {
-                Logger.getImperativeLogger().info(
-                    "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
-                );
-            }
+        }
+
+        // Default to a 30 minute request completion timeout if one was not set via session options or environment variable
+        this.session.ISession.requestCompletionTimeout ??= AbstractRestClient.DEFAULT_REQUEST_COMPLETION_TIMEOUT;
+        if (this.session.ISession.requestCompletionTimeout != null) {
+            Logger.getImperativeLogger().info(
+                "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+            );
         }
 
         /**
@@ -960,9 +1007,7 @@ export abstract class AbstractRestClient {
         if (!this.session.ISession.tokenValue) {
             return false;
         }
-        const logMessage = "Using cookie authentication with token" +
-            (Censor.isSecureValue("tokenType") ? "" : ` type ${this.session.ISession.tokenType}`);
-        this.log.trace(logMessage);
+        this.log.trace("Using cookie authentication with token type %s", this.session.ISession.tokenType);
         const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
         const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
         headerKeys.forEach((property) => {
@@ -1036,17 +1081,50 @@ export abstract class AbstractRestClient {
 
     /**
      * Set a PEM certificate auth into our REST request authentication options.
+     * This supports both file-based certificates (cert + certKey files) and
+     * keychain-based certificates (certAccount from macOS Keychain).
      *
      * @private
      * @param {any} restOptionsToSet
      *      The set of REST request options into which the credentials will be set.
-     * @returns True if this function sets authentication options. False otherwise.
+     * @returns {boolean} True if this function sets authentication options. False otherwise.
      * @memberof AbstractRestClient
      */
     private setCertPemAuth(restOptionsToSet: any): boolean {
         if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM)) {
             return false;
         }
+
+        // Handle certAccount (keychain/certificate store-based certificate) - macOS and Windows
+        if (this.session.ISession.certAccount != null) {
+            this.log.trace("Using certificate store authentication (certAccount)");
+
+            if (process.platform !== "darwin" && process.platform !== "win32") {
+                if (this.session.ISession.cert && this.session.ISession.certKey) {
+                    this.log.warn("Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                        "Using certFile and certKey instead.");
+                } else {
+                    throw new ImperativeError({
+                        msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                            "Use certFile and certKey instead.",
+                    });
+                }
+            } else {
+                // Create a custom agent that will handle certificate retrieval from keychain/certificate store
+                const agent = this.createKeychainAgent(
+                    this.session.ISession.certAccount,
+                    {
+                        rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+                    }
+                );
+
+                // Set the agent to be used for HTTPS requests
+                restOptionsToSet.agent = agent;
+                return true;
+            }
+        }
+
+        // Handle file-based PEM certificates
         this.log.trace("Using PEM Certificate authentication");
         try {
             restOptionsToSet.cert = readFileSync(this.session.ISession.cert);
@@ -1333,8 +1411,17 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private appendInputHeaders(options: IHTTPSOptions, reqHeaders?: any[]): IHTTPSOptions {
+        // Create a copy of options for logging, excluding the agent property
+        // The agent (especially custom agents like KeychainAgent) can have complex internal
+        // structures that break the Censor's Object.entries() calls
+        const optionsForLogging: any = { ...options };
+        delete optionsForLogging.agent;
+
+        if (optionsForLogging.cert != null) { optionsForLogging.cert = Censor.CENSOR_RESPONSE; }
+        if (optionsForLogging.key  != null) { optionsForLogging.key  = Censor.CENSOR_RESPONSE; }
+
         this.log.trace("appendInputHeaders called with options on rest client %s",
-            JSON.stringify(Censor.censorObject(options)), this.constructor.name);
+            JSON.stringify(Censor.censorObject(optionsForLogging)), this.constructor.name);
         if (reqHeaders && reqHeaders.length > 0) {
             reqHeaders.forEach((reqHeader: any) => {
                 const requestHeaderKeys: string[] = Object.keys(reqHeader);
@@ -1425,6 +1512,41 @@ export abstract class AbstractRestClient {
             return undefined;
         }
         return this.data.toString("utf8");
+    }
+
+    /**
+     * Get or create a cached KeychainAgent for certificate-based authentication.
+     * This prevents creating new agents/threads for each request, improving performance
+     * for bulk operations that make multiple requests with the same certificate account.
+     *
+     * @private
+     * @param {string} certAccount - Certificate account name
+     * @param {https.AgentOptions} agentOptions - Agent options (rejectUnauthorized, etc.)
+     * @returns {any} Cached or newly created KeychainAgent
+     * @memberof AbstractRestClient
+     */
+    private createKeychainAgent(certAccount: string, agentOptions: https.AgentOptions): any {
+        // Check if we already have a cached agent
+        if (this.session.cachedAgent) {
+            return this.session.cachedAgent;
+        }
+
+        // Create new agent and cache it
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { KeychainAgent } = require("./KeychainAgent");
+            const agent = new KeychainAgent(certAccount, agentOptions);
+
+            this.session.cachedAgent = agent;
+            this.log.debug(`Created KeychainAgent for certificate account: ${certAccount}`);
+            return agent;
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to create KeychainAgent for certificate account: ${certAccount}`,
+                causeErrors: err,
+                additionalDetails: err.message,
+            });
+        }
     }
 
     /**

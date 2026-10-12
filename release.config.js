@@ -32,7 +32,7 @@ module.exports = {
             aliasTags: {
                 "latest": ["zowe-v3-lts"]
             },
-            pruneShrinkwrap: ["@zowe/cli"],
+            publishRegistry: "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/",
             smokeTest: true
         }],
         ["@octorelease/github", {

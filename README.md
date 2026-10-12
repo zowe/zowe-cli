@@ -121,7 +121,7 @@ npm uninstall --global @zowe/cli
 
 Zowe CLI team configuration is made up of different **profiles**. Each profile contains the information that Zowe CLI needs to communicate with the mainframe system, such as credentials and host name.
 
-The most fundamental Zowe CLI profile is a `zosmf` profile, and it is included when Zowe CLI initializes your team configuration. However, you must still add your specific connection information to complete the `zosmf` profile. To do so, update your `~/.zowe/zowe.config.json` configuration file with a text editor or an IDE (such as Visual Studio Code) on your computer.
+The most fundamental Zowe CLI profile is a `zosmf` profile, and it is included when Zowe CLI initializes your team configuration. However, you must still add your specific connection information to complete the `zosmf` profile. To do so, update your `<The User Home Directory>/.zowe/zowe.config.json` configuration file with a text editor or an IDE (such as Visual Studio Code) on your computer.
 
 After you create and/or finalize your profile, confirm that the properties of your profile can connect to and communicate with your mainframe system successfully:
 
@@ -140,7 +140,7 @@ For detailed information about creating profiles, or integrating with Zowe API M
 If you try to use Zowe CLI functionality and you get an error message that Zowe CLI failed to load any profiles, try issuing the following commands:
 
 - `zowe config report-env` to generate a report on the status of the key areas in your working environment. Address any problems indicated in the report.
-- `zowe config edit` to open your `~/.zowe/zowe.config.json` configuration file in your system's default text editor. Fix any properties with incorrect values.
+- `zowe config edit` to open your `<The User Home Directory>/.zowe/zowe.config.json` configuration file in your system's default text editor. Fix any properties with incorrect values.
 - `zowe config secure` to have Zowe CLI prompt for your secure configuration properties in case your secure values are incorrect in your configuration.
 
 **Note:** For these commands, use the `--global-config` option to update your global configuration or `--user-config` for your user configuration.

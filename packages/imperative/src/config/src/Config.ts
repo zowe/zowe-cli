@@ -26,10 +26,11 @@ import { IConfigProfile } from "./doc/IConfigProfile";
 import { IConfigOpts } from "./doc/IConfigOpts";
 import { IConfigSecure } from "./doc/IConfigSecure";
 import { IConfigVault } from "./doc/IConfigVault";
-import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigSecure } from "./api";
+import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigRedact, ConfigSecure } from "./api";
 import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
+import { IO } from "../../io";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
 import { ConfigEnvironmentVariables } from "./ConfigEnvironmentVariables";
 import { IConfigEnvVarManaged } from "./doc/IConfigEnvVarManaged";
@@ -116,7 +117,8 @@ export class Config {
         profiles: ConfigProfiles,
         plugins: ConfigPlugins,
         layers: ConfigLayers,
-        secure: ConfigSecure
+        secure: ConfigSecure,
+        redact: ConfigRedact
     };
 
     /**
@@ -182,6 +184,16 @@ export class Config {
      * @throws An ImperativeError if the configuration does not load successfully
      */
     public async reload(opts?: IConfigOpts) {
+        // Normalize projectDir and homeDir for Windows before loading the config
+        if (process.platform === 'win32') {
+            if(opts?.projectDir) {
+                opts.projectDir = fs.realpathSync.native(opts.projectDir);
+            }
+            if(opts?.homeDir) {
+                opts.homeDir = fs.realpathSync.native(opts.homeDir);
+            }
+        }
+
         this.mLayers = [];
         this.mEnvVarManaged = [];
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
@@ -316,7 +328,8 @@ export class Config {
                 profiles: new ConfigProfiles(this),
                 plugins: new ConfigPlugins(this),
                 layers: new ConfigLayers(this),
-                secure: new ConfigSecure(this)
+                secure: new ConfigSecure(this),
+                redact: new ConfigRedact(this)
             };
         }
         return this.mApi;
@@ -473,6 +486,18 @@ export class Config {
     public set(propertyPath: string, value: any, opts?: { parseString?: boolean; secure?: boolean }) {
         opts = opts || {};
 
+        // Guard the hand-rolled path walker below against prototype pollution
+        // and malformed paths. A path such as "profiles.__proto__.properties.host"
+        // would otherwise walk onto Object.prototype and assign properties there,
+        // and a path with an empty segment (e.g. "profiles..properties.host")
+        // would silently create a bogus "" key.
+        if (ConfigUtils.hasUnsafeOrEmptyProperty(propertyPath)) {
+            throw new ImperativeError({
+                msg: `Invalid property path '${propertyPath}': path segments may not be empty or use ` +
+                    `the reserved property names ${ConfigUtils.UNSAFE_PROP_NAMES.join(", ")}.`
+            });
+        }
+
         const layer = this.layerActive();
         this.mEnvVarManaged.forEach((value) => {
             if (value.global == layer.global && value.user == layer.user && value.propPath == propertyPath) {
@@ -556,7 +581,10 @@ export class Config {
         }
 
         const schemaInfo = this.getSchemaInfo();
-        if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
+        // Only write the schema to disk if the resolved path is contained within the directory of the
+        // config file that declared it.
+        if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./")) &&
+            IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved)) {
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
         }
     }

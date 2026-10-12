@@ -1,10 +1,99 @@
 # Change Log
+
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
 - Enhancement: Updated Node.js types to version 22 for technical currency. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
+
+## Recent Changes
+
+- BugFix: Fixed the `postinstall` plugin validation script so that it no longer runs through a shell. [#2948](https://github.com/zowe/zowe-cli/pull/2948)
+
+## `8.39.0`
+
+- BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
+
+## `8.37.1`
+
+- BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2894](https://github.com/zowe/zowe-cli/pull/2894)
+
+## `8.37.0`
+
+- Enhancement: Added `--tso-account` and `--tso-procedure` options to `zowe zos-files` commands, and corresponding `tsoAccount`/`tsoProcedure` properties to the zosmf profile. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+- Enhancement: Added a postinstall check that verifies the Secrets SDK has a keyring prebuild your platform can load. Because `@zowe/secrets-for-zowe-sdk` is an optional dependency, npm silently omitted it whenever its install script failed, and the first sign of trouble was a `Failed to load Keytar module` error the next time a command needed a credential. You now get a warning at the end of the install that names the binary that was expected and the steps to repair it, with the full workaround documented under [Troubleshooting](https://github.com/zowe/zowe-cli/blob/master/packages/secrets/README.md#troubleshooting). [#2777](https://github.com/zowe/zowe-cli/issues/2777)
+
+## `8.36.1`
+
+- BugFix: Fixed the daemon client reporting a command as successful when the daemon closed the connection without sending an exit code. [#2873](https://github.com/zowe/zowe-cli/pull/2873)
+
+## `8.35.1`
+
+- **Breaking**: `zowe zos-uss` (ssh) commands now verify the z/OS SSH server's host key before sending credentials. On first connect you confirm the fingerprint and the key is saved to your ssh profile; a changed key is rejected. Use `--insecure` to skip verification or `--host-key` to pin a key. [#2813](https://github.com/zowe/zowe-cli/pull/2813)
+
+## `8.35.0`
+- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+- BugFix: Hardened temporary file handling for the `zowe zos-files edit` command: the etag-refresh step no longer uses a shared, fixed path; edit temp directories are now scoped per user (so co-tenants on a shared temp location no longer conflict) and owner-only access is enforced on all platforms; and the downloaded working file is restricted to the owner. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+- BugFix: Updated various dependencies for technical currency. [#2817](https://github.com/zowe/zowe-cli/pull/2817)
+
+## `8.33.3`
+
+- BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2784](https://github.com/zowe/zowe-cli/pull/2784)
+- BugFix: Prevented the daemon client from connecting to a Windows named pipe that belongs to a different user. [#2790](https://github.com/zowe/zowe-cli/pull/2790)
+- BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. The daemon now generates a random secret token at startup, stores it in the owner-only `daemon_pid.json` file, and requires every client request to echo it back (compared in constant time). Because only the owner can read that file, this closes a gap on Windows, where the named pipe can be opened by local users other than the owner and the previously self-asserted user name check was insufficient. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+- BugFix: Fixed "Access is denied" error when running CLI commands on Windows if daemon mode is active. [#2808](https://github.com/zowe/zowe-cli/issues/2808)
+
+## `8.33.1`
+
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+
+## `8.32.3`
+
+- Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
+- BugFix: Updated the `tar` dependency for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
+- Enhancement: Added a new `--legacy` option to the `zowe tso issue command` command, allowing the user to force the use of the previous TSO command functionality (where Zowe CLI creates and tears down the TSO address space via multiple API calls). This is useful for working around an error reading "Did not receive output from the z/OSMF TSO API" that might occur with the newer TSO API. [#2738](https://github.com/zowe/zowe-cli/issues/2738)
+- BugFix: Improved the error message if z/OSMF fails to return any output when executing a TSO command. [#2738](https://github.com/zowe/zowe-cli/issues/2738)
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading job spool. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2740](https://github.com/zowe/zowe-cli/pull/2740)
+- BugFix: Restricted access to daemon-related files and directories to the current user only on all platforms. The daemon directory, `~/.zowe/bin` directory, the extracted native executable, the daemon PID file, and the Unix domain socket are now given owner-only permissions (`0o700`/`0o600` on POSIX, owner-only ACL on Windows) to prevent other local users from accessing them. The daemon directory, the `~/.zowe/bin` directory, and the native executable inside it are also re-restricted when they already exist, so that artifacts created before this fix with looser permissions are corrected on the next `zowe daemon enable` or `zowe daemon restart`. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+
+## `8.32.2`
+
+- BugFix: Updated the error handling for plug-in installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Updated the display of failures from third party programs to include more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+
+## `8.32.1`
+
+- BugFix: Updated `zowe daemon enable` help text to warn users that the Zowe bin directory must be on your PATH after enabling daemon mode. [#2717](https://github.com/zowe/zowe-cli/pull/2717)
+
+
+## `8.32.0`
+
+- Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+- Enhancement: Enhanced the `zowe zos-files upload file-to-uss` command to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added the `--make-directories` option to automatically create missing target directories and the `--skip-directory-check` option to skip checking if the target path is a directory during upload. [#2686](https://github.com/zowe/zowe-cli/pull/2686)
+
+## `8.31.4`
+
+- BugFix: Updated the `lodash` dependency to resolve technical currency. [#2709](https://github.com/zowe/zowe-cli/pull/2709)
+
+## `8.31.2`
+
+- BugFix: Updated the `brace-expansion` and `picomatch` dependencies to resolve technical currency. [#2705](https://github.com/zowe/zowe-cli/pull/2705)
+
+## `8.31.1`
+
+- BugFix: Updated the `flatted` dependency to resolve technical currency. [#2702](https://github.com/zowe/zowe-cli/pull/2702)
+
+## `8.31.0`
+
+- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)
+
+## `8.30.3`
+
+- BugFix: Updated the `tar` dependency to resolve technical currency. [#2696](https://github.com/zowe/zowe-cli/pull/2696)
 
 ## `8.30.2`
 

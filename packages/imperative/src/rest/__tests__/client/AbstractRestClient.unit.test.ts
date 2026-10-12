@@ -31,6 +31,7 @@ import * as streamToString from "stream-to-string";
 import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
+import { format } from "util";
 import { IO } from "../../../io";
 import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -40,6 +41,8 @@ import { Logger } from "../../../logger";
 import { Censor } from "../../../censor";
 import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
 import { cloneDeep } from "lodash";
+import { IRestOptions } from "../../src/client/doc/IRestOptions";
+import { Queue } from "../../../utilities/src/queue/Queue";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -249,6 +252,57 @@ describe("AbstractRestClient tests", () => {
 
         expect(caughtError).toBeUndefined();
         expect(requestFnc).toHaveBeenCalledTimes(1);
+    });
+
+
+    it("redacts passwords from logs but sends the original JSON body", async () => {
+        const body = {
+            userID: "ZOWEUSER",
+            oldPwd: "oldPass",
+            newPwd: "newPass"
+        };
+        const original = { ...body };
+
+        const traces: string[] = [];
+        const logger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(logger);
+        jest.spyOn(logger, "trace").mockImplementation((message, ...args) => {
+            const rendered = format(message, ...args);
+            traces.push(rendered);
+            return rendered;
+        });
+
+        const request = new MockHttpRequestResponse();
+        const writeSpy = jest.spyOn(request, "write");
+        jest.spyOn(https, "request").mockImplementation(
+            ((options: any, callback: any) => {
+                ProcessUtils.nextTick(() => {
+                    const response = new MockHttpRequestResponse();
+                    callback(response);
+
+                    ProcessUtils.nextTick(() => {
+                        response.emit("data", Buffer.from('{"success":true}', "utf8"));
+                        response.emit("end");
+                    });
+                });
+
+                return request;
+            }) as any
+        );
+
+        await RestClient.putExpectJSON(
+            new Session({ hostname: "example.local" }),
+            "/credential-change",
+            [Headers.APPLICATION_JSON],
+            body
+        );
+
+        const transmitted = writeSpy.mock.calls.map(([chunk]) => chunk).join("");
+        expect(JSON.parse(transmitted)).toEqual(original);
+        expect(body).toEqual(original);
+        const diagnosticOutput = traces.join("\n");
+        expect(diagnosticOutput).not.toContain(original.oldPwd);
+        expect(diagnosticOutput).not.toContain(original.newPwd);
     });
 
     it("should not error when chunking data and payload data are present in outgoing request", async () => {
@@ -797,7 +851,8 @@ describe("AbstractRestClient tests", () => {
 
         expect(requestFnc).toHaveBeenCalledTimes(1);
         expect(readEnvSpy).toHaveBeenCalledTimes(1);
-        expect(session.ISession.requestCompletionTimeout).toBeUndefined();
+        // Falls back to the 30 minute default when the env variable value cannot be parsed
+        expect(session.ISession.requestCompletionTimeout).toBe(30 * 60 * 1000);
     });
 
     it("should handle a request completion timeout and use the provided callback", async () => {
@@ -1664,12 +1719,11 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
-                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type %s", "FakeTokenType");
             });
 
-            it("should log the token type when it is a secure value", () => {
+            it("should never log the token value, only the token type", () => {
                 // Create a logger, then feed that to anything that wants it
-                (Censor as any).mCensoredOptions.add("tokenType");
                 const zoweLogger = Logger.getImperativeLogger();
                 jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
                 const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
@@ -1690,8 +1744,9 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
-                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token");
-                expect(zoweTraceLoggerSpy).not.toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type %s", "FakeTokenType");
+                const allLoggedArgs = zoweTraceLoggerSpy.mock.calls.flat().join(" ");
+                expect(allLoggedArgs).not.toContain("FakeTokenValue");
             });
 
             it("should return false when a token session has no token value", () => {
@@ -2738,6 +2793,89 @@ describe("AbstractRestClient tests", () => {
                 const allWritten = Buffer.concat(writtenChunks);
                 expect(allWritten.toString()).toBe("data\r");
             });
+        });
+    });
+
+    describe("request queue", () => {
+        const testSession = new Session({
+            hostname: "test",
+            port: 443,
+            protocol: "https",
+        });
+        const testOptions: IRestOptions = {
+            resource: "/test",
+            request: "GET",
+        };
+
+        beforeAll(() => {
+            jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn();
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+
+                setImmediate(() => {
+                    const response: any = new EventEmitter();
+                    response.statusCode = 200;
+                    response.headers = {};
+                    callback(response);
+                    setImmediate(() => {
+                        response.emit("data", Buffer.from("OK"));
+                        response.emit("end");
+                    });
+                });
+
+                return mockRequest;
+            });
+        });
+
+        afterAll(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should run requests immediately when there is no request queue", async () => {
+            const client = new RestClient(testSession);
+            const requestSpy = jest.spyOn(client as any, "_request");
+            await client.request(testOptions);
+            expect(requestSpy).toHaveBeenCalledTimes(1);
+            expect(requestSpy).toHaveBeenCalledWith(testOptions);
+        });
+
+        it("should enqueue requests when there is a request queue", async () => {
+            const client = new RestClient(testSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), "test:443");
+        });
+
+        it("should enqueue requests when there is a request queue and port is undefined", async () => {
+            const prunedSession = cloneDeep(testSession);
+            prunedSession.ISession.port = undefined;
+            const client = new RestClient(prunedSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), "test");
+        });
+
+        it("should enqueue requests when there is a request queue and host and port are undefined", async () => {
+            const prunedSession = cloneDeep(testSession);
+            prunedSession.ISession.hostname = undefined;
+            prunedSession.ISession.port = undefined;
+            const client = new RestClient(prunedSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            jest.spyOn(client as any, "validateRestHostname").mockImplementation();
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), undefined);
         });
     });
 });

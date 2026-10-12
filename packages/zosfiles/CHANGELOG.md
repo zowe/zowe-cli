@@ -6,6 +6,40 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
 
+## `8.39.0`
+
+- BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)
+- Enhancement: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+- BugFix: Added validation for data set names to the `List` class's `resolveAlias` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+- BugFix: Added validation for data set names to the `Delete` class's `vsam` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+- BugFix: Added more validation for `Create` class's `vsam` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
+
+## `8.37.0`
+
+- Enhancement: Added support for the `tsoAccount` and `tsoProcedure` z/OSMF profile properties. When set, they are sent as the `X-IBM-Request-Acctnum` and `X-IBM-Request-Proc` headers on data set and USS z/OSMF REST requests that support them. [#2653](https://github.com/zowe/zowe-cli/issues/2653)
+
+## `8.35.1`
+
+- **Breaking:** The `ZosFilesUtils.ensureSafeTempDir` function no longer creates missing parent directories recursively; the temp directory's immediate parent must already exist. This avoids a race condition where a recursive `mkdir` function call could create part of the path before the safety checks ran. [#2831](https://github.com/zowe/zowe-cli/pull/2831)
+
+## `8.35.0`
+
+- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+- BugFix: Hardened temporary directory handling for partitioned data set copy so the staging directory is scoped per user (co-tenants on a shared temp location no longer conflict) and owner-only access is enforced and re-verified on all platforms. [#2823](https://github.com/zowe/zowe-cli/pull/2823)
+
+## `8.33.1`
+
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+
+## `8.32.3`
+
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+
+## `8.32.0`
+
+- Enhancement: Added `abortDownload` predicate to `IDownloadOptions` to allow downloads in `allMembers`, `allDataSets` and `ussDir` functions to be cancelled mid-way. [#2715](https://github.com/zowe/zowe-cli/pull/2715)
+- Enhancement: Enhanced the `Upload.fileToUssFile` method to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added the `makeDirectories` option to automatically create missing target directories and the `skipDirectoryCheck` option to skip checking if the target path is a directory during upload. [#2686](https://github.com/zowe/zowe-cli/pull/2686)
+
 ## `8.30.2`
 
 - BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)
