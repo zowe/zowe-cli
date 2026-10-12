@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Recent Changes
 
-- BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#XXXX](https://github.com/zowe/zowe-cli/pull/XXXX)
+- BugFix: Updated minimum supported version of Node from 20 to 22.17.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## Recent Changes
 
