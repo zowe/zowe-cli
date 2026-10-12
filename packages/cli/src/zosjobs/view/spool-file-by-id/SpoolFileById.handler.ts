@@ -35,7 +35,11 @@ export default class SpoolFileByIdHandler extends ZosmfBaseHandler {
             this.mSession,
             job.jobname, job.jobid,
             this.mArguments.spoolfileid,
-            this.mArguments.encoding
+            this.mArguments.encoding,
+            {
+                maxBufferedResponseBytes: this.mArguments.maxResponseBytes,
+                maxDecompressedResponseBytes: this.mArguments.maxResponseBytes
+            }
         );
         this.data.setObj(content);
         this.data.setMessage(`Spool file "${this.mArguments.spoolfileid}" content obtained for job "${job.jobname}(${job.jobid})"`);

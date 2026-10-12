@@ -890,7 +890,9 @@ export default {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
             "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             RANGE: "The range of records to return in either `SSS-EEE` or `SSS,NNN` format. SSS identifies the start record, EEE " +
-            "identifies the end record, and NNN identifies the number of retrieved records."
+            "identifies the end record, and NNN identifies the number of retrieved records.",
+            MAX_RESPONSE_BYTES: "The maximum size, in bytes, of the content to hold in memory and display. The command fails if the content is " +
+                "larger. Increase this value to view larger content. Default: 67108864 (64 MiB)."
         }
     },
     EDIT: {

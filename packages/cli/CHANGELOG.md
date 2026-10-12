@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `--max-response-bytes` option to the `zowe zos-files view data-set`, `zowe zos-files view uss-file`, `zowe zos-jobs view spool-file-by-id` and `zowe zos-jobs view all-spool-content` commands. These commands now fail if the content to display (for `all-spool-content`, the content of any one spool file) is larger than 64 MiB by default; use the option to view larger content.
+
 ## `8.39.0`
 
 - BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)

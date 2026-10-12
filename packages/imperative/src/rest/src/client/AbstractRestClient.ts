@@ -28,7 +28,7 @@ import { Session } from "../session/Session";
 import * as path from "path";
 import { completionTimeoutErrorMessage, IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
-import { Readable, Writable } from "stream";
+import { finished, Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
 import { ImperativeConfig, TextUtils } from "../../../utilities";
@@ -231,6 +231,31 @@ export abstract class AbstractRestClient {
     protected mBytesReceived: number = 0;
 
     /**
+     * Maximum number of response bytes that may accumulate in mChunks for the current request
+     * @private
+     * @type {number}
+     * @memberof AbstractRestClient
+     */
+    protected mMaxBufferedResponseBytes: number = RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES;
+
+    /**
+     * Maximum number of bytes that decompressing the response of the current request may produce
+     * @private
+     * @type {number}
+     * @memberof AbstractRestClient
+     */
+    protected mMaxDecompressedResponseBytes: number | undefined;
+
+    /**
+     * Set once the response has failed terminally (e.g. a size limit was exceeded).
+     * After that, no further response data, end, drain, or finish events are processed.
+     * @private
+     * @type {boolean}
+     * @memberof AbstractRestClient
+     */
+    protected mTerminated: boolean = false;
+
+    /**
      * Whether or not to try and decode any encoded response
      * @private
      * @type {boolean}
@@ -360,6 +385,15 @@ export abstract class AbstractRestClient {
             ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
                 "You cannot specify both writeData and writeStream");
 
+            // Resolve per-request limits and reset response state left by any earlier attempt
+            this.mMaxBufferedResponseBytes = CompressionUtils.resolveLimit(options.maxBufferedResponseBytes,
+                RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES, "maxBufferedResponseBytes");
+            this.mMaxDecompressedResponseBytes = CompressionUtils.resolveLimit(options.maxDecompressedResponseBytes,
+                undefined, "maxDecompressedResponseBytes");
+            this.mChunks = [];
+            this.mBytesReceived = 0;
+            this.mTerminated = false;
+
             // putTopAuthInSession was originally done in the RestClient constructor.
             // As a safety net to ensure that no logic has placed a different cred in the
             // session since then, we again place only the top cred in the session.
@@ -429,6 +463,10 @@ export abstract class AbstractRestClient {
              * Invoke any onError method whenever an error occurs on writing
              */
             clientRequest.on("error", (errorResponse: any) => {
+                // An intentional abort of the response is final; it must not be retried
+                if (this.mTerminated) {
+                    return;
+                }
                 // Handle the HTTP 1.1 Keep-Alive race condition
                 if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
                     this._request(options).then((response: string) => {
@@ -1179,9 +1217,20 @@ export abstract class AbstractRestClient {
         }
 
         if (this.mResponseStream != null) {
-            this.mResponseStream.on("error", (streamError: any) => {
-                this.mReject(streamError instanceof ImperativeError ? streamError : this.populateError({
-                    msg: "Error writing to responseStream",
+            // Fail the request if the destination errors or is closed before it finished writing (e.g. destroyed
+            // without an error while the response is paused for backpressure). Only the writable side matters,
+            // since a duplex destination such as BufferBuilder is read after the request completes.
+            finished(this.mResponseStream, { readable: false }, (streamError?: NodeJS.ErrnoException | null) => {
+                if (streamError == null) {
+                    return; // finished writing; completion is handled when the response ends
+                }
+                if (streamError instanceof ImperativeError) {
+                    this.failResponse(streamError);
+                    return;
+                }
+                this.failResponse(this.populateError({
+                    msg: streamError.code === "ERR_STREAM_PREMATURE_CLOSE" ?
+                        "The responseStream was closed before the response was fully written" : "Error writing to responseStream",
                     causeErrors: streamError,
                     source: "client"
                 }));
@@ -1190,9 +1239,10 @@ export abstract class AbstractRestClient {
                 this.log.debug("Adding decompression transform to response stream");
                 try {
                     this.mDecodeStream = CompressionUtils.decompressStream(this.mResponseStream, this.mContentEncoding,
-                        this.mNormalizeResponseNewlines);
+                        this.mNormalizeResponseNewlines, this.mMaxDecompressedResponseBytes);
                 } catch (err) {
-                    this.mReject(err);
+                    this.failResponse(err);
+                    return;
                 }
             }
         }
@@ -1221,12 +1271,22 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private onData(respData: Buffer): void {
+        if (this.mTerminated) {
+            return;
+        }
         this.log.trace("Data chunk received...");
         this.mBytesReceived += respData.byteLength;
         if (this.requestFailure || this.mResponseStream == null) {
             // buffer the data if we are not streaming
             // or if we encountered an error, since the rest client
             // relies on any JSON error to be in the this.dataString field
+            if (this.mBytesReceived > this.mMaxBufferedResponseBytes) {
+                this.failResponse(new ImperativeError({
+                    msg: `Response exceeds the maximum buffered size of ${this.mMaxBufferedResponseBytes} bytes`,
+                    additionalDetails: "Increase maxBufferedResponseBytes in the request options if a larger response is expected."
+                }));
+                return;
+            }
             this.mChunks.push(respData);
         } else {
             this.log.debug("Streaming data chunk of length " + respData.length + " to response stream");
@@ -1252,8 +1312,19 @@ export abstract class AbstractRestClient {
                 }
             }
             // write the chunk to the response stream if requested
-            (this.mDecodeStream ?? this.mResponseStream).write(respData);
+            const sink = this.mDecodeStream ?? this.mResponseStream;
+            const canWriteMore = sink.write(respData);
             this.lastByteReceived = respData[respData.byteLength - 1];
+
+            // Honor backpressure: stop reading from the socket until the sink has drained
+            if (canWriteMore === false && !this.mTerminated) {
+                this.mResponse.pause();
+                sink.once("drain", () => {
+                    if (!this.mTerminated) {
+                        this.mResponse.resume();
+                    }
+                });
+            }
         }
     }
 
@@ -1264,26 +1335,34 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private onEnd(): void {
+        if (this.mTerminated) {
+            return;
+        }
         this.log.debug("onEnd() called for rest client %s", this.constructor.name);
 
         // Concatenate the chunks, then toss the pieces
         this.mData = Buffer.concat(this.mChunks);
         this.mChunks = [];
 
+        if (this.mContentEncoding != null && this.mData.length > 0) {
+            this.log.debug("Decompressing encoded response");
+            try {
+                this.mData = CompressionUtils.decompressBuffer(this.mData, this.mContentEncoding, this.mMaxDecompressedResponseBytes);
+            } catch (err) {
+                this.failResponse(err);
+                return;
+            }
+        }
+
         if (this.mTask != null) {
             this.mTask.percentComplete = TaskProgress.ONE_HUNDRED_PERCENT;
             this.mTask.stageName = TaskStage.COMPLETE;
         }
-        if (this.mContentEncoding != null && this.mData.length > 0) {
-            this.log.debug("Decompressing encoded response");
-            try {
-                this.mData = CompressionUtils.decompressBuffer(this.mData, this.mContentEncoding);
-            } catch (err) {
-                this.mReject(err);
-            }
-        }
 
         const requestEnd = () => {
+            if (this.mTerminated) {
+                return;
+            }
             if (this.requestFailure) {
                 // Reject the promise with an error
                 const httpStatus = this.response == null ? undefined : this.response.statusCode;
@@ -1303,6 +1382,32 @@ export abstract class AbstractRestClient {
         } else {
             requestEnd();
         }
+    }
+
+    /**
+     * Terminally fail the current response. Rejects the request with the given error, then
+     * destroys the incoming response and the stream chain so that nothing keeps running or
+     * buffering, and ignores any callbacks that are still pending.
+     * Output already written to a response stream is incomplete.
+     * @private
+     * @param {ImperativeError} err - the reason the response failed
+     * @memberof AbstractRestClient
+     */
+    private failResponse(err: ImperativeError): void {
+        if (this.mTerminated) {
+            return;
+        }
+        // Record the failure first so that events caused by the teardown below are ignored
+        this.mTerminated = true;
+        this.mChunks = [];
+        this.mData = Buffer.from([]);
+        this.mReject(err);
+
+        // A late error from the destroyed response must not become an uncaught exception
+        this.mResponse?.on("error", (): void => undefined);
+        this.mResponse?.destroy();
+        this.mResponseStream?.destroy(err);
+        this.mDecodeStream?.destroy();
     }
 
     /**

@@ -43,7 +43,8 @@ export const DatasetDefinition: ICommandDefinition = {
         ViewOptions.encoding,
         ViewOptions.record,
         ViewOptions.volume,
-        ViewOptions.range
+        ViewOptions.range,
+        ViewOptions.maxResponseBytes
     ],
     examples: [
         {

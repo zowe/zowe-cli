@@ -10,16 +10,39 @@
 */
 
 import { Duplex } from "stream";
+import { ImperativeError } from "../../error";
 
+/**
+ * Writable stream that collects everything written to it in memory and gives it back as
+ * one buffer when read.
+ */
 export class BufferBuilder extends Duplex {
     private chunks: Uint8Array[];
+    private bytesBuffered = 0;
+    private readonly maxBytes: number | undefined;
 
-    public constructor() {
+    /**
+     * @param maxBytes Optional maximum number of bytes that may be collected. Writing past it
+     *                 fails the stream with an ImperativeError instead of growing without bound.
+     *                 Must be a positive safe integer.
+     * @throws {ImperativeError} If maxBytes is not a positive safe integer
+     */
+    public constructor(maxBytes?: number) {
         super();
+        if (maxBytes !== undefined && (!Number.isSafeInteger(maxBytes) || maxBytes <= 0)) {
+            throw new ImperativeError({ msg: `Invalid maxBytes: ${String(maxBytes)}. The value must be a positive integer.` });
+        }
+        this.maxBytes = maxBytes;
         this.chunks = [];
     }
 
     public _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error) => void): void {
+        if (this.maxBytes !== undefined && chunk.byteLength > this.maxBytes - this.bytesBuffered) {
+            this.chunks = [];
+            callback(new ImperativeError({ msg: `Buffered data exceeds the maximum of ${this.maxBytes} bytes` }));
+            return;
+        }
+        this.bytesBuffered += chunk.byteLength;
         this.chunks.push(chunk);
         callback();
     }

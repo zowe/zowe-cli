@@ -97,5 +97,17 @@ describe("View data set handler", () => {
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
         });
+
+        it("should pass --max-response-bytes to Get.dataSet as maxBufferedResponseBytes", async () => {
+            const handlerReq = require("../../../../../src/zosfiles/view/ds/Dataset.handler");
+            Get.dataSet = jest.fn(async () => Buffer.from("downloaded"));
+            const response = await new handlerReq.default().processWithSession({
+                arguments: { dataSetName: "testing", maxResponseBytes: 1000000000 },
+                response: { progress: { startBar: jest.fn() } }
+            } as any, {} as any);
+
+            expect(response.commandResponse).toBe("downloaded");
+            expect(Get.dataSet).toHaveBeenCalledWith({}, "testing", expect.objectContaining({ maxBufferedResponseBytes: 1000000000 }));
+        });
     });
 });

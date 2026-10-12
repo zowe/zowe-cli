@@ -76,5 +76,16 @@ export const ViewOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["R"],
         description: strings.RANGE,
         type: "string"
+    },
+
+    /**
+     * The maximum number of bytes of content to hold in memory
+     * @type {ICommandOptionDefinition}
+     */
+    maxResponseBytes: {
+        name: "max-response-bytes",
+        description: strings.MAX_RESPONSE_BYTES,
+        type: "number",
+        numericValueRange: [1, Number.MAX_SAFE_INTEGER]
     }
 };

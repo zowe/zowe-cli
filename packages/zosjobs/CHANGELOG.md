@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IGetJclParms` and an optional `limits` parameter to `GetJobs.getSpoolContent`, `getSpoolContentById` and `getSpoolContentCommon`. JCL and spool content responses larger than the new 64 MiB default limits can now be retrieved by raising them.
+
 ## `8.39.0`
 
 - BugFix: Added validation for job names, job IDs, and spool file IDs before they are used in a z/OSMF REST request. Values that contain characters not allowed in z/OS job names and job IDs, such as `/` or `.`, now result in an error. [#2911](https://github.com/zowe/zowe-cli/pull/2911)

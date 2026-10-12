@@ -82,5 +82,17 @@ describe("View USS file handler", () => {
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
         });
+
+        it("should pass --max-response-bytes to Get.USSFile as maxBufferedResponseBytes", async () => {
+            const handlerReq = require("../../../../../src/zosfiles/view/uss/USSFile.handler");
+            Get.USSFile = jest.fn(async () => Buffer.from("downloaded"));
+            const response = await new handlerReq.default().processWithSession({
+                arguments: { file: "testing", maxResponseBytes: 1000000000 },
+                response: { progress: { startBar: jest.fn() } }
+            } as any, {} as any);
+
+            expect(response.commandResponse).toBe("downloaded");
+            expect(Get.USSFile).toHaveBeenCalledWith({}, "testing", expect.objectContaining({ maxBufferedResponseBytes: 1000000000 }));
+        });
     });
 });

@@ -25,7 +25,9 @@ import { EventEmitter } from "events";
 import { ImperativeError } from "../../../error/src/ImperativeError";
 import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
-import { PassThrough } from "stream";
+import { PassThrough, Writable } from "stream";
+import { randomBytes } from "crypto";
+import { TaskStage } from "../../../operations";
 import * as zlib from "zlib";
 import * as streamToString from "stream-to-string";
 import { AbstractRestClient } from "../../src/client/AbstractRestClient";
@@ -1613,6 +1615,281 @@ describe("AbstractRestClient tests", () => {
             const result = await streamToString(responseStream);
             expect(result).toBe("\r\nabc\r\ndef\r\n");
         });
+    });
+
+    describe("response size limits", () => {
+        const session = () => new Session({ hostname: "test" });
+
+        /**
+         * Mock https.request so that the response emits the given chunks followed by "end",
+         * regardless of whether the client has already failed. This shows that a failed
+         * client ignores everything that arrives afterwards.
+         */
+        const mockResponse = (chunks: Buffer[], headers: { [key: string]: any } = {}, statusCode?: string) => {
+            const request = new MockHttpRequestResponse();
+            const response = new MockHttpRequestResponse();
+            response.headers = headers;
+            if (statusCode != null) {
+                response.statusCode = statusCode;
+            }
+            let finishedEmitting: Promise<void>;
+            const requestFnc = jest.fn((_options, callback) => {
+                finishedEmitting = (async () => {
+                    await ProcessUtils.nextTick(() => callback(response));
+                    for (const chunk of chunks) {
+                        await ProcessUtils.nextTick(() => response.emit("data", chunk));
+                    }
+                    await ProcessUtils.nextTick(() => response.emit("end"));
+                })();
+                return request;
+            });
+            (https.request as any) = requestFnc;
+            return { request, response, requestFnc, finished: () => finishedEmitting };
+        };
+
+        beforeEach(() => {
+            (AbstractRestClient.prototype as any).mDecode = true;
+        });
+
+        afterEach(() => {
+            (AbstractRestClient.prototype as any).mDecode = false;
+        });
+
+        it.each([0, -1, 1.5, NaN, Infinity])("should reject invalid maxBufferedResponseBytes %p before sending", async (invalid) => {
+            const mock = mockResponse([]);
+            await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxBufferedResponseBytes: invalid }))
+                .rejects.toThrow("Invalid maxBufferedResponseBytes");
+            expect(mock.requestFnc).not.toHaveBeenCalled();
+        });
+
+        it("should enforce limits passed to getExpectString", async () => {
+            const compressed = zlib.gzipSync(Buffer.alloc(2048, "a"));
+            let mock = mockResponse([Buffer.alloc(11, "a")]);
+            await expect(RestClient.getExpectString(session(), "/resource", [], { maxBufferedResponseBytes: 10 }))
+                .rejects.toThrow("maximum buffered size of 10 bytes");
+            await mock.finished();
+
+            mock = mockResponse([compressed], { "content-encoding": "gzip" });
+            await expect(RestClient.getExpectString(session(), "/resource", [], { maxDecompressedResponseBytes: 1024 }))
+                .rejects.toThrow("Failed to decompress response buffer");
+            await mock.finished();
+        });
+
+        it("should reject invalid maxDecompressedResponseBytes before sending", async () => {
+            const mock = mockResponse([]);
+            await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxDecompressedResponseBytes: 0 }))
+                .rejects.toThrow("Invalid maxDecompressedResponseBytes");
+            expect(mock.requestFnc).not.toHaveBeenCalled();
+        });
+
+        it("should fail when buffered input crosses the cap over several chunks and ignore what follows", async () => {
+            const mock = mockResponse([Buffer.from("1234"), Buffer.from("5678"), Buffer.from("90ab"), Buffer.from("cdef")]);
+            const client = new RestClient(session());
+
+            let caughtError;
+            try {
+                await client.request({ resource: "/resource", request: "GET" as any, maxBufferedResponseBytes: 10 });
+            } catch (error) {
+                caughtError = error;
+            }
+            await mock.finished();
+
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("maximum buffered size of 10 bytes");
+            expect(mock.response.destroyed).toBe(true);
+            // the chunk that crossed the cap and later chunks were not stored
+            expect((client as any).mChunks).toEqual([]);
+            expect(client.data.length).toBe(0);
+        });
+
+        it("should allow a response that is exactly the cap", async () => {
+            mockResponse([Buffer.from("12345"), Buffer.from("67890")]);
+            const result = await RestClient.getExpectFullResponse(session(),
+                { resource: "/resource", maxBufferedResponseBytes: 10 });
+            expect(result.data.toString()).toBe("1234567890");
+        });
+
+        it("should fail when a single chunk is larger than the cap", async () => {
+            const mock = mockResponse([Buffer.alloc(11, "a")]);
+            await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxBufferedResponseBytes: 10 }))
+                .rejects.toThrow("maximum buffered size of 10 bytes");
+            await mock.finished();
+            expect(mock.response.destroyed).toBe(true);
+        });
+
+        it("should enforce the cap when Content-Length is missing or claims a larger size", async () => {
+            for (const headers of [{}, { "content-length": "1000000" }]) {
+                const mock = mockResponse([Buffer.alloc(11, "a")], headers);
+                await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxBufferedResponseBytes: 10 }))
+                    .rejects.toThrow("maximum buffered size of 10 bytes");
+                await mock.finished();
+            }
+        });
+
+        it("should enforce the cap on compressed input", async () => {
+            const compressed = zlib.gzipSync(randomBytes(64));
+            const mock = mockResponse([compressed], { "content-encoding": "gzip" });
+            await expect(RestClient.getExpectFullResponse(session(),
+                { resource: "/resource", maxBufferedResponseBytes: compressed.length - 1 })).rejects.toThrow("maximum buffered size");
+            await mock.finished();
+        });
+
+        it("should fail when compressed output exceeds its limit despite small compressed input", async () => {
+            const compressed = zlib.gzipSync(Buffer.alloc(2048, "a"));
+            expect(compressed.length).toBeLessThan(100);
+            const mock = mockResponse([compressed], { "content-encoding": "gzip" });
+            const task = { percentComplete: 0, statusMessage: "", stageName: TaskStage.IN_PROGRESS };
+
+            let caughtError;
+            try {
+                await RestClient.getExpectFullResponse(session(), { resource: "/resource", maxDecompressedResponseBytes: 1024, task });
+            } catch (error) {
+                caughtError = error;
+            }
+            await mock.finished();
+
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("Failed to decompress response buffer");
+            expect(caughtError.causeErrors.code).toBe("ERR_BUFFER_TOO_LARGE");
+            expect(mock.response.destroyed).toBe(true);
+            // a rejected response is not reported as complete
+            expect(task.stageName).toBe(TaskStage.IN_PROGRESS);
+            expect(task.percentComplete).toBe(0);
+        });
+
+        it("should fail and tear down a streamed response whose decompressed output exceeds its limit", async () => {
+            const compressed = zlib.gzipSync(Buffer.alloc(2048, "a"));
+            const mock = mockResponse([compressed, compressed], { "content-encoding": "gzip" });
+            const responseStream = new PassThrough();
+            const client = new RestClient(session());
+
+            let caughtError;
+            try {
+                await client.request({
+                    resource: "/resource", request: "GET" as any, responseStream, maxDecompressedResponseBytes: 1024
+                });
+            } catch (error) {
+                caughtError = error;
+            }
+            await mock.finished();
+
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("exceeds 1024 bytes");
+            expect(mock.response.destroyed).toBe(true);
+            expect(responseStream.destroyed).toBe(true);
+            expect((client as any).mDecodeStream.destroyed).toBe(true);
+            expect(responseStream.read()).toBeNull();
+        });
+
+        it("should enforce the buffered cap on an HTTP error body when a response stream was supplied", async () => {
+            const mock = mockResponse([Buffer.alloc(6, "e"), Buffer.alloc(6, "e")], {}, "500");
+            const responseStream = new PassThrough();
+
+            await expect(RestClient.getExpectFullResponse(session(),
+                { resource: "/resource", responseStream, maxBufferedResponseBytes: 10 })).rejects.toThrow("maximum buffered size of 10 bytes");
+            await mock.finished();
+            expect(responseStream.destroyed).toBe(true);
+        });
+
+        it("should not retry an intentional abort as a connection reset", async () => {
+            const mock = mockResponse([Buffer.alloc(11, "a")]);
+            await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxBufferedResponseBytes: 10 }))
+                .rejects.toThrow("maximum buffered size");
+            await mock.finished();
+
+            const resetError: any = new Error("aborted");
+            resetError.code = "ECONNRESET";
+            mock.request.reusedSocket = true;
+            mock.request.emit("error", resetError);
+
+            expect(mock.requestFnc).toHaveBeenCalledTimes(1);
+        });
+
+        it("should reset failure state for a new request on the same client", async () => {
+            const client = new RestClient(session());
+            const first = mockResponse([Buffer.alloc(11, "a")]);
+            await expect(client.request({ resource: "/resource", request: "GET" as any, maxBufferedResponseBytes: 10 }))
+                .rejects.toThrow("maximum buffered size");
+            await first.finished();
+
+            mockResponse([Buffer.from("12345")]);
+            await expect(client.request({ resource: "/resource", request: "GET" as any, maxBufferedResponseBytes: 10 }))
+                .resolves.toBe("12345");
+        });
+
+        it.each([
+            ["uncompressed", undefined, Buffer.alloc(10, "a")],
+            ["gzip-compressed", "gzip", randomBytes(40000)]
+        ])("should pause the response while the destination is full and resume on drain (%s)", async (_name, encoding, payload) => {
+            const pendingWrites: (() => void)[] = [];
+            const written: Buffer[] = [];
+            const slowStream = new Writable({
+                highWaterMark: 4,
+                write(chunk, _, callback) {
+                    written.push(chunk);
+                    pendingWrites.push(callback);
+                }
+            });
+            const request = new MockHttpRequestResponse();
+            const response = new MockHttpRequestResponse();
+            response.headers = encoding ? { "content-encoding": encoding } : {};
+            let onResponse: (res: MockHttpRequestResponse) => void;
+            (https.request as any) = jest.fn((_options, callback) => {
+                onResponse = callback;
+                return request;
+            });
+
+            const promise = RestClient.getExpectFullResponse(session(), { resource: "/resource", responseStream: slowStream });
+            onResponse(response);
+            response.emit("data", encoding ? zlib.gzipSync(payload) : payload);
+            expect(response.paused).toBe(true);
+
+            // The destination drains: the response resumes, and the rest of the response can complete
+            let settled = false;
+            promise.finally(() => settled = true);
+            let resumed = false;
+            while (!settled) {
+                pendingWrites.splice(0).forEach((complete) => complete());
+                await new Promise((resolve) => setImmediate(resolve));
+                if (!resumed && !response.paused) {
+                    resumed = true;
+                    response.emit("end");
+                }
+            }
+            await promise;
+
+            expect(resumed).toBe(true);
+            expect(Buffer.concat(written)).toEqual(payload);
+        });
+
+        it.each([
+            ["uncompressed", undefined, Buffer.alloc(10, "a")],
+            ["gzip-compressed", "gzip", randomBytes(40000)]
+        ])("should reject instead of hanging when the destination is destroyed without an error during backpressure (%s)",
+            async (_name, encoding, payload) => {
+                const slowStream = new Writable({
+                    highWaterMark: 4,
+                    write() { /* never completes the write, so the stream stays full */ }
+                });
+                const request = new MockHttpRequestResponse();
+                const response = new MockHttpRequestResponse();
+                response.headers = encoding ? { "content-encoding": encoding } : {};
+                let onResponse: (res: MockHttpRequestResponse) => void;
+                (https.request as any) = jest.fn((_options, callback) => {
+                    onResponse = callback;
+                    return request;
+                });
+
+                const promise = RestClient.getExpectFullResponse(session(), { resource: "/resource", responseStream: slowStream });
+                onResponse(response);
+                response.emit("data", encoding ? zlib.gzipSync(payload) : payload);
+                expect(response.paused).toBe(true);
+
+                slowStream.destroy(); // closes without emitting an error
+
+                await expect(promise).rejects.toThrow("closed before the response was fully written");
+                expect(response.destroyed).toBe(true);
+            });
     });
 
     describe("private functions", () => {
