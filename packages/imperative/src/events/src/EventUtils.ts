@@ -285,6 +285,8 @@ export class EventUtils {
 
     /**
      * Sets up a file watcher for a specific event, triggering callbacks when the event file is updated.
+     * Returning a watcher is not a readiness signal: registration may be queued until the next native I/O poll.
+     * On macOS, file watchers are re-armed only after the native callback and its Promise continuations finish.
      *
      * @param {EventProcessor} eeInst - The event processor instance.
      * @param {string} eventName - The name of the event.

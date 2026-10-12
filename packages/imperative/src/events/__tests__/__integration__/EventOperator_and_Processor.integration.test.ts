@@ -15,6 +15,12 @@ import * as fs from "fs";
 import * as path from "path";
 import { IExtendersJsonOpts } from "../../../config/src/doc/IExtenderOpts";
 
+interface ITestSubscription {
+    notification: Promise<void>;
+    callback: jest.Mock<void, []>;
+    disposable: IEventDisposable;
+}
+
 const zoweApp = "Zowe";
 const sampleApps = ["firstApp", "secondApp"];
 let zoweCliHome: string;
@@ -34,12 +40,19 @@ describe("Event Operator and Processor", () => {
     const customUserEvent = "onCustomUserEvent";
     let subscriptions: IEventDisposable[] = [];
 
-    function subscribe(processor: EventProcessor, eventName: string, type: "shared" | "user" = "shared") {
+    async function subscribe(
+        processor: EventProcessor,
+        eventName: string,
+        type: "shared" | "user" = "shared"
+    ): Promise<ITestSubscription> {
         let notify: () => void;
         const notification = new Promise<void>(resolve => { notify = resolve; });
         const callback = jest.fn(() => notify());
         const disposable = type === "shared" ? processor.subscribeShared(eventName, callback) : processor.subscribeUser(eventName, callback);
         subscriptions.push(disposable);
+        // macOS queues file-watcher registration until the native poll and re-arms only after callbacks return.
+        // A real async I/O round trip avoids emitting from registration or watcher-callback microtasks.
+        await fs.promises.stat(processor.subscribedEvents.get(eventName).eventFilePath);
         return { notification, callback, disposable };
     }
 
@@ -66,7 +79,7 @@ describe("Event Operator and Processor", () => {
     describe("Zowe Events", () => {
         it("creates an event file on subscription and delivers a Zowe event", async () => {
             const watcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const subscription = subscribe(watcher, sharedZoweEvent);
+            const subscription = await subscribe(watcher, sharedZoweEvent);
             const event = watcher.subscribedEvents.get(sharedZoweEvent);
             expect(fs.statSync(event.eventFilePath).isFile()).toBe(true);
             expect(subscription.callback).not.toHaveBeenCalled();
@@ -81,8 +94,8 @@ describe("Event Operator and Processor", () => {
         it("delivers a Zowe event to independent watcher instances", async () => {
             const firstWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
             const secondWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const first = subscribe(firstWatcher, sharedZoweEvent);
-            const second = subscribe(secondWatcher, sharedZoweEvent);
+            const first = await subscribe(firstWatcher, sharedZoweEvent);
+            const second = await subscribe(secondWatcher, sharedZoweEvent);
 
             EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent);
             await Promise.all([first.notification, second.notification]);
@@ -94,8 +107,8 @@ describe("Event Operator and Processor", () => {
         it("keeps another instance subscribed when one subscription is closed", async () => {
             const firstWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
             const secondWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const first = subscribe(firstWatcher, sharedZoweEvent);
-            const second = subscribe(secondWatcher, sharedZoweEvent);
+            const first = await subscribe(firstWatcher, sharedZoweEvent);
+            const second = await subscribe(secondWatcher, sharedZoweEvent);
             second.disposable.close();
 
             EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent);
@@ -111,7 +124,7 @@ describe("Event Operator and Processor", () => {
     describe("Custom Events", () => {
         it("creates and delivers a custom user event in its application directory", async () => {
             const watcher = new EventProcessor(sampleApps[1], IProcessorTypes.WATCHER);
-            const subscription = subscribe(watcher, customUserEvent, "user");
+            const subscription = await subscribe(watcher, customUserEvent, "user");
             const event = watcher.subscribedEvents.get(customUserEvent);
             expect(event.eventFilePath).toBe(path.join(zoweCliHome, ".events", sampleApps[1], customUserEvent));
             expect(fs.statSync(event.eventFilePath).isFile()).toBe(true);
