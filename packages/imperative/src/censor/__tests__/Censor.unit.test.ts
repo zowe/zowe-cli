@@ -710,6 +710,28 @@ describe("Censor tests", () => {
             expect(received).toEqual(expected);
             expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
         });
+
+        it("should mask password-change fields without config", () => {
+            Censor.setCensoredOptions();
+            (Censor as any).mConfig = null;
+            impConfigSpy.mockReturnValue({ config: { exists: false } } as any);
+
+            const body = {
+                userID: "ZOWEUSER",
+                oldPwd: "lastPass",
+                newPwd: "newPass"
+            };
+            const original = { ...body };
+
+            expect(Censor.censorObject({ writeData: body })).toEqual({
+                writeData: {
+                    userID: body.userID,
+                    oldPwd: Censor.CENSOR_RESPONSE,
+                    newPwd: Censor.CENSOR_RESPONSE
+                }
+            });
+            expect(body).toEqual(original);
+        });
     });
 
     describe("censorYargsArguments", () => {
