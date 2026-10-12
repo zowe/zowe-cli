@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed the `postinstall` plugin validation script so that it no longer runs through a shell. [#2948](https://github.com/zowe/zowe-cli/pull/2948)
+
 ## `8.39.0`
 
 - Enhancement: Added the `--allowed-login-method` connection option to CLI base connection options (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, `prompt`). Restricts which credentials a user is prompted for when logging into a service or updating stored credentials, so that they comply with site requirements. Defaults to 'prompt' when omitted. [#2906](https://github.com/zowe/zowe-cli/issues/2906)
