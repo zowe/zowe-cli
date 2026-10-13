@@ -21,6 +21,7 @@ import { Session } from "../../rest/src/session/Session";
 import * as SessConstants from "../../rest/src/session/SessConstants";
 import { AuthOrder, PropUse } from "../../rest/src/session/AuthOrder";
 import { Logger } from "../../logger";
+import { ImperativeError } from "../../error";
 import {
     IConfigAutoStoreFindActiveProfileOpts,
     IConfigAutoStoreFindAuthHandlerForProfileOpts,
@@ -181,8 +182,8 @@ export class ConfigAutoStore {
 
         const shouldFetchToken = !isDirectLoginMethod && (hasBasicCreds || hasCertCreds && isApimlLoginMethod);
 
+        const credProps = ["user", "password", "cert", "certKey", "certFile", "certKeyFile", "certAccount"];
         if (shouldFetchToken && await this._fetchTokenForSessCfg({ ...opts, profilePath })) {
-            const credProps = ["user", "password", "cert", "certKey", "certFile", "certKeyFile", "certAccount"];
             profileProps = profileProps.filter(propName => !credProps.includes(propName));
             if (!profileProps.includes("tokenValue")) {
                 profileProps.push("tokenValue");
@@ -192,6 +193,11 @@ export class ConfigAutoStore {
                 opts.sessCfg.tokenType !== existingTokenType) {
                 profileProps.push("tokenType");
             }
+        } else if (isApimlLoginMethod && profileProps.some(propName => credProps.includes(propName))) {
+            throw new ImperativeError({
+                msg: `Unable to log in to ${profileName} with the allowedLoginMethod '${opts.sessCfg?.allowedLoginMethod}'. ` +
+                    "No authentication handler was found to exchange your credentials for an APIML token, so they were not stored."
+            });
         }
 
         const beforeLayer = config.api.layers.get();

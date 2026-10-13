@@ -555,6 +555,32 @@ describe("ConfigAutoStore tests", () => {
                 expect(fruitProfile.secure).toEqual(["tokenValue"]);
             });
 
+            it("should throw an error and not store creds when allowedLoginMethod is apiml-basic and no auth handler is found", async () => {
+                await setupConfigToLoad({
+                    profiles: {
+                        fruit: { type: "fruit", properties: { allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC } },
+                        base: { type: "base", properties: { host: "example.com" } }
+                    },
+                    defaults: { fruit: "fruit", base: "base" },
+                    autoStore: true
+                });
+                ImperativeConfig.instance.config.save = jest.fn();
+                jest.spyOn(ConfigAutoStore as any, "_findAuthHandlerForProfile").mockReturnValueOnce(undefined);
+
+                await expect(ConfigAutoStore.storeSessCfgProps(handlerParams as any, {
+                    hostname: "example.com",
+                    allowedLoginMethod: SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC,
+                    user: "admin",
+                    password: "secretpassword"
+                }, ["user", "password"])).rejects.toThrow("No authentication handler was found");
+
+                expect(ImperativeConfig.instance.config.save).not.toHaveBeenCalled();
+                const fruitProfile = ImperativeConfig.instance.config.properties.profiles.fruit;
+                expect(fruitProfile.properties).not.toHaveProperty("user");
+                expect(fruitProfile.properties).not.toHaveProperty("password");
+                expect(fruitProfile.secure ?? []).toEqual([]);
+            });
+
             it("should store token value when allowedLoginMethod is apiml-cert-pem", async () => {
                 await setupConfigToLoad({
                     profiles: {
