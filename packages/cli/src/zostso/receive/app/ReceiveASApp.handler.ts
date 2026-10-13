@@ -22,25 +22,29 @@ export default class Handler extends ZosTsoBaseHandler {
     // Process the command and produce the start response (returns servlet)
     public async processCmd(commandParameters: IHandlerParameters) {
 
-        commandParameters.response.progress.startSpinner("Receiving response...");
+        try {
+            commandParameters.response.progress.startSpinner("Receiving response...");
 
-        const response = await AddressSpaceApps.receive(
-            this.mSession,
-            this.mArguments.account,
-            {
-                appKey: commandParameters.arguments.appKey,
-                servletKey: commandParameters.arguments.servletKey,
-                receiveUntilReady: commandParameters.arguments.receiveUntilReady,
-                timeout: commandParameters.arguments.timeout
-            },
-        );
+            const response = await AddressSpaceApps.receive(
+                this.mSession,
+                this.mArguments.account,
+                {
+                    appKey: commandParameters.arguments.appKey,
+                    servletKey: commandParameters.arguments.servletKey,
+                    receiveUntilReady: commandParameters.arguments.receiveUntilReady,
+                    timeout: commandParameters.arguments.timeout
+                },
+            );
+            commandParameters.response.progress.endSpinner();
 
-        commandParameters.response.progress.endSpinner();
-
-        commandParameters.response.console.log("\n");
-        response.tsoData.forEach((data) => {
-            commandParameters.response.console.log(typeof data === 'string' ? data : data?.DATA ?? "");
-        });
-        commandParameters.response.data.setObj(response);
+            commandParameters.response.console.log("\n");
+            response.tsoData.forEach((data) => {
+                commandParameters.response.console.log(typeof data === 'string' ? data : data?.DATA ?? "");
+            });
+            commandParameters.response.data.setObj(response);
+        }
+        finally {
+            commandParameters.response.progress.endSpinner();
+        }
     }
 }

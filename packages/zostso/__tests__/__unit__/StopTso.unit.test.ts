@@ -106,8 +106,9 @@ describe("StopTso getResources", () => {
         expect(queryResponse).not.toBeDefined();
         expect(error.details.msg).toEqual(noServletKeyInput.message);
     });
-    test.each(["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam"])
-    ('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let queryResponse: string;
         let error: ImperativeError;
         try {

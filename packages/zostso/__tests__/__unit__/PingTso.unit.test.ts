@@ -71,8 +71,9 @@ describe("PingTsoCommand Test", () => {
             ISSUE_HEADERS, payload);
         expectZosmfResponseSucceeded(response, error);
     });
-    test.each(["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam"])
-    ('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: IPingResponse;
         try {
