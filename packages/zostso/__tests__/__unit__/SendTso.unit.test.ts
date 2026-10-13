@@ -83,7 +83,7 @@ describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {
     });
     test.each(
         ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
-            "lucky#9", "contains a space", "any%complete"]
+            "lucky#9", "contains+plus", "any%complete"]
     )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: ISendResponse;
@@ -189,7 +189,7 @@ describe("TsoSend getDataFromTSO", () => {
 
     test.each(
         ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
-            "lucky#9", "contains a space", "any%complete"]
+            "lucky#9", "contains+plus", "any%complete"]
     )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: IZosmfTsoResponse;

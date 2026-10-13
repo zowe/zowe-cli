@@ -188,7 +188,7 @@ export class TsoConstants {
     /**
      * Characters disallowed in the servletKey and appKey fields used by TSO APIs,
      */
-    public static readonly TSO_FIELD_ILLEGAL_CHARACTERS: string[] = [".", "/", "?", "#", "%", " "];
+    public static readonly TSO_FIELD_ILLEGAL_CHARACTERS: string[] = [".", "/", "?", "#", "%", "+"];
 
 }
 
