@@ -192,7 +192,7 @@ describe("TsoSend getDataFromTSO", () => {
         let error: ImperativeError;
         let response: IZosmfTsoResponse;
         try {
-            response = await SendTso.getDataFromTSO(PRETEND_SESSION, "key");
+            response = await SendTso.getDataFromTSO(PRETEND_SESSION, servletKey);
         } catch (thrownError) {
             error = thrownError;
         }
