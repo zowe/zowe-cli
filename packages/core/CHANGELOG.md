@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.39.1`
 
 - BugFix: Replaced trace log for data chunks with a byte-count message to keep log size minimal. [#2931](https://github.com/zowe/zowe-cli/pull/2931)
 

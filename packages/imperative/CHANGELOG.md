@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.39.1`
 
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
