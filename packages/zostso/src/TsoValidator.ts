@@ -9,8 +9,8 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
-import { noSessionTso, noTsoIssueInput, noTsoStartInput, noTsoStopInput, noZosmfResponse } from "./TsoConstants";
+import { AbstractSession, ImperativeError, ImperativeExpect, TextUtils } from "@zowe/imperative";
+import { noSessionTso, noTsoIssueInput, noTsoStartInput, noTsoStopInput, noZosmfResponse, TsoConstants } from "./TsoConstants";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { IStopTsoParms } from "./doc/input/IStopTsoParms";
 import { IIssueTsoParms } from "./doc/input/IIssueTsoParms";
@@ -76,13 +76,14 @@ export class TsoValidator {
      * Validate supplied parameters
      * @static
      * @param {AbstractSession} session - representing connection to this api
-     * @param {string} text - string to check if not empty or undefined
+     * @param {string} servletKey - servletKey to check if not empty or undefined and check for illegal characters
      * @param {string} errorMsg - message to show in text case validation fails
      * @memberof TsoValidator
      */
-    public static validatePingParms(session: AbstractSession, text: string, errorMsg: string) {
+    public static validatePingParms(session: AbstractSession, servletKey: string, errorMsg: string) {
         this.validateSession(session);
-        this.validateNotEmptyString(text, errorMsg);
+        this.validateNotEmptyString(servletKey, errorMsg);
+        this.validateServletKey(servletKey);
     }
 
     /**
@@ -125,6 +126,14 @@ export class TsoValidator {
     public static validateErrorMessageFromZosmf(zosmfResponse: IZosmfTsoResponse) {
         if (zosmfResponse.msgData) {
             ImperativeExpect.toBeEqual(zosmfResponse.msgData, "undefined", zosmfResponse.msgData[0].messageText);
+        }
+    }
+
+    public static validateServletKey(servletKey: string){
+        for (const character of TsoConstants.SERVLET_KEY_ILLEGAL_CHARACTERS) {
+            if (servletKey.includes(character)){
+                throw new ImperativeError({msg: "The servletKey contains illegal characters."});
+            }
         }
     }
 

@@ -50,6 +50,7 @@ export class SendTso {
 
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(commandParams.servletKey, noServletKeyInput.message);
+        TsoValidator.validateServletKey(commandParams.servletKey);
         TsoValidator.validateNotEmptyString(commandParams.data, noDataInput.message);
 
         const parameters: string = "/" + TsoConstants.RES_START_TSO + "/" + commandParams.servletKey + TsoConstants.RES_DONT_READ_REPLY;
