@@ -1702,10 +1702,14 @@ describe("AbstractRestClient tests", () => {
                 expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
             });
 
-            it("should leave string and buffer payloads unchanged", () => {
-                const buf = Buffer.from("data");
+            it("should leave string payloads unchanged", () => {
                 expect(makeClient({}, "plain").populateError({ msg: "f", source: "client" }).mDetails.payload).toEqual("plain");
-                expect(makeClient({}, buf).populateError({ msg: "f", source: "client" }).mDetails.payload).toBe(buf);
+            });
+
+            it("should replace buffer payloads with a size placeholder", () => {
+                const err = makeClient({}, Buffer.from("secretvalue")).populateError({ msg: "f", source: "client" });
+                expect(err.mDetails.payload).toEqual("<Buffer: 11 bytes>");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
             });
 
             it("should return the censor response if censoring throws", () => {

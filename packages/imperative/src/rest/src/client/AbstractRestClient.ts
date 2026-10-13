@@ -1307,10 +1307,14 @@ export abstract class AbstractRestClient {
 
     /**
      * Censor request headers/payload so sensitive values are not serialized into errors or logs.
-     * Non-object data (strings, buffers) is returned unchanged.
+     * Buffers cannot be inspected for sensitive keys, so they are replaced with a size placeholder.
+     * Other non-object data (strings) is returned unchanged.
      */
     private censorRequestData(data: any): any {
-        if (data == null || typeof data !== "object" || Buffer.isBuffer(data)) {
+        if (Buffer.isBuffer(data)) {
+            return `<Buffer: ${data.length} bytes>`;
+        }
+        if (data == null || typeof data !== "object") {
             return data;
         }
         try {
