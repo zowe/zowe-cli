@@ -24,6 +24,9 @@ describe("ConfigAutoStore tests", () => {
             authConfig: [
                 {
                     handler: __dirname + "/../../imperative/src/auth/__tests__/__data__/FakeAuthHandler"
+                },
+                {
+                    handler: __dirname + "/../../imperative/src/auth/__tests__/__data__/FakeApimlAuthHandler"
                 }
             ],
             schema: {
