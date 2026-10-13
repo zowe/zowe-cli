@@ -129,6 +129,11 @@ export class TsoValidator {
         }
     }
 
+    /**
+     * Validate that the provided servletKey does not contain any illegal characters.
+     * @param {string} servletKey - the key to validate
+     * @memberof TsoValidator
+     */
     public static validateServletKey(servletKey: string){
         for (const character of TsoConstants.SERVLET_KEY_ILLEGAL_CHARACTERS) {
             if (servletKey.includes(character)){
