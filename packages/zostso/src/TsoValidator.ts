@@ -83,7 +83,7 @@ export class TsoValidator {
     public static validatePingParms(session: AbstractSession, servletKey: string, errorMsg: string) {
         this.validateSession(session);
         this.validateNotEmptyString(servletKey, errorMsg);
-        this.validateServletKey(servletKey);
+        this.validateFieldForURL(servletKey, "servletKey");
     }
 
     /**
@@ -130,15 +130,15 @@ export class TsoValidator {
     }
 
     /**
-     * Validate that the provided servletKey does not contain any illegal characters.
-     * @param {string} servletKey - the key to validate
+     * Validate that the provided value (currently used for appKey and servletKey)
+     *  does not contain any illegal characters.
+     * @param {string} value - the string value to validate
+     * @param {string} fieldName - the name of the field, used in the error message should validation fail
      * @memberof TsoValidator
      */
-    public static validateServletKey(servletKey: string){
-        for (const character of TsoConstants.SERVLET_KEY_ILLEGAL_CHARACTERS) {
-            if (servletKey.includes(character)){
-                throw new ImperativeError({msg: "The servletKey contains illegal characters."});
-            }
+    public static validateFieldForURL(value: string, fieldName: string){
+     if (TsoConstants.TSO_FIELD_ILLEGAL_CHARACTERS.some(char => value.includes(char))) {
+            throw new ImperativeError({ msg: `The ${fieldName} contains illegal characters.` });
         }
     }
 

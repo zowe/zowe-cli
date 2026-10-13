@@ -186,9 +186,9 @@ export class TsoConstants {
     public static readonly DEFAULT_NO_DATA_DEBOUNCE: number = 100;
 
     /**
-     * Characters disallowed in the servletKey field used by TSO APIs.
+     * Characters disallowed in the servletKey and appKey fields used by TSO APIs,
      */
-    public static readonly SERVLET_KEY_ILLEGAL_CHARACTERS: string[] = [".", "/", "?"];
+    public static readonly TSO_FIELD_ILLEGAL_CHARACTERS: string[] = [".", "/", "?", "#", "%", " "];
 
 }
 

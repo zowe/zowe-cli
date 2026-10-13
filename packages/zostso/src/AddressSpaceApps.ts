@@ -68,7 +68,9 @@ export class AddressSpaceApps {
             params.queueID = response.startResponse.zosmfTsoResponse.queueID;
         }
         TsoValidator.validateNotEmptyString(params.servletKey,  noServletKeyInput.message);
-        TsoValidator.validateServletKey(params.servletKey);
+        TsoValidator.validateFieldForURL(params.servletKey, "servletKey");
+        TsoValidator.validateFieldForURL(params.appKey, "appKey");
+
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const response = await ZosmfRestClient.postExpectJSON<IASAppResponse & { ver: string }>(
             session,
@@ -89,7 +91,8 @@ export class AddressSpaceApps {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         TsoValidator.validateNotEmptyString(params.servletKey,  noServletKeyInput.message);
-        TsoValidator.validateServletKey(params.servletKey);
+        TsoValidator.validateFieldForURL(params.servletKey, "servletKey");
+        TsoValidator.validateFieldForURL(params.appKey, "appKey");
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse = await ZosmfRestClient.putExpectJSON<IASAppResponse & { ver: string }>(
@@ -110,7 +113,8 @@ export class AddressSpaceApps {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         TsoValidator.validateNotEmptyString(params.servletKey,  noServletKeyInput.message);
-        TsoValidator.validateServletKey(params.servletKey);
+        TsoValidator.validateFieldForURL(params.servletKey, "servletKey");
+        TsoValidator.validateFieldForURL(params.appKey, "appKey");
 
         const TIMEOUT_SECONDS: number = params.timeout;
 

@@ -50,7 +50,7 @@ export class SendTso {
 
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(commandParams.servletKey, noServletKeyInput.message);
-        TsoValidator.validateServletKey(commandParams.servletKey);
+        TsoValidator.validateFieldForURL(commandParams.servletKey, "servletKey");
         TsoValidator.validateNotEmptyString(commandParams.data, noDataInput.message);
 
         const parameters: string = "/" + TsoConstants.RES_START_TSO + "/" + commandParams.servletKey + TsoConstants.RES_DONT_READ_REPLY;
@@ -70,7 +70,7 @@ export class SendTso {
     public static async getDataFromTSO(session: AbstractSession, servletKey: string) {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(servletKey, noServletKeyInput.message);
-        TsoValidator.validateServletKey(servletKey);
+        TsoValidator.validateFieldForURL(servletKey, "servletKey");
         const parameters: string = "/" + TsoConstants.RES_START_TSO + "/" + servletKey;
         return ZosmfRestClient.getExpectJSON<IZosmfTsoResponse>(session, TsoConstants.RESOURCE + parameters,
             [Headers.APPLICATION_JSON]);

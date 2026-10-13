@@ -114,7 +114,8 @@ describe("StartTsoApp behavior", () => {
     });
 
     test.each(
-        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam"]
+            ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam", 
+                "lucky#9", "contains a space", "any%complete"]
     )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: IASAppResponse;
@@ -131,5 +132,26 @@ describe("StartTsoApp behavior", () => {
         expect(response).toBeUndefined();
         expect(error).toBeDefined();
         expect(error.message).toBe("The servletKey contains illegal characters.");
+    });
+
+    test.each(
+            ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam", 
+                "lucky#9", "contains a space", "any%complete"]
+    )('should reject the appKey %s which has invalid characters', async (appKey) => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            response = await AddressSpaceApps.start(PRETEND_SESSION, "izuacct", {
+                startupCommand: "EXEC 'TEST.EXEC(THISSCRIPTDOESNOTEXIST)'",
+                appKey,
+                queueID: "12345",
+                servletKey: "aefba-abebabab-valid"
+            }, null);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The appKey contains illegal characters.");
     });
 });
