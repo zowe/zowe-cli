@@ -1702,6 +1702,18 @@ describe("AbstractRestClient tests", () => {
                 expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
             });
 
+            it("should preserve array payloads while censoring their objects", () => {
+                const payload = [{ password: "secretvalue", items: [{ tokenValue: "secretvalue" }], empty: [] as string[] }];
+                const client = makeClient({}, payload);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.payload).toStrictEqual([
+                    { password: Censor.CENSOR_RESPONSE, items: [{ tokenValue: Censor.CENSOR_RESPONSE }], empty: [] }
+                ]);
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+                expect(payload).toStrictEqual([{ password: "secretvalue", items: [{ tokenValue: "secretvalue" }], empty: [] }]);
+            });
+
             it("should leave string payloads unchanged", () => {
                 expect(makeClient({}, "plain").populateError({ msg: "f", source: "client" }).mDetails.payload).toEqual("plain");
             });
