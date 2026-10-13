@@ -69,5 +69,5 @@ jobs:
           release-assets/zowe-*.tgz
         # Enable Settings > Releases > Enable release immutability before using this workflow.
         # All assets must be attached while the release is still a draft.
-        gh release edit "$RELEASE_TAG" --draft=false
+        gh release edit "$RELEASE_TAG" --draft=false --latest=false
         gh api "repos/$GH_REPO/releases/tags/$RELEASE_TAG" | jq -e '.immutable == true'
