@@ -2,9 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.39.1`
+## Recent Changes
 
 - Enhancement: Updated connection prompting logic to honor the allowedLoginMethod property. A user is now prompted only for the credentials that the method allows (direct-basic, direct-cert-pem, apiml-basic, apiml-cert-pem, or prompt), apiml-* methods exchange credentials for an APIML token and store only that token, and direct-* methods store credentials directly. Defaults to prompt when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
+
+## `8.39.1`
+
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
 - BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
