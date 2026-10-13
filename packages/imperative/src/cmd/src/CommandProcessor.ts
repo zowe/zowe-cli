@@ -1048,8 +1048,7 @@ export class CommandProcessor {
 
         response.failed();
         response.endProgressBar();
-        if (response.progress.endSpinner){
-            response.progress.endSpinner();
+        response.progress.endSpinner?.();
         }
 
         this.log.error("Diagnostic information:\n" +
