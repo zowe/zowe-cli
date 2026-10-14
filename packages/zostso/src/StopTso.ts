@@ -37,6 +37,7 @@ export class StopTso {
         TsoValidator.validateSession(session);
         TsoValidator.validateStopParams(commandParms);
         TsoValidator.validateNotEmptyString(commandParms.servletKey, noServletKeyInput.message);
+        TsoValidator.validateFieldForURL(commandParms.servletKey, "servletKey");
 
         const resources = this.getResources(commandParms.servletKey);
 
@@ -69,6 +70,7 @@ export class StopTso {
      */
     public static getResources(servletKey: string): string {
         TsoValidator.validateNotEmptyString(servletKey, noServletKeyInput.message);
+        TsoValidator.validateFieldForURL(servletKey, "servletKey");
         return `${TsoConstants.RESOURCE}/${TsoConstants.RES_START_TSO}/${servletKey}`;
     }
 }

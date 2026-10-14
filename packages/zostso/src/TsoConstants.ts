@@ -185,6 +185,11 @@ export class TsoConstants {
      */
     public static readonly DEFAULT_NO_DATA_DEBOUNCE: number = 100;
 
+    /**
+     * Characters disallowed in the servletKey and appKey fields used by TSO APIs,
+     */
+    public static readonly TSO_FIELD_ILLEGAL_CHARACTERS: string[] = [".", "/", "?", "#", "%", "+"];
+
 }
 
 /**
@@ -265,6 +270,16 @@ export const noAccountNumber: IMessageDefinition = {
  */
 export const noServletKeyInput: IMessageDefinition = {
     message: apiErrorHeader.message + ` No servlet key was supplied.`
+};
+
+/**
+ * No app key was provided error message
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof TsoConstants
+ */
+export const noAppKeyInput: IMessageDefinition = {
+    message: apiErrorHeader.message + ` No app key was supplied.`
 };
 
 /**

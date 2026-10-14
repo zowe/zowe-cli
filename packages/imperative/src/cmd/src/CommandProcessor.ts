@@ -1066,6 +1066,7 @@ export class CommandProcessor {
 
         response.failed();
         response.endProgressBar();
+        response.progress.endSpinner?.();
 
         this.log.error("Diagnostic information:\n" +
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
