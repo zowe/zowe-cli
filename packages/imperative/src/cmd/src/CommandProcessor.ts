@@ -870,6 +870,15 @@ export class CommandProcessor {
     }
 
     /**
+     * Censor sensitive values from an object
+     * @param {Record<string, any>} arg: The object to censor and inspect.
+     * @return {string}: The inspected string form of the censored copy.
+     */
+    private censorInspect(arg: Record<string, any>): string {
+        return inspect(Censor.censorObject(arg));
+    }
+
+    /**
      * Prepare for command execution. Actions such as reading stdin, auto-loading profiles, etc. will occur here before
      * the command handler is invoked.
      * @param {CommandResponse} response: The response object for command messaging.
@@ -880,7 +889,7 @@ export class CommandProcessor {
         // Construct the imperative arguments - replacement/wrapper for Yargs to insulate handlers against any
         // changes made to Yargs
         let args: ICommandArguments = CliUtils.buildBaseArgs(commandArguments);
-        this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(Censor.censorObject(args))}`);
+        this.log.trace(`Base set of arguments from Yargs parse:\n${this.censorInspect(args)}`);
         let allOpts = this.definition.options != null ? this.definition.options : [];
         allOpts = this.definition.positionals != null ? allOpts.concat(this.definition.positionals) : allOpts;
         this.log.trace(`Set of options and positionals defined on the command:\n${inspect(allOpts)}`);
@@ -889,9 +898,9 @@ export class CommandProcessor {
         // allow the user to specify the profile to load via environment variable. Then merge with already
         // supplied args from Yargs
         const envArgs = CliUtils.extractEnvForOptions(this.envVariablePrefix, allOpts);
-        this.log.trace(`Arguments extracted from :\n${inspect(Censor.censorObject(args))}`);
+        this.log.trace(`Arguments extracted from :\n${this.censorInspect(args)}`);
         args = CliUtils.mergeArguments(envArgs, args);
-        this.log.trace(`Arguments merged :\n${inspect(Censor.censorObject(args))}`);
+        this.log.trace(`Arguments merged :\n${this.censorInspect(args)}`);
 
         // Extract arguments from stdin
         this.log.trace(`Reading stdin for "${this.definition.name}" command...`);
@@ -901,7 +910,7 @@ export class CommandProcessor {
         if (this.mConfig != null) {
             // Merge the arguments from the config into the CLI args
             const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
-            this.log.trace(`Arguments extracted from the config:\n${inspect(Censor.censorObject(profArgs))}`);
+            this.log.trace(`Arguments extracted from the config:\n${this.censorInspect(profArgs)}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }
 
@@ -922,7 +931,7 @@ export class CommandProcessor {
         args._ = commandArguments._;
 
         // Log for debugging
-        this.log.trace(`Full argument object constructed:\n${inspect(Censor.censorObject(args))}`);
+        this.log.trace(`Full argument object constructed:\n${this.censorInspect(args)}`);
         return args;
     }
 
