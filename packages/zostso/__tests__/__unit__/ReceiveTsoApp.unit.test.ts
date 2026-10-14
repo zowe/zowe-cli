@@ -11,7 +11,7 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AddressSpaceApps } from "../../src";
+import { AddressSpaceApps, noAppKeyInput } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
 import { IASAppResponse } from "../../src/doc/IASAppResponse";
 
@@ -225,5 +225,26 @@ describe("ReceiveTsoApp behavior", () => {
         expect(response).toBeUndefined();
         expect(error).toBeDefined();
         expect(error.message).toBe("The appKey contains illegal characters.");
+    });
+
+    it('should reject an empty appKey', async () => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            await AddressSpaceApps.receive(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    appKey: "",
+                    servletKey: "aefba-abebabab-valid"
+                }
+            );
+
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toContain(noAppKeyInput.message);
     });
 });

@@ -273,6 +273,16 @@ export const noServletKeyInput: IMessageDefinition = {
 };
 
 /**
+ * No app key was provided error message
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof TsoConstants
+ */
+export const noAppKeyInput: IMessageDefinition = {
+    message: apiErrorHeader.message + ` No app key was supplied.`
+};
+
+/**
  * No data parameter string was supplied error message
  * @static
  * @type {IMessageDefinition}
