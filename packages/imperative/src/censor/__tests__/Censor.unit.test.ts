@@ -796,6 +796,23 @@ describe("Censor tests", () => {
             });
             expect(body).toEqual(original);
         });
+
+        it("should return Buffers as the same instance instead of copying or expanding them", () => {
+            // mConfig is private; a typed view lets the test clear it without `any`
+            const censorInternals = Censor as unknown as { mConfig: unknown };
+            censorInternals.mConfig = null;
+            impConfigSpy.mockReturnValue({ config: { exists: false } });
+            const stdout = Buffer.from("command output");
+            const data = { success: true, stdout, stderr: Buffer.alloc(0), nested: { password: "some secret value", output: stdout } };
+
+            const received = Censor.censorObject(data);
+
+            // A regression here expands each Buffer into one numeric property per byte
+            expect(received.stdout).toBe(stdout);
+            expect(received.stderr).toBe(data.stderr);
+            expect(received.nested.output).toBe(stdout);
+            expect(received.nested.password).toBe(Censor.CENSOR_RESPONSE);
+        });
     });
 
     describe("censorYargsArguments", () => {

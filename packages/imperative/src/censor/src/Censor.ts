@@ -478,12 +478,13 @@ export class Censor {
             }
         }
 
-        // Do not modify the original data
-        return this.mCensorObject(lodash.cloneDeep(data), secValues);
+        // Do not modify the original data. Buffers (e.g. a response's stdout/stderr) are shared rather than copied.
+        return this.mCensorObject(lodash.cloneDeepWith(data, (value) => Buffer.isBuffer(value) ? value : undefined), secValues);
     }
 
     /**
-     * Copy and censor over an object
+     * Copy and censor over an object. Buffers hold binary data rather than named properties, so they are returned
+     * as-is instead of being expanded into one property per byte (which is slow and memory hungry for large output).
      * @param {Record<string, any>} data - the data to censor
      * @returns {Record<string, any>} - the censored data
      */
@@ -492,6 +493,8 @@ export class Censor {
         for (const [key, value] of Object.entries(data)) {
             if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
                 newData[key] = this.CENSOR_RESPONSE;
+            } else if (Buffer.isBuffer(value)) {
+                newData[key] = value;
             } else if (value != null && typeof value == "object") {
                 newData[key] = this.mCensorObject(value, secureValues);
             } else {
