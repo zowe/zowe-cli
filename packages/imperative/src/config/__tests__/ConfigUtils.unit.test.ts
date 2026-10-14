@@ -13,6 +13,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import * as jsonfile from "jsonfile";
+import * as tinyglobby from "tinyglobby";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
@@ -159,7 +160,7 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const globSyncSpy = jest.spyOn(fs, "globSync").mockReturnValueOnce([]);
+            const globSyncSpy = jest.spyOn(tinyglobby, "globSync").mockReturnValueOnce([]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
             expect(globSyncSpy).toHaveBeenCalledTimes(1);
@@ -178,7 +179,7 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const globSyncSpy = jest.spyOn(fs, "globSync").mockReturnValueOnce(["profiles/zosmf/zosmf_meta.yaml"]);
+            const globSyncSpy = jest.spyOn(tinyglobby, "globSync").mockReturnValueOnce(["profiles/zosmf/zosmf_meta.yaml"]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
             expect(globSyncSpy).toHaveBeenCalledTimes(1);
@@ -197,7 +198,7 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const globSyncSpy = jest.spyOn(fs, "globSync").mockReturnValueOnce(["profiles/zosmf/lpar1.yaml"]);
+            const globSyncSpy = jest.spyOn(tinyglobby, "globSync").mockReturnValueOnce(["profiles/zosmf/lpar1.yaml"]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(true);
             expect(globSyncSpy).toHaveBeenCalledTimes(1);

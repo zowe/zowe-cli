@@ -10,20 +10,20 @@
 */
 
 const childProcess = require("child_process");
-const fs = require("fs");
 const path = require("path");
+const { globSync } = require("tinyglobby");
 
 process.chdir(__dirname + "/..");
 const npmPrefix = path.join(process.cwd(), ".npm-global");
 
 function runAll(callback, parallel=false) {
     if (!parallel) {
-        fs.globSync("packages/imperative/__tests__/__integration__/*").forEach((dir) => {
-            const command = callback(dir);
+        globSync("packages/imperative/__tests__/__integration__/*", { onlyFiles: false }).forEach((dir) => {
+            const command = callback(path.normalize(dir));
             childProcess.execSync(command.command, { cwd: command.cwd, stdio: "inherit" });
         });
     } else {
-        require("concurrently")(fs.globSync("packages/imperative/__tests__/__integration__/*").map((dir) => callback(dir)));
+        require("concurrently")(globSync("packages/imperative/__tests__/__integration__/*", { onlyFiles: false }).map((dir) => callback(path.normalize(dir))));
     }
 }
 

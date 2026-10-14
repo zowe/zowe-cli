@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "../../cmd";
 import { Logger } from "../../logger";
-import * as fs from "fs";
+import { globSync } from "tinyglobby";
 import { ImperativeError } from "../../error";
 
 /**
@@ -104,7 +104,7 @@ export class DefinitionTreeResolver {
         const allCmdDefs: ICommandDefinition[] = [];
 
         for (const childGlob of cmdModuleGlobs) {
-            const matches = fs.globSync(childGlob, {
+            const matches = globSync(childGlob, {
                 cwd: callerDir
             });
 

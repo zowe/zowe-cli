@@ -9,8 +9,8 @@
 *
 */
 
-import * as fs from "fs";
 import * as path from "path";
+import { globSync } from "tinyglobby";
 import * as lodash from "lodash";
 import { IExplanationMap, TextUtils } from "../../utilities/src/TextUtils";
 import { ICommandProfileProperty } from "../../cmd";
@@ -242,7 +242,7 @@ export class ConfigSchema {
             for (let level = 0; level <= opts.updateOptions.depth; level++) {
                 patterns.push("{*,.*}/".repeat(level) + opts.config.schemaName);
             }
-            const matches: string[] = fs.globSync(patterns);
+            const matches: string[] = globSync(patterns);
 
             const globalProjConfig = opts.config.findLayer(false, true);
             const globalUserConfig = opts.config.findLayer(true, true);

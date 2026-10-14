@@ -9,7 +9,7 @@
 *
 */
 
-import * as fs from "fs";
+import * as tinyglobby from "tinyglobby";
 import { IProfileTypeConfiguration } from "../../profiles";
 import { ConfigSchema } from "../src/ConfigSchema";
 import { cloneDeep } from "lodash";
@@ -561,7 +561,7 @@ describe("Config Schema", () => {
                 const spyGlobal = jest.spyOn((ConfigSchema as any), "_updateSchemaGlobal").mockReturnValue(fakeUpdatesPaths_global);
                 spyConfigLayersExists.mockReturnValue(true);
                 spyConfigLayerActive.mockReturnValue({ ...fakeLayer, ...{ path: fakeUserPath } });
-                const spyGlobSync = jest.spyOn(fs, "globSync").mockReturnValue([fakeProjPath]);
+                const spyGlobSync = jest.spyOn(tinyglobby, "globSync").mockReturnValue([fakeProjPath]);
                 const copyHelperOptions = cloneDeep(helperOptions);
                 copyHelperOptions.updateOptions.depth = 1;
 
