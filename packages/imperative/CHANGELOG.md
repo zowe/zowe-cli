@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Censored secure values in arguments objects written to the log at trace level in `CommandProcessor`. [#2956] (https://github.com/zowe/zowe-cli/pull/2956)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 
 ## `8.39.1`
