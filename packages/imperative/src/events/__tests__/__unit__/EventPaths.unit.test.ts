@@ -160,6 +160,24 @@ describe("Event filesystem boundaries", () => {
         expect(fs.readFileSync(event.eventFilePath, "utf8")).toBe("untouched");
     });
 
+    it("does not write through an opened file when the leaf is replaced right after open", () => {
+        const event = EventUtils.createEvent("safe-event", "Zowe");
+        const original = path.join(sandbox, "original");
+        const replacement = path.join(sandbox, "replacement");
+        fs.writeFileSync(replacement, "untouched");
+        const openSync = fs.openSync;
+        jest.spyOn(fs, "openSync").mockImplementationOnce((filePath, flags) => {
+            // The descriptor refers to the original inode, but the path now names the replacement.
+            const fd = openSync(filePath, flags);
+            fs.renameSync(event.eventFilePath, original);
+            fs.renameSync(replacement, event.eventFilePath);
+            return fd;
+        });
+        expect(() => EventUtils.writeEvent(event)).toThrow(/changed while being opened/);
+        expect(fs.readFileSync(event.eventFilePath, "utf8")).toBe("untouched");
+        expect(fs.readFileSync(original, "utf8")).toBe("");
+    });
+
     // Windows file symlinks require privileges; directory junction coverage above runs on every platform.
     (process.platform === "win32" ? it.skip : it).each(["existing", "dangling"])(
         "rejects an %s symbolic-link event file", (targetState) => {
