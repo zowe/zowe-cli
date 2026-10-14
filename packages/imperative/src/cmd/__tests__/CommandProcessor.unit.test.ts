@@ -28,6 +28,7 @@ import { EnvFileUtils, NextVerFeatures } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
 import { LoggerUtils } from "../..";
+import { CommandProfiles } from "../src/profiles/CommandProfiles";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -965,6 +966,124 @@ describe("Command Processor", () => {
         expect(logOutput).toContain(`--password ${LoggerUtils.CENSOR_RESPONSE}`);
         expect(logOutput).not.toContain("two words");
         expect(logOutput).not.toMatch(/\bwords\b/);
+    });
+
+    describe("trace-level logging of arguments", () => {
+        const vaultPassword = "vaultSecretPwd";
+        const vaultTokenValue = "vaultSecretToken";
+        const oldProfilePassword = "oldProfileSecretPwd";
+        const cliPassword = "cliSecretPwd";
+        let traceOutput: string;
+        let spies: jest.SpyInstance[];
+
+        beforeEach(() => {
+            traceOutput = "";
+            spies = [];
+        });
+
+        afterEach(() => {
+            spies.forEach((spy) => spy.mockRestore());
+        });
+
+        const buildProcessor = (config?: Config): CommandProcessor => {
+            const processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_COMPLEX_COMMAND,
+                definition: {
+                    name: "banana",
+                    description: "The banana command",
+                    type: "command",
+                    handler: __dirname + "/__model__/TestCmdHandler",
+                    options: [
+                        { name: "password", type: "string", description: "The password" },
+                        { name: "token-value", type: "string", description: "The token value" }
+                    ],
+                    profile: { optional: ["fruit"] }
+                },
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config
+            });
+            Object.defineProperty(processor, "log", {
+                get: () => ({
+                    debug: jest.fn(),
+                    error: jest.fn(),
+                    info: jest.fn(),
+                    trace: jest.fn((line: string) => { traceOutput += line + "\n"; })
+                })
+            });
+            return processor;
+        };
+
+        const invokeParms = (): IInvokeCommandParms => ({
+            arguments: { _: ["check", "for", "banana"], $0: "", valid: true, password: cliPassword },
+            responseFormat: "json",
+            silent: true
+        });
+
+        const mockProfileLoader = (profiles: CommandProfiles) => {
+            spies.push(jest.spyOn(CommandProfileLoader, "loader").mockReturnValue({
+                loadProfiles: jest.fn().mockResolvedValue(profiles)
+            } as unknown as CommandProfileLoader));
+        };
+
+        it("should not write team config (vault) or CLI credentials to the trace log", async () => {
+            // Partial Config: only the members touched by prepare() and the invoke() setup are provided
+            const config = {
+                api: {
+                    profiles: {
+                        exists: jest.fn().mockReturnValue(true),
+                        defaultGet: jest.fn().mockReturnValue({ password: vaultPassword, tokenValue: vaultTokenValue })
+                    },
+                    secure: { securePropsForProfile: jest.fn(() => ["password", "tokenValue"]) }
+                },
+                layers: [{ exists: true, path: "zowe.config.json" }],
+                properties: { ...Config.empty(), defaults: { fruit: "myfruit" } }
+            } as unknown as Config;
+            spies.push(jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config } as unknown as ImperativeConfig));
+            mockProfileLoader(new CommandProfiles(new Map()));
+
+            const commandResponse: ICommandResponse = await buildProcessor(config).invoke(invokeParms());
+
+            expect(commandResponse.success).toBe(true);
+            expect(traceOutput).toContain("Invoke parameters:");
+            expect(traceOutput).toContain("Arguments extracted from the config:");
+            expect(traceOutput).toContain("Full argument object constructed:");
+            expect(traceOutput).toContain(`password: '${LoggerUtils.CENSOR_RESPONSE}'`);
+            expect(traceOutput).toContain(`tokenValue: '${LoggerUtils.CENSOR_RESPONSE}'`);
+            expect(traceOutput).not.toContain(vaultPassword);
+            expect(traceOutput).not.toContain(vaultTokenValue);
+            expect(traceOutput).not.toContain(cliPassword);
+        });
+
+        it("should not write credentials from v1 profiles to the trace log", async () => {
+            mockProfileLoader(new CommandProfiles(new Map([["fruit", [{ name: "old", type: "fruit", password: oldProfilePassword }]]])));
+            spies.push(jest.spyOn(CliUtils, "getOptValueFromProfiles").mockReturnValue({ password: oldProfilePassword }));
+
+            const commandResponse: ICommandResponse = await buildProcessor().invoke(invokeParms());
+
+            expect(commandResponse.success).toBe(true);
+            expect(traceOutput).toContain("Arguments extract from the profile:");
+            // The loaded profiles stay readable (Maps and arrays preserved); only the credential is masked
+            expect(traceOutput).toMatch(/Profiles loaded for "banana" command:[\s\S]*name: 'old'/);
+            expect(traceOutput).not.toContain(oldProfilePassword);
+            expect(traceOutput).not.toContain(cliPassword);
+        });
+
+        it("should log only the censor mask, and still run the command, if censoring a trace dump fails", async () => {
+            mockProfileLoader(new CommandProfiles(new Map()));
+            spies.push(jest.spyOn(LoggerUtils, "censorObject").mockImplementation(() => { throw new Error("censor failure"); }));
+
+            const commandResponse: ICommandResponse = await buildProcessor().invoke(invokeParms());
+
+            expect(commandResponse.success).toBe(true);
+            expect(traceOutput).toContain(`Invoke parameters:\n${LoggerUtils.CENSOR_RESPONSE}`);
+            expect(traceOutput).toContain(`Full argument object constructed:\n${LoggerUtils.CENSOR_RESPONSE}`);
+            expect(traceOutput).not.toContain(cliPassword);
+        });
     });
 
     it("should handle an error thrown from the profile loader", async () => {
