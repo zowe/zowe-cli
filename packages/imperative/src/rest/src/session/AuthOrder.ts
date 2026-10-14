@@ -716,8 +716,19 @@ export class AuthOrder {
         // add any discovered authOrder to the cache
         AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
 
+        // A direct-* login method sends its credentials straight to the service.
+        // An APIML token (e.g. inherited from a base profile) cannot authenticate there.
+        const loginMethod = AuthOrder.normalizeLoginMethod(cmdArgs.allowedLoginMethod ?? sessCfg.allowedLoginMethod);
+        const ignoreApimlToken = (loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+            loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM) &&
+            (cmdArgs.tokenType ?? sessCfg.tokenType)?.startsWith(SessConstants.TOKEN_TYPE_APIML);
+
         // add every available cred to the cache
         for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
+            if (ignoreApimlToken && (sessCredName === "tokenType" || sessCredName === "tokenValue")) {
+                delete sessCfg._authCache.availableCreds[sessCredName];
+                continue;
+            }
             AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
         }
     }
