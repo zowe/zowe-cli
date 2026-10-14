@@ -711,6 +711,40 @@ describe("Censor tests", () => {
             expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
         });
 
+        it("should preserve arrays while censoring objects and secure values without modifying the input", () => {
+            Censor.setCensoredOptions();
+            (Censor as any).mConfig = null;
+            findSecure.mockReturnValue(["profiles.secret.properties.oldPwd"]);
+            impConfig.config.mProperties.profiles.secret.properties = { oldPwd: secrets[1] };
+            impConfigSpy.mockReturnValue(impConfig);
+            const data = [{ password: "some secret value", name: "visible" }, secrets[1], null, 42];
+            const original = [{ password: "some secret value", name: "visible" }, secrets[1], null, 42];
+
+            expect(Censor.censorObject(data)).toStrictEqual([
+                { password: Censor.CENSOR_RESPONSE, name: "visible" }, Censor.CENSOR_RESPONSE, null, 42
+            ]);
+            expect(data).toStrictEqual(original);
+        });
+
+        it("should preserve nested arrays while censoring their objects", () => {
+            (Censor as any).mConfig = null;
+            impConfigSpy.mockReturnValue({ config: { exists: false } } as any);
+            const data = { items: [[{ password: "some secret value", name: "visible" }]], password: ["secret"] };
+
+            expect(Censor.censorObject(data)).toStrictEqual({
+                items: [[{ password: Censor.CENSOR_RESPONSE, name: "visible" }]],
+                password: Censor.CENSOR_RESPONSE
+            });
+        });
+
+        it("should preserve empty arrays at every level", () => {
+            (Censor as any).mConfig = null;
+            impConfigSpy.mockReturnValue({ config: { exists: false } } as any);
+
+            expect(Censor.censorObject([])).toStrictEqual([]);
+            expect(Censor.censorObject({ items: [[], { items: [] }] })).toStrictEqual({ items: [[], { items: [] }] });
+        });
+
         it("should mask password-change fields without config", () => {
             Censor.setCensoredOptions();
             (Censor as any).mConfig = null;
