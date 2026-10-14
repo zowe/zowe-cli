@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+
 ## `8.39.1`
 
 - BugFix: Restricted application and event names to safe path components and rejected linked event paths. Event writes now validate file identity before truncation and use the validated descriptor. [#2950](https://github.com/zowe/zowe-cli/pull/2950)
