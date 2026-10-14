@@ -402,20 +402,26 @@ describe("Censor tests", () => {
                     (Censor as any).addCensoredOption("secret");
                 });
 
-                const _lazyTest = (prop: string): [string, string] => {
+                // addCensoredOption is private; registering each option makes the exemption (not the censored-options list) decide visibility
+                const censorInternals = Censor as unknown as { addCensoredOption: (option: string) => void };
+
+                const _lazyTest = (prop: string, category: string): [string, string] => {
+                    censorInternals.addCensoredOption(prop);
                     findSecure.mockReturnValue([`profiles.secret.properties.${prop}`, "profiles.secret.properties.secret"]);
                     impConfig.config.mProperties.profiles.secret.properties = {[prop]: secrets[0], secret: secrets[1] };
 
-                    const received = Censor.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
+                    const received = Censor.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`, category);
                     const expected = `visible secret: ${secrets[0]}, masked secret: ${Censor.CENSOR_RESPONSE}`;
                     return [received, expected];
                 };
 
-                for (const opt of Censor.SECURE_PROMPT_OPTIONS) {
-                    it(`${opt}`, () => {
-                        const [received, expected] = _lazyTest(opt);
-                        expect(received).toEqual(expected);
-                    });
+                for (const category of ["console", "json"]) {
+                    for (const opt of Censor.SECURE_PROMPT_OPTIONS) {
+                        it(`${opt} stays visible in ${category} output`, () => {
+                            const [received, expected] = _lazyTest(opt, category);
+                            expect(received).toEqual(expected);
+                        });
+                    }
                 }
             });
         });
@@ -461,6 +467,30 @@ describe("Censor tests", () => {
                 const received = Censor.censorRawData(`masked secret: ${secrets[1]}`, "This is not the console");
                 const expected = `masked secret: ${Censor.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
+            });
+
+            describe("special values (credentials) on the log path", () => {
+                // Private members are reached through a typed view so the tests need no `any`
+                const censorInternals = Censor as unknown as { mConfig: unknown; addCensoredOption: (option: string) => void };
+
+                beforeEach(() => {
+                    // A sibling test above assigns a cached Censor.mConfig; clear it so the mocked ImperativeConfig is used
+                    censorInternals.mConfig = null;
+                });
+
+                for (const category of ["imperative", "app", ""]) {
+                    for (const opt of Censor.SECURE_PROMPT_OPTIONS) {
+                        it(`masks the ${opt} value for logger category "${category}"`, () => {
+                            censorInternals.addCensoredOption(opt);
+                            findSecure.mockReturnValue([`profiles.secret.properties.${opt}`]);
+                            impConfig.config.mProperties.profiles.secret.properties = { [opt]: secrets[0] };
+
+                            const received = Censor.censorRawData(`value: ${secrets[0]}`, category);
+
+                            expect(received).toEqual(`value: ${Censor.CENSOR_RESPONSE}`);
+                        });
+                    }
+                }
             });
 
             describe("secure values containing regex metacharacters (regression for unescaped RegExp)", () => {

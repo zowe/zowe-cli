@@ -411,10 +411,16 @@ export class Censor {
 
         let newData = data;
 
+        // Console and JSON output intentionally leave "special" (schema-secure) values such as the user name visible,
+        // because the application is responsible for masking them there. Every other destination (log files, error
+        // diagnostics) has no such guarantee, so secure values are always masked by value, including passwords,
+        // tokens and passphrases.
+        const isOutputChannel = category === "console" || category === "json";
+
         const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
-            if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+            if (sec && typeof sec !== "object" && !(isOutputChannel && this.isSpecialValue(prop)) && this.isSecureValue(prop.split(".").pop())) {
                 // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
                 // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
                 newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
