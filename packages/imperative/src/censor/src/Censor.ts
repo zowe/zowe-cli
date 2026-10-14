@@ -414,7 +414,7 @@ export class Censor {
         const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
-            if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+            if (sec && typeof sec !== "object" && this.isSecureValue(prop.split(".").pop())) {
                 // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
                 // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
                 newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
@@ -466,7 +466,7 @@ export class Censor {
             const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
             for (const prop of secureFields) {
                 const sec = lodash.get(config.mProperties, prop);
-                if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+                if (sec && typeof sec !== "object" && this.isSecureValue(prop.split(".").pop())) {
                     secValues.push(sec);
                 }
             }

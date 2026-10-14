@@ -407,7 +407,8 @@ describe("Censor tests", () => {
                     impConfig.config.mProperties.profiles.secret.properties = {[prop]: secrets[0], secret: secrets[1] };
 
                     const received = Censor.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
-                    const expected = `visible secret: ${secrets[0]}, masked secret: ${Censor.CENSOR_RESPONSE}`;
+                    const expectedValue = Censor.isSecureValue(prop) ? Censor.CENSOR_RESPONSE : secrets[0];
+                    const expected = `visible secret: ${expectedValue}, masked secret: ${Censor.CENSOR_RESPONSE}`;
                     return [received, expected];
                 };
 

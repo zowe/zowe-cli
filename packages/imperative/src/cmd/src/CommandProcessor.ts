@@ -880,7 +880,7 @@ export class CommandProcessor {
         // Construct the imperative arguments - replacement/wrapper for Yargs to insulate handlers against any
         // changes made to Yargs
         let args: ICommandArguments = CliUtils.buildBaseArgs(commandArguments);
-        this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(args)}`);
+        this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(Censor.censorObject(args))}`);
         let allOpts = this.definition.options != null ? this.definition.options : [];
         allOpts = this.definition.positionals != null ? allOpts.concat(this.definition.positionals) : allOpts;
         this.log.trace(`Set of options and positionals defined on the command:\n${inspect(allOpts)}`);
@@ -889,9 +889,9 @@ export class CommandProcessor {
         // allow the user to specify the profile to load via environment variable. Then merge with already
         // supplied args from Yargs
         const envArgs = CliUtils.extractEnvForOptions(this.envVariablePrefix, allOpts);
-        this.log.trace(`Arguments extracted from :\n${inspect(args)}`);
+        this.log.trace(`Arguments extracted from :\n${inspect(Censor.censorObject(args))}`);
         args = CliUtils.mergeArguments(envArgs, args);
-        this.log.trace(`Arguments merged :\n${inspect(args)}`);
+        this.log.trace(`Arguments merged :\n${inspect(Censor.censorObject(args))}`);
 
         // Extract arguments from stdin
         this.log.trace(`Reading stdin for "${this.definition.name}" command...`);
@@ -901,7 +901,7 @@ export class CommandProcessor {
         if (this.mConfig != null) {
             // Merge the arguments from the config into the CLI args
             const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
-            this.log.trace(`Arguments extracted from the config:\n${inspect(profArgs)}`);
+            this.log.trace(`Arguments extracted from the config:\n${inspect(Censor.censorObject(profArgs))}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }
 
@@ -922,7 +922,7 @@ export class CommandProcessor {
         args._ = commandArguments._;
 
         // Log for debugging
-        this.log.trace(`Full argument object constructed:\n${inspect(args)}`);
+        this.log.trace(`Full argument object constructed:\n${inspect(Censor.censorObject(args))}`);
         return args;
     }
 

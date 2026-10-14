@@ -113,7 +113,8 @@ describe("LoggerUtils tests", () => {
                     impConfig.config.mProperties.profiles.secret.properties = {[prop]: secrets[0], secret: secrets[1] };
 
                     const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
-                    const expected = `visible secret: ${secrets[0]}, masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
+                    const expectedValue = Censor.isSecureValue(prop) ? LoggerUtils.CENSOR_RESPONSE : secrets[0];
+                    const expected = `visible secret: ${expectedValue}, masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                     return [received, expected];
                 };
 
