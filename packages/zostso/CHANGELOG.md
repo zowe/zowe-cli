@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes 
+
+- BugFix: Added validation to reject values containing illegal characters for the `servletKey` and `appKey` parameters in the `SendTSO`, `StopTso`, `AddressSpaceApps`, and `PingTso` classes. [#2953](https://github.com/zowe/zowe-cli/pull/2953)
+
 ## `8.35.3`
 
 - BugFix: Added a default timeout while collecting TSO responses, and a 100 ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)
