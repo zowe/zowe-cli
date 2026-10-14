@@ -482,7 +482,7 @@ export class Censor {
      * @returns {Record<string, any>} - the censored data
      */
     private static mCensorObject(data: Record<string, any>, secureValues: any[]): Record<string, any> {
-        const newData: Record<string, any> = {};
+        const newData: Record<string, any> = Array.isArray(data) ? new Array(data.length) : {};
         for (const [key, value] of Object.entries(data)) {
             if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
                 newData[key] = this.CENSOR_RESPONSE;
