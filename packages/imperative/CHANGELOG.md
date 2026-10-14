@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- BugFix: Fixed `AbstractRestClient` class to throw an error when a custom `checkServerIdentity` callback is combined with certificate account authentication (`certAccount`) since these options are incompatible. [#2958](https://github.com/zowe/zowe-cli/pull/2958)
 
 ## `8.39.1`
 
