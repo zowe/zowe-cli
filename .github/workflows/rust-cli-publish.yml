@@ -18,10 +18,38 @@ jobs:
     with:
       release: true
 
+  check-release:
+    name: Check for Existing Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        sparse-checkout: zowex
+
+    - name: Get version
+      working-directory: zowex
+      run: echo "RELEASE_TAG=native-v$(cargo metadata --no-deps --format-version 1 | jq -r .packages[0].version)" >> "$GITHUB_ENV"
+
+    - name: Check release tag
+      id: release
+      run: |
+        if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+        fi
+
   publish:
     name: Attest and Publish Release
-    needs: build
-    runs-on: ubuntu-22.04
+    needs: [build, check-release]
+    if: ${{ needs.check-release.outputs.tag != '' }}
+    runs-on: ubuntu-slim
     permissions:
       contents: write
       id-token: write
@@ -31,12 +59,6 @@ jobs:
       GH_REPO: ${{ github.repository }}
 
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-    - name: Get version
-      working-directory: zowex
-      run: echo "RELEASE_TAG=native-v$(cargo metadata --no-deps --format-version 1 | jq -r .packages[0].version)" >> "$GITHUB_ENV"
-
     - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         pattern: zowe-*.tgz
@@ -62,6 +84,8 @@ jobs:
         subject-path: 'release-assets/zowe-*.tgz'
 
     - name: Create and Publish Complete Release
+      env:
+        RELEASE_TAG: ${{ needs.check-release.outputs.tag }}
       run: |
         gh release create "$RELEASE_TAG" --draft --target "$GITHUB_SHA" \
           --notes "Native Zowe CLI client which communicates with a 'daemon' version of Zowe CLI." \
