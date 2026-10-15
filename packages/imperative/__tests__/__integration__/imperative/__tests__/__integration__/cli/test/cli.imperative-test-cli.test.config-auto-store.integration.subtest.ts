@@ -26,13 +26,7 @@ describe("imperative-test-cli test config-auto-store command", () => {
         });
     });
 
-    afterEach(() => {
-        delete process.env.IMPERATIVE_TEST_CLI_SHOW_SECURE_ARGS;
-    });
-
     it("should store the password automatically", async () => {
-        // Secure values are masked in console output by default, so show them to verify what was stored
-        process.env.IMPERATIVE_TEST_CLI_SHOW_SECURE_ARGS = "true";
         const testPwd = "The greatest password of all time";
         let res = runCliScript(join(__dirname, "../config/init/__scripts__/init_config.sh"), TEST_ENVIRONMENT.workingDir, ["--prompt false"]);
         expect(res.stderr.toString()).toBe("");
