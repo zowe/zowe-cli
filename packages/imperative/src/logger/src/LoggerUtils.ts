@@ -349,8 +349,9 @@ export class LoggerUtils {
 
     /**
      * Recursively build a censored copy of a value. Arrays remain arrays and Maps remain Maps. Buffers hold binary
-     * data rather than named properties, so they are returned as-is instead of being expanded into one property per
-     * byte (which is slow, memory hungry, and meaningless for a response's stdout/stderr).
+     * data rather than named properties and cannot be inspected for sensitive keys, so they are replaced with a size
+     * placeholder instead of being expanded into one property per byte (which is slow, memory hungry, and would
+     * write the raw bytes of a response's stdout/stderr to the log).
      * @param {unknown} value - the value to censor
      * @param {unknown[]} secureValues - config-derived secure values to mask wherever they appear
      * @returns {unknown} - the censored copy
@@ -363,7 +364,7 @@ export class LoggerUtils {
             return value.map((item) => LoggerUtils.censorObjectValue(item, secureValues));
         }
         if (Buffer.isBuffer(value)) {
-            return value;
+            return `<Buffer: ${value.length} bytes>`;
         }
         if (value instanceof Map) {
             return new Map(Array.from(value, ([key, item]) => [key, LoggerUtils.CENSORED_OPTIONS.includes(key) ?

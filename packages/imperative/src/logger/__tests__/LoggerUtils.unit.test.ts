@@ -447,15 +447,17 @@ describe("LoggerUtils tests", () => {
             expect(received).toEqual({ custom: LoggerUtils.CENSOR_RESPONSE, other: "visible" });
         });
 
-        it("should return Buffers unchanged rather than expanding them one property per byte", () => {
+        it("should replace Buffers with a size placeholder rather than expanding them one property per byte", () => {
             impConfigSpy.mockReturnValue({ config: { exists: false } });
             const stdout = Buffer.from("command output");
 
-            const received = LoggerUtils.censorObject({ stdout, nested: { stderr: stdout } });
+            const received = LoggerUtils.censorObject({ stdout, stderr: Buffer.alloc(0), nested: { output: stdout, password: "pw" } });
 
             const nested: Record<string, unknown> = received.nested as Record<string, unknown>;
-            expect(received.stdout).toBe(stdout);
-            expect(nested.stderr).toBe(stdout);
+            expect(received.stdout).toBe("<Buffer: 14 bytes>");
+            expect(received.stderr).toBe("<Buffer: 0 bytes>");
+            expect(nested.output).toBe("<Buffer: 14 bytes>");
+            expect(nested.password).toBe(LoggerUtils.CENSOR_RESPONSE);
         });
 
         it("should censor values inside Maps while keeping them Maps and without modifying the original", () => {
