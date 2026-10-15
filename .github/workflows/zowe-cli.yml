@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22.17.0, 22.x, 24.x]
+        node-version: [22.11.0, 22.x, 24.x]
         os:
           - windows-latest
           - ubuntu-22.04

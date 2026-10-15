@@ -7,7 +7,7 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
-- Enhancement: Replaced the `fast-glob` dependency with the built-in Node.js `fs.globSync` API. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.39.1`
 
