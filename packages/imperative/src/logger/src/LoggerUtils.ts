@@ -277,10 +277,17 @@ export class LoggerUtils {
         if ((category === "console" || category === "json") && envMaskOutput.toUpperCase() === "FALSE") return data;
 
         let newData = data;
+
+        // Console and JSON output intentionally leave "special" (schema-secure) values such as the user name visible,
+        // because the application is responsible for masking them there. Every other destination (log files, error
+        // diagnostics) has no such guarantee, so secure values are always masked by value, including passwords,
+        // tokens and passphrases.
+        const isOutputChannel = category === "console" || category === "json";
+
         const layer = LoggerUtils.layer;
         for (const prop of LoggerUtils.secureFields) {
             const sec = lodash.get(layer.properties, prop);
-            if (sec && typeof sec !== "object" && !LoggerUtils.isSpecialValue(prop))
+            if (sec && typeof sec !== "object" && !(isOutputChannel && LoggerUtils.isSpecialValue(prop)))
                 // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
                 // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
                 newData = newData.replace(new RegExp(LoggerUtils.escapeRegExp(sec), "gi"), LoggerUtils.CENSOR_RESPONSE);
@@ -341,7 +348,10 @@ export class LoggerUtils {
     }
 
     /**
-     * Recursively build a censored copy of a value. Arrays remain arrays.
+     * Recursively build a censored copy of a value. Arrays remain arrays and Maps remain Maps. Buffers hold binary
+     * data rather than named properties and cannot be inspected for sensitive keys, so they are replaced with a size
+     * placeholder instead of being expanded into one property per byte (which is slow, memory hungry, and would
+     * write the raw bytes of a response's stdout/stderr to the log).
      * @param {unknown} value - the value to censor
      * @param {unknown[]} secureValues - config-derived secure values to mask wherever they appear
      * @returns {unknown} - the censored copy
@@ -352,6 +362,13 @@ export class LoggerUtils {
         }
         if (Array.isArray(value)) {
             return value.map((item) => LoggerUtils.censorObjectValue(item, secureValues));
+        }
+        if (Buffer.isBuffer(value)) {
+            return `<Buffer: ${value.length} bytes>`;
+        }
+        if (value instanceof Map) {
+            return new Map(Array.from(value, ([key, item]) => [key, LoggerUtils.CENSORED_OPTIONS.includes(key) ?
+                LoggerUtils.CENSOR_RESPONSE : LoggerUtils.censorObjectValue(item, secureValues)]));
         }
         if (value != null && typeof value === "object") {
             const newData: Record<string, unknown> = {};

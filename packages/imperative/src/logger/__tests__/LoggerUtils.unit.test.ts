@@ -160,27 +160,24 @@ describe("LoggerUtils tests", () => {
                     envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" } });
                 });
 
-                const _lazyTest = (prop: string): [string, string] => {
+                const _lazyTest = (prop: string, category: string): [string, string] => {
                     secureFields.mockReturnValue([`secret.${prop}`, "secret.secret"]);
                     layersGet.mockReturnValue({ properties: { secret: { [prop]: secrets[0], secret: secrets[1] } } });
 
-                    const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
+                    const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`, category);
                     const expected = `visible secret: ${secrets[0]}, masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                     return [received, expected];
                 };
 
-                it("user", () => {
-                    const [received, expected] = _lazyTest("user");
-                    expect(received).toEqual(expected);
-                });
-                it("password", () => {
-                    const [received, expected] = _lazyTest("password");
-                    expect(received).toEqual(expected);
-                });
-                it("tokenValue", () => {
-                    const [received, expected] = _lazyTest("tokenValue");
-                    expect(received).toEqual(expected);
-                });
+                // The special values that isSpecialValue recognizes without any schema
+                for (const category of ["console", "json"]) {
+                    for (const opt of ["user", "password", "tokenValue", "keyPassphrase"]) {
+                        it(`${opt} stays visible in ${category} output`, () => {
+                            const [received, expected] = _lazyTest(opt, category);
+                            expect(received).toEqual(expected);
+                        });
+                    }
+                }
             });
         });
 
@@ -195,6 +192,21 @@ describe("LoggerUtils tests", () => {
                 const received = LoggerUtils.censorRawData(`masked secret: ${secrets[1]}`, "This is not the console");
                 const expected = `masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
+            });
+
+            describe("special values (credentials) on the log path", () => {
+                for (const category of ["imperative", "app", ""]) {
+                    for (const opt of ["user", "password", "tokenValue", "keyPassphrase"]) {
+                        it(`masks the ${opt} value for logger category "${category}"`, () => {
+                            secureFields.mockReturnValue([`secret.${opt}`]);
+                            layersGet.mockReturnValue({ properties: { secret: { [opt]: secrets[0] } } });
+
+                            const received = LoggerUtils.censorRawData(`value: ${secrets[0]}`, category);
+
+                            expect(received).toEqual(`value: ${LoggerUtils.CENSOR_RESPONSE}`);
+                        });
+                    }
+                }
             });
 
             describe("secure values containing regex metacharacters", () => {
@@ -270,13 +282,13 @@ describe("LoggerUtils tests", () => {
             });
 
             it("masks a value whose property becomes secure after the first call (simulated config edit + reload)", () => {
-                // First command: only the (special, app-masked) password is marked secure on disk.
+                // First command: only the (special, app-masked on console output) password is marked secure on disk.
                 // The custom apiKey is not yet secure, so its value is present in the output verbatim.
                 secureFields.mockReturnValueOnce(["profiles.lpar1.properties.password"]);
                 layersGet.mockReturnValueOnce({
                     properties: { profiles: { lpar1: { properties: { password: secrets[0] } } } }
                 });
-                const first = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`);
+                const first = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`, "console");
                 expect(first).toEqual(`pw: ${secrets[0]}, api: ${secrets[1]}`);
 
                 // The user edits zowe.config.json to also mark apiKey secure; the daemon reloads
@@ -288,7 +300,7 @@ describe("LoggerUtils tests", () => {
                 layersGet.mockReturnValueOnce({
                     properties: { profiles: { lpar1: { properties: { password: secrets[0], apiKey: secrets[1] } } } }
                 });
-                const second = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`);
+                const second = LoggerUtils.censorRawData(`pw: ${secrets[0]}, api: ${secrets[1]}`, "console");
 
                 // Regression: the newly-secured value must be redacted on the very next command,
                 // not leaked until the daemon is restarted.
@@ -433,6 +445,31 @@ describe("LoggerUtils tests", () => {
             });
             const received = LoggerUtils.censorObject({ custom: "cfgSecret", other: "visible" });
             expect(received).toEqual({ custom: LoggerUtils.CENSOR_RESPONSE, other: "visible" });
+        });
+
+        it("should replace Buffers with a size placeholder rather than expanding them one property per byte", () => {
+            impConfigSpy.mockReturnValue({ config: { exists: false } });
+            const stdout = Buffer.from("command output");
+
+            const received = LoggerUtils.censorObject({ stdout, stderr: Buffer.alloc(0), nested: { output: stdout, password: "pw" } });
+
+            const nested: Record<string, unknown> = received.nested as Record<string, unknown>;
+            expect(received.stdout).toBe("<Buffer: 14 bytes>");
+            expect(received.stderr).toBe("<Buffer: 0 bytes>");
+            expect(nested.output).toBe("<Buffer: 14 bytes>");
+            expect(nested.password).toBe(LoggerUtils.CENSOR_RESPONSE);
+        });
+
+        it("should censor values inside Maps while keeping them Maps and without modifying the original", () => {
+            impConfigSpy.mockReturnValue({ config: { exists: false } });
+            const profiles = new Map([["zosmf", [{ name: "p1", password: "pw", host: "visible" }]]]);
+
+            const received = LoggerUtils.censorObject({ profiles });
+
+            const censored = received.profiles as Map<string, unknown>;
+            expect(censored).toBeInstanceOf(Map);
+            expect(censored.get("zosmf")).toEqual([{ name: "p1", password: LoggerUtils.CENSOR_RESPONSE, host: "visible" }]);
+            expect(profiles.get("zosmf")[0].password).toEqual("pw");
         });
     });
 });
