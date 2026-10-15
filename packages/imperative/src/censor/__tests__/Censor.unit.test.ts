@@ -797,7 +797,7 @@ describe("Censor tests", () => {
             expect(body).toEqual(original);
         });
 
-        it("should return Buffers as the same instance instead of copying or expanding them", () => {
+        it("should replace Buffers with a size placeholder instead of expanding them, without modifying the input", () => {
             // mConfig is private; a typed view lets the test clear it without `any`
             const censorInternals = Censor as unknown as { mConfig: unknown };
             censorInternals.mConfig = null;
@@ -808,10 +808,12 @@ describe("Censor tests", () => {
             const received = Censor.censorObject(data);
 
             // A regression here expands each Buffer into one numeric property per byte
-            expect(received.stdout).toBe(stdout);
-            expect(received.stderr).toBe(data.stderr);
-            expect(received.nested.output).toBe(stdout);
+            expect(received.stdout).toBe("<Buffer: 14 bytes>");
+            expect(received.stderr).toBe("<Buffer: 0 bytes>");
+            expect(received.nested.output).toBe("<Buffer: 14 bytes>");
             expect(received.nested.password).toBe(Censor.CENSOR_RESPONSE);
+            // The original keeps its Buffer
+            expect(data.stdout).toBe(stdout);
         });
     });
 
