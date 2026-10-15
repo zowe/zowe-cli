@@ -4,10 +4,13 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+
+- BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 
 ## `8.39.1`
 
+- BugFix: Restricted application and event names to safe path components and rejected linked event paths. Event writes now validate file identity before truncation and use the validated descriptor. [#2950](https://github.com/zowe/zowe-cli/pull/2950)
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
 - BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
