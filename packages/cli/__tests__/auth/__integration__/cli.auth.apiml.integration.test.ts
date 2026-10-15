@@ -28,6 +28,8 @@ function addSchemaRef(configPath: string): void {
     fs.writeFileSync(configPath, JSON.stringify({ $schema: "./zowe.schema.json", ...config }, null, 4));
 }
 
+const TOKEN_ARGS =["--token-type", "apimlAuthenticationToken", "--token-value", "dummyToken", "--ecto", "5", "--cto", "5"];
+
 describe("auth login/logout apiml help", () => {
 
     // Create the unique test environment
@@ -75,7 +77,7 @@ describe("Comma-separated authOrder", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_AUTH_ORDER,
-            ["zosmf", "check", "status", "--auth-order", "token, bearer", "--host", "example.com"]
+            ["zosmf", "check", "status", "--auth-order", "token, bearer", "--host", "example.com", ...TOKEN_ARGS]
         );
         const stderr = response.stderr.toString();
 
@@ -92,7 +94,11 @@ describe("Comma-separated authOrder", () => {
             authOrder: "token, bearer"
         });
 
-        const response = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_AUTH_ORDER);
+        const response = runCliScript(
+            __dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_AUTH_ORDER,
+            ["zosmf", "check", "status", ...TOKEN_ARGS]
+        );
         const stderr = response.stderr.toString();
 
         expect(stderr).not.toContain("is not valid and will be ignored");
@@ -362,7 +368,7 @@ describe("Users overriding the admin value", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_USER_OVERRIDE,
-            ["zosmf", "check", "status", "--allowed-login-method", "direct-basic"]
+            ["zosmf", "check", "status", "--allowed-login-method", "direct-basic", "--show-inputs-only"]
         );
 
         const stderr = response.stderr.toString();
