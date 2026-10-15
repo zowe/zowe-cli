@@ -21,9 +21,6 @@ describe("List Alias handler", () => {
             const handler = new handlerReq.default();
             const aliasName = "MY.ALIAS.NAME";
 
-            // Vars populated by the mocked function
-            let logMessage = "";
-
             // Mock the resolveAlias function
             (List as any).resolveAlias = jest.fn(async () => {
                 return {
@@ -58,9 +55,7 @@ describe("List Alias handler", () => {
                         setObj: jest.fn()
                     },
                     console: {
-                        log: jest.fn((logArgs) => {
-                            logMessage += "\n" + logArgs;
-                        })
+                        log: jest.fn()
                     },
                     progress: {
                         startBar: jest.fn(),

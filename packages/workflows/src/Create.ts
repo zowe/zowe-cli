@@ -199,12 +199,13 @@ export class CreateWorkflow{
      * @param {string} customDir                            - Custom directory.
      * @returns {string}
      */
-    public static getTempFile(userId: string, localFile: string, customDir?: string): string{
+    public static getTempFile(userId: string, localFile: string, customDir?: string): string {
+        const randomLen = 16;
         let remoteFile: string;
         if (customDir){
-            remoteFile = `${customDir}/${randomBytes(16).toString("hex")}-${basename(localFile)}`;
+            remoteFile = `${customDir}/${randomBytes(randomLen).toString("hex")}-${basename(localFile)}`;
         } else {
-            remoteFile = `${WorkflowConstants.tempPath}/${userId}-${randomBytes(16).toString("hex")}-${basename(localFile)}`;
+            remoteFile = `${WorkflowConstants.tempPath}/${userId}-${randomBytes(randomLen).toString("hex")}-${basename(localFile)}`;
         }
         return remoteFile;
     }

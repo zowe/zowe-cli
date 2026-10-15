@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.38.0",
+  "version": "8.39.1",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -23,9 +23,6 @@
     "web-help/package*.json",
     "web-diff"
   ],
-  "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -98,7 +95,7 @@
     "@types/progress": "^2.0.7",
     "@types/sanitize-html": "^2.16.1",
     "@types/stack-trace": "^0.0.33",
-    "@zowe/secrets-for-zowe-sdk": "8.38.0",
+    "@zowe/secrets-for-zowe-sdk": "8.39.1",
     "concurrently": "^8.0.0",
     "cowsay": "^1.6.0",
     "deep-diff": "^1.0.0",

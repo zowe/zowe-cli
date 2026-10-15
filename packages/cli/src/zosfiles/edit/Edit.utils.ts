@@ -182,7 +182,8 @@ export class EditUtilities {
      * @param {boolean} useStash - should be true if don't want to overwrite local file when refreshing etag
      * @returns {ILocalFile}
      */
-    public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean, options: IZosFilesOptions = {}): Promise<ILocalFile> {
+    public static async localDownload(session: AbstractSession, lfFile: ILocalFile, useStash: boolean, options: IZosFilesOptions = {}):
+    Promise<ILocalFile> {
         // account for both useStash|!useStash and uss|ds when downloading.
         // When only refreshing the etag (useStash), download to a throwaway scratch file with a
         // unique, unpredictable name inside the safe temp dir rather than a shared, predictable path.

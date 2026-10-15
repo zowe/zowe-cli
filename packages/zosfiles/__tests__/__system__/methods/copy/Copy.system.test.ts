@@ -146,7 +146,8 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    const truncatedMembersFile = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName, 'truncatedMembers.txt');
+                    const truncatedMembersFile = path.join(tmpdir(), `zowe-copy-pds-${ZosFilesUtils.getUserTempToken()}`, fromDataSetName,
+                        'truncatedMembers.txt');
                     fs.mkdirSync(path.dirname(truncatedMembersFile), { recursive: true, mode: 0o700 });
                     fs.writeFileSync(truncatedMembersFile, "");
                     try {

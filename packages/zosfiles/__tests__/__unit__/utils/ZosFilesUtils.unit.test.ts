@@ -374,4 +374,149 @@ describe("ZosFilesUtils", () => {
         });
     });
 
+    describe("validateDSN", () => {
+        it("should fail on a data set name starting with a dot", () => {
+            const result = ZosFilesUtils.validateDSN(".DATA.SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set name ending with a dot", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET.");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set name containing multiple dots", () => {
+            const result = ZosFilesUtils.validateDSN("DATA..SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set segment starting with a number", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.1SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set segment with too many characters", () => {
+            const result = ZosFilesUtils.validateDSN("DATAAAAAA.SET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set with a member", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET(MEM)");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail on a data set with too long a name", () => {
+            const result = ZosFilesUtils.validateDSN(`AAAAAAAA.AAAAAAAA.AAAAAAAA.AAAAAAAA.AAAAAAAA.A`);
+            expect(result).toEqual(false);
+        });
+
+        it("should fail if there is only one segment", () => {
+            const result = ZosFilesUtils.validateDSN("DATASET");
+            expect(result).toEqual(false);
+        });
+
+        it("should fail with an accented character", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SÉT");
+            expect(result).toEqual(false);
+        });
+
+        it("should succeed with a properly formatted name", () => {
+            const result = ZosFilesUtils.validateDSN("DATA.SET");
+            expect(result).toEqual(true);
+        });
+
+        it("should succeed with a properly formatted name in lower case", () => {
+            const result = ZosFilesUtils.validateDSN("data.set");
+            expect(result).toEqual(true);
+        });
+    });
+
+    describe("validateDSMemberName", () => {
+        it("should handle a good member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MEMBER");
+            expect(result).toEqual(true);
+        });
+
+        it("should handle a good lower case member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("member");
+            expect(result).toEqual(true);
+        });
+
+        it("should handle a too long member name", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MEMBERLONG");
+            expect(result).toEqual(false);
+        });
+
+        it("should handle a member name starting with numeric", () => {
+            const result = ZosFilesUtils.validateDSMemberName("1MEMBER");
+            expect(result).toEqual(false);
+        });
+
+        it("should handle an accented character", () => {
+            const result = ZosFilesUtils.validateDSMemberName("MÉMBER");
+            expect(result).toEqual(false);
+        });
+    });
+
+    describe("validateFQDSN", () => {
+        let validateDSNSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            validateDSNSpy = jest.spyOn(ZosFilesUtils, "validateDSN");
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should fail if a provided name exceeds the limit", () => {
+            const badName = "A".repeat(55);
+            const result = ZosFilesUtils.validateFQDSN(badName);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a bad member name 1", () => {
+            const name = "TEST.DATA.SET(BADMEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect a bad member name 2", () => {
+            const name = "TEST.DATA.SET(!MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect multiple member names", () => {
+            const name = "TEST.DATA.SET(MEMBER)(MEMBER2)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a bad data set name with good member", () => {
+            const name = "TEST.SOMEBADDATA.SET(MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should detect a bad data set name with data after the member", () => {
+            const name = "TEST.BADDATA.SET(MEMBER)DATA";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(false);
+            expect(validateDSNSpy).not.toHaveBeenCalled();
+        });
+
+        it("should detect a good FQDSN", () => {
+            const name = "TEST.SOMEDATA.SET(MEMBER)";
+            const result = ZosFilesUtils.validateFQDSN(name);
+            expect(result).toEqual(true);
+            expect(validateDSNSpy).toHaveBeenCalledTimes(1);
+        });
+    });
+
 });

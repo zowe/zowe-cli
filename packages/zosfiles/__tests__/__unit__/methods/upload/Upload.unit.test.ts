@@ -959,7 +959,7 @@ describe("z/OS Files - Upload", () => {
             // TODO:gzip
             // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag }];
+                { "If-Match": uploadOptions.etag }];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -982,11 +982,11 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
-            // TODO:gzip
-            // ZosmfHeaders.ACCEPT_ENCODING,
-            ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag },
-            ZosmfHeaders.X_IBM_RETURN_ETAG];
+                // TODO:gzip
+                // ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                { "If-Match": uploadOptions.etag },
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
             uploadOptions.returnEtag = true;
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1011,12 +1011,12 @@ describe("z/OS Files - Upload", () => {
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
-            // TODO:gzip
-            // ZosmfHeaders.ACCEPT_ENCODING,
-            { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" },
-            ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag },
-            ZosmfHeaders.X_IBM_RETURN_ETAG];
+                // TODO:gzip
+                // ZosmfHeaders.ACCEPT_ENCODING,
+                { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" },
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                { "If-Match": uploadOptions.etag },
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1152,7 +1152,7 @@ describe("z/OS Files - Upload", () => {
             // Unit test for pass etag option
             uploadOptions.etag = etagValue;
             reqHeaders = [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag }];
+                { "If-Match": uploadOptions.etag }];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1175,9 +1175,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_RECORD,
-            ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag },
-            ZosmfHeaders.X_IBM_RETURN_ETAG];
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                { "If-Match": uploadOptions.etag },
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
             uploadOptions.returnEtag = true;
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1202,10 +1202,10 @@ describe("z/OS Files - Upload", () => {
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
             reqHeaders = [ZosmfHeaders.X_IBM_RECORD,
-            { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" },
-            ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
-            { "If-Match": uploadOptions.etag },
-            ZosmfHeaders.X_IBM_RETURN_ETAG];
+                { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" },
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                { "If-Match": uploadOptions.etag },
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1732,7 +1732,7 @@ describe("z/OS Files - Upload", () => {
             const responseTimeout = 5;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
             const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
-            { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }];
+                { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
@@ -1940,7 +1940,7 @@ describe("z/OS Files - Upload", () => {
         it("should return with proper response when upload USS file with responseTimeout", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
             const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
-            { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }];
+                { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, { responseTimeout: 5 });
@@ -1966,8 +1966,8 @@ describe("z/OS Files - Upload", () => {
             const expectedTsoAcct = "TSO1234";
             const expectedTsoProc = "MYPROC";
             const reqHeaders = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING,
-            { [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: expectedTsoAcct },
-            { [ZosmfHeaders.X_IBM_REQUEST_PROC]: expectedTsoProc }];
+                { [ZosmfHeaders.X_IBM_REQUEST_ACCTNUM]: expectedTsoAcct },
+                { [ZosmfHeaders.X_IBM_REQUEST_PROC]: expectedTsoProc }];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream,
@@ -2851,7 +2851,8 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(chtagSpy).toHaveBeenCalledTimes(1);
-                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1", undefined, expectedTsoAcct, expectedTsoProc);
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1", undefined, expectedTsoAcct,
+                    expectedTsoProc);
             });
         });
     });
