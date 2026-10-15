@@ -28,8 +28,6 @@ function addSchemaRef(configPath: string): void {
     fs.writeFileSync(configPath, JSON.stringify({ $schema: "./zowe.schema.json", ...config }, null, 4));
 }
 
-const TOKEN_ARGS =["--token-type", "apimlAuthenticationToken", "--token-value", "dummyToken", "--ecto", "5", "--cto", "5"];
-
 describe("auth login/logout apiml help", () => {
 
     // Create the unique test environment
@@ -77,13 +75,15 @@ describe("Comma-separated authOrder", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_AUTH_ORDER,
-            ["zosmf", "check", "status", "--auth-order", "token, bearer", "--host", "example.com", ...TOKEN_ARGS]
+            ["zosmf", "check", "status", "--auth-order", "token, bearer", "--host", "example.com", "--show-inputs-only"]
         );
         const stderr = response.stderr.toString();
 
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("is not a valid authOrder string");
         expect(stderr).not.toContain("Unknown argument");
+        // The comma-separated string was parsed into the two auth types
+        expect(response.stdout.toString()).toMatch(/authTypeOrder:\s+token,bearer/);
     });
 
     it("should accept a profile with authOrder property set to 'token, bearer'", async () => {
@@ -97,12 +97,14 @@ describe("Comma-separated authOrder", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_AUTH_ORDER,
-            ["zosmf", "check", "status", ...TOKEN_ARGS]
+            ["zosmf", "check", "status", "--show-inputs-only"]
         );
         const stderr = response.stderr.toString();
 
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("is not a valid authOrder string");
+        // The profile's comma-separated authOrder was parsed into the two auth types
+        expect(response.stdout.toString()).toMatch(/authTypeOrder:\s+token,bearer/);
     });
 });
 
@@ -374,6 +376,8 @@ describe("Users overriding the admin value", () => {
         const stderr = response.stderr.toString();
         expect(stderr).not.toContain("Unknown argument");
         expect(stderr).not.toContain("is not valid and will be ignored");
+        // The command-line value won over the profile's apiml-basic
+        expect(response.stdout.toString()).toMatch(/allowed-login-method:\s+direct-basic/);
     });
 
     it("allows user to bypass admin value via ZOWE_OPT_ALLOWED_LOGIN_METHOD environment variable", async () => {
