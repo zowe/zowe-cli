@@ -81,6 +81,23 @@ describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
     });
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+        let error: ImperativeError;
+        let response: ISendResponse;
+
+        try {
+            response = await SendTso.sendDataToTSOCollect(PRETEND_SESSION, servletKey, "data");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The servletKey contains illegal characters.");
+    });
+
     it("should fail for empty servletKey", async () => {
         let error: ImperativeError;
         let response: ISendResponse;
@@ -168,6 +185,22 @@ describe("TsoSend getDataFromTSO", () => {
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
         expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+        let error: ImperativeError;
+        let response: IZosmfTsoResponse;
+        try {
+            response = await SendTso.getDataFromTSO(PRETEND_SESSION, servletKey);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The servletKey contains illegal characters.");
     });
 });
 
