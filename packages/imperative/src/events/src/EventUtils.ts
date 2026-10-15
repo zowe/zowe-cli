@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError } from "../../error/src/ImperativeError";
-import { join } from "path";
+import { dirname, join, relative, resolve, sep } from "path";
 import { ZoweUserEvents, ZoweSharedEvents, EventTypes, EventCallback } from "./EventConstants";
 import * as fs from "fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
@@ -27,6 +27,82 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
  * - event writing
  */
 export class EventUtils {
+
+    private static validatePathComponent(value: string, label: string): void {
+        if (typeof value !== "string" || !/^[A-Za-z0-9]/.test(value) || /[^A-Za-z0-9_.-]/.test(value)) {
+            throw new ImperativeError({
+                msg: `${label} must be a single path component matching [A-Za-z0-9][A-Za-z0-9_.-]*: ${value}`
+            });
+        }
+    }
+
+    private static getEventsRoot(): string {
+        const home = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
+        return resolve(home, ".events");
+    }
+
+    /**
+     * Check containment and the fixed app/event layout before touching the filesystem.
+     * The CLI home, event directories, and their ancestors must not be writable by untrusted users.
+     */
+    private static validateEventPath(eventPath: string, isFile: boolean): string {
+        const root = this.getEventsRoot();
+        const absolutePath = resolve(eventPath);
+        const components = relative(root, absolutePath).split(sep);
+        if (!absolutePath.startsWith(root + sep) || components.length !== (isFile ? 2 : 1)) {
+            throw new ImperativeError({ msg: `Event path must be inside '${root}': ${eventPath}` });
+        }
+        this.validatePathComponent(components[0], "Application name");
+        if (isFile) this.validatePathComponent(components[1], "Event name");
+        return root;
+    }
+
+    private static assertDirectory(directoryPath: string): void {
+        const stats = fs.lstatSync(directoryPath);
+        if (!stats.isDirectory() || stats.isSymbolicLink()) {
+            throw new ImperativeError({ msg: `Event directory must be a directory, not a link: ${directoryPath}` });
+        }
+    }
+
+    private static ensureDirectory(directoryPath: string): void {
+        try {
+            fs.mkdirSync(directoryPath, { mode: 0o750 });
+        } catch (err) {
+            if (err.code !== "EEXIST") throw err;
+        }
+        this.assertDirectory(directoryPath);
+    }
+
+    private static assertEventFile(filePath: string): fs.BigIntStats {
+        const root = this.validateEventPath(filePath, true);
+        this.assertDirectory(root);
+        this.assertDirectory(dirname(filePath));
+        const stats = fs.lstatSync(filePath, { bigint: true });
+        if (!stats.isFile() || stats.isSymbolicLink() || stats.nlink !== BigInt(1)) {
+            throw new ImperativeError({ msg: `Event file must be a regular file without links: ${filePath}` });
+        }
+        return stats;
+    }
+
+    private static openEventFile(filePath: string, flags: number): number {
+        const expected = this.assertEventFile(filePath);
+        // Never use O_TRUNC here: validate the opened file before modifying it.
+        // O_NOFOLLOW is unavailable on Windows; the identity checks also cover that platform.
+        const fd = fs.openSync(filePath, flags | (fs.constants.O_NOFOLLOW ?? 0) | (fs.constants.O_NONBLOCK ?? 0));
+        try {
+            const opened = fs.fstatSync(fd, { bigint: true });
+            const current = this.assertEventFile(filePath);
+            if (!opened.isFile() || opened.nlink !== BigInt(1) ||
+                opened.dev !== expected.dev || opened.ino !== expected.ino ||
+                opened.dev !== current.dev || opened.ino !== current.ino) {
+                throw new ImperativeError({ msg: `Event file changed while being opened: ${filePath}` });
+            }
+            return fd;
+        } catch (err) {
+            fs.closeSync(fd);
+            throw err;
+        }
+    }
 
     /**
      * Retrieves a list of supported applications from configuration.
@@ -49,6 +125,7 @@ export class EventUtils {
      * @throws {ImperativeError} If the application name is not recognized.
      */
     public static validateAppName(appName: string): void {
+        this.validatePathComponent(appName, "Application name");
         const appList = this.getListOfApps();
         if (appList.includes(appName)) return;
         // Performing `appList.find(app => app.includes(appName))` will allow for "tags" (or suffixes) coming from `getListOfApps()`
@@ -88,10 +165,14 @@ export class EventUtils {
      * @throws {ImperativeError} If the contents of the event cannot be retrieved.
      */
     public static getEventContents(eventFilePath: string): IEventJson {
+        let fd: number;
         try {
-            return JSON.parse(fs.readFileSync(eventFilePath).toString());
+            fd = this.openEventFile(eventFilePath, fs.constants.O_RDONLY);
+            return JSON.parse(fs.readFileSync(fd).toString());
         } catch (err) {
-            throw new ImperativeError({ msg: `Unable to retrieve event contents: Path: ${eventFilePath}` });
+            throw new ImperativeError({ msg: `Unable to retrieve event contents: Path: ${eventFilePath}`, causeErrors: err });
+        } finally {
+            if (fd !== undefined) fs.closeSync(fd);
         }
     }
 
@@ -110,14 +191,16 @@ export class EventUtils {
     /**
      * Ensures that the specified directory for storing event files exists, creating it if necessary.
      *
-     * @param {string} directoryPath - The path to the directory.
+     * @param {string} directoryPath - The application directory directly beneath the configured '.events' directory.
      * @throws {ImperativeError} If we are unable to create the '.events' directory.
+     * @throws {ImperativeError} If the path is outside the event tree or an event directory is a link.
      */
     public static ensureEventsDirExists(directoryPath: string) {
         try {
-            if (!fs.existsSync(directoryPath)) {
-                fs.mkdirSync(directoryPath, { mode: 0o750, recursive: true }); // user read/write/exec, group read/exec
-            }
+            const root = this.validateEventPath(directoryPath, false);
+            // Create one level at a time so an existing .events link cannot redirect mkdir.
+            this.ensureDirectory(root);
+            this.ensureDirectory(directoryPath);
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
         }
@@ -128,16 +211,25 @@ export class EventUtils {
      *
      * @param {string} filePath - The path to the file.
      * @throws {ImperativeError} If we are unable to create the event file required for event emission.
+     * @throws {ImperativeError} If the path is unsafe, linked, or not a regular event file.
      */
     public static ensureFileExists(filePath: string) {
+        let fd: number;
         try {
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o640);
-            fs.closeSync(fd);
-        } catch (err) {
-            if (err.code !== 'EEXIST') {
-                throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
+            const root = this.validateEventPath(filePath, true);
+            this.assertDirectory(root);
+            this.assertDirectory(dirname(filePath));
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o640);
+            } catch (err) {
+                if (err.code !== "EEXIST") throw err;
+                fd = this.openEventFile(filePath, fs.constants.O_RDONLY);
             }
+        } catch (err) {
+            throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
+        } finally {
+            if (fd !== undefined) fs.closeSync(fd);
         }
     }
 
@@ -149,15 +241,17 @@ export class EventUtils {
      * @param appName The name of the application.
      * @returns The created event
      * @throws {ImperativeError} If the application name is not recognized.
+     * @throws {ImperativeError} If either name is not a single safe path component.
      * @throws {ImperativeError} If we are unable to create the '.events' directory.
      * @throws {ImperativeError} If we are unable to create the event file required for event emission.
      */
     public static createEvent(eventName: string, appName: string): Event {
-        const zoweDir = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
-        const dir = join(zoweDir, EventUtils.getEventDir(appName));
+        this.validatePathComponent(eventName, "Event name");
+        this.validateAppName(appName);
+        const dir = resolve(this.getEventsRoot(), appName);
+        const filePath = resolve(dir, eventName);
+        this.validateEventPath(filePath, true);
         this.ensureEventsDirExists(dir);
-
-        const filePath = join(dir, eventName);
         this.ensureFileExists(filePath);
 
         return new Event({
@@ -191,6 +285,8 @@ export class EventUtils {
 
     /**
      * Sets up a file watcher for a specific event, triggering callbacks when the event file is updated.
+     * Returning a watcher is not a readiness signal: registration may be queued until the next native I/O poll.
+     * On macOS, file watchers are re-armed only after the native callback and its Promise continuations finish.
      *
      * @param {EventProcessor} eeInst - The event processor instance.
      * @param {string} eventName - The name of the event.
@@ -201,6 +297,7 @@ export class EventUtils {
      */
     public static setupWatcher(eeInst: EventProcessor, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
         const event = eeInst.subscribedEvents.get(eventName);
+        this.assertEventFile(event.eventFilePath);
         const watcher = fs.watch(event.eventFilePath, (trigger: "rename" | "change") => {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
@@ -227,8 +324,21 @@ export class EventUtils {
      * Writes event data to the corresponding event file in JSON format.
      *
      * @param {Event} event - The event object.
+     * @throws {ImperativeError} If the event path is unsafe, linked, or changes while being opened.
      */
     public static writeEvent(event: Event) {
-        fs.writeFileSync(event.eventFilePath, JSON.stringify(event.toJson(), null, 2));
+        this.validatePathComponent(event.eventName, "Event name");
+        this.validatePathComponent(event.appName, "Application name");
+        if (resolve(event.eventFilePath) !== resolve(this.getEventsRoot(), event.appName, event.eventName)) {
+            throw new ImperativeError({ msg: `Event file path does not match its application and event name: ${event.eventFilePath}` });
+        }
+        const contents = JSON.stringify(event.toJson(), null, 2);
+        const fd = this.openEventFile(event.eventFilePath, fs.constants.O_WRONLY);
+        try {
+            fs.ftruncateSync(fd, 0);
+            fs.writeFileSync(fd, contents);
+        } finally {
+            fs.closeSync(fd);
+        }
     }
 }
