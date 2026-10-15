@@ -11,7 +11,7 @@
 
 import EditHandler from "../../../../src/config/cmd/edit/edit.handler";
 import { IHandlerParameters } from "../../../../../cmd";
-import { ImperativeConfig, ProcessUtils } from "../../../../../utilities";
+import { CliUtils, ImperativeConfig, ProcessUtils } from "../../../../../utilities";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
@@ -83,5 +83,61 @@ describe("Configuration Edit command handler", () => {
 
         await handler.process(params);
         expect(editFileSpy).toHaveBeenCalledWith("fake", undefined);
+    });
+
+    it("should open config file in a user-supplied editor if the user trusts it", async () => {
+        const handler = new EditHandler();
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
+        const readPromptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce("y");
+        const params = getIHandlerParametersObject();
+        params.arguments.editor = "fakeEdit";
+
+        await handler.process(params);
+        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy.mock.calls[0][0]).toContain("fakeEdit");
+        expect(editFileSpy).toHaveBeenCalledWith("fake", "fakeEdit");
+    });
+
+    it("should re-prompt on invalid input before opening a trusted editor", async () => {
+        const handler = new EditHandler();
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
+        const readPromptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce("maybe").mockResolvedValueOnce("Y");
+        const params = getIHandlerParametersObject();
+        params.arguments.editor = "fakeEdit";
+
+        await handler.process(params);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
+        expect(editFileSpy).toHaveBeenCalledWith("fake", "fakeEdit");
+    });
+
+    it("should not open config file if the user does not trust the editor", async () => {
+        const handler = new EditHandler();
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
+        jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce("n");
+        const params = getIHandlerParametersObject();
+        params.arguments.editor = "fakeEdit";
+
+        await expect(handler.process(params)).rejects.toThrow("User did not trust the editor");
+        expect(editFileSpy).not.toHaveBeenCalled();
+    });
+
+    it("should not open config file if no input is provided to the trust prompt", async () => {
+        const handler = new EditHandler();
+        const editFileSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
+        jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce(null);
+        const params = getIHandlerParametersObject();
+        params.arguments.editor = "fakeEdit";
+
+        await expect(handler.process(params)).rejects.toThrow("No input provided");
+        expect(editFileSpy).not.toHaveBeenCalled();
+    });
+
+    it("should not prompt for trust when no editor is supplied", async () => {
+        const handler = new EditHandler();
+        jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
+        const readPromptSpy = jest.spyOn(CliUtils, "readPrompt");
+
+        await handler.process(getIHandlerParametersObject());
+        expect(readPromptSpy).not.toHaveBeenCalled();
     });
 });
