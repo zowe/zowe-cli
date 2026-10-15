@@ -17,7 +17,6 @@ import { inspect } from "util";
 
 const ISSUE_HEADERS: any[] = [Headers.APPLICATION_JSON];
 const START_RESOURCES = "/zosmf/tsoApp/tso/ping/UZUST01-154-aacaaaaz";
-const servletKey = "UZUST01-154-aacaaaaz";
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -61,7 +60,7 @@ describe("PingTsoCommand Test", () => {
         let error: ImperativeError;
         let response: IPingResponse;
         try {
-            response = await PingTso.ping(PRETEND_SESSION, servletKey);
+            response = await PingTso.ping(PRETEND_SESSION, "UZUST01-154-aacaaaaz");
             Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
@@ -72,14 +71,10 @@ describe("PingTsoCommand Test", () => {
             ISSUE_HEADERS, payload);
         expectZosmfResponseSucceeded(response, error);
     });
-    it("should return response if an invalid servlet key was provided", async () => {
-        (ZosmfRestClient.putExpectJSON as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(ZOSMF_RESPONSE);
-                });
-            });
-        });
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: IPingResponse;
         try {
@@ -89,12 +84,8 @@ describe("PingTsoCommand Test", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.putExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCES,
-            ISSUE_HEADERS, payload);
-        expectZosmfResponseSucceeded(response, error);
+        expect(error.message).toBe("The servletKey contains illegal characters.");
     });
-
     it("should throw an error if no servlet key was provided", async () => {
         let error: ImperativeError;
         let response: IPingResponse;
