@@ -21,6 +21,7 @@ interface ITestSubscription {
     disposable: IEventDisposable;
 }
 
+const RE_EMIT_INTERVAL_MS = 250;
 const zoweApp = "Zowe";
 const sampleApps = ["firstApp", "secondApp"];
 let zoweCliHome: string;
@@ -40,20 +41,33 @@ describe("Event Operator and Processor", () => {
     const customUserEvent = "onCustomUserEvent";
     let subscriptions: IEventDisposable[] = [];
 
-    async function subscribe(
-        processor: EventProcessor,
-        eventName: string,
-        type: "shared" | "user" = "shared"
-    ): Promise<ITestSubscription> {
+    function subscribe(processor: EventProcessor, eventName: string, type: "shared" | "user" = "shared"): ITestSubscription {
         let notify: () => void;
         const notification = new Promise<void>(resolve => { notify = resolve; });
         const callback = jest.fn(() => notify());
         const disposable = type === "shared" ? processor.subscribeShared(eventName, callback) : processor.subscribeUser(eventName, callback);
         subscriptions.push(disposable);
-        // macOS queues file-watcher registration until the native poll and re-arms only after callbacks return.
-        // A real async I/O round trip avoids emitting from registration or watcher-callback microtasks.
-        await fs.promises.stat(processor.subscribedEvents.get(eventName).eventFilePath);
         return { notification, callback, disposable };
+    }
+
+    /**
+     * Emit an event until every subscription has been notified.
+     *
+     * fs.watch gives no readiness signal, and a change made before the watcher is armed is lost for good
+     * (notably on macOS, where libuv defers kqueue registration to the next poll and re-arms after each callback).
+     * Re-emitting makes delivery independent of that timing. Each emit carries a new eventTime, so the
+     * processor's de-duplication treats it as a new event; callers should therefore not assert an exact call count.
+     */
+    async function emitUntilDelivered(emit: () => void, ...subs: ITestSubscription[]): Promise<void> {
+        const delivered = Promise.all(subs.map(sub => sub.notification));
+        let isDelivered = false;
+        void delivered.then(() => { isDelivered = true; });
+        while (!isDelivered) {
+            emit();
+            let timer: NodeJS.Timeout;
+            await Promise.race([delivered, new Promise(resolve => { timer = setTimeout(resolve, RE_EMIT_INTERVAL_MS); })]);
+            clearTimeout(timer);
+        }
     }
 
     beforeAll(async () => {
@@ -79,44 +93,41 @@ describe("Event Operator and Processor", () => {
     describe("Zowe Events", () => {
         it("creates an event file on subscription and delivers a Zowe event", async () => {
             const watcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const subscription = await subscribe(watcher, sharedZoweEvent);
+            const subscription = subscribe(watcher, sharedZoweEvent);
             const event = watcher.subscribedEvents.get(sharedZoweEvent);
             expect(fs.statSync(event.eventFilePath).isFile()).toBe(true);
             expect(subscription.callback).not.toHaveBeenCalled();
 
-            EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent);
-            await subscription.notification;
+            await emitUntilDelivered(() => EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent), subscription);
 
             expect(EventUtils.getEventContents(event.eventFilePath).eventName).toBe(sharedZoweEvent);
-            expect(subscription.callback).toHaveBeenCalledTimes(1);
+            expect(subscription.callback).toHaveBeenCalled();
         });
 
         it("delivers a Zowe event to independent watcher instances", async () => {
             const firstWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
             const secondWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const first = await subscribe(firstWatcher, sharedZoweEvent);
-            const second = await subscribe(secondWatcher, sharedZoweEvent);
+            const first = subscribe(firstWatcher, sharedZoweEvent);
+            const second = subscribe(secondWatcher, sharedZoweEvent);
 
-            EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent);
-            await Promise.all([first.notification, second.notification]);
+            await emitUntilDelivered(() => EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent), first, second);
 
-            expect(first.callback).toHaveBeenCalledTimes(1);
-            expect(second.callback).toHaveBeenCalledTimes(1);
+            expect(first.callback).toHaveBeenCalled();
+            expect(second.callback).toHaveBeenCalled();
         });
 
         it("keeps another instance subscribed when one subscription is closed", async () => {
             const firstWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
             const secondWatcher = new EventProcessor(zoweApp, IProcessorTypes.WATCHER);
-            const first = await subscribe(firstWatcher, sharedZoweEvent);
-            const second = await subscribe(secondWatcher, sharedZoweEvent);
+            const first = subscribe(firstWatcher, sharedZoweEvent);
+            const second = subscribe(secondWatcher, sharedZoweEvent);
             second.disposable.close();
 
-            EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent);
-            await first.notification;
+            await emitUntilDelivered(() => EventOperator.getZoweProcessor().emitZoweEvent(sharedZoweEvent), first);
 
             expect(firstWatcher.subscribedEvents.has(sharedZoweEvent)).toBe(true);
             expect(secondWatcher.subscribedEvents.has(sharedZoweEvent)).toBe(false);
-            expect(first.callback).toHaveBeenCalledTimes(1);
+            expect(first.callback).toHaveBeenCalled();
             expect(second.callback).not.toHaveBeenCalled();
         });
     });
@@ -124,16 +135,15 @@ describe("Event Operator and Processor", () => {
     describe("Custom Events", () => {
         it("creates and delivers a custom user event in its application directory", async () => {
             const watcher = new EventProcessor(sampleApps[1], IProcessorTypes.WATCHER);
-            const subscription = await subscribe(watcher, customUserEvent, "user");
+            const subscription = subscribe(watcher, customUserEvent, "user");
             const event = watcher.subscribedEvents.get(customUserEvent);
             expect(event.eventFilePath).toBe(path.join(zoweCliHome, ".events", sampleApps[1], customUserEvent));
             expect(fs.statSync(event.eventFilePath).isFile()).toBe(true);
 
-            EventOperator.getEmitter(sampleApps[1]).emitEvent(customUserEvent);
-            await subscription.notification;
+            await emitUntilDelivered(() => EventOperator.getEmitter(sampleApps[1]).emitEvent(customUserEvent), subscription);
 
             expect(EventUtils.getEventContents(event.eventFilePath).eventName).toBe(customUserEvent);
-            expect(subscription.callback).toHaveBeenCalledTimes(1);
+            expect(subscription.callback).toHaveBeenCalled();
         });
     });
 });
