@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue on Windows where running a command from the same directory with different casing, such as `ops` in CMD and `OPS` in Git Bash, stored a separate set of credentials in the secure credential store for each. The project directory is now resolved to its real path, so one directory has one set of credentials. [#2604](https://github.com/zowe/zowe-cli/issues/2604)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 
 ## `8.39.1`
