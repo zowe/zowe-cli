@@ -112,7 +112,8 @@ describe("LoggerUtils tests", () => {
                     findSecure.mockReturnValue([`profiles.secret.properties.${prop}`, "profiles.secret.properties.secret"]);
                     impConfig.config.mProperties.profiles.secret.properties = {[prop]: secrets[0], secret: secrets[1] };
 
-                    const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
+                    // Special values are only exempt on the console/json output channels; log categories always mask them
+                    const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`, "console");
                     const expected = `visible secret: ${secrets[0]}, masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                     return [received, expected];
                 };
