@@ -300,7 +300,9 @@ export class Shell {
             // doesn't present a different but legitimate key that looks like a changed key.
             ...pinnedAlgorithms != null ? { algorithms: { serverHostKey: pinnedAlgorithms } } : {},
             readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
-                session.ISshSession.handshakeTimeout : 0
+                session.ISshSession.handshakeTimeout : 0,
+            agent: session.ISshSession.identityAgent,
+            agentForward: session.ISshSession.forwardAgent,
         } as any);
     }
 

@@ -287,16 +287,9 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                 }
                 expect(error).toBeDefined();
                 expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobname.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"(((((\" jobid \"JOB123\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(7);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("The job name '(((((' is not valid.");
             });
 
             it("should detect and surface an error message if an invalid jobid is specified", async () => {
@@ -308,16 +301,9 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                 }
                 expect(error).toBeDefined();
                 expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobid.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
                 const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
                 expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"(\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(7);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                expect(trimmedErrorMessage).toContain("The job ID '(' is not valid.");
             });
 
             it("should detect and surface an error if the job requested is not found", async () => {

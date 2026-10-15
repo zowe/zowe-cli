@@ -40,6 +40,14 @@ export class ZosFilesUtils {
     public static readonly DEFAULT_FILE_EXTENSION: string = "txt";
 
     public static readonly MAX_MEMBER_LENGTH: number = 8;
+    public static readonly MAX_DSN_LENGTH: number = 44;
+    public static readonly MAX_FQDSN_LENGTH: number = 54;
+
+    public static readonly SEGMENT_REGEX = /^[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}$/;
+    public static readonly MEMBER_MATCH_REGEX = /(?<=\()[A-Za-z#@$][A-Za-z0-9#@$-]{0,7}(?=\))/;
+    public static readonly GENERIC_CHARACTERISTIC_REGEX = /^[A-Za-z0-9]{1,8}$/;
+    public static readonly RETAINTO_REGEX = /^\d{7}$/;
+    public static readonly VOLSER_REGEX = /^[A-Za-z0-9]{1,6}$/;
 
     /**
      * Break up a dataset name of either:
@@ -377,4 +385,42 @@ export class ZosFilesUtils {
         }
     }
 
+    /**
+     * Validate a data set name is valid per the IBM z/OS data set naming rules
+     * @param {string} name - the data set name
+     * @return {boolean} if the data set name is valid
+     */
+    public static validateDSN(name: string): boolean {
+        if (name.length > this.MAX_DSN_LENGTH) { return false; }
+
+        const segments = name.split(".");
+        if (segments.length < 2) { return false; }
+
+        for (const segment of segments) {
+            if (!this.SEGMENT_REGEX.test(segment)) { return false; }
+        }
+        return true;
+    }
+
+    /**
+     * Validate a member name is valid per the IBM z/OS data set naming rules
+     * @param {string} name - the member name
+     * @return {boolean} if the member name is valid
+     */
+    public static validateDSMemberName(name: string): boolean {
+        return this.SEGMENT_REGEX.test(name);
+    }
+
+    /**
+     * Validate a fully qualified data set name with member
+     * @param {string} name - the fully qualified data set name
+     * @return {boolean} if the name is valid
+     */
+    public static validateFQDSN(name: string): boolean {
+        if (name.length > this.MAX_FQDSN_LENGTH) { return false; }
+        const memberNames = [...name.matchAll(new RegExp(this.MEMBER_MATCH_REGEX, "g"))];
+        if (memberNames.length === 0) { return this.validateDSN(name); }
+        if (memberNames.length !== 1 || memberNames[0].index + memberNames[0][0].length + 1 != name.length) { return false; }
+        return this.validateDSN(name.split("(")[0]);
+    }
 }

@@ -13,6 +13,7 @@ import { ChainedHandlerService } from "../src/ChainedHandlerUtils";
 import { IChainedHandlerEntry } from "../";
 import { TestLogger } from "../../../__tests__/src/TestLogger";
 import * as yargs from "yargs";
+import { Censor } from "../../censor";
 
 const testLogger = TestLogger.getTestLogger();
 describe("Chained Handler Service", () => {
@@ -295,6 +296,79 @@ describe("Chained Handler Service", () => {
             expect(JSON.stringify(e)).toContain("from");
             expect(JSON.stringify(e)).toContain("argument");
             expect(JSON.stringify(e)).toContain("test.should.not.work");
+        }
+    });
+
+    it("should censor secure values in the arguments when a mapFromArguments mapping fails", () => {
+        const secret = "mySecretPassword";
+        const config: IChainedHandlerEntry[] = [{
+            handler: "dummy0",
+            mapping: [
+                {from: "test.should.not.work", to: "argument", mapFromArguments: true, applyToHandlers: [0]},
+            ]
+        }];
+        const overallArgs = {$0: "dummy", _: [] as any, password: secret, user: "myUser"};
+        let caughtError;
+        try {
+            ChainedHandlerService.getArguments(binName, config, 0, [], overallArgs, testLogger);
+        } catch (e) {
+            caughtError = e;
+        }
+        expect(caughtError).toBeDefined();
+        expect(caughtError.additionalDetails).not.toContain(secret);
+        expect(caughtError.additionalDetails).toContain(`"password":"${Censor.CENSOR_RESPONSE}"`);
+        expect(caughtError.additionalDetails).toContain("myUser");
+        expect(JSON.stringify(caughtError)).not.toContain(secret);
+        expect(overallArgs.password).toEqual(secret); // original arguments are not modified
+    });
+
+    it("should censor secure values in the response object when a 'from' mapping fails", () => {
+        const secret = "mySecretToken";
+        const responses: any[] = [{tokenValue: secret, nested: {password: secret}, other: "visible"}];
+        const config: IChainedHandlerEntry[] = [{
+            handler: "dummy0",
+            mapping: [
+                {from: "test.should.not.work", to: "argument", applyToHandlers: [1]},
+            ]
+        },
+        {
+            handler: "dummy1",
+            mapping: []
+        }];
+        let caughtError;
+        try {
+            ChainedHandlerService.getArguments(binName, config, 1, responses, dummyArgs, testLogger);
+        } catch (e) {
+            caughtError = e;
+        }
+        expect(caughtError).toBeDefined();
+        expect(caughtError.additionalDetails).not.toContain(secret);
+        expect(caughtError.additionalDetails).toContain(`"tokenValue":"${Censor.CENSOR_RESPONSE}"`);
+        expect(caughtError.additionalDetails).toContain(`"password":"${Censor.CENSOR_RESPONSE}"`);
+        expect(caughtError.additionalDetails).toContain("visible");
+        expect(responses[0].tokenValue).toEqual(secret); // original response is not modified
+    });
+
+    it("should handle a response object that is not an object when a 'from' mapping fails", () => {
+        const config: IChainedHandlerEntry[] = [{
+            handler: "dummy0",
+            mapping: [
+                {from: "test.should.not.work", to: "argument", applyToHandlers: [1]},
+            ]
+        },
+        {
+            handler: "dummy1",
+            mapping: []
+        }];
+        for (const [response, expected] of [["plain string", "\"plain string\""], [undefined, "undefined"]]) {
+            let caughtError;
+            try {
+                ChainedHandlerService.getArguments(binName, config, 1, [response], dummyArgs, testLogger);
+            } catch (e) {
+                caughtError = e;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError.additionalDetails).toEqual("Response object: " + expected);
         }
     });
 });

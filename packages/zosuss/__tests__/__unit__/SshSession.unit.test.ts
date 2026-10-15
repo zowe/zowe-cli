@@ -53,4 +53,28 @@ describe("SshSession", () => {
             expect(cfg.insecure).toBeUndefined();
         });
     });
+
+    describe("SSH agent options", () => {
+        it("should store identityAgent and forwardAgent in ISshSession", () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser",
+                identityAgent: "/path/to/ssh-agent.sock",
+                forwardAgent: true
+            });
+            expect(session.ISshSession.identityAgent).toBe("/path/to/ssh-agent.sock");
+            expect(session.ISshSession.forwardAgent).toBe(true);
+        });
+
+        it("should leave agent options undefined when not specified", () => {
+            const session = new SshSession({
+                hostname: "localhost",
+                port: 22,
+                user: "testuser"
+            });
+            expect(session.ISshSession.identityAgent).toBeUndefined();
+            expect(session.ISshSession.forwardAgent).toBeUndefined();
+        });
+    });
 });

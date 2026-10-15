@@ -237,6 +237,57 @@ fn unit_test_util_restrict_zowe_bin_to_owner() {
     );
 }
 
+#[cfg(target_family = "windows")]
+#[test]
+fn unit_test_util_get_win_system32_exe() {
+    let exe_path = std::path::PathBuf::from(util_get_win_system32_exe("ping.exe"));
+    assert!(exe_path.is_absolute(), "path must be absolute: {:?}", exe_path);
+    assert!(exe_path.ends_with("System32/ping.exe"), "unexpected path: {:?}", exe_path);
+}
+
+#[cfg(target_family = "windows")]
+#[test]
+fn unit_test_win_background_script_uses_absolute_paths() {
+    use crate::defs::CmdShell;
+
+    // Bash on Windows additionally needs a delay, which used to be a bare 'sleep'
+    for curr_cmd_shell in [CmdShell::Bash, CmdShell::Sh, CmdShell::WindowsCmd, CmdShell::PowerShellExe] {
+        let zowe_cmd_args = vec!["daemon".to_string(), "enable".to_string()];
+        let mut script_string = String::new();
+        let mut script_arg_vec: Vec<&str> = vec![];
+        let shell = form_cmd_script_arg_vec(
+            &zowe_cmd_args,
+            "C:\\zowe\\zowe.cmd",
+            &curr_cmd_shell,
+            &mut script_string,
+            &mut script_arg_vec,
+        );
+
+        assert!(
+            std::path::Path::new(&shell).is_absolute(),
+            "shell must be an absolute path: {}",
+            shell
+        );
+
+        // no external command may be referenced by a bare name
+        for bare_cmd in ["ping", "ping.exe", "sleep", "sleep.exe"] {
+            assert!(
+                !script_arg_vec.iter().any(|arg| arg.eq_ignore_ascii_case(bare_cmd)),
+                "script must not contain bare '{}': {:?}",
+                bare_cmd,
+                script_arg_vec
+            );
+        }
+        assert!(
+            script_arg_vec
+                .iter()
+                .any(|arg| arg.to_lowercase().ends_with("system32\\ping.exe")),
+            "script must contain an absolute ping path: {:?}",
+            script_arg_vec
+        );
+    }
+}
+
 #[cfg(target_family = "unix")]
 #[tokio::test]
 async fn unit_test_comm_peer_is_current_user() {

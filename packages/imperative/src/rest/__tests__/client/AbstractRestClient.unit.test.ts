@@ -31,6 +31,7 @@ import * as streamToString from "stream-to-string";
 import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
+import { format } from "util";
 import { IO } from "../../../io";
 import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -251,6 +252,57 @@ describe("AbstractRestClient tests", () => {
 
         expect(caughtError).toBeUndefined();
         expect(requestFnc).toHaveBeenCalledTimes(1);
+    });
+
+
+    it("redacts passwords from logs but sends the original JSON body", async () => {
+        const body = {
+            userID: "ZOWEUSER",
+            oldPwd: "oldPass",
+            newPwd: "newPass"
+        };
+        const original = { ...body };
+
+        const traces: string[] = [];
+        const logger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(logger);
+        jest.spyOn(logger, "trace").mockImplementation((message, ...args) => {
+            const rendered = format(message, ...args);
+            traces.push(rendered);
+            return rendered;
+        });
+
+        const request = new MockHttpRequestResponse();
+        const writeSpy = jest.spyOn(request, "write");
+        jest.spyOn(https, "request").mockImplementation(
+            ((options: any, callback: any) => {
+                ProcessUtils.nextTick(() => {
+                    const response = new MockHttpRequestResponse();
+                    callback(response);
+
+                    ProcessUtils.nextTick(() => {
+                        response.emit("data", Buffer.from('{"success":true}', "utf8"));
+                        response.emit("end");
+                    });
+                });
+
+                return request;
+            }) as any
+        );
+
+        await RestClient.putExpectJSON(
+            new Session({ hostname: "example.local" }),
+            "/credential-change",
+            [Headers.APPLICATION_JSON],
+            body
+        );
+
+        const transmitted = writeSpy.mock.calls.map(([chunk]) => chunk).join("");
+        expect(JSON.parse(transmitted)).toEqual(original);
+        expect(body).toEqual(original);
+        const diagnosticOutput = traces.join("\n");
+        expect(diagnosticOutput).not.toContain(original.oldPwd);
+        expect(diagnosticOutput).not.toContain(original.newPwd);
     });
 
     it("should not error when chunking data and payload data are present in outgoing request", async () => {
@@ -1622,6 +1674,68 @@ describe("AbstractRestClient tests", () => {
                 setPasswordAuthSpy.mockRestore();
             }
             if ((Censor as any).mCensoredOptions.has("tokenType")) { (Censor as any).mCensoredOptions.delete("tokenType"); }
+        });
+
+        describe("populateError", () => {
+            const makeClient = (headers: any, writeData: any): any => {
+                const client: any = new RestClient(new Session({ hostname: "FakeHostName" }));
+                client.mReqHeaders = headers;
+                client.mWriteData = writeData;
+                return client;
+            };
+
+            it("should censor sensitive request headers in the error", () => {
+                const client = makeClient({ Authorization: "Basic secretvalue", "X-Other": "visible" }, undefined);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.headers.Authorization).toEqual(Censor.CENSOR_RESPONSE);
+                expect(err.mDetails.headers["X-Other"]).toEqual("visible");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+            });
+
+            it("should censor sensitive values in an object payload", () => {
+                const client = makeClient({}, { password: "secretvalue", name: "visible" });
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.payload.password).toEqual(Censor.CENSOR_RESPONSE);
+                expect(err.mDetails.payload.name).toEqual("visible");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+            });
+
+            it("should preserve array payloads while censoring their objects", () => {
+                const payload = [{ password: "secretvalue", items: [{ tokenValue: "secretvalue" }], empty: [] as string[] }];
+                const client = makeClient({}, payload);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.payload).toStrictEqual([
+                    { password: Censor.CENSOR_RESPONSE, items: [{ tokenValue: Censor.CENSOR_RESPONSE }], empty: [] }
+                ]);
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+                expect(payload).toStrictEqual([{ password: "secretvalue", items: [{ tokenValue: "secretvalue" }], empty: [] }]);
+            });
+
+            it("should leave string payloads unchanged", () => {
+                expect(makeClient({}, "plain").populateError({ msg: "f", source: "client" }).mDetails.payload).toEqual("plain");
+            });
+
+            it("should replace buffer payloads with a size placeholder", () => {
+                const err = makeClient({}, Buffer.from("secretvalue")).populateError({ msg: "f", source: "client" });
+                expect(err.mDetails.payload).toEqual("<Buffer: 11 bytes>");
+                expect(err.mDetails.additionalDetails).not.toContain("secretvalue");
+            });
+
+            it("should return the censor response if censoring throws", () => {
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const errorSpy = jest.spyOn(zoweLogger, "error");
+                jest.spyOn(Censor, "censorObject").mockImplementationOnce(() => { throw new Error("censor failure"); });
+
+                const client = makeClient({ Authorization: "Basic secretvalue" }, undefined);
+                const err = client.populateError({ msg: "failed", source: "client" });
+
+                expect(err.mDetails.headers).toEqual(Censor.CENSOR_RESPONSE);
+                expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("censor REST request details"), expect.any(String));
+            });
         });
 
         describe("setTokenAuth", () => {

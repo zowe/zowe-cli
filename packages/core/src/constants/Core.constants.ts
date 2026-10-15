@@ -152,7 +152,7 @@ export class ProfileConstants {
     };
 
     /**
-     * Option used in profile creation and commands for authOrder. Allowable Values include: 
+     * Option used in profile creation and commands for authOrder
      */
     public static readonly BASE_OPTION_AUTH_ORDER: ICommandOptionDefinition = {
         name: "auth-order",
