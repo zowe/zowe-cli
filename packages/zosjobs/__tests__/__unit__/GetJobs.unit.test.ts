@@ -747,4 +747,30 @@ describe("GetJobs tests", () => {
             expect(filteredResults).toEqual(jobs);
         });
     });
+
+    describe("job identifier validation", () => {
+        const badValue = "../../restfiles/ds/SYS1.PARMLIB(IEASYS00)";
+
+        beforeEach(() => {
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn();
+            (ZosmfRestClient.getExpectString as any) = jest.fn();
+        });
+
+        it.each([
+            ["getStatusCommon", () => GetJobs.getStatusCommon(pretendSession, {jobname: badValue, jobid: "JOB00001"}), "The job name"],
+            ["getStatus", () => GetJobs.getStatus(pretendSession, "MYJOB1", badValue), "The job ID"],
+            ["getSpoolFiles", () => GetJobs.getSpoolFiles(pretendSession, "MYJOB1", badValue), "The job ID"],
+            ["getJcl", () => GetJobs.getJcl(pretendSession, "MYJOB1", badValue), "The job ID"],
+            ["getSpoolContentById", () => GetJobs.getSpoolContentById(pretendSession, "MYJOB1", badValue, 1), "The job ID"],
+            ["getSpoolContent", () => GetJobs.getSpoolContent(pretendSession, {...GetJobsData.SAMPLE_JOB_FILE, jobid: badValue}), "The job ID"],
+            ["getSpoolContentById with a bad spool ID",
+                () => GetJobs.getSpoolContentById(pretendSession, "MYJOB1", "JOB00001", "1/../../../.." as any), "The spool file ID"],
+            ["getSpoolContent with a bad spool ID",
+                () => GetJobs.getSpoolContent(pretendSession, {...GetJobsData.SAMPLE_JOB_FILE, id: "1/../../../.." as any}), "The spool file ID"]
+        ])("should reject invalid input to %s without sending a request", async (_name, apiCall: () => Promise<any>, expectedMsg) => {
+            await expect(apiCall()).rejects.toThrow(expectedMsg);
+            expect(ZosmfRestClient.getExpectJSON).not.toHaveBeenCalled();
+            expect(ZosmfRestClient.getExpectString).not.toHaveBeenCalled();
+        });
+    });
 });

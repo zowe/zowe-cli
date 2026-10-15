@@ -11,6 +11,7 @@
 
 import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { ICancelJobParms } from "./doc/input/ICancelJobParms";
@@ -66,6 +67,7 @@ export class CancelJobs {
         this.log.trace("cancelJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
 
         if (parms.version !== "1.0") {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;

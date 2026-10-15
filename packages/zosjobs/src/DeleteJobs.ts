@@ -11,6 +11,7 @@
 
 import { AbstractSession, EncodeUri, ImperativeExpect, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
+import { JobsUtils } from "./JobsUtils";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IDeleteJobParms } from "./doc/input/IDeleteJobParms";
@@ -65,6 +66,7 @@ export class DeleteJobs {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");
+        JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
         this.log.info("Deleting job %s (%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.modifyVersion + "");
         const headers: any = [];
 

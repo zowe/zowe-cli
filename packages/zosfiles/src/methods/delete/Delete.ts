@@ -98,6 +98,7 @@ export class Delete {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(ZosFilesUtils.validateDSN(dataSetName), false, ZosFilesMessages.invalidDatasetName.message);
 
         // Create the control statements
         const amsControlStatements = [

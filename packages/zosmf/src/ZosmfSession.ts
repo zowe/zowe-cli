@@ -195,7 +195,7 @@ export class ZosmfSession {
      * Given command line arguments, create an session configuration object.
      * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISession} - A session configuration to be used for a session.
-     */
+    */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         const msToSecs = 1000;
         return {
@@ -205,6 +205,8 @@ export class ZosmfSession {
             requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
             socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
             certAccount: args.certAccount,
+            allowedLoginMethod: args.allowedLoginMethod,
+            authTypeOrder: args.authOrder
         };
     }
 
