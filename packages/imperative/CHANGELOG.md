@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where the generated config schema applied type-specific property rules (such as the RSE `protocol: https`-only constraint) to typeless profiles, causing valid values like `protocol: http` to be flagged as invalid. Each type-specific conditional now requires the `type` property to be present (the shared `base` profile is exempt so its defaults still apply to every profile). [#2602](https://github.com/zowe/zowe-cli/issues/2602)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 
 ## `8.39.1`
