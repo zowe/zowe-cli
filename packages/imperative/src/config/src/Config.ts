@@ -315,7 +315,12 @@ export class Config {
             return dir;
         }
         try {
-            return fs.realpathSync.native(dir);
+            const real = fs.realpathSync.native(dir);
+            // Only take the resolved path when it is usable. `realpathSync.native` is typed to
+            // return a string, but a caller that replaces the `fs` module, as the unit tests for
+            // the config command handlers do, can hand back `undefined` without throwing. Letting
+            // that through puts `undefined` in `mHomeDir`, which then fails inside `path.join`.
+            return typeof real === "string" && real.length > 0 ? real : dir;
         } catch (_err) {
             return dir;
         }

@@ -1038,6 +1038,32 @@ describe("Config tests", () => {
             Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
         });
 
+        it("should keep the directory as-is on Windows when the resolved path is not a string", async () => {
+            // The unit tests for the config command handlers call `jest.mock("fs")`, so every
+            // `fs` function there is a mock that returns `undefined` rather than throwing. The
+            // catch block does not fire for that, so without a check on the returned value the
+            // directory becomes `undefined` and `layerPath` fails with
+            // `The "path" argument must be of type string`.
+            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+
+            const homeDir = "C:\\users\\test\\.app";
+            jest.spyOn(fs.realpathSync, "native").mockReturnValue(undefined as any);
+
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            config.mLayers = [];
+
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ homeDir });
+
+            expect(config.mHomeDir).toBe(homeDir);
+            expect(typeof config.mProjectDir).toBe("string");
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+
         it("should NOT normalize projectDir if not on Windows", async () => {
             Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
             const testPath = "/home/user/project";
