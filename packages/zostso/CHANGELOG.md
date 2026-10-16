@@ -5,6 +5,7 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 ## `8.40.0` 
 
 - BugFix: Added validation to reject values containing illegal characters for the `servletKey` and `appKey` parameters in the `SendTSO`, `StopTso`, `AddressSpaceApps`, and `PingTso` classes. [#2953](https://github.com/zowe/zowe-cli/pull/2953)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.35.3`
 
