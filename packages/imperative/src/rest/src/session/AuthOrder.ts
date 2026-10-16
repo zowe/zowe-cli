@@ -285,6 +285,23 @@ export class AuthOrder {
 
     // ***********************************************************************
     /**
+     * Get an allowedLoginMethod value in lower case.
+     *
+     * @internal - Cannot be used outside of the imperative package
+     *
+     * @param loginMethod
+     *       the allowedLoginMethod value to be normalized.
+     *
+     * @returns the lower case value, or undefined when the value is not a string
+     *          (for example, an array, which is not a legal value). An undefined
+     *          result makes the caller treat allowedLoginMethod as unset.
+     */
+    public static normalizeLoginMethod(loginMethod: unknown): string | undefined {
+        return typeof loginMethod === "string" ? loginMethod.toLowerCase() : undefined;
+    }
+
+    // ***********************************************************************
+    /**
      * Find the highest auth type (according to the authOrder) that exists
      * in availableCreds within the supplied session config.
      * Then place the credentials associated with that auth type into the
@@ -699,8 +716,19 @@ export class AuthOrder {
         // add any discovered authOrder to the cache
         AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
 
+        // A direct-* login method sends its credentials straight to the service.
+        // An APIML token (e.g. inherited from a base profile) cannot authenticate there.
+        const loginMethod = AuthOrder.normalizeLoginMethod(cmdArgs.allowedLoginMethod ?? sessCfg.allowedLoginMethod);
+        const ignoreApimlToken = (loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+            loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM) &&
+            (cmdArgs.tokenType ?? sessCfg.tokenType)?.startsWith(SessConstants.TOKEN_TYPE_APIML);
+
         // add every available cred to the cache
         for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
+            if (ignoreApimlToken && (sessCredName === "tokenType" || sessCredName === "tokenValue")) {
+                delete sessCfg._authCache.availableCreds[sessCredName];
+                continue;
+            }
             AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
         }
     }

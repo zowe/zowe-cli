@@ -9,6 +9,7 @@
 *
 */
 
+import * as fs from "fs";
 import { CliUtils, ImperativeConfig, TextUtils } from "../../../utilities";
 import { ICommandArguments, IHandlerParameters } from "../../../cmd";
 import { ImperativeError } from "../../../error";
@@ -168,10 +169,25 @@ export class ConnectionPropsForSessCfg {
 
         // When no creds were found and the user has not allowed 'none' as a desired auth type,
         // we prompt for the creds associated with the first type in the authOrder.
+        // However, when allowedLoginMethod restricts the user to a specific credential type
+        // (direct-basic, direct-cert-pem, apiml-basic, or apiml-cert-pem), we only prompt for
+        // that credential type, regardless of what authOrder would otherwise select.
         if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
             !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
         {
-            switch (sessCfgToUse.authTypeOrder[0]) {
+            const allowedLoginMethod = AuthOrder.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
+
+            // When allowedLoginMethod is "prompt" or unset, we use the first type in the authOrder.
+            let credTypeToPromptFor = sessCfgToUse.authTypeOrder[0];
+            if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_BASIC ||
+                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC) {
+                credTypeToPromptFor = SessConstants.AUTH_TYPE_BASIC;
+            } else if (allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_DIRECT_CERT_PEM ||
+                allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM) {
+                credTypeToPromptFor = SessConstants.AUTH_TYPE_CERT_PEM;
+            }
+
+            switch (credTypeToPromptFor) {
                 case SessConstants.AUTH_TYPE_BASIC:
                     if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
                         promptForValues.push("user");
@@ -237,9 +253,24 @@ export class ConnectionPropsForSessCfg {
                 }
             }
 
-            //
+            // When an apiml-* login method has its creds stored already (nothing was prompted),
+            // we still pass them to the auto-store logic, which exchanges them for a token.
+            const propsToStore: string[] = [...promptForValues];
+            const availableCreds: any = sessCfgToUse._authCache?.availableCreds ?? {};
+            const loginMethod = AuthOrder.normalizeLoginMethod(sessCfgToUse.allowedLoginMethod);
+            const credsToExchange = loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ? ["user", "password"] :
+                loginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM ? ["cert", "certKey"] : [];
+            if (connOptsToUse.requestToken && sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_TOKEN) &&
+                !availableCreds.tokenValue && credsToExchange.length > 0 && credsToExchange.every(name => availableCreds[name]))
+            {
+                credsToExchange.forEach(name => {
+                    (sessCfgToUse as any)[name] = availableCreds[name];
+                    if (!propsToStore.includes(name)) propsToStore.push(name);
+                });
+            }
+
             if (connOptsToUse.autoStore !== false && connOptsToUse.parms != null) {
-                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, promptForValues);
+                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, propsToStore);
             }
         }
 
@@ -282,15 +313,30 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
-        // use defaults if caller has not specified these properties.
+        const allowedLoginMethod = AuthOrder.normalizeLoginMethod(
+            ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
+                    cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod);
+        const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
+            allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
-            connOpts.requestToken = false;
+            // When allowedLoginMethod is apiml-basic or apiml-cert-pem, the credentials
+            // supplied by the user must be exchanged for an APIML token, just like an
+            // explicit `zowe auth login apiml` would do.
+            const hasTokenValue = ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue) ||
+                ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) ||
+                ConnectionPropsForSessCfg.propHasValue(sessCfg._authCache?.availableCreds?.tokenValue);
+            connOpts.requestToken = isApimlLoginMethod && !hasTokenValue;
         }
         if (!Object.prototype.hasOwnProperty.call(connOpts, "doPrompting")) {
             connOpts.doPrompting = true;
         }
         if (!Object.prototype.hasOwnProperty.call(connOpts, "defaultTokenType")) {
-            connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+            if(isApimlLoginMethod) {
+                connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_APIML;
+            }
+            else {
+                connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+            }
         }
 
         if (connOpts.requestToken) {
@@ -318,6 +364,9 @@ export class ConnectionPropsForSessCfg {
         }
         if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.password)) {
             sessCfg.password = cmdArgs.password;
+        }
+        if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod)) {
+            sessCfg.allowedLoginMethod = cmdArgs.allowedLoginMethod;
         }
 
         // record all of the currently available credential information into the session
@@ -452,6 +501,13 @@ export class ConnectionPropsForSessCfg {
                     answer = Number(answer);
                     if (isNaN(answer)) {
                         throw new ImperativeError({ msg: `Specified ${cfgPropNm} was not a number.` });
+                    }
+                }
+                if (profileSchema[cfgPropNm]?.type === "existingLocalFile" ||
+                    ["cert", "certKey", "certFile", "certKeyFile"].includes(cfgPropNm) ||
+                    ["cert", "certKey", "certFile", "certKeyFile"].includes(sessPropNm)) {
+                    if (typeof answer === "string" && !fs.existsSync(answer)) {
+                        throw new ImperativeError({ msg: `Specified ${cfgPropNm} file does not exist: ${answer}` });
                     }
                 }
                 answers[sessPropNm] = answer;
