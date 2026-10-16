@@ -817,6 +817,39 @@ describe("AuthOrder", () => {
         });
     }); // putTopAuthInSession
 
+    describe("a direct-* allowedLoginMethod with an APIML token", () => {
+        beforeEach(() => {
+            cmdArgsForTest.authOrder = "";
+            cmdArgsForTest.tokenType = "apimlAuthenticationToken";
+            sessCfgForTest.allowedLoginMethod = "direct-basic";
+        });
+
+        it("should ignore an APIML token and use none when no other creds exist", () => {
+            ["user", "password", "base64EncodedAuth", "certFile", "certKeyFile"].forEach((nm) => delete cmdArgsForTest[nm]);
+            delete sessCfgForTest.user;
+            delete sessCfgForTest.password;
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
+            expect(sessCfgForTest._authCache.availableCreds).not.toHaveProperty("tokenType");
+            expect(sessCfgForTest._authCache.availableCreds).not.toHaveProperty("tokenValue");
+        });
+
+        it("should use the direct creds instead of the APIML token", () => {
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
+            expect(sessCfgForTest._authCache.availableCreds).not.toHaveProperty("tokenValue");
+        });
+
+        it("should keep an APIML token when the login method is apiml-basic", () => {
+            sessCfgForTest.allowedLoginMethod = "apiml-basic";
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+
+            expect(sessCfgForTest._authCache.availableCreds).toHaveProperty("tokenValue", cmdArgsTokenValueVal);
+        });
+    });
+
     describe("removeExtraCredsFromSess", () => {
         it("should throw an error when an invalid authTypeToRequestToken is specified using basic auth", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
