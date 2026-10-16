@@ -5,6 +5,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed handling of default applications when opening files with `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
+
+## `8.40.0`
+
+- Enhancement: Updated connection prompting logic to honor the `allowedLoginMethod` property. A user is now prompted only for the credentials that the method allows (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`), `apiml-*` methods exchange credentials for an APIML token and store only that token, and `direct-*` methods store credentials directly. Defaults to `prompt` when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
 
