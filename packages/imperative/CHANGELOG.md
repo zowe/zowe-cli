@@ -7,6 +7,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. []()
 
 ## `8.39.1`
 

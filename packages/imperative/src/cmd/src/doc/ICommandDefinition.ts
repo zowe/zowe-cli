@@ -11,6 +11,7 @@
 
 import { ICommandExampleDefinition } from "./ICommandExampleDefinition";
 import { IChainedHandlerEntry } from "./handler/IChainedHandlerEntry";
+import { ICommandHandlerConstructor } from "./handler/ICommandHandlerConstructor";
 import { ICommandOptionDefinition } from "./option/ICommandOptionDefinition";
 import { ICommandPositionalDefinition } from "./option/ICommandPositionalDefinition";
 import { ICommandDefinitionPassOn } from "./ICommandDefinitionPassOn";
@@ -98,13 +99,12 @@ export interface ICommandDefinition {
      */
     examples?: ICommandExampleDefinition[];
     /**
-     * The handler for this command - this is a string literal that is used on the "require" statement to load the
-     * command handler - The handler itself must implement ICommandHandler. A string is used over an actual
-     * instance because we do not want the handler (and its required dependencies) to be loaded before it is issued.
-     *  @type {string}
-     *  @memberof ICommandDefinition
+     * A command handler constructor or a path to a module whose default export is a handler constructor.
+     * Paths are loaded only when the command is issued. A new handler is created for each invocation.
+     * @type {string | ICommandHandlerConstructor}
+     * @memberof ICommandDefinition
      */
-    handler?: string;
+    handler?: string | ICommandHandlerConstructor;
     /**
      * Build this command from multiple handlers chained together, remapping the response
      * to arguments for future handlers in the command.

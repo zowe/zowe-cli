@@ -19,6 +19,7 @@ import { OptionConstants } from "./constants/OptionConstants";
 import * as DeepMerge from "deepmerge";
 import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { ICommandOptionDefinition } from "./doc/option/ICommandOptionDefinition";
+import { CommandUtils } from "./utils/CommandUtils";
 
 /**
  * Command preparer provides static utilities to ensure that command definitions are suitable for Imperative definition.
@@ -40,13 +41,13 @@ export class CommandPreparer {
         }
 
         /**
-         * Even before basic validation, ensure that we can stringify and create a copy of the original document.
-         * The document MUST be capable of this (i.e. every value must be convertable to a canonical JSON format and
-         * no circular references are allowable)
+         * Reject circular references before cloning, since command preparation recursively traverses the tree.
+         * Handler constructors are omitted by JSON.stringify and preserved by cloneDefinition.
          */
         let copy: ICommandDefinition;
         try {
-            copy = JSON.parse(JSON.stringify(original));
+            JSON.stringify(original); // Throw if there are circular references
+            copy = CommandUtils.cloneDefinition(original);
         } catch (e) {
             throw new ImperativeError({ msg: `An error occurred copying the original command document: ${e.message}` });
         }
@@ -151,7 +152,8 @@ export class CommandPreparer {
         }
 
         // A node cannot have both chained handlers and a single handler
-        if (definition.handler != null && definition.chainedHandlers != null && definition.chainedHandlers.length > 0) {
+        if (definition.handler != null &&
+            definition.chainedHandlers != null && definition.chainedHandlers.length > 0) {
             throw new ImperativeError({
                 msg: `A command definition node (${definition.name}) contains both a handler and chained handler ` +
                     `configuration. The two are mutually exclusive. ${definitionDetails}`,
