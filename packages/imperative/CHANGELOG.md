@@ -11,6 +11,7 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Updated connection prompting logic to honor the `allowedLoginMethod` property. A user is now prompted only for the credentials that the method allows (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`), `apiml-*` methods exchange credentials for an APIML token and store only that token, and `direct-*` methods store credentials directly. Defaults to `prompt` when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- BugFix: Fixed `AbstractRestClient` class to throw an error when a custom `checkServerIdentity` callback is combined with certificate account authentication (`certAccount`) since these options are incompatible. [#2958](https://github.com/zowe/zowe-cli/pull/2958)
 
 ## `8.39.1`
 
