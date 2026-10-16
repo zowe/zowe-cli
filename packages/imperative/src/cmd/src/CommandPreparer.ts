@@ -16,7 +16,7 @@ import { ICommandDefinition } from "./doc/ICommandDefinition";
 import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { TextUtils } from "../../utilities/src/TextUtils";
 import { OptionConstants } from "./constants/OptionConstants";
-import * as DeepMerge from "deepmerge";
+import deepmerge = require("deepmerge");
 import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { ICommandOptionDefinition } from "./doc/option/ICommandOptionDefinition";
 
@@ -631,7 +631,7 @@ export class CommandPreparer {
                     if (trait.merge && Array.isArray(definition[trait.property])) {
                         definition[trait.property] = definition[trait.property].concat(cloned);
                     } else if (trait.merge && definition[trait.property] != null) {
-                        definition[trait.property] = DeepMerge(definition[trait.property], cloned);
+                        definition[trait.property] = deepmerge(definition[trait.property], cloned);
                     } else {
                         definition[trait.property] = cloned;
                     }
