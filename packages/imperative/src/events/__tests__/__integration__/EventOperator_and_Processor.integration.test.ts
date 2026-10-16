@@ -52,6 +52,7 @@ describe("Event Operator and Processor", () => {
         subscriptions.push(disposable);
         // macOS queues file-watcher registration until the next uv__io_poll entry.
         // Two check-phase turns exit any in-progress poll callback and cross a full poll entry.
+        // Source: https://github.com/libuv/libuv/blob/3d09fed7b3c7568391ba5d472da55e3662882c14/src/unix/kqueue.c
         await new Promise<void>(resolve => setImmediate(() => setImmediate(resolve)));
         return { notification, callback, disposable };
     }
