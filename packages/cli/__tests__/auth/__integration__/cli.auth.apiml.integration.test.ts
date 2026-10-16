@@ -82,7 +82,8 @@ describe("Comma-separated authOrder", () => {
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("is not a valid authOrder string");
         expect(stderr).not.toContain("Unknown argument");
-        // The comma-separated string was parsed into the two auth types
+
+        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatch(/authTypeOrder:\s+token,bearer/);
     });
 
@@ -103,7 +104,8 @@ describe("Comma-separated authOrder", () => {
 
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("is not a valid authOrder string");
-        // The profile's comma-separated authOrder was parsed into the two auth types
+
+        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatch(/authTypeOrder:\s+token,bearer/);
     });
 });
@@ -158,7 +160,7 @@ describe("allowedLoginMethod schema validation and runtime execution", () => {
         ]);
     });
 
-    it("Illegal values: Schema only (Comma-separated, array, or unknown values are flagged by the schema; commands still run)", async () => {
+    it("should reject illegal schema values and reject an active profile's comma-separated allowedLoginMethod", async () => {
         await TempTestProfiles.createV2Profile(TEST_ENVIRONMENT_SCHEMA, "zosmf", {
             host: "example.com",
             port: 443
@@ -193,6 +195,7 @@ describe("allowedLoginMethod schema validation and runtime execution", () => {
         // 2. Illegal value: Comma-separated string
         const commaSeparatedConfig = {
             $schema: "./zowe.schema.json",
+            defaults: { zosmf: "zosmf" },
             profiles: {
                 zosmf: {
                     type: "zosmf",
@@ -232,13 +235,17 @@ describe("allowedLoginMethod schema validation and runtime execution", () => {
         };
         expect(validate(unknownConfig)).toBe(false);
 
-        // 5. Commands still run when illegal value is in zowe.config.json
+        // 5. An active profile's illegal value is also rejected by command option validation.
         const configPath = path.join(TEST_ENVIRONMENT_SCHEMA.workingDir, "zowe.config.json");
         fs.writeFileSync(configPath, JSON.stringify(commaSeparatedConfig, null, 2));
 
         const cmdResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_SCHEMA);
+        expect(cmdResponse.status).toBe(1);
         expect(cmdResponse.stderr.toString()).not.toContain("Unknown argument");
         expect(cmdResponse.stderr.toString()).not.toContain("SchemaValidationError");
+        expect(cmdResponse.stderr.toString()).toContain("Invalid value specified for option");
+        expect(cmdResponse.stderr.toString()).toContain("--allowed-login-method");
+        expect(cmdResponse.stderr.toString()).toContain("direct-basic, direct-cert-pem");
     });
 });
 
@@ -260,23 +267,26 @@ describe("allowedLoginMethod option validation and environment variable", () => 
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_CLI,
-            ["zosmf", "check", "status", "--allowed-login-method", "apiml-basic", "--host", "example.com"]
+            ["zosmf", "check", "status", "--allowed-login-method", "apiml-basic", "--host", "example.com", "--show-inputs-only"]
         );
 
         const stderr = response.stderr.toString();
         expect(stderr).not.toContain("Unknown argument");
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("Allowed values");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatch(/allowed-login-method:\s+apiml-basic/);
     });
 
     it("Invalid CLI value rejected (--allowed-login-method bogus on command line fails with allowed-values error)", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_CLI,
-            ["zosmf", "check", "status", "--allowed-login-method", "bogus", "--host", "example.com"]
+            ["zosmf", "check", "status", "--allowed-login-method", "bogus", "--host", "example.com", "--show-inputs-only"]
         );
 
         const output = response.stderr.toString() + response.stdout.toString();
+        expect(response.status).toBe(1);
         expect(output).toMatch(/Invalid value specified for option|must match one of the following options/i);
         expect(output).toContain("--allowed-login-method");
         expect(output).toContain("bogus");
@@ -288,7 +298,7 @@ describe("allowedLoginMethod option validation and environment variable", () => 
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_CLI,
-            ["zosmf", "check", "status", "--host", "example.com"]
+            ["zosmf", "check", "status", "--host", "example.com", "--show-inputs-only"]
         );
 
         delete TEST_ENVIRONMENT_CLI.env.ZOWE_OPT_ALLOWED_LOGIN_METHOD;
@@ -297,6 +307,8 @@ describe("allowedLoginMethod option validation and environment variable", () => 
         expect(stderr).not.toContain("Unknown argument");
         expect(stderr).not.toContain("is not valid and will be ignored");
         expect(stderr).not.toContain("Allowed values");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatch(/allowed-login-method:\s+direct-basic/);
     });
 });
 
@@ -376,7 +388,8 @@ describe("Users overriding the admin value", () => {
         const stderr = response.stderr.toString();
         expect(stderr).not.toContain("Unknown argument");
         expect(stderr).not.toContain("is not valid and will be ignored");
-        // The command-line value won over the profile's apiml-basic
+
+        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatch(/allowed-login-method:\s+direct-basic/);
     });
 
@@ -399,6 +412,8 @@ describe("Users overriding the admin value", () => {
         const stderr = response.stderr.toString();
         expect(stderr).not.toContain("Unknown argument");
         expect(stderr).not.toContain("is not valid and will be ignored");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatch(/allowed-login-method:\s+direct-basic/);
     });
 
     it("allows user to bypass admin value via user config layer (zowe.config.user.json)", async () => {
