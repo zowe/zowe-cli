@@ -50,9 +50,9 @@ describe("Event Operator and Processor", () => {
         const callback = jest.fn(() => notify());
         const disposable = type === "shared" ? processor.subscribeShared(eventName, callback) : processor.subscribeUser(eventName, callback);
         subscriptions.push(disposable);
-        // macOS queues file-watcher registration until the native poll and re-arms only after callbacks return.
-        // A real async I/O round trip avoids emitting from registration or watcher-callback microtasks.
-        await fs.promises.stat(processor.subscribedEvents.get(eventName).eventFilePath);
+        // macOS queues file-watcher registration until the next uv__io_poll entry.
+        // Two check-phase turns exit any in-progress poll callback and cross a full poll entry.
+        await new Promise<void>(resolve => setImmediate(() => setImmediate(resolve)));
         return { notification, callback, disposable };
     }
 
