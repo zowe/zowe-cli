@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { CreateCommonOptions } from "../Create.common.options";
-import { join } from "path";
+import CreateCommonHandler from "../Create.common.handler";
 
 /**
  * This object defines the command for creating workflow instance from uss file within zosworkflows.
@@ -25,7 +25,7 @@ export const UssFile: ICommandDefinition = {
     summary: "Create a workflow instance in z/OSMF using a USS file",
     description: "Create a workflow instance in z/OSMF using a USS file.",
     type: "command",
-    handler: join(__dirname, "../Create.common.handler"),
+    handler: CreateCommonHandler,
     profile: {
         optional: ["zosmf"]
     },

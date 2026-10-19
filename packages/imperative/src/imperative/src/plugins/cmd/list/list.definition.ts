@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import ListHandler from "./list.handler";
 
 /**
  * Definition of the list command.
@@ -21,7 +21,7 @@ export const listDefinition: ICommandDefinition = {
     type: "command",
     summary: "List installed plug-ins",
     description: "List all plug-ins installed.",
-    handler: join(__dirname, "list.handler"),
+    handler: ListHandler,
     options: [
         {
             name: "short",

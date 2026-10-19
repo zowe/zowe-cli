@@ -12,6 +12,7 @@
 import {ICommandDefinition} from "@zowe/imperative";
 import { EditOptions } from "../Edit.options";
 import i18nTypings from "../../-strings-/en";
+import EditHandler from "../Edit.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).EDIT;
@@ -26,7 +27,7 @@ export const DatasetDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.DATA_SET.SUMMARY,
     description: strings.ACTIONS.DATA_SET.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/../Edit.handler",
+    handler: EditHandler,
     profile: {
         optional: ["zosmf"],
     },

@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import UpdateHandler from "./update.handler";
 import { PluginCmdConstants } from "../PluginCmdConstants";
 
 /**
@@ -22,7 +22,7 @@ export const updateDefinition: ICommandDefinition = {
     type: "command",
     summary: "Update a plug-in",
     description: "Update plug-ins.",
-    handler: join(__dirname, "update.handler"),
+    handler: UpdateHandler,
     positionals: [
         {
             name: "plugin...",

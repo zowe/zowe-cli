@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. []()
+- Enhancement: Built-in Imperative and Zowe CLI commands now provide `handler` constructors directly. []()
 
 ## `8.40.0`
 

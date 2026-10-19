@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { UssCreateOptions } from "../ussDir/uss.options";
 import i18nTypings from "../../-strings-/en";
+import UssDirHandler from "./ussDir.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
@@ -23,7 +24,7 @@ export const UssDirDefinition: ICommandDefinition = {
     summary: ussStrings.SUMMARY,
     description: ussStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/ussDir.handler",
+    handler: UssDirHandler,
     profile: {
         optional: ["zosmf"]
     },

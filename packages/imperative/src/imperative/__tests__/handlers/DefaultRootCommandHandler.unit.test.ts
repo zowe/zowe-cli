@@ -10,7 +10,6 @@
 */
 
 jest.mock("../../../utilities/src/ImperativeConfig");
-jest.mock("../../../imperative/src/Imperative");
 
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { CommandPreparer } from "../../../cmd/src/CommandPreparer";
@@ -94,6 +93,8 @@ describe("Default Root Command Handler", () => {
 
     beforeEach(() => {
         process.env.FORCE_COLOR = "0";
+        ImperativeConfig.instance.rootCommandName = "mock";
+        ImperativeConfig.instance.loadedConfig.primaryTextColor = "yellow";
     });
 
     afterEach(() => {
@@ -124,6 +125,7 @@ describe("Default Root Command Handler", () => {
     });
 
     it ("should display a list of available commands with --available-commands", async() => {
+        ImperativeConfig.instance.rootCommandName = "mock_command_name";
         const cmdResp: CommandResponse = new CommandResponse({
             primaryTextColor: "yellow",
             silent: true
@@ -133,8 +135,8 @@ describe("Default Root Command Handler", () => {
         await handler.process({
             response: cmdResp,
             arguments: {_: [], $0: "", availableCommands: true},
-            definition: MULTIPLE_GROUPS,
-            fullDefinition: MULTIPLE_GROUPS,
+            definition: MOCKED_COMMAND_TREE,
+            fullDefinition: MOCKED_COMMAND_TREE,
             positionals: [],
             stdin: process.stdin
         });

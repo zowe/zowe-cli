@@ -18,6 +18,8 @@ import { ZosmfProfile } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosTsoProfile } from "@zowe/zos-tso-for-zowe-sdk";
 import { ZosUssProfile } from "@zowe/zos-uss-for-zowe-sdk";
 import { ProfileConstants } from "@zowe/core-for-zowe-sdk";
+import ApimlAuthHandler from "./auth/ApimlAuthHandler";
+import ApimlAutoInitHandler from "./config/auto-init/ApimlAutoInitHandler";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -54,7 +56,7 @@ const config: IImperativeConfig = {
         authConfig: [
             {
                 serviceName: "apiml",
-                handler: __dirname + "/auth/ApimlAuthHandler",
+                handler: ApimlAuthHandler,
                 login: {
                     summary: ProfileConstants.APIML_LOGIN_SUMMARY,
                     description: ProfileConstants.APIML_LOGIN_DESCRIPTION,
@@ -98,7 +100,7 @@ const config: IImperativeConfig = {
         }
     },
     configAutoInitCommandConfig: {
-        handler: __dirname + "/config/auto-init/ApimlAutoInitHandler",
+        handler: ApimlAutoInitHandler,
         provider: "APIML",
         autoInit: {
             options: [

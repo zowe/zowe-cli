@@ -9,9 +9,9 @@
 *
 */
 
-import { join } from "path";
 import { ICommandDefinition } from "../../../../../cmd";
 import { ImperativeConfig } from "../../../../../utilities";
+import ConvertProfilesHandler from "./convert-profiles.handler";
 
 /**
  * Definition of the convert-profiles command.
@@ -21,7 +21,7 @@ export const convertProfilesDefinition: ICommandDefinition = {
     name: "convert-profiles",
     aliases: ["convert"],
     type: "command",
-    handler: join(__dirname, "convert-profiles.handler"),
+    handler: ConvertProfilesHandler,
     summary: "Convert V1 profiles to a current Zowe client configuration",
     description: `Convert v1 profiles to a global ${ImperativeConfig.instance.rootCommandName}.config.json file.`,
     options: [{

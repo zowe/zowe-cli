@@ -24,7 +24,7 @@ import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { CredentialManagerOverride } from "../../../../../security";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
+import { PluginRuntime } from "../../../../src/plugins/PluginRuntime";
 import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
 import { ImperativeError } from "../../../../../error";
 import { Logger } from "../../../../../logger";
@@ -301,7 +301,7 @@ describe("callPluginPreUninstall", () => {
 
         // make requirePluginModuleCallback return our fake LifeCycleClass
         requirePluginModuleCallbackSpy = jest.spyOn(
-            PluginManagementFacility.instance, "requirePluginModuleCallback").
+            PluginRuntime.instance, "requirePluginModuleCallback").
             mockImplementation((_pluginName: string) => {
                 return () => {
                     return LifeCycleClass as any;

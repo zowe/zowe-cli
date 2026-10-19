@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { CompareOptions } from "../Compare.options";
 import i18nTypings from "../../-strings-/en";
+import LocalfileUssHandler from "./LocalfileUss.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
@@ -26,7 +27,7 @@ export const LocalfileUssFileDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.LOCAL_FILE_USS_FILE.SUMMARY,
     description: strings.ACTIONS.LOCAL_FILE_USS_FILE.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/LocalfileUss.handler",
+    handler: LocalfileUssHandler,
     profile: {
         optional: ["zosmf"],
     },

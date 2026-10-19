@@ -17,6 +17,7 @@ import { AbstractCommandYargs } from "./AbstractCommandYargs";
 import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { ICommandResponseParms } from "../doc/response/parms/ICommandResponseParms";
 import { CommandProcessor } from "../CommandProcessor";
+import FailedCommandHandler from "../handlers/FailedCommandHandler";
 import { CommandUtils } from "../utils/CommandUtils";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { DaemonRequest, ImperativeConfig } from "../../../utilities";
@@ -282,7 +283,7 @@ export class YargsConfigurer {
     private buildFailedCommandDefinition(): ICommandDefinition {
         return {
             name: this.rootCommandName + " " + ImperativeConfig.instance.commandLine,
-            handler: __dirname + "/../handlers/FailedCommandHandler",
+            handler: FailedCommandHandler,
             type: "command",
             description: "The command you tried to invoke failed"
         };
