@@ -163,8 +163,9 @@ export interface ISession {
     strictSSL?: boolean;
 
     /**
-     * todo
-     * @type {boolean}
+     * Custom TLS server identity verifier, following the Node.js `tls.checkServerIdentity` API.
+     * Not supported with certificate account authentication (certAccount); requests fail if both are set.
+     * @type {function}
      * @memberof ISession
      */
     checkServerIdentity?: (host: string, cert: object) => Error | undefined;
