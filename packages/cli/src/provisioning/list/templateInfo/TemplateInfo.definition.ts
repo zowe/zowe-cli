@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import * as path from "path";
+import TemplateInfoHandler from "./TemplateInfo.handler";
 
 export const templateInfo: ICommandDefinition = {
     name: "template-info",
@@ -18,7 +18,7 @@ export const templateInfo: ICommandDefinition = {
     type: "command",
     summary: "List Published Template Details",
     description: "List details about a template published with z/OSMF Cloud Provisioning.",
-    handler:  path.join(__dirname, "/TemplateInfo.handler"),
+    handler: TemplateInfoHandler,
     profile: {
         optional: ["zosmf"]
     },

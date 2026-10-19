@@ -20,7 +20,7 @@ import { ImperativeError } from "../../../../../error";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
 import { getPackageInfo, installPackages } from "../NpmFunctions";
 import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { PluginManagementFacility } from "../../PluginManagementFacility";
+import { PluginRuntime } from "../../PluginRuntime";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
@@ -174,7 +174,7 @@ export async function install(
         });
 
         // get the plugin's Imperative config definition
-        const requirerFunction = PluginManagementFacility.instance.requirePluginModuleCallback(packageName);
+        const requirerFunction = PluginRuntime.instance.requirePluginModuleCallback(packageName);
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
         iConsole.debug(`Checking for global Zowe client configuration files to update.`);
@@ -271,7 +271,7 @@ async function callPluginPostInstall(
     // call the plugin's postInstall operation
     try {
         impLogger.debug(`Calling the postInstall function for plugin '${pluginPackageNm}'`);
-        const requirerFun = PluginManagementFacility.instance.requirePluginModuleCallback(pluginPackageNm);
+        const requirerFun = PluginRuntime.instance.requirePluginModuleCallback(pluginPackageNm);
         const lifeCycleClass = requirerFun(pluginImpConfig.pluginLifeCycle);
         const lifeCycleInstance = new lifeCycleClass();
         await lifeCycleInstance.postInstall();

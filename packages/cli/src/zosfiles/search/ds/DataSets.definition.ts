@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
 import { maxConcurrentRequestsMaxValue } from "../../download/Download.options";
+import DataSetsHandler from "./DataSets.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SEARCH;
@@ -27,7 +28,7 @@ export const DataSetsDefinition: ICommandDefinition = {
     summary: dataSetStrings.SUMMARY,
     description: dataSetStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/DataSets.handler",
+    handler: DataSetsHandler,
     profile: {
         optional: ["zosmf"]
     },

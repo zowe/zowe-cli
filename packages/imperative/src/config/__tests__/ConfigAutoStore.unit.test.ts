@@ -16,6 +16,7 @@ import { SessConstants } from "../../rest";
 import { ImperativeConfig } from "../../utilities";
 import { ConfigAutoStore } from "../src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
+import FakeAuthHandler from "../../imperative/src/auth/__tests__/__data__/FakeAuthHandler";
 
 describe("ConfigAutoStore tests", () => {
     beforeAll(() => {
@@ -50,6 +51,30 @@ describe("ConfigAutoStore tests", () => {
     });
 
     describe("findAuthHandlerForProfile", () => {
+        it("should instantiate direct auth handlers without reusing instances", async () => {
+            await setupConfigToLoad({
+                profiles: { base: { type: "base", properties: { tokenType: SessConstants.TOKEN_TYPE_JWT } } },
+                defaults: { base: "base" }
+            });
+            const loadedConfig = ImperativeConfig.instance.loadedConfig;
+            const directConfig = {
+                ...loadedConfig,
+                profiles: [{
+                    type: "base", schema: loadedConfig.baseProfile.schema,
+                    authConfig: [{ serviceName: "fake", handler: FakeAuthHandler }]
+                }]
+            };
+            jest.spyOn(ImperativeConfig.instance, "loadedConfig", "get")
+                .mockReturnValueOnce(directConfig).mockReturnValueOnce(directConfig);
+
+            const first = ConfigAutoStore.findAuthHandlerForProfile("profiles.base", {} as any);
+            const second = ConfigAutoStore.findAuthHandlerForProfile("profiles.base", {} as any);
+
+            expect(first).toBeInstanceOf(FakeAuthHandler);
+            expect(second).toBeInstanceOf(FakeAuthHandler);
+            expect(first).not.toBe(second);
+        });
+
         it("should be able to find auth handler for base profile", async () => {
             await setupConfigToLoad({
                 profiles: {

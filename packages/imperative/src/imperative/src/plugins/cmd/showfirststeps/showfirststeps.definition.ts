@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import FirststepsHandler from "./showfirststeps.handler";
 
 const pluginDescription =
     "The name of the installed plug-in to show first steps for.\n\n" +
@@ -26,7 +26,7 @@ export const firststepsDefinition: ICommandDefinition = {
     aliases: ["fs"],
     summary: "Show first steps for a plug-in",
     description: "Show first steps required to set up plug-in for use.",
-    handler: join(__dirname, "showfirststeps.handler"),
+    handler: FirststepsHandler,
     positionals: [
         {
             name: "plugin",

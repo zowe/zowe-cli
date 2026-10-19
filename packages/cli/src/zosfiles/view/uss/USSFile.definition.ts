@@ -12,6 +12,7 @@
 import {ICommandDefinition} from "@zowe/imperative";
 import { ViewOptions } from "../View.options";
 import i18nTypings from "../../-strings-/en";
+import USSFileHandler from "./USSFile.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).VIEW;
@@ -26,7 +27,7 @@ export const USSFileDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.USS_FILE.SUMMARY,
     description: strings.ACTIONS.USS_FILE.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/USSFile.handler",
+    handler: USSFileHandler,
     profile: {
         optional: ["zosmf"],
     },

@@ -13,6 +13,7 @@ import { ICommandDefinition } from "../../cmd";
 import { Logger } from "../../logger";
 import * as glob from "fast-glob";
 import { ImperativeError } from "../../error";
+import DefaultRootCommandHandler from "./handlers/DefaultRootCommandHandler";
 
 /**
  * Combines a root command definition with an array of
@@ -71,7 +72,7 @@ export class DefinitionTreeResolver {
                         conflictsWith: ["version"]
                     }
                 ],
-                handler: __dirname + "/handlers/DefaultRootCommandHandler",
+                handler: DefaultRootCommandHandler,
                 isRoot: true
             };
         (root as any).isRoot = true;

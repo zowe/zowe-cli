@@ -102,8 +102,9 @@ export class ConfigAutoStore {
         });
 
         for (const authConfig of authConfigs) {
-            const authHandler: ICommandHandlerRequire = require(authConfig.handler);
-            const authHandlerClass = new authHandler.default();
+            const authHandler = typeof authConfig.handler === "string" ?
+                (require(authConfig.handler) as ICommandHandlerRequire).default : authConfig.handler;
+            const authHandlerClass = new authHandler();
 
             if (authHandlerClass instanceof AbstractAuthHandler) {
                 const { promptParams } = authHandlerClass.getAuthHandlerApi();

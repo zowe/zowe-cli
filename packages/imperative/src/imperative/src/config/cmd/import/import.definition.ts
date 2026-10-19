@@ -9,8 +9,8 @@
 *
 */
 
-import { join } from "path";
 import { ICommandDefinition } from "../../../../../cmd";
+import ImportHandler from "./import.handler";
 
 const CONNECTION_OPTION_GROUP = "Connection Options";
 
@@ -21,7 +21,7 @@ const CONNECTION_OPTION_GROUP = "Connection Options";
 export const importDefinition: ICommandDefinition = {
     name: "import",
     type: "command",
-    handler: join(__dirname, "import.handler"),
+    handler: ImportHandler,
     summary: "Import config files",
     description: "Import config files from another location on disk or from an Internet URL.\n\n" +
         "If the config `$schema` property points to a relative path, the schema will also be imported.",

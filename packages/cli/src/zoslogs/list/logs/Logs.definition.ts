@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { Constants } from "../../../Constants";
+import LogsHandler from "./Logs.handler";
 
 export const LogsDefinition: ICommandDefinition = {
     name: "logs",
@@ -25,7 +26,7 @@ export const LogsDefinition: ICommandDefinition = {
         `\n\n` +
         `Note: OPERLOG needs to be configured on z/OS server.`,
     type: "command",
-    handler: __dirname + "/Logs.handler",
+    handler: LogsHandler,
     profile: {
         optional: ["zosmf"]
     },

@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import InstallHandler from "./install.handler";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { PluginCmdConstants } from "../PluginCmdConstants";
 
@@ -23,7 +23,7 @@ export const installDefinition: ICommandDefinition = {
     type: "command",
     summary: "Install a plug-in",
     description: "Install plug-ins to an application.",
-    handler: join(__dirname, "install.handler"),
+    handler: InstallHandler,
     positionals: [
         {
             name: "plugin...",

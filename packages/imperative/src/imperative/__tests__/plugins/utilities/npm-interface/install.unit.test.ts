@@ -43,7 +43,7 @@ import * as jsonfile from "jsonfile";
 import * as findUp from "find-up";
 import * as npmFns from "../../../../src/plugins/utilities/NpmFunctions";
 import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
-import { PluginManagementFacility } from "../../../../src/plugins/PluginManagementFacility";
+import { PluginRuntime } from "../../../../src/plugins/PluginRuntime";
 import { AbstractPluginLifeCycle } from "../../../../src/plugins/AbstractPluginLifeCycle";
 import { ConfigurationLoader } from "../../../../src/ConfigurationLoader";
 import { UpdateImpConfig } from "../../../../src/UpdateImpConfig";
@@ -62,7 +62,7 @@ function setResolve(toResolve: string, resolveTo?: string) {
 
 describe("PMF: Install Interface", () => {
     // Objects created so types are correct.
-    const pmfI = PluginManagementFacility.instance;
+    const pmfI = PluginRuntime.instance;
     const mocks = {
         installPackages: jest.spyOn(npmFns, "installPackages"),
         readFileSync: jest.spyOn(jsonfile, "readFileSync"),
@@ -594,7 +594,7 @@ describe("PMF: Install Interface", () => {
         beforeAll(() => {
             // make requirePluginModuleCallback return our fake LifeCycleClass
             requirePluginModuleCallbackSpy = jest.spyOn(
-                PluginManagementFacility.instance, "requirePluginModuleCallback").
+                PluginRuntime.instance, "requirePluginModuleCallback").
                 mockImplementation((_pluginName: string) => {
                     return () => {
                         return LifeCycleClass as any;
