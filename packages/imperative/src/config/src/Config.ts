@@ -524,13 +524,17 @@ export class Config {
 
         const schemaInfo = this.getSchemaInfo();
         if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
-            const layerDir = path.dirname(this.layerActive().path);
-            if (!IO.isSubPath(layerDir, schemaInfo.resolved) && schemaInfo.resolved !== layerDir) {
+            // Check the local destination before saving the schema.
+            const layerDir = path.dirname(layer.path);
+            if (!IO.isSubPath(layerDir, schemaInfo.resolved)) {
                 throw new ImperativeError({
                     msg: `Schema path must resolve within the config directory.\n` +
                         `  Schema resolved to: ${schemaInfo.resolved}\n` +
                         `  Config directory:   ${layerDir}`
                 });
+            }
+            if (fs.lstatSync(schemaInfo.resolved, { throwIfNoEntry: false })?.isSymbolicLink()) {
+                return;
             }
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
         }

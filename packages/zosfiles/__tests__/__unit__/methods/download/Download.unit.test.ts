@@ -16,6 +16,7 @@ import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFiles
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
 import { join } from "path";
+import { tmpdir } from "os";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
 import { IUSSListOptions, List } from "../../../../src/methods/list";
@@ -621,6 +622,38 @@ describe("z/OS Files - Download", () => {
             downloadDatasetSpy.mockClear();
             downloadDatasetSpy.mockResolvedValue(null as any);
         });
+
+        it.each([false, true])(
+            "should reject an escaping extension directory link before downloading (existing output: %s)",
+            async (existingOutput) => {
+                const temporaryDir = fs.mkdtempSync(join(tmpdir(), "zowe-member-containment-"));
+                try {
+                    const directory = join(temporaryDir, "output");
+                    const outsideDir = join(temporaryDir, "outside");
+                    const outsideFile = join(outsideDir, "member.txt");
+                    fs.mkdirSync(directory);
+                    fs.mkdirSync(outsideDir);
+                    fs.symlinkSync(outsideDir, join(directory, "m1.link"), process.platform === "win32" ? "junction" : "dir");
+                    if (existingOutput) {
+                        fs.writeFileSync(outsideFile, "Do not overwrite");
+                    }
+
+                    await expect(Download.allMembers(dummySession, dsname, {
+                        directory,
+                        extension: "link/member.txt"
+                    })).rejects.toThrow("The generated data set file path contains illegal characters.");
+
+                    expect(downloadDatasetSpy).not.toHaveBeenCalled();
+                    if (existingOutput) {
+                        expect(fs.readFileSync(outsideFile, "utf8")).toBe("Do not overwrite");
+                    } else {
+                        expect(fs.existsSync(outsideFile)).toBe(false);
+                    }
+                } finally {
+                    fs.rmSync(temporaryDir, {recursive: true, force: true});
+                }
+            }
+        );
 
         it("should throw and error if the data set name is not specified", async () => {
             let response;

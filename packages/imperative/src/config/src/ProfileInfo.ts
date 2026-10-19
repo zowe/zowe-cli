@@ -1374,6 +1374,23 @@ export class ProfileInfo {
         const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
         const schemaPath = url.fileURLToPath(schemaUri);
 
+        // Check the schema location relative to the config layer.
+        const layerDir = path.dirname(layer.path);
+        if (!IO.isSubPath(layerDir, schemaPath)) {
+            throw new ProfInfoErr({
+                errorCode: ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR,
+                msg: `Schema path must resolve within the config directory.\n` +
+                    `  Schema resolved to: ${schemaPath}\n` +
+                    `  Config directory:   ${layerDir}`
+            });
+        }
+        if (fs.lstatSync(schemaPath, { throwIfNoEntry: false })?.isSymbolicLink()) {
+            this.mImpLogger.trace(
+                "ProfileInfo.updateSchemaAtLayer returned false: the schema destination is a symbolic link."
+            );
+            return false;
+        }
+
         if (!fs.existsSync(schemaPath)) {
             this.mImpLogger.trace(
                 "ProfileInfo.updateSchemaAtLayer returned false: the schema does not exist on disk for this layer."
@@ -1383,15 +1400,6 @@ export class ProfileInfo {
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
         if (versionChanged || !sameSchemaExists) {
-            const layerDir = path.dirname(layer.path);
-            if (!IO.isSubPath(layerDir, schemaPath) && schemaPath !== layerDir) {
-                throw new ProfInfoErr({
-                    errorCode: ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR,
-                    msg: `Schema path must resolve within the config directory.\n` +
-                        `  Schema resolved to: ${schemaPath}\n` +
-                        `  Config directory:   ${layerDir}`
-                });
-            }
             jsonfile.writeFileSync(schemaPath, this.buildSchema([], layer), { spaces: 4 });
         }
 

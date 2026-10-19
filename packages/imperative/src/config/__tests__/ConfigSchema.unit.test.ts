@@ -432,7 +432,8 @@ describe("Config Schema", () => {
             it("should update the schema for the project config when no user config is found", () => {
                 spyConfigLayersExists.mockReturnValueOnce(true).mockReturnValue(false);
                 spyConfigLayerActive.mockReturnValue(fakeLayer);
-                spyConfigGetSchemaInfo.mockReturnValue({ original: fakeSchema, local: true });
+                spyConfigGetSchemaInfo.mockReturnValue(
+                    { original: fakeSchema, local: true, resolved: path.join(path.dirname(fakeProjPath), "fake.schema.json") });
 
                 const expectedUpdatedPaths = {
                     [fakeLayer.path]: { schema: fakeSchema, updated: true },
@@ -453,7 +454,8 @@ describe("Config Schema", () => {
                     .mockReturnValueOnce({ ...fakeLayer, ...{ path: fakeUserPath } })
                     .mockReturnValueOnce({ ...fakeLayer, ...{ path: fakeProjPath } });
                 spyConfigGetSchemaInfo
-                    .mockReturnValueOnce({ original: fakeSchema, local: true })
+                    .mockReturnValueOnce(
+                        { original: fakeSchema, local: true, resolved: path.join(path.dirname(fakeUserPath), "fake.schema.json") })
                     .mockReturnValueOnce({ original: fakeSchema, local: false });
 
                 const expectedUpdatedPaths = {
