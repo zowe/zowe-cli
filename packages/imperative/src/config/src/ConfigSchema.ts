@@ -242,7 +242,7 @@ export class ConfigSchema {
             for (let level = 0; level <= opts.updateOptions.depth; level++) {
                 patterns.push("{*,.*}/".repeat(level) + opts.config.schemaName);
             }
-            const matches: string[] = globSync(patterns);
+            const matches: string[] = globSync(patterns, { expandDirectories: false });
 
             const globalProjConfig = opts.config.findLayer(false, true);
             const globalUserConfig = opts.config.findLayer(true, true);

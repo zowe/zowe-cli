@@ -167,7 +167,7 @@ export class ConfigUtils {
         }
 
         // look for V1 profiles in the CLI home directory
-        const v1ProfilePaths = globSync("profiles/**/*.yaml", { cwd: ImperativeConfig.instance.cliHome })
+        const v1ProfilePaths = globSync("profiles/**/*.yaml", { cwd: ImperativeConfig.instance.cliHome, expandDirectories: false })
             .filter(filename => {
                 // ignore meta yaml files
                 const { dir, name } = path.parse(filename);

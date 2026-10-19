@@ -105,7 +105,8 @@ export class DefinitionTreeResolver {
 
         for (const childGlob of cmdModuleGlobs) {
             const matches = globSync(childGlob, {
-                cwd: callerDir
+                cwd: callerDir,
+                expandDirectories: false
             });
 
             // user specified module glob, but none matched so we throw an error
