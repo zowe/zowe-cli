@@ -28,6 +28,33 @@ import { ImperativeError } from "../../error/src/ImperativeError";
 // UnitTestUtils.replaceIt();
 
 describe("Command Preparer", () => {
+    it("should preserve handler constructors in a copied command tree", () => {
+        class Handler { public process = jest.fn(); }
+        const handlerClass = Handler;
+        const original: ICommandDefinition = {
+            name: "group", description: "Group", type: "group",
+            children: [
+                { name: "direct", description: "Direct", type: "command", handler: handlerClass },
+                { name: "chain", description: "Chain", type: "command", chainedHandlers: [{ handler: handlerClass }] }
+            ]
+        };
+        const prepared = CommandPreparer.prepare(original);
+
+        expect(prepared.children[0].handler).toBe(handlerClass);
+        expect(prepared.children[1].chainedHandlers[0].handler).toBe(handlerClass);
+        prepared.children[0].description = "Changed";
+        expect(original.children[0].description).toBe("Direct");
+    });
+
+    it("should reject a handler constructor combined with chained handlers", () => {
+        class Handler { public process = jest.fn(); }
+        const handlerClass = Handler;
+        expect(() => CommandPreparer.prepare({
+            name: "mixed", description: "Mixed", type: "command", handler: handlerClass,
+            chainedHandlers: [{ handler: handlerClass }]
+        })).toThrow("contains both a handler and chained handler configuration");
+    });
+
     it("should prepare the final command document for imperative usage", () => {
         ORIGINAL_DEFINITIONS.forEach((test) => {
             const prepared: ICommandDefinition = CommandPreparer.prepare(test);

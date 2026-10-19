@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. []()
+
 ## `8.40.0`
 
 - Enhancement: Updated connection prompting logic to honor the `allowedLoginMethod` property. A user is now prompted only for the credentials that the method allows (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`), `apiml-*` methods exchange credentials for an APIML token and store only that token, and `direct-*` methods store credentials directly. Defaults to `prompt` when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
