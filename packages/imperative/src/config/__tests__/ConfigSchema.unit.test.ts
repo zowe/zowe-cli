@@ -573,7 +573,7 @@ describe("Config Schema", () => {
                 });
 
                 const schemaName = helperOptions.config.schemaName;
-                expect(spyGlobSync).toHaveBeenCalledWith([`${schemaName}`, `{*,.*}/${schemaName}`]);
+                expect(spyGlobSync).toHaveBeenCalledWith([`${schemaName}`, `{*,.*}/${schemaName}`], { expandDirectories: false });
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(1, true, false, path.dirname(fakeProjPath));
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(2, true, false, path.dirname(fakeUserPath));
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(3, false, false, path.dirname(fakeProjPath));
