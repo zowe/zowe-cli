@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.1`
 
 - BugFix: Add validation to the `tso` command group to reject values for the `servletKey` and `appKey` arguments that contain illegal characters. [#2953](https://github.com/zowe/zowe-cli/pull/2953)

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.1`
 
 - BugFix: Fixed `ZosmfSession.createSessCfgFromArgs` to include the `allowedLoginMethod` and `authOrder` properties into the session, so `isUsingApiml` and `getApimlDecision` reflect them for sessions built directly from command arguments. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
