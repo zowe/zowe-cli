@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Added validation of the structure of schema files downloaded from URLs via the `zowe config import` command, and added a prompt when an existing file would be overwritten with the downloaded schema. [TODO](TODO)
 - BugFix: Fixed an issue where remote schemas would not be downloaded when running the `zowe config import` command. [TODO](TODO)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.39.1`
 
