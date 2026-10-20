@@ -9,6 +9,7 @@
 *
 */
 
+import * as tinyglobby from "tinyglobby";
 import { IProfileTypeConfiguration } from "../../profiles";
 import { ConfigSchema } from "../src/ConfigSchema";
 import { cloneDeep } from "lodash";
@@ -560,9 +561,7 @@ describe("Config Schema", () => {
                 const spyGlobal = jest.spyOn((ConfigSchema as any), "_updateSchemaGlobal").mockReturnValue(fakeUpdatesPaths_global);
                 spyConfigLayersExists.mockReturnValue(true);
                 spyConfigLayerActive.mockReturnValue({ ...fakeLayer, ...{ path: fakeUserPath } });
-                jest.doMock("fast-glob", () => {
-                    return { sync: jest.fn().mockReturnValue([fakeProjPath]) };
-                });
+                const spyGlobSync = jest.spyOn(tinyglobby, "globSync").mockReturnValue([fakeProjPath]);
                 const copyHelperOptions = cloneDeep(helperOptions);
                 copyHelperOptions.updateOptions.depth = 1;
 
@@ -573,6 +572,8 @@ describe("Config Schema", () => {
                     ...fakeUpdatesPaths_active_2,
                 });
 
+                const schemaName = helperOptions.config.schemaName;
+                expect(spyGlobSync).toHaveBeenCalledWith([`${schemaName}`, `{*,.*}/${schemaName}`], { expandDirectories: false });
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(1, true, false, path.dirname(fakeProjPath));
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(2, true, false, path.dirname(fakeUserPath));
                 expect(spyConfigApiLayersActivate).toHaveBeenNthCalledWith(3, false, false, path.dirname(fakeProjPath));
