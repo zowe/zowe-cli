@@ -9,7 +9,7 @@
 *
 */
 
-import * as fs from "fs";
+import * as fs from "node:fs";
 import * as path from "path";
 import * as lodash from "lodash";
 import { IExplanationMap, TextUtils } from "../../utilities/src/TextUtils";

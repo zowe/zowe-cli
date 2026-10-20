@@ -611,7 +611,8 @@ export class IO {
                     (!stats.isSymbolicLink() || !fs.statSync(canonicalPath).isDirectory())) {
                     return undefined;
                 }
-                return path.join(canonicalPath, ...missingSegments.reverse());
+                missingSegments.reverse();
+                return path.join(canonicalPath, ...missingSegments);
             }
             const nextAncestor = path.dirname(ancestor);
             if (nextAncestor === ancestor) { return undefined; }
