@@ -4,11 +4,19 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
+
+## `8.40.0`
+
+- Enhancement: Updated connection prompting logic to honor the `allowedLoginMethod` property. A user is now prompted only for the credentials that the method allows (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`), `apiml-*` methods exchange credentials for an APIML token and store only that token, and `direct-*` methods store credentials directly. Defaults to `prompt` when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
+- BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- BugFix: Fixed `AbstractRestClient` class to throw an error when a custom `checkServerIdentity` callback is combined with certificate account authentication (`certAccount`) since these options are incompatible. [#2958](https://github.com/zowe/zowe-cli/pull/2958)
 
 ## `8.39.1`
 
-- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Restricted application and event names to safe path components and rejected linked event paths. Event writes now validate file identity before truncation and use the validated descriptor. [#2950](https://github.com/zowe/zowe-cli/pull/2950)
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
 - BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)

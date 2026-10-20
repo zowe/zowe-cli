@@ -895,6 +895,97 @@ describe("Command Processor", () => {
         expect(logOutput).not.toContain("fakePassphrase");
     });
 
+    describe("trace-level logging of arguments", () => {
+        const vaultPassword = "vaultSecretPwd";
+        const vaultTokenValue = "vaultSecretToken";
+        const cliPassword = "cliSecretPwd";
+        let traceOutput: string;
+        let processor: CommandProcessor;
+
+        beforeEach(() => {
+            traceOutput = "";
+            // Partial ImperativeConfig: only the members touched by invoke() and the censor setup are provided
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: { secure: { securePropsForProfile: jest.fn(() => ["password", "tokenValue"]) } },
+                    layers: [{ exists: true, path: "zowe.config.json" }],
+                    properties: Config.empty(),
+                    mProperties: Config.empty()
+                },
+                envVariablePrefix: "ZOWE"
+            } as unknown as ImperativeConfig);
+
+            processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_COMPLEX_COMMAND,
+                definition: {
+                    name: "banana",
+                    description: "The banana command",
+                    type: "command",
+                    handler: __dirname + "/__model__/TestCmdHandler",
+                    options: [
+                        { name: "password", type: "string", description: "The password" },
+                        { name: "token-value", type: "string", description: "The token value" }
+                    ],
+                    profile: { optional: ["fruit"] }
+                },
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            Object.defineProperty(processor, "log", {
+                get: () => ({
+                    debug: jest.fn(),
+                    error: jest.fn(),
+                    info: jest.fn(),
+                    trace: jest.fn((line: string) => { traceOutput += line + "\n"; })
+                })
+            });
+        });
+
+        const invokeParms = (): IInvokeCommandParms => ({
+            arguments: { _: ["check", "for", "banana"], $0: "", valid: true, password: cliPassword },
+            responseFormat: "json",
+            silent: true
+        });
+
+        it("should not write config-vault or CLI credentials to the trace log", async () => {
+            // Simulates the secure (vault) values that prepare() merges into the arguments from the config
+            jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({
+                "password": vaultPassword,
+                "token-value": vaultTokenValue
+            });
+
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms());
+
+            expect(commandResponse.success).toBe(true);
+            expect(traceOutput).toContain("Invoke parameters:");
+            expect(traceOutput).toContain("Arguments extracted from the config:");
+            expect(traceOutput).toContain("Full argument object constructed:");
+            expect(traceOutput).toContain(`password: '${Censor.CENSOR_RESPONSE}'`);
+            expect(traceOutput).toContain(`'token-value': '${Censor.CENSOR_RESPONSE}'`);
+            expect(traceOutput).not.toContain(vaultPassword);
+            expect(traceOutput).not.toContain(vaultTokenValue);
+            expect(traceOutput).not.toContain(cliPassword);
+        });
+
+        it("should log only the censor mask, and still run the command, if censoring a trace dump fails", async () => {
+            jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ password: vaultPassword });
+            jest.spyOn(Censor, "censorObject").mockImplementation(() => { throw new Error("censor failure"); });
+
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms());
+
+            expect(commandResponse.success).toBe(true);
+            expect(traceOutput).toContain(`Invoke parameters:\n${Censor.CENSOR_RESPONSE}`);
+            expect(traceOutput).toContain(`Full argument object constructed:\n${Censor.CENSOR_RESPONSE}`);
+            expect(traceOutput).not.toContain(vaultPassword);
+            expect(traceOutput).not.toContain(cliPassword);
+        });
+    });
+
     it("should mask a sensitive value containing embedded whitespace using the parsed arguments", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
