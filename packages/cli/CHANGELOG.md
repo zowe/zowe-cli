@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins.
+
 ## `7.29.33`
 
 - BugFix: Fixed a bug that could allow invalid characters in a data set name when the data set is being edited. [#2924](https://github.com/zowe/zowe-cli/pull/2924)
