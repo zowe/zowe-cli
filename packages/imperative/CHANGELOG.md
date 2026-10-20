@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting.
+- BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2967](https://github.com/zowe/zowe-cli/pull/2967)
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2957](https://github.com/zowe/zowe-cli/pull/2957)
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2946](https://github.com/zowe/zowe-cli/pull/2946)
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2944](https://github.com/zowe/zowe-cli/pull/2944)
