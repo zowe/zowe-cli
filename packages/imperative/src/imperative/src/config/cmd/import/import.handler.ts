@@ -48,19 +48,26 @@ export default class ImportHandler implements ICommandHandler {
             return;
         }
 
-        const configFilePath = path.resolve(params.arguments.location);
-        const isConfigLocal = fs.existsSync(configFilePath) || path.isAbsolute(params.arguments.location);
+        const location: string = params.arguments.location;
+ 
+        const configUrl = !path.isAbsolute(location) && URL.canParse(location) ? new URL(location) : null;
+        if (configUrl && configUrl.protocol !== "http:" && configUrl.protocol !== "https:") {
+            throw new ImperativeError({
+                msg: `Unsupported config URL protocol "${configUrl.protocol}". Only HTTP and HTTPS URLs are supported.`
+            });
+        }
+        const configFilePath = configUrl ? null : path.resolve(location);
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
-        const configJson: IConfig = isConfigLocal ?
-            JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) as any :
-            await this.fetchConfig(new URL(params.arguments.location));
+        const configJson: IConfig = configUrl ?
+            await this.fetchConfig(configUrl) :
+            JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) as any;
         config.api.layers.set(configJson);
 
         let schemaImported = false;
         // Only import schema if relative path and no backtracking
         if (configJson.$schema && configJson.$schema.startsWith("./") && !IO.containsBacktrack(configJson.$schema)) {
             const schemaUri = new URL(configJson.$schema,
-                isConfigLocal ? pathToFileURL(configFilePath) : params.arguments.location);
+                configUrl ?? pathToFileURL(configFilePath));
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);
             try {
                 await this.downloadSchema(schemaUri, schemaFilePath);
