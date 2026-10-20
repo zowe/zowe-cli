@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli-test-utils",
-  "version": "8.39.0",
+  "version": "8.40.0",
   "description": "Test utilities package for Zowe CLI plug-ins",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -21,9 +21,6 @@
   "files": [
     "lib"
   ],
-  "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -40,7 +37,7 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@zowe/imperative": "8.39.0"
+    "@zowe/imperative": "8.40.0"
   },
   "peerDependencies": {
     "@zowe/imperative": "^8.0.0"
