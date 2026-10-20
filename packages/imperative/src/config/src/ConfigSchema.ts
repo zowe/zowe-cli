@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { globSync } from "tinyglobby";
 import * as lodash from "lodash";
 import { IExplanationMap, TextUtils } from "../../utilities/src/TextUtils";
 import { ICommandProfileProperty } from "../../cmd";
@@ -238,10 +239,12 @@ export class ConfigSchema {
         //___________________________________________________________________________________
         // Traverse DOWN
         if (opts.updateOptions.depth > 0) {
-            // Look for <APP>.schema.json
-            const fg = require("fast-glob");
-            // The `cwd` does not participate in Fast-glob's depth calculation, hence the + 1
-            const matches: string[] = fg.sync(`**/${opts.config.schemaName}`, { dot: true, onlyFiles: true, deep: opts.updateOptions.depth + 1 });
+            // Look for <APP>.schema.json up to `depth` directories down, including dot directories
+            const patterns: string[] = [];
+            for (let level = 0; level <= opts.updateOptions.depth; level++) {
+                patterns.push("{*,.*}/".repeat(level) + opts.config.schemaName);
+            }
+            const matches: string[] = globSync(patterns, { expandDirectories: false });
 
             const globalProjConfig = opts.config.findLayer(false, true);
             const globalUserConfig = opts.config.findLayer(true, true);
