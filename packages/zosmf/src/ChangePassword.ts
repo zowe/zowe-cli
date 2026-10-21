@@ -91,11 +91,11 @@ export class ZosmfChangePassword {
                 }
             }
 
-            // Censor the payload string that appears in additionalDetails
+            // Censor the entire multiline payload while preserving the following request details
             if (err.mDetails.additionalDetails && err.mDetails.payload != null) {
                 const censoredPayloadStr = inspect(err.mDetails.payload, { depth: null });
                 err.mDetails.additionalDetails = err.mDetails.additionalDetails.replace(
-                    /\nPayload: +.*/,
+                    /\nPayload: +[\s\S]*?(?=\nAllow Unauth Cert:|$)/,
                     "\nPayload:           " + censoredPayloadStr
                 );
             }
