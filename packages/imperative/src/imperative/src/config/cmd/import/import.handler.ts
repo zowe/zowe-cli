@@ -49,13 +49,8 @@ export default class ImportHandler implements ICommandHandler {
         }
 
         const location: string = params.arguments.location;
- 
-        const configUrl = !path.isAbsolute(location) && URL.canParse(location) ? new URL(location) : null;
-        if (configUrl && configUrl.protocol !== "http:" && configUrl.protocol !== "https:") {
-            throw new ImperativeError({
-                msg: `Unsupported config URL protocol "${configUrl.protocol}". Only HTTP and HTTPS URLs are supported.`
-            });
-        }
+        const parsedUrl = URL.canParse(location) ? new URL(location) : null;
+        const configUrl = parsedUrl && (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") ? parsedUrl : null;
         const configFilePath = configUrl ? null : path.resolve(location);
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
         const configJson: IConfig = configUrl ?
