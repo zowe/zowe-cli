@@ -168,6 +168,10 @@ export class TsoConstants {
      */
     public static readonly TSO_MESSAGE = "TSO MESSAGE";
 
+    /**
+     * Characters disallowed in the servletKey field used by TSO APIs,
+     */
+    public static readonly TSO_FIELD_ILLEGAL_CHARACTERS: string[] = [".", "/", "?", "#", "%", "+"];
 }
 
 /**
