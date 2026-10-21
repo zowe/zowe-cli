@@ -104,5 +104,57 @@ describe("PMFConstants", () => {
 
             expect(pmf.PLUGIN_INSTALL_LOCATION).toEqual(join(pmf.PLUGIN_INSTALL_LOCATION, "lib", "node_modules"));
         });
+
+        it.each(["win32", "linux"])(
+            "should exclude config directories from plugin lookup on %s",
+            (platform) => {
+                Object.defineProperty(process, "platform", {
+                    value: platform
+                });
+
+                const mockedPath = require("path") as jest.Mocked<typeof import("path")>;
+                // ESLint thinks there are extra parens below around the second instance of "path,"
+                // but dropping them causes runtime errors in test runner
+                // eslint-disable-next-line no-extra-parens
+                const actualPath = jest.requireActual<typeof import("path")>("path");
+
+                mockedPath.join.mockImplementation(actualPath.join);
+                mockedPath.dirname.mockImplementation(actualPath.dirname);
+
+                const configSpy = jest.spyOn(
+                    ImperativeConfig.instance, "config", "get"
+                ).mockReturnValue({
+                    exists: true,
+                    paths: [
+                        actualPath.join("/untrusted/project", "zowe.config.json"),
+                        actualPath.join("/user/config", "zowe.config.json")
+                    ]
+                } as any);
+
+                const envSpy = jest.spyOn(
+                    EnvironmentalVariableSettings, "read"
+                ).mockReturnValueOnce({
+                    pluginsDir: {}
+                } as any);
+
+                try {
+                    const pmf = PMFConstants.instance;
+                    const expectedLocation = actualPath.join(
+                        ImperativeConfig.instance.cliHome,
+                        "plugins",
+                        "installed",
+                        ...[platform === "win32" ? "" : "lib", "node_modules"].filter(Boolean)
+                    );
+
+                    expect(pmf.PLUGIN_NODE_MODULE_LOCATION)
+                        .toEqual([expectedLocation]);
+                } finally {
+                    configSpy.mockRestore();
+                    envSpy.mockRestore();
+                    mockedPath.join.mockReset();
+                    mockedPath.dirname.mockReset();
+                }
+            }
+        );
     });
 });
