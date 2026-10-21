@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Recent Changes
 
-- BugFix: Fixed `ZosmfChangePassword.changePassword` to censor passwords and passphrases in multiline REST error payloads while preserving surrounding diagnostic details. [#2973](https://github.com/zowe/zowe-cli/pull/2973)
+- BugFix: Fixed the `ZosmfChangePassword.changePassword` function to censor passwords and passphrases in multiline REST error payloads while preserving surrounding diagnostic details. [#2973](https://github.com/zowe/zowe-cli/pull/2973)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.39.1`
