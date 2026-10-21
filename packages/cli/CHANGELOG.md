@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes 
 
-- BugFix: Add validation to the `tso` command group to reject values for the `servletKey` argument that contain illegal characters. [todo](todo)
+- BugFix: Add validation to the `tso` command group to reject values for the `servletKey` argument that contain illegal characters. [#2972](https://github.com/zowe/zowe-cli/pull/2972/changes)
 
 ## `7.29.33`
 
