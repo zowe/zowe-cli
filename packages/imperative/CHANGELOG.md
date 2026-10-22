@@ -5,6 +5,9 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed an issue on Windows where running a command from the same directory with different casing, such as `ops` in CMD and `OPS` in Git Bash, stored a separate set of credentials in the secure credential store for each. The project directory is now resolved to its real path, so one directory has one set of credentials. [#2604](https://github.com/zowe/zowe-cli/issues/2604)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
 
 ## `8.40.0`
 
@@ -21,7 +24,8 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
 - BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
 - BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
-- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
+- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936)
+- BugFix: Replaced the `deepmerge` dependency with `deepmerge-ts` for technical currency. [#2941](https://github.com/zowe/zowe-cli/pull/2941)
 
 ## `8.39.0`
 
