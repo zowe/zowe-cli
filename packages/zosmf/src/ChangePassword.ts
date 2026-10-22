@@ -93,11 +93,16 @@ export class ZosmfChangePassword {
 
             // Censor the entire multiline payload while preserving the following request details
             if (err.mDetails.additionalDetails && err.mDetails.payload != null) {
-                const censoredPayloadStr = inspect(err.mDetails.payload, { depth: null });
-                err.mDetails.additionalDetails = err.mDetails.additionalDetails.replace(
-                    /\nPayload: +[\s\S]*?(?=\nAllow Unauth Cert:|$)/,
-                    "\nPayload:           " + censoredPayloadStr
-                );
+                const details = err.mDetails.additionalDetails;
+                const payloadMarker = "\nPayload: ";
+                const payloadStart = details.indexOf(payloadMarker);
+                if (payloadStart !== -1) {
+                    const payloadEnd = details.indexOf("\nAllow Unauth Cert:", payloadStart + payloadMarker.length);
+                    const censoredPayloadStr = inspect(err.mDetails.payload, { depth: null });
+                    err.mDetails.additionalDetails = details.slice(0, payloadStart) +
+                        "\nPayload:           " + censoredPayloadStr +
+                        (payloadEnd === -1 ? "" : details.slice(payloadEnd));
+                }
             }
 
             // Append extra context when the generic 8/2 error is returned
