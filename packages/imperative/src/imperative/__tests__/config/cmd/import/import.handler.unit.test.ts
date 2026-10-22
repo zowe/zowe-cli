@@ -18,7 +18,7 @@ import ImportHandler from "../../../../src/config/cmd/import/import.handler";
 import { IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigConstants, IConfig } from "../../../../../config";
 import { ISession, RestClient } from "../../../../../rest";
-import { ImperativeConfig, ImperativeError } from "../../../../..";
+import { CliUtils, GuiResult, ImperativeConfig, ImperativeError, IO, ProcessUtils } from "../../../../..";
 import { expectedProjectConfigObject, expectedSchemaObject } from
     "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
 
@@ -343,5 +343,50 @@ describe("Configuration Import command handler", () => {
             });
             await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
         });
+
+        it("should prompt the user if the destination file for the schema download from URL already exists," +
+            " and not write the file if the user responds 'n'", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.GUI_AVAILABLE;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce('n');
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).toHaveBeenCalled();
+                expect(fs.writeFileSync).not.toHaveBeenCalled();
+            });
+
+        it("should prompt the user if the destination file for the schema download from URL already exists," +
+            " and write the file if the user responds 'y'", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.GUI_AVAILABLE;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce('Y');
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).toHaveBeenCalled();
+                expect(fs.writeFileSync).toHaveBeenCalled();
+            });
+        it("should not prompt the user if the destination schema path exists but GUI is not available," +
+            " then the schema file should be written", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.NO_GUI_NO_DISPLAY;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt");
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).not.toHaveBeenCalled();
+                expect(fs.writeFileSync).toHaveBeenCalled();
+            });
+
     });
 });

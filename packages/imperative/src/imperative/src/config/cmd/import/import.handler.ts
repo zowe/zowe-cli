@@ -62,8 +62,7 @@ export default class ImportHandler implements ICommandHandler {
             const schemaUri = new URL(configJson.$schema,
                 isConfigLocal ? pathToFileURL(configFilePath) : params.arguments.location);
 
-            const schemaFilePath = path.resolve(path.dirname(layer.path),
-                schemaUri.protocol === "file:" ? configJson.$schema : path.basename(schemaUri.pathname));
+            const schemaFilePath = path.resolve(path.dirname(layer.path), schemaUri.pathname);
             try {
                 await this.downloadSchema(schemaUri, schemaFilePath);
                 schemaImported = true;
