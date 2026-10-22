@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Clarified how values from defaults, environment variables, and profiles satisfy option `implies` dependencies, so you can define options without requiring explicit command-line flags. [#1909](https://github.com/zowe/zowe-cli/issues/1909)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 - Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 - BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
