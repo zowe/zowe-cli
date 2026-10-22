@@ -50,7 +50,8 @@ export default class ImportHandler implements ICommandHandler {
 
         const location: string = params.arguments.location;
         const parsedUrl = URL.canParse(location) ? new URL(location) : null;
-        const configUrl = parsedUrl && (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") ? parsedUrl : null;
+        const isHttp = parsedUrl?.protocol === "http:" || parsedUrl?.protocol === "https:";
+        const configUrl = isHttp ? parsedUrl : null;
         const configFilePath = configUrl ? null : path.resolve(location);
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
         const configJson: IConfig = configUrl ?
