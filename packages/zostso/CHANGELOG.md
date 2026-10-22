@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes 
+
+- BugFix: Added validation to reject values containing illegal characters for the `servletKey` parameter in the `SendTSO`, `StopTso`, and `PingTso` classes. [#2972](https://github.com/zowe/zowe-cli/pull/2972/changes)
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

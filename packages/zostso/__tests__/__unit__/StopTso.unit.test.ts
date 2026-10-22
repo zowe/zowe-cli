@@ -244,7 +244,24 @@ describe("StopTso stop", () => {
         expect(response).not.toBeDefined();
         expect(error.details.msg).toEqual(noServletKeyInput.message);
     });
-
+    test.each(
+            ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam", 
+                "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+        let queryResponse: string;
+        let error: ImperativeError;
+        try {
+            queryResponse = StopTso.getResources(servletKey);
+            Imperative.console.info(`Response ${inspect(queryResponse)}`);
+        } catch (thrownError) {
+            error = thrownError;
+            Imperative.console.info(`Error ${inspect(error)}`);
+        }
+        expect(error).toBeDefined();
+        expect(queryResponse).not.toBeDefined();
+        expect(error.details.msg).toBe("The servletKey contains illegal characters.");
+    });
+    
     it("should throw an error if servlet key is empty string", async () => {
         let response: IStartStopResponse;
         let error: ImperativeError;

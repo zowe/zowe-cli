@@ -90,6 +90,22 @@ describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
     });
+       test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+        let error: ImperativeError;
+        let response: ISendResponse;
+        try {
+            response = await SendTso.sendDataToTSOCollect(PRETEND_SESSION, servletKey, null);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The servletKey contains illegal characters.");
+    });
+
 });
 
 describe("TsoSend sendDataToTSOCollect", () => {
