@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import { posix, join, basename } from "path";
+import { tmpdir } from "os";
 import { EncodeUri, ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -1012,6 +1013,39 @@ describe("z/OS Files - Download", () => {
             existsSyncSpy.mockClear();
             existsSyncSpy.mockReturnValue(false);
         });
+
+        it.each([false, true])(
+            "should reject an escaping extension directory link before downloading (existing output: %s)",
+            async (existingOutput) => {
+                const temporaryDir = fs.mkdtempSync(join(tmpdir(), "zowe-member-containment-"));
+                try {
+                    const directory = join(temporaryDir, "output");
+                    const outsideDir = join(temporaryDir, "outside");
+                    const outsideFile = join(outsideDir, "member.txt");
+                    fs.mkdirSync(directory);
+                    fs.mkdirSync(outsideDir);
+                    fs.symlinkSync(outsideDir, join(directory, "m1.link"), process.platform === "win32" ? "junction" : "dir");
+                    if (existingOutput) {
+                        fs.writeFileSync(outsideFile, "Do not overwrite");
+                    }
+
+                    await expect(Download.allMembers(dummySession, dsname, {
+                        directory,
+                        extension: "link/member.txt",
+                        overwrite: true
+                    })).rejects.toThrow("The generated data set file path contains illegal characters.");
+
+                    expect(downloadDatasetSpy).not.toHaveBeenCalled();
+                    if (existingOutput) {
+                        expect(fs.readFileSync(outsideFile, "utf8")).toBe("Do not overwrite");
+                    } else {
+                        expect(fs.existsSync(outsideFile)).toBe(false);
+                    }
+                } finally {
+                    fs.rmSync(temporaryDir, {recursive: true, force: true});
+                }
+            }
+        );
 
         it("should throw and error if the data set name is not specified", async () => {
             let response;
