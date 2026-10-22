@@ -4,6 +4,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## Recent Changes
 
+- BugFix: Improved handling of special characters when generating config comments from APIML services.
 - BugFix: Replaced trace log for data chunks with a byte-count message to keep log size minimal. [#2935](https://github.com/zowe/zowe-cli/pull/2935/)
 
 ## `7.29.32`
