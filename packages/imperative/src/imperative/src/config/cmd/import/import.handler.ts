@@ -141,7 +141,7 @@ export default class ImportHandler implements ICommandHandler {
             if (!Object.keys(parsedSchema).includes('$schema') || typeof (parsedSchema['$schema']) !== "string") {
                 throw new ImperativeError({
                     msg: `The schema downloaded from ${url} appears to be malformed. It does not contain a '$schema' field.`
-                })
+                });
             }
             if (IO.existsSync(filePath) && ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
                 let input: string | null = null;
