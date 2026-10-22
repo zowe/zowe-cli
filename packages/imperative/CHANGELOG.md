@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2965](https://github.com/zowe/zowe-cli/pull/2965)
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 - Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 - BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
