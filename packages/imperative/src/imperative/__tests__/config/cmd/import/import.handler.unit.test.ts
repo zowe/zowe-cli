@@ -331,7 +331,7 @@ describe("Configuration Import command handler", () => {
                 msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
                     `It does not contain a '$schema' field.`
             });
-            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error)
+            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
         });
 
         it("should not write the schema file to disk from URL if its schema key does not have a string value", async () => {
@@ -341,7 +341,7 @@ describe("Configuration Import command handler", () => {
                 msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
                     `It does not contain a '$schema' field.`
             });
-            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error)
+            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
         });
     });
 });

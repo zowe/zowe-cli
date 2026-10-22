@@ -122,7 +122,7 @@ export class ConfigAutoStore {
 
             if (authHandlerClass instanceof AbstractAuthHandler) {
                 const { promptParams } = authHandlerClass.getAuthHandlerApi();
-   
+
                 const hasMatchingTokenType = isApimlLoginMethod ?
                     promptParams.defaultTokenType?.startsWith(SessConstants.TOKEN_TYPE_APIML) :
                     effectiveTokenType === promptParams.defaultTokenType || effectiveTokenType.startsWith(SessConstants.TOKEN_TYPE_APIML);

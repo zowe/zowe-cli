@@ -174,7 +174,7 @@ describe("Imperative", () => {
         });
 
         afterEach(() => {
-           process.argv = backupArgv;
+            process.argv = backupArgv;
         });
 
         it("should work when passed with nothing", async () => {
