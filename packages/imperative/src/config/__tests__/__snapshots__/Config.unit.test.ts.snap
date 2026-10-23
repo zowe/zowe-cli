@@ -33,7 +33,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": Array [],
+      "secure": CommentArray [],
     },
     "vegetable": Object {
       "profiles": Object {
@@ -78,7 +78,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": Array [],
+      "secure": CommentArray [],
     },
     "vegetable": Object {
       "profiles": Object {
@@ -116,7 +116,7 @@ Object {
           "properties": Object {
             "color": "red",
           },
-          "secure": Array [
+          "secure": CommentArray [
             "secret2",
           ],
           "type": "fruit",
@@ -137,7 +137,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": Array [
+      "secure": CommentArray [
         "secret",
       ],
     },
@@ -173,7 +173,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": Array [],
+      "secure": CommentArray [],
     },
   },
 }
@@ -205,7 +205,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": Array [],
+      "secure": CommentArray [],
     },
     "vegetable": Object {
       "profiles": Object {
@@ -247,7 +247,7 @@ Object {
           "properties": Object {
             "color": "red",
           },
-          "secure": Array [
+          "secure": CommentArray [
             "secret2",
           ],
           "type": "fruit",
@@ -268,7 +268,7 @@ Object {
       "properties": Object {
         "origin": "California",
       },
-      "secure": CommentArray [
+      "secure": Array [
         "secret",
       ],
     },
@@ -321,7 +321,7 @@ Object {
     "properties": Object {
       "origin": "California",
     },
-    "secure": Array [],
+    "secure": CommentArray [],
   },
 }
 `;
