@@ -174,7 +174,7 @@ describe("Imperative", () => {
         });
 
         afterEach(() => {
-           process.argv = backupArgv;
+            process.argv = backupArgv;
         });
 
         it("should work when passed with nothing", async () => {
@@ -188,7 +188,8 @@ describe("Imperative", () => {
         });
 
         it("should censor process.argv before logging it", async () => {
-            jest.spyOn(mocks.Logger, "setLogInMemory").mockImplementationOnce(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
+            jest.spyOn(mocks.Logger, "setLogInMemory")
+                .mockImplementationOnce(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
             const loggerFatalMock = jest.fn();
             mocks.Logger.getImperativeLogger.mockReturnValue({ fatal: loggerFatalMock } as any);
             process.argv = [
@@ -253,7 +254,7 @@ describe("Imperative", () => {
             });
 
             it("should surface failures if daemonMode is not specified", async () => {
-                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({msg: "Config error"})).mockResolvedValue({});
+                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({ msg: "Config error" })).mockResolvedValue({});
                 let error;
                 try {
                     await Imperative.init();
@@ -267,8 +268,8 @@ describe("Imperative", () => {
             });
 
             it("should not surface failures if daemonMode is specified", async () => {
-                mocks.ConfigurationLoader.load.mockReturnValue({...defaultConfig, daemonMode: true});
-                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({msg: "Config error"})).mockResolvedValue({});
+                mocks.ConfigurationLoader.load.mockReturnValue({ ...defaultConfig, daemonMode: true });
+                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({ msg: "Config error" })).mockResolvedValue({});
                 let error;
                 try {
                     await Imperative.init();
@@ -444,7 +445,7 @@ describe("Imperative", () => {
         describe("Environment Config", () => {
             it("should not surface failures if there is an error in environment variable file", async () => {
                 mocks.EnvFileUtils.setEnvironmentForApp.mockImplementation((_appName: string) => {
-                    throw new ImperativeError({msg: "Environment Setup Error"});
+                    throw new ImperativeError({ msg: "Environment Setup Error" });
                 });
                 mocks.Logger.prototype.warn.mockClear();
 
