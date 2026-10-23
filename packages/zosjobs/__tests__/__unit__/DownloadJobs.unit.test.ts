@@ -13,6 +13,9 @@ import { AbstractSession, Headers, ImperativeError, IO } from "@zowe/imperative"
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Writable } from "stream";
+import * as fs from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/GetJobs");
@@ -615,6 +618,39 @@ describe("DownloadJobs", () => {
     });
 
     describe("Download destination tests", () => {
+
+        it("should reject missing spool output beneath a directory link escaping the output directory", async () => {
+            const temporaryDir = fs.mkdtempSync(join(tmpdir(), "zowe-spool-containment-"));
+            try {
+                const outDir = join(temporaryDir, "output");
+                const outsideDir = join(temporaryDir, "outside");
+                fs.mkdirSync(outDir);
+                fs.mkdirSync(outsideDir);
+                fs.symlinkSync(outsideDir, join(outDir, fakeJobID), process.platform === "win32" ? "junction" : "dir");
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFiles[0],
+                    outDir,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName
+                };
+                (IO.createFileSync as jest.Mock).mockClear();
+                (IO.createWriteStream as jest.Mock).mockClear();
+                (ZosmfRestClient.getStreamed as jest.Mock).mockClear();
+
+                expect(() => DownloadJobs.getSpoolDownloadFilePath(spoolParms)).toThrow(
+                    new ImperativeError({msg: "The generated file path contains illegal characters."})
+                );
+                await expect(DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms)).rejects.toThrow(
+                    "The generated file path contains illegal characters."
+                );
+                expect(IO.createFileSync).not.toHaveBeenCalled();
+                expect(IO.createWriteStream).not.toHaveBeenCalled();
+                expect(ZosmfRestClient.getStreamed).not.toHaveBeenCalled();
+                expect(fs.readdirSync(outsideDir)).toEqual([]);
+            } finally {
+                fs.rmSync(temporaryDir, {recursive: true, force: true});
+            }
+        });
 
         it("should generate a file path for a job file with no procstep, no stepname. Job ID omitted. Default output dir", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));

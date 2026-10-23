@@ -114,6 +114,10 @@ describe("Files Edit Utilities", () => {
                 hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess");
             });
 
+            afterEach(() => {
+                lstatSyncSpy.mockRestore();
+            });
+
             it("should create temp dir with mode 0o700 when it does not exist", async () => {
                 existsSyncSpy.mockReturnValue(false);
 
@@ -135,7 +139,7 @@ describe("Files Edit Utilities", () => {
             });
             it("should succeed when existing temp dir has owner-only access", async () => {
                 existsSyncSpy.mockReturnValue(true);
-                lstatSyncSpy.mockReturnValue({ isDirectory: () => true } as any);
+                lstatSyncSpy.mockReturnValueOnce(fs.statSync(tmpdir()));
                 hasOwnerOnlyAccessSpy.mockReturnValue(true);
 
                 const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
@@ -179,6 +183,10 @@ describe("Files Edit Utilities", () => {
                 lstatSyncSpy = jest.spyOn(fs, "lstatSync");
                 mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn() as any);
                 hasOwnerOnlyAccessSpy = jest.spyOn(IO, "hasOwnerOnlyAccess");
+            });
+
+            afterEach(() => {
+                lstatSyncSpy.mockRestore();
             });
 
             it("should create temp dir with mode 0o700 when it does not exist", async () => {
