@@ -61,7 +61,7 @@ export default class ImportHandler implements ICommandHandler {
 
         let schemaImported = false;
         // Only import schema if relative path and no backtracking
-        if (configJson.$schema && configJson.$schema.startsWith("./") && !IO.containsBacktrack(configJson.$schema)) {
+        if (!isHttp && configJson.$schema && configJson.$schema.startsWith("./") && !IO.containsBacktrack(configJson.$schema)) {
             const schemaUri = new URL(configJson.$schema,
                 configUrl ?? pathToFileURL(configFilePath));
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);

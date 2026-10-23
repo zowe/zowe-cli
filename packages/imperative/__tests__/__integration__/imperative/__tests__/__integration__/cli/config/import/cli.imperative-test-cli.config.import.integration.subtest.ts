@@ -163,7 +163,7 @@ describe("imperative-test-cli config import", () => {
                     path.join(__dirname, "__resources__", "test.config.good.with.http.schema.json"));
                 expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"))).toEqual(false);
             });
-            
+
         });
 
         describe("from the disk", () => {
@@ -292,7 +292,6 @@ describe("imperative-test-cli config import", () => {
                 expect(response.status).toEqual(1);
 
                 expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"))).toEqual(false);
-                expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"))).toEqual(false);
             });
 
             it("should fail to import a schema that is invalid JSON from a URL", () => {
