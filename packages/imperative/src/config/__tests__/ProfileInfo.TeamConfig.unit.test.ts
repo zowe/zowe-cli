@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as os from "os";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
 import { ProfileInfo } from "../src/ProfileInfo";
@@ -1641,6 +1642,76 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(caughtError).toBeInstanceOf(ProfInfoErr);
                 expect(caughtError.errorCode).toBe(ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR);
                 expect(writeFileSyncMock).not.toHaveBeenCalled();
+            });
+            describe("filesystem containment", () => {
+                let tempDir: string;
+                let projectDir: string;
+                let outsideDir: string;
+                let profInfo: ProfileInfo;
+                const fileLinkTest = process.platform === "win32" ? it.skip : it;
+
+                beforeEach(async () => {
+                    profInfo = createNewProfInfo(teamProjDir);
+                    await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                    writeFileSyncMock.mockRestore();
+                    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-profile-schema-"));
+                    projectDir = path.join(tempDir, "project");
+                    outsideDir = path.join(tempDir, "outside");
+                    fs.mkdirSync(projectDir);
+                    fs.mkdirSync(outsideDir);
+                });
+
+                afterEach(() => {
+                    fs.rmSync(tempDir, { recursive: true, force: true });
+                });
+
+                const updateSchema = (schemaUri: string) => profInfo["updateSchemaAtLayer"]("newType", {
+                    title: "New profile type", description: "Schema path regression",
+                    type: "object", properties: { host: { type: "string" } }
+                }, {
+                    ...testCfgLayer,
+                    path: path.join(projectDir, "zowe.config.json"),
+                    properties: { ...testCfgLayer.properties, $schema: schemaUri }
+                }, true);
+
+                it("preserves a schema behind an escaped directory link", () => {
+                    const target = path.join(outsideDir, "zowe.schema.json");
+                    fs.writeFileSync(target, "original configuration");
+                    fs.symlinkSync(outsideDir, path.join(projectDir, "linked"), process.platform === "win32" ? "junction" : "dir");
+
+                    expect(() => updateSchema("./linked/zowe.schema.json")).toThrow(ProfInfoErr);
+                    expect(fs.readFileSync(target, "utf8")).toBe("original configuration");
+                });
+
+                fileLinkTest.each(["outside", "inside", "dangling"])("refuses a %s destination file symlink", (location) => {
+                    const target = path.join(location === "inside" ? projectDir : outsideDir, "original.json");
+                    if (location !== "dangling") fs.writeFileSync(target, "original configuration");
+                    fs.symlinkSync(path.relative(projectDir, target), path.join(projectDir, "zowe.schema.json"));
+
+                    if (location === "inside") {
+                        expect(updateSchema("./zowe.schema.json")).toBe(false);
+                    } else {
+                        expect(() => updateSchema("./zowe.schema.json")).toThrow(ProfInfoErr);
+                    }
+                    if (location !== "dangling") {
+                        expect(fs.readFileSync(target, "utf8")).toBe("original configuration");
+                    } else {
+                        expect(fs.existsSync(target)).toBe(false);
+                    }
+                });
+
+                it("writes the new profile type to a regular schema", () => {
+                    const schemaPath = path.join(projectDir, "zowe.schema.json");
+                    fs.writeFileSync(schemaPath, "{}");
+
+                    expect(updateSchema("./zowe.schema.json")).toBe(true);
+                    const writtenSchema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+                    expect(writtenSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toContainEqual(
+                        expect.objectContaining({
+                            if: { properties: { type: { const: "newType" } } }
+                        })
+                    );
+                });
             });
         });
 

@@ -9,6 +9,7 @@
 *
 */
 
+import * as fs from "node:fs";
 import * as path from "path";
 import { globSync } from "tinyglobby";
 import * as lodash from "lodash";
@@ -18,6 +19,7 @@ import { IProfileProperty, IProfileSchema, IProfileTypeConfiguration } from "../
 import { IConfigSchema, IConfigUpdateSchemaHelperOptions, IConfigUpdateSchemaOptions, IConfigUpdateSchemaPaths } from "./doc/IConfigSchema";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { Logger } from "../../logger/src/Logger";
+import { IO } from "../../io";
 import { Config } from "./Config";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { IConfig } from "./doc/IConfig";
@@ -162,7 +164,10 @@ export class ConfigSchema {
             // Get the schema information to gather a list of updated paths
             const schemaInfo = opts.config.getSchemaInfo();
 
-            updatedPaths = { [layer.path]: { schema: schemaInfo.original, updated: schemaInfo.local } };
+            // Keep update reporting consistent with the writer's destination checks.
+            const schemaUpdated = schemaInfo.local && IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved) &&
+                !fs.lstatSync(schemaInfo.resolved, { throwIfNoEntry: false })?.isSymbolicLink();
+            updatedPaths = { [layer.path]: { schema: schemaInfo.original, updated: schemaUpdated } };
         }
         if (opts.config.layerExists(path.dirname(layer.path), !layer.user) && checkContrastingLayer) {
             opts.config.api.layers.activate(!layer.user, layer.global, path.dirname(layer.path));
