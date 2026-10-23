@@ -4,6 +4,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## `8.41.0`
 
+- BugFix: Improved handling of special characters when generating config comments from APIML services. [#2972](https://github.com/zowe/zowe-cli/pull/2971)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.39.1`
