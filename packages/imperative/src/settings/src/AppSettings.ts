@@ -9,7 +9,7 @@
 *
 */
 
-import * as DeepMerge from "deepmerge";
+import { deepmerge } from "deepmerge-ts";
 import { existsSync } from "fs";
 import { ISettingsFile } from "./doc/ISettingsFile";
 import { Logger } from "../../logger";
@@ -59,11 +59,11 @@ export class AppSettings {
             }
         }
 
-        const initialSettings = DeepMerge(defaults, settings);
+        const initialSettings = deepmerge(defaults, settings);
 
         AppSettings.mInstance = new AppSettings(
             persistence,
-            initialSettings,
+            initialSettings as ISettingsFile,
         );
 
         Logger.getImperativeLogger().trace("Settings were loaded");
