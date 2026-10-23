@@ -401,7 +401,7 @@ describe("Configuration Import command handler", () => {
                 expect(promptSpy).toHaveBeenCalled();
                 expect(fs.writeFileSync).toHaveBeenCalled();
             });
-        it("should not prompt the user if the destination schema path exists but GUI is not available," +
+        it("should NOT prompt the user if the destination schema path exists but GUI is not available," +
             " then the schema file should be written", async () => {
                 const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
                     return GuiResult.NO_GUI_NO_DISPLAY;
