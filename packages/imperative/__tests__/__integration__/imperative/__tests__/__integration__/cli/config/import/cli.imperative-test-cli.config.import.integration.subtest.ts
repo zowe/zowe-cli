@@ -163,6 +163,7 @@ describe("imperative-test-cli config import", () => {
                     path.join(__dirname, "__resources__", "test.config.good.with.http.schema.json"));
                 expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"))).toEqual(false);
             });
+            
         });
 
         describe("from the disk", () => {

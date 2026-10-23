@@ -121,25 +121,11 @@ export default class ImportHandler implements ICommandHandler {
     }
 
     /**
-     * Download the config schema from a URL to disk
-     * @param url Web URL of the schema JSON file
+     * Save the schema from a local file URL to disk
+     * @param url file URL of the schema JSON file
      * @param filePath Local path to download to
      */
     private async downloadSchema(url: URL, filePath: string): Promise<void> {
-        if (url.protocol === "file:") {
-            fs.copyFileSync(fileURLToPath(url), filePath);
-        } else {
-            const response = await RestClient.getExpectString(this.buildSession(url), url.pathname);
-            try {
-                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
-                JSONC.parse(response) as any;
-            } catch (error) {
-                throw new ImperativeError({
-                    msg: "Failed to parse schema JSON: URL must point to a valid JSON file\n" + error.message,
-                    causeErrors: error
-                });
-            }
-            fs.writeFileSync(filePath, response);
-        }
+        fs.copyFileSync(fileURLToPath(url), filePath);
     }
 }
