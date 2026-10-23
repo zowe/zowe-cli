@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2967](https://github.com/zowe/zowe-cli/pull/2967)
+- Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2968](https://github.com/zowe/zowe-cli/pull/2968)
 - BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2957](https://github.com/zowe/zowe-cli/pull/2957)
 - BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2946](https://github.com/zowe/zowe-cli/pull/2946)
