@@ -8,6 +8,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## `8.39.0`
 
+- BugFix: Fixed an issue where copying a data set to another LPAR over-allocated the target when the source was allocated in cylinders. The target is now always allocated in tracks, matching the size that z/OSMF reports, so a 15-track source no longer becomes a 225-track target. [#2623](https://github.com/zowe/zowe-cli/issues/2623)
 - BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)
 - Enhancement: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
 - BugFix: Added validation for data set names to the `List` class's `resolveAlias` function. [#2914](https://github.com/zowe/zowe-cli/pull/2914)
