@@ -53,7 +53,8 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
             commandParameters.arguments.attributes,
             commandParameters.arguments.inputDir
         );
-        if (attributes != null) {
+        // An explicit --binary takes precedence over .zosattributes rules for this file
+        if (attributes != null && !uploadOptions.binary) {
             uploadOptions.attributes = attributes;
         }
         const response = await Upload.uploadFile(
