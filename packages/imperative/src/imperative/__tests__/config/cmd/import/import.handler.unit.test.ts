@@ -308,7 +308,9 @@ describe("Configuration Import command handler", () => {
         const downloadSchema = (ImportHandler.prototype as any).downloadSchema.bind({
             buildSession: jest.fn()
         });
-
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
         it("should be able to copy the schema file from a local file", async () => {
             jest.spyOn(fs, "copyFileSync").mockReturnValueOnce();
             await downloadSchema(url.pathToFileURL(schemaSrcPath), schemaDestPath);
@@ -401,6 +403,7 @@ describe("Configuration Import command handler", () => {
                 expect(promptSpy).toHaveBeenCalled();
                 expect(fs.writeFileSync).toHaveBeenCalled();
             });
+
         it("should NOT prompt the user if the destination schema path exists but GUI is not available," +
             " then the schema file should be written", async () => {
                 const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
