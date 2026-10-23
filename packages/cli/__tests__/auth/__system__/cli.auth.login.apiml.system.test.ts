@@ -413,7 +413,7 @@ describe("direct-* authentication method", () => {
         });
 
         it("The command authenticates to the service with the prompted credentials." +
-            "No APIML login request is made and no token is requested", async () => {
+            " No APIML login request is made and no token is requested", async () => {
             const response = runCliScript(__dirname + "/__scripts__/auth_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
 
             expect(response.status).toBe(0);
