@@ -206,13 +206,10 @@ jobs:
 
     - name: Verify Lockfile
       run: |
-        TEST_DIR=$(mktemp -d)
-        TGZ_PATH="$(pwd)/$(ls -1 zowe-cli-*.tgz | head -n 1)"
-        cd "$TEST_DIR"
+        cd "$(mktemp -d)"
         npm init -y
-        npm install "$TARBALL_PATH"
+        npm install "${{ github.workspace }}"/zowe-cli-*.tgz
         npm ci --dry-run --offline
-        rm -rf "$TEST_DIR"
 
   release:
     if: github.event_name == 'push' && github.ref_protected
