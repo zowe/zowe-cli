@@ -27,6 +27,7 @@ import {
     SessConstants,
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
+import { SshHostKeyVerifier } from "./SshHostKeyVerifier";
 import { ISshSession } from "./doc/ISshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 import { utils } from "ssh2";
@@ -178,60 +179,48 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters - command parameters, used for prompting and persistence
      */
     private attachHostKeyVerifier(session: SshSession, commandParameters: IHandlerParameters): void {
-        // Host key verification explicitly disabled - warn the user and leave the hook unset so any key is accepted.
-        if (session.ISshSession.insecure === true) {
-            this.console.error("Warning: SSH host key verification is disabled (--insecure). The server's " +
-                "identity is not being verified.\n");
-            return;
-        }
-
-        session.hostKeyVerifier = async (
-            info: { fingerprint: string; key: string; changed: boolean; pinnedFingerprint?: string }): Promise<boolean> => {
-            // A previously trusted host key no longer matches. Refuse instead of offering an interactive
-            // overwrite; require removing the pinned key or passing a new --host-key, like the ssh client.
-            if (info.changed) {
+        SshHostKeyVerifier.attach(session, {
+            onInsecure: () => {
+                this.console.error("Warning: SSH host key verification is disabled (--insecure). The server's " +
+                    "identity is not being verified.\n");
+            },
+            onChanged: (info) => {
                 const pinnedFingerprint = info.pinnedFingerprint ?? "(unknown)";
                 this.console.error(`${ZosUssMessages.hostKeyChanged.message}\n` +
                     `Previously trusted host key fingerprint: ${pinnedFingerprint}\n` +
                     `Host key fingerprint now presented:      ${info.fingerprint}\n` +
-                    "If you trust the new key, remove 'hostKey' from the ssh profile or pass --host-key with the " +
-                    "new key, then reconnect.\n");
-                return false;
-            }
+                    (info.knownHosts ?
+                        "Verify the new key, then update the matching entry in ~/.ssh/known_hosts and reconnect.\n" :
+                        "If you trust the new key, remove 'hostKey' from the ssh profile or pass --host-key with the " +
+                        "new key, then reconnect.\n"));
+            },
+            confirm: async (info) => {
+                // Prompt only when a user can answer, an interactive terminal or the Zowe daemon. Otherwise
+                // (CI, services, redirected stdin) keep verification on but fail fast instead of blocking.
+                const ciEnv = process.env.CI;
+                const inCi = ciEnv != null && ciEnv !== "" && ciEnv.toLowerCase() !== "false" && ciEnv !== "0";
+                const canPrompt = !inCi &&
+                    (process.stdin.isTTY === true || ImperativeConfig.instance.daemonContext != null);
+                if (!canPrompt) {
+                    this.console.error(`${ZosUssMessages.hostKeyVerificationFailed.message}\n` +
+                        `Server host key fingerprint: ${info.fingerprint}\n` +
+                        "No terminal to confirm the host key. Pin it with --host-key, or use --insecure.\n");
+                    return false;
+                }
 
-            // Prompt only when a user can answer, an interactive terminal or the Zowe daemon. Otherwise
-            // (CI, services, redirected stdin) keep verification on but fail fast instead of blocking.
-            const ciEnv = process.env.CI;
-            const inCi = ciEnv != null && ciEnv !== "" && ciEnv.toLowerCase() !== "false" && ciEnv !== "0";
-            const canPrompt = !inCi &&
-                (process.stdin.isTTY === true || ImperativeConfig.instance.daemonContext != null);
-            if (!canPrompt) {
-                this.console.error(`${ZosUssMessages.hostKeyVerificationFailed.message}\n` +
-                    `Server host key fingerprint: ${info.fingerprint}\n` +
-                    "No terminal to confirm the host key. Pin it with --host-key, or use --insecure.\n");
-                return false;
-            }
-
-            // Interactive first-use: present the fingerprint and prompt (trust on first use).
-            this.console.log(`The authenticity of host '${session.ISshSession.hostname}' can't be established.\n`);
-            const answer = await commandParameters.response.console.prompt(
-                `Host key fingerprint is ${info.fingerprint}.\n` +
-                "Are you sure you want to continue connecting (yes/no)? ");
-            const trusted = answer != null && ["yes", "y"].includes(answer.trim().toLowerCase());
-            if (!trusted) {
-                return false;
-            }
-
-            // Persist the accepted key to the ssh profile so the user is not prompted again.
-            session.ISshSession.hostKey = info.key;
-            try {
-                await this.persistHostKey(commandParameters, info.key);
-            } catch (err) {
+                // Interactive first-use: present the fingerprint and prompt (trust on first use).
+                this.console.log(`The authenticity of host '${session.ISshSession.hostname}' can't be established.\n`);
+                const answer = await commandParameters.response.console.prompt(
+                    `Host key fingerprint is ${info.fingerprint}.\n` +
+                    "Are you sure you want to continue connecting (yes/no)? ");
+                return answer != null && ["yes", "y"].includes(answer.trim().toLowerCase());
+            },
+            save: (key) => this.persistHostKey(commandParameters, key),
+            onSaveError: (err) => {
                 this.console.error("Could not save the accepted host key to your configuration; " +
                     "you may be prompted again next time.\nDetails: " + err.message + "\n");
             }
-            return true;
-        };
+        });
     }
 
     /**

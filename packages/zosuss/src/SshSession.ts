@@ -15,6 +15,7 @@ import {
     Logger
 } from "@zowe/imperative";
 import { ISshSession } from "./doc/ISshSession";
+import { IHostKeyVerificationInfo } from "./doc/ISshHostKeyVerifierOptions";
 
 
 /**
@@ -183,12 +184,14 @@ export class SshSession {
      * already trusted (no {@link ISshSession.hostKey} pinned, or the presented key differs from it). It
      * is set by the command handler layer to prompt the user interactively (trust on first use) and is
      * intentionally not part of the serializable {@link ISshSession} configuration. When unset (e.g. pure
-     * SDK usage with no interactive layer), an untrusted key is rejected.
-     * @param info - the presented key (base64 blob), its fingerprint, whether it differs from a pinned
-     *               key, and the pinned key's fingerprint when it does.
+     * SDK usage with no interactive layer), an untrusted key is rejected. Keys already trusted by
+     * ~/.ssh/known_hosts are accepted without invoking the hook when no profile key is pinned.
+     * Unless verification is disabled, revoked keys and known_hosts read errors are always rejected.
+     * @param info - the presented key (base64 blob), its fingerprint, whether it differs from a trusted
+     *               key, and the previous key's fingerprint and source when it does.
      * @returns a promise resolving to true to trust the key and continue, or false to reject the connection.
      */
-    public hostKeyVerifier?: (info: { fingerprint: string; key: string; changed: boolean; pinnedFingerprint?: string }) => Promise<boolean>;
+    public hostKeyVerifier?: (info: IHostKeyVerificationInfo) => Promise<boolean>;
 
     /**
      * Creates an instance of AbstractSession.

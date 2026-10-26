@@ -13,6 +13,7 @@
 import { Client } from "ssh2";
 import { Shell } from "../../src/Shell";
 import { SshSession } from "../../src/SshSession";
+import { SshKnownHosts } from "../../src/SshKnownHosts";
 import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
 import { EventEmitter } from "events";
 import { join } from "path";
@@ -77,11 +78,17 @@ function checkMockFunctionsWithCommand(command: string) {
 }
 
 describe("Shell", () => {
+    beforeEach(() => {
+        // Keep trust decisions independent of the developer's own known_hosts file.
+        jest.spyOn(SshKnownHosts, "verify").mockReturnValue({ status: "unknown" });
+    });
+
     afterEach(() => {
         // Clearing Jest mocks does not remove EventEmitter listeners from previous tests.
         mockClient.removeAllListeners();
         mockStream.removeAllListeners();
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     it("Should execute ssh command", async () => {
@@ -207,7 +214,7 @@ describe("Shell", () => {
         }
 
         it("should compute an OpenSSH-style SHA256 fingerprint", () => {
-            const fingerprint = (Shell as any).getHostKeyFingerprint(fakeKey);
+            const fingerprint = Shell.getHostKeyFingerprint(fakeKey);
             expect(fingerprint).toMatch(/^SHA256:[A-Za-z0-9+/]+$/);
             expect(fingerprint).not.toContain("="); // padding stripped
         });
@@ -218,6 +225,68 @@ describe("Shell", () => {
             const cb = jest.fn();
             getHostVerifier()(fakeKey, cb);
             expect(cb).toHaveBeenCalledWith(true);
+            expect(SshKnownHosts.verify).not.toHaveBeenCalled();
+        });
+
+        it("should accept a known_hosts key without prompting or pinning it", () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "trusted" });
+            const session = new SshSession({ hostname: "example.com", port: 2222 });
+            session.hostKeyVerifier = jest.fn();
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            expect(callback).toHaveBeenCalledWith(true);
+            expect(SshKnownHosts.verify).toHaveBeenCalledWith("example.com", fakeKey, 2222);
+            expect(session.hostKeyVerifier).not.toHaveBeenCalled();
+            expect(session.ISshSession.hostKey).toBeUndefined();
+        });
+
+        it("should not let known_hosts override a conflicting profile pin", () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "trusted" });
+            const session = new SshSession({ hostname: "example.com", hostKey: "other-key" });
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            expect(callback).toHaveBeenCalledWith(false);
+        });
+
+        it("should let an explicit matching pin override a changed known_hosts entry", () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "changed" });
+            const session = new SshSession({ hostname: "example.com", hostKey: fakeKeyB64 });
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            expect(callback).toHaveBeenCalledWith(true);
+        });
+
+        it("should report changed known_hosts keys to the interactive hook", async () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "changed", knownFingerprint: "SHA256:old" });
+            const session = new SshSession({ hostname: "example.com" });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(false);
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            await new Promise(process.nextTick);
+            expect(session.hostKeyVerifier).toHaveBeenCalledWith(expect.objectContaining({
+                changed: true, knownHosts: true, pinnedFingerprint: "SHA256:old"
+            }));
+            expect(callback).toHaveBeenCalledWith(false);
+        });
+
+        it("should reject revoked keys even with a matching pin or accepting hook", () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "revoked" });
+            const session = new SshSession({ hostname: "example.com", hostKey: fakeKeyB64 });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(true);
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            expect(callback).toHaveBeenCalledWith(false);
+            expect(session.hostKeyVerifier).not.toHaveBeenCalled();
+        });
+
+        it("should reject when known_hosts cannot be read without prompting", () => {
+            jest.mocked(SshKnownHosts.verify).mockImplementation(() => { throw new Error("Permission denied"); });
+            const session = new SshSession({ hostname: "example.com" });
+            session.hostKeyVerifier = jest.fn().mockResolvedValue(true);
+            const callback = jest.fn();
+            Shell.hostVerifier(session)(fakeKey, callback);
+            expect(callback).toHaveBeenCalledWith(false);
+            expect(session.hostKeyVerifier).not.toHaveBeenCalled();
         });
 
         describe("host key algorithm", () => {
@@ -362,6 +431,22 @@ describe("Shell", () => {
             });
             await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow(
                 ZosUssMessages.hostKeyVerificationFailed.message);
+        });
+        it("should surface revoked keys during connection validation", async () => {
+            jest.mocked(SshKnownHosts.verify).mockReturnValue({ status: "revoked" });
+            mockConnect.mockImplementationOnce((config: any) => {
+                config.hostVerifier(Buffer.from("revoked-key"), jest.fn());
+                mockClient.emit("error", new Error("handshake"));
+            });
+            await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow(ZosUssMessages.hostKeyRevoked.message);
+        });
+        it("should surface known_hosts read failures during command execution", async () => {
+            jest.mocked(SshKnownHosts.verify).mockImplementation(() => { throw new Error("Could not read known_hosts"); });
+            mockConnect.mockImplementationOnce((config: any) => {
+                config.hostVerifier(Buffer.from("key"), jest.fn());
+                mockClient.emit("error", new Error("handshake"));
+            });
+            await expect(Shell.executeSsh(fakeSshSession, "commandtest", stdoutHandler)).rejects.toThrow("Could not read known_hosts");
         });
         it("should pass agent options during connection validation", async () => {
             const session = new SshSession({

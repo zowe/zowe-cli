@@ -70,7 +70,8 @@ export interface ISshSession {
      * Trusted host key of the z/OS SSH server, stored as the base64-encoded key blob presented by the
      * server during the handshake. When set, the server's key is verified against this value before any
      * credentials are sent. Populated automatically on first connect after the user accepts the key
-     * (trust on first use), or configured manually to pin a known key.
+     * (trust on first use), or configured manually to pin a known key. When omitted, matching entries
+     * in ~/.ssh/known_hosts are also trusted, without modifying that file or populating this property.
      * @type {string}
      * @memberof ISshSession
      */

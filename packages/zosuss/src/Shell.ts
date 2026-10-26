@@ -13,6 +13,7 @@ import { Logger, ImperativeError } from "@zowe/imperative";
 import { ClientChannel, Client } from "ssh2";
 import { createHash } from "crypto";
 import { SshSession } from "./SshSession";
+import { SshKnownHosts } from "./SshKnownHosts";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
 
 /**
@@ -22,8 +23,10 @@ import { ZosUssMessages } from "./constants/ZosUss.messages";
 interface IConnectionState {
     /** Set to true when the connection was aborted because the server's host key was not trusted. */
     hostKeyRejected: boolean;
-    /** Set to true when the rejected host key differed from a previously pinned key. */
+    /** Set to true when the rejected host key differed from a profile or known_hosts key. */
     hostKeyChanged: boolean;
+    /** Details for revoked keys or a known_hosts file that could not be read. */
+    hostKeyError?: string;
 }
 
 export class Shell {
@@ -227,9 +230,9 @@ export class Shell {
         session: SshSession, connState?: IConnectionState): void {
         if (connState?.hostKeyRejected) {
             reject(new ImperativeError({
-                msg: connState.hostKeyChanged ?
+                msg: connState.hostKeyError ?? (connState.hostKeyChanged ?
                     ZosUssMessages.hostKeyChanged.message :
-                    ZosUssMessages.hostKeyVerificationFailed.message
+                    ZosUssMessages.hostKeyVerificationFailed.message)
             }));
         } else if (err.message.startsWith(this.expiredPasswordFlag)) {
             reject(new ImperativeError({
@@ -265,7 +268,7 @@ export class Shell {
      * @param session - the SSH session being connected
      * @returns the pinned host key algorithm name, or undefined
      */
-    private static getPinnedHostKeyType(session: SshSession): string | undefined {
+    public static getPinnedHostKeyType(session: SshSession): string | undefined {
         const pinnedKey = session.ISshSession.hostKey;
         if (session.ISshSession.insecure === true || pinnedKey == null ||
             pinnedKey === "" || pinnedKey === "undefined") {
@@ -295,7 +298,7 @@ export class Shell {
                 require("fs").readFileSync(session.ISshSession.privateKey) : "",
             passphrase: session.ISshSession.keyPassphrase,
             authHandler: this.authenticationHandler(authsAllowed),
-            hostVerifier: this.hostVerifier(session, connState),
+            hostVerifier: this.createHostVerifier(session, connState),
             // When a host key is pinned, ask the server for that same key type, so a change in negotiation
             // doesn't present a different but legitimate key that looks like a changed key.
             ...pinnedAlgorithms != null ? { algorithms: { serverHostKey: pinnedAlgorithms } } : {},
@@ -312,17 +315,23 @@ export class Shell {
      *
      * The presented key is trusted when:
      *  - host key verification is disabled (insecure === true), or
-     *  - it matches the pinned {@link ISshSession.hostKey}.
+     *  - it matches the pinned {@link ISshSession.hostKey}, or
+     *  - no key is pinned and it matches ~/.ssh/known_hosts.
+     * Unless verification is disabled, a revoked key is rejected even when pinned. The known_hosts
+     * file is never modified, and errors reading it reject the connection without invoking the hook.
      *
      * Otherwise (no pinned key, or the key changed) the decision is delegated to the session's
      * interactive {@link SshSession.hostKeyVerifier} hook if one is set (trust on first use); when no
      * hook is available (e.g. non-interactive SDK usage) the connection is rejected.
      *
      * @param session - the SSH session being connected
-     * @param connState - optional state updated when a key is rejected, so a clear error can be surfaced
      * @returns an ssh2 hostVerifier callback
      */
-    private static hostVerifier(session: SshSession, connState?: IConnectionState) {
+    public static hostVerifier(session: SshSession): (key: Buffer, callback: (valid: boolean) => void) => void {
+        return this.createHostVerifier(session);
+    }
+
+    private static createHostVerifier(session: SshSession, connState?: IConnectionState) {
         return (keyBuf: Buffer, callback: (valid: boolean) => void) => {
             // Verification explicitly disabled - accept any key (insecure).
             if (session.ISshSession.insecure === true) {
@@ -333,6 +342,20 @@ export class Shell {
             const presentedKey = keyBuf.toString("base64");
             const pinnedKey = session.ISshSession.hostKey;
             const hasPinnedKey = pinnedKey != null && pinnedKey !== "" && pinnedKey !== "undefined";
+            let knownHost: ReturnType<typeof SshKnownHosts.verify>;
+            try {
+                knownHost = SshKnownHosts.verify(session.ISshSession.hostname, keyBuf, session.ISshSession.port);
+                if (knownHost.status === "revoked") {
+                    throw new Error(ZosUssMessages.hostKeyRevoked.message);
+                }
+            } catch (err) {
+                if (connState != null) {
+                    connState.hostKeyRejected = true;
+                    connState.hostKeyError = err.message;
+                }
+                callback(false);
+                return;
+            }
 
             // Pinned key matches the presented key - trusted, no prompt needed.
             if (hasPinnedKey && pinnedKey === presentedKey) {
@@ -340,7 +363,12 @@ export class Shell {
                 return;
             }
 
-            const changed = hasPinnedKey && pinnedKey !== presentedKey;
+            if (!hasPinnedKey && knownHost.status === "trusted") {
+                callback(true);
+                return;
+            }
+
+            const changed = hasPinnedKey || knownHost.status === "changed";
 
             // Key is unknown or has changed - delegate to the interactive hook if the caller provided one.
             if (session.hostKeyVerifier != null) {
@@ -348,7 +376,9 @@ export class Shell {
                     fingerprint: this.getHostKeyFingerprint(keyBuf),
                     key: presentedKey,
                     changed,
-                    pinnedFingerprint: changed ? this.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) : undefined
+                    pinnedFingerprint: hasPinnedKey ? this.getHostKeyFingerprint(Buffer.from(pinnedKey, "base64")) :
+                        knownHost.knownFingerprint,
+                    ...!hasPinnedKey && knownHost.status === "changed" ? { knownHosts: true } : {}
                 }).then((trusted) => {
                     if (!trusted) {
                         if (connState != null) {
@@ -382,7 +412,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob presented by the server
      * @returns the fingerprint string
      */
-    private static getHostKeyFingerprint(keyBuf: Buffer): string {
+    public static getHostKeyFingerprint(keyBuf: Buffer): string {
         const digest = createHash("sha256").update(keyBuf).digest("base64").replace(/=+$/, "");
         return `SHA256:${digest}`;
     }
@@ -393,7 +423,7 @@ export class Shell {
      * @param keyBuf - the raw host key blob
      * @returns the algorithm name, or undefined if the blob cannot be parsed
      */
-    private static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
+    public static getHostKeyAlgorithm(keyBuf: Buffer): string | undefined {
         // Need at least the 4-byte length prefix
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         if (keyBuf == null || keyBuf.length < 4) {
@@ -417,7 +447,7 @@ export class Shell {
      * @param session - the SSH session being connected
      * @returns the host key algorithm names to request, or undefined to use the default negotiation
      */
-    private static getPinnedHostKeyAlgorithms(session: SshSession): string[] | undefined {
+    public static getPinnedHostKeyAlgorithms(session: SshSession): string[] | undefined {
         const pinnedKey = session.ISshSession.hostKey;
         if (session.ISshSession.insecure === true || pinnedKey == null ||
             pinnedKey === "" || pinnedKey === "undefined") {
@@ -466,9 +496,9 @@ export class Shell {
             conn.on("ready", () => conn.end() && resolve(true)).on("error", () => {
                 if (connState.hostKeyRejected) {
                     reject(new ImperativeError({
-                        msg: connState.hostKeyChanged ?
+                        msg: connState.hostKeyError ?? (connState.hostKeyChanged ?
                             ZosUssMessages.hostKeyChanged.message :
-                            ZosUssMessages.hostKeyVerificationFailed.message
+                            ZosUssMessages.hostKeyVerificationFailed.message)
                     }));
                     return;
                 }
