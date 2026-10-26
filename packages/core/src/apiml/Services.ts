@@ -211,7 +211,7 @@ export class Services {
         // const configPlugins: Set<string> = new Set<string>();
 
         const escapeComment = (value: string): string => JSON.stringify(value).slice(1, -1)
-            .replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+            .replace(/\u2028/g, String.raw`\u2028`).replace(/\u2029/g, String.raw`\u2029`);
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
