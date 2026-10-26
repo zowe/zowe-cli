@@ -1290,7 +1290,8 @@ export abstract class AbstractRestClient {
             if (this.mBytesReceived > this.mMaxBufferedResponseBytes) {
                 this.failResponse(new ImperativeError({
                     msg: `Response exceeds the maximum buffered size of ${this.mMaxBufferedResponseBytes} bytes`,
-                    additionalDetails: "Increase maxBufferedResponseBytes in the request options if a larger response is expected."
+                    additionalDetails: "Download the content to a file instead of viewing it. " +
+                        "Increase maxBufferedResponseBytes in the request options if a larger response is expected."
                 }));
                 return;
             }

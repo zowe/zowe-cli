@@ -157,7 +157,8 @@ export class CompressionUtils {
     private static decompressError(err: Error, source: "buffer" | "stream", encoding: ContentEncoding, maxBytes?: number): ImperativeError {
         let details = err.message;
         if (maxBytes != null && (err as NodeJS.ErrnoException).code === "ERR_BUFFER_TOO_LARGE") {
-            details += `. Decompressed output exceeds the limit of ${maxBytes} bytes`;
+            details += `. Decompressed output exceeds the limit of ${maxBytes} bytes. ` +
+                "Download the content to a file instead of viewing it.";
         }
         return new ImperativeError({
             msg: `Failed to decompress response ${source} with content encoding type ${encoding}`,

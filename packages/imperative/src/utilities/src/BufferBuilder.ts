@@ -39,7 +39,10 @@ export class BufferBuilder extends Duplex {
     public _write(chunk: any, _encoding: BufferEncoding, callback: (error?: Error) => void): void {
         if (this.maxBytes !== undefined && chunk.byteLength > this.maxBytes - this.bytesBuffered) {
             this.chunks = [];
-            callback(new ImperativeError({ msg: `Buffered data exceeds the maximum of ${this.maxBytes} bytes` }));
+            callback(new ImperativeError({
+                msg: `Buffered data exceeds the maximum of ${this.maxBytes} bytes`,
+                additionalDetails: "Download the content to a file instead of viewing it."
+            }));
             return;
         }
         this.bytesBuffered += chunk.byteLength;
