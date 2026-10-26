@@ -152,8 +152,8 @@ describe("imperative-test-cli config import", () => {
             });
 
             it("should successfully import a config and schema from a URL, " +
-                "prompting the user when the schema already exists, and the user responds 'y'", () => {
-                    mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
+                "prompting the user when the schema already exists, and the user responds 'y'", async () => {
+                    await mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
                     fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
                         fs.readFileSync(path.join(__dirname, "__resources__", "test.schema.good.modified.json")));
                     const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_prompt.sh"), TEST_ENVIRONMENT.workingDir, [
@@ -177,8 +177,8 @@ describe("imperative-test-cli config import", () => {
 
             it("should successfully import a config from a URL, " +
                 "prompting the user when the schema already exists, and the user responds 'n', "
-                + "resulting in the schema not being written", () => {
-                    mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
+                + "resulting in the schema not being written", async () => {
+                    await mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
                     fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
                         fs.readFileSync(path.join(__dirname, "__resources__", "test.schema.good.modified.json")));
                     const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_prompt.sh"), TEST_ENVIRONMENT.workingDir, [
