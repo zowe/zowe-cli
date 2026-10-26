@@ -202,6 +202,26 @@ describe("imperative-test-cli config import", () => {
                 });
 
 
+            it("should successfully import a config from a URL, " +
+                "but refuse to write the schema from URL when it is malformed", () => {
+
+                    const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                        localhostUrl + "/test.config.with.malformed.schema.json", "--user-config false --global-config false",
+                    ]);
+
+                    expect(response.stderr.toString()).toContain("appears to be malformed. It does not contain a '$schema' field.");
+                    expect(response.stdout.toString()).toContain("Imported config to"); // should not import schema
+
+                    expect(response.status).toEqual(0);
+
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"),
+                        path.join(__dirname, "__resources__", "/test.config.with.malformed.schema.json"));
+                    // should not have overwritten the schema, so the content should still be the same as test.schema.good.modified.json.
+                    expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir,
+                        "test", "test.schema.parses.but.no.schema.field.json"))).toBe(false);
+                });
+
+
             it("should successfully import a config without schema if it is defined with a URL", () => {
                 const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
                     localhostUrl + "/test.config.good.with.http.schema.json", "--user-config false --global-config false"
