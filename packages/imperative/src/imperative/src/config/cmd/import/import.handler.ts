@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL, URL } from "url";
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
-import { ImperativeConfig, TextUtils } from "../../../../../utilities";
+import { CliUtils, GuiResult, ImperativeConfig, ProcessUtils, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
 import { AuthOrder, RestClient, Session, SessConstants } from "../../../../../rest";
 import { IO } from "../../../../../io";
@@ -66,8 +66,7 @@ export default class ImportHandler implements ICommandHandler {
                 configUrl ?? pathToFileURL(configFilePath));
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);
             try {
-                await this.downloadSchema(schemaUri, schemaFilePath);
-                schemaImported = true;
+                schemaImported = await this.downloadSchema(schemaUri, schemaFilePath);
             } catch (error) {
                 params.response.console.error(TextUtils.chalk.yellow("Warning:") +
                     ` Failed to download schema\n${error.message}\n`);
@@ -125,21 +124,38 @@ export default class ImportHandler implements ICommandHandler {
      * @param url Web URL of the schema JSON file
      * @param filePath Local path to download to
      */
-    private async downloadSchema(url: URL, filePath: string): Promise<void> {
+    private async downloadSchema(url: URL, filePath: string): Promise<boolean> {
         if (url.protocol === "file:") {
             fs.copyFileSync(fileURLToPath(url), filePath);
+            return true;
         } else {
             const response = await RestClient.getExpectString(this.buildSession(url), url.pathname);
+            let parsedSchema: any;
             try {
-                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
-                JSONC.parse(response) as any;
+                parsedSchema = JSONC.parse(response);
             } catch (error) {
                 throw new ImperativeError({
                     msg: "Failed to parse schema JSON: URL must point to a valid JSON file\n" + error.message,
                     causeErrors: error
                 });
             }
+            if (!Object.keys(parsedSchema).includes('$schema') || typeof parsedSchema['$schema'] !== "string") {
+                throw new ImperativeError({
+                    msg: `The schema downloaded from ${url} appears to be malformed. It does not contain a '$schema' field.`
+                });
+            }
+            if (IO.existsSync(filePath) && ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
+                let input: string | null = null;
+                do {
+                    input = await CliUtils.readPrompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
+                } while (input != null && input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
+
+                if (input?.toLowerCase() != "y") {
+                    return false;
+                }
+            }
             fs.writeFileSync(filePath, response);
+            return true;
         }
     }
 }
