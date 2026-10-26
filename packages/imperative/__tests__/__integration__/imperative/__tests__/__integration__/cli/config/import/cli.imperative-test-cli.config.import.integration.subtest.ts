@@ -159,7 +159,8 @@ describe("imperative-test-cli config import", () => {
                     const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_prompt.sh"), TEST_ENVIRONMENT.workingDir, [
                         localhostUrl + "/test.config.good.with.schema.json", "--user-config false --global-config false",
                     ], {
-                        promptAnswer: "y"
+                        promptAnswer: "y",
+                        DISPLAY: "1" // force IsGuiAvailable to true
                     });
 
                     expect(response.stderr.toString()).toEqual("");
@@ -185,7 +186,8 @@ describe("imperative-test-cli config import", () => {
                         localhostUrl + "/test.config.good.with.schema.json", "--user-config false --global-config false",
 
                     ], {
-                        promptAnswer: "n"
+                        promptAnswer: "n",
+                        DISPLAY: "1"
                     });
 
                     expect(response.stderr.toString()).toEqual("");
