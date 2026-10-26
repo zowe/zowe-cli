@@ -918,6 +918,48 @@ describe("APIML Services unit tests", () => {
             expect(actualJson).toEqual(expectedJson);
         });
 
+        it("should escape Unicode line separators in comments", () => {
+            const testCase: IApimlProfileInfo[] = [{
+                profName: "test1",
+                profType: "type1",
+                basePaths: [
+                    "test1/v1",
+                    "test1/v2\u2028\"badProp\": \"badString\",\u2029//"
+                ],
+                pluginConfigs: new Set(),
+                gatewayUrlConflicts: {}
+            }];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.profiles.test1.properties.badProp).toBeUndefined();
+
+            expect(actualJson).not.toMatch(/[\u2028\u2029]/);
+            expect(actualJson).toContain("//\"basePath\": \"test1/v2\\u2028\\\"badProp\\\": \\\"badString\\\",\\u2029//\"");
+        });
+
+        it("should escape Unicode line separators in gatewayUrlConflicts (basePath conflict) comments", () => {
+            const testCase: IApimlProfileInfo[] = [{
+                profName: "test1",
+                profType: "type1",
+                basePaths: [
+                    "test1/v1",
+                    "test1/v2"
+                ],
+                pluginConfigs: new Set(),
+                gatewayUrlConflicts: {
+                    "pluginA": ["v1"],
+                    "pluginB\u2028\"badKey\": \"badValue": ["v1\",\u2029\"bad\": \"data"]
+                }
+            }];
+            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+
+            const parsed = JSONC.parse(actualJson) as any;
+            expect(parsed.profiles.test1.properties.bad).toBeUndefined();
+            expect(parsed.profiles.test1.properties.badKey).toBeUndefined();
+            expect(actualJson).not.toMatch(/[\u2028\u2029]/);
+        });
+
         it("should escape newlines and quotes in comments", () => {
             const testCase: IApimlProfileInfo[] = [{
                 profName: "test1",
