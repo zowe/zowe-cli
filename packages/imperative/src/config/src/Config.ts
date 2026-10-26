@@ -12,7 +12,7 @@
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import deepmerge = require("deepmerge");
+import { deepmerge } from "deepmerge-ts";
 import * as findUp from "find-up";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
@@ -581,10 +581,10 @@ export class Config {
         }
 
         const schemaInfo = this.getSchemaInfo();
-        // Only write the schema to disk if the resolved path is contained within the directory of the
-        // config file that declared it.
+        // Check the local destination before saving the schema.
         if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./")) &&
-            IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved)) {
+            IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved) &&
+            !fs.lstatSync(schemaInfo.resolved, { throwIfNoEntry: false })?.isSymbolicLink()) {
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
         }
     }

@@ -9,8 +9,9 @@
 *
 */
 
-import deepmerge = require("deepmerge");
+import { deepmerge } from "deepmerge-ts";
 import { existsSync } from "fs";
+import { cloneDeep } from "lodash";
 import { ISettingsFile } from "./doc/ISettingsFile";
 import { Logger } from "../../logger";
 import { ISettingsFilePersistence } from "./persistance/ISettingsFilePersistence";
@@ -59,11 +60,11 @@ export class AppSettings {
             }
         }
 
-        const initialSettings = deepmerge(defaults, settings);
+        const initialSettings = deepmerge(cloneDeep(defaults), settings);
 
         AppSettings.mInstance = new AppSettings(
             persistence,
-            initialSettings,
+            initialSettings as ISettingsFile,
         );
 
         Logger.getImperativeLogger().trace("Settings were loaded");
