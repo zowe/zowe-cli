@@ -18,10 +18,10 @@ import ImportHandler from "../../../../src/config/cmd/import/import.handler";
 import { IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigConstants, IConfig } from "../../../../../config";
 import { ISession, RestClient } from "../../../../../rest";
-import { ImperativeConfig } from "../../../../..";
+import { ImperativeConfig, ImperativeError, IO } from "../../../../..";
 import { expectedConfigObject, expectedSchemaObject } from
     "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
-import { NextVerFeatures } from "../../../../../utilities";
+import { CliUtils, GuiResult, NextVerFeatures, ProcessUtils } from "../../../../../utilities";
 
 jest.mock("fs");
 
@@ -211,6 +211,26 @@ describe("Configuration Import command handler", () => {
             expect(writeFileSyncSpy).toHaveBeenCalledWith(path.join(process.cwd(), "fakeapp.config.json"),
                 localConfigText);
         });
+
+
+        it("should import config from web address and download schema from web address", async () => {
+            const localConfigObject = structuredClone(expectedConfigObject);
+            const schemaFileBaseName = "from-url-imperative-test-cli.schema.json";
+            localConfigObject.$schema = `./${schemaFileBaseName}`;
+            const localConfigText = JSONC.stringify(localConfigObject, null, ConfigConstants.INDENT);
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            writeFileSyncSpy.mockReturnValueOnce();
+            fetchConfigSpy.mockResolvedValueOnce(localConfigObject);
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = "http://example.com/downloads/fakeapp.config.json";
+            await new ImportHandler().process(params);
+
+            expect(fetchConfigSpy).toHaveBeenCalled();
+            expect(downloadSchemaSpy).toHaveBeenCalledTimes(1);
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(path.join(process.cwd(), "fakeapp.config.json"),
+                localConfigText);
+        });
     });
 
     describe("fetch config", () => {
@@ -267,6 +287,10 @@ describe("Configuration Import command handler", () => {
         const downloadSchema = (ImportHandler.prototype as any).downloadSchema.bind({
             buildSession: jest.fn()
         });
+        
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
 
         it("should be able to copy the schema file from a local file", async () => {
             jest.spyOn(fs, "copyFileSync").mockReturnValueOnce();
@@ -309,5 +333,71 @@ describe("Configuration Import command handler", () => {
             expect(error).toBeDefined();
             expect(error.message).toContain("invalid URL");
         });
+
+         it("should not write the schema file to disk from URL if it does not contain a $schema key", async () => {
+            jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(
+                JSON.stringify({ "somethingNonSchema": "cool, puppy dogs" }));
+            const error = new ImperativeError({
+                msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
+                    `It does not contain a '$schema' field.`
+            });
+            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
+        });
+
+        it("should not write the schema file to disk from URL if its schema key does not have a string value", async () => {
+            jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(
+                JSON.stringify({ "$schema": { "not a string": "doesn't seem like a schema" } }));
+            const error = new ImperativeError({
+                msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
+                    `It does not contain a '$schema' field.`
+            });
+            await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
+        });
+
+        it("should prompt the user if the destination file for the schema download from URL already exists," +
+            " and not write the file if the user responds 'n'", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.GUI_AVAILABLE;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce('n');
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                expect(await downloadSchema(new URL(schemaUrl), schemaDestPath)).toBe(false);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).toHaveBeenCalled();
+                expect(fs.writeFileSync).not.toHaveBeenCalled();
+            });
+
+        it("should prompt the user if the destination file for the schema download from URL already exists," +
+            " and write the file if the user responds 'y'", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.GUI_AVAILABLE;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValueOnce('Y');
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                expect(await downloadSchema(new URL(schemaUrl), schemaDestPath)).toBe(true);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).toHaveBeenCalled();
+                expect(fs.writeFileSync).toHaveBeenCalled();
+            });
+
+        it("should NOT prompt the user if the destination schema path exists but GUI is not available," +
+            " then the schema file should be written", async () => {
+                const guiAvailSpy = jest.spyOn(ProcessUtils, "isGuiAvailable").mockImplementation(jest.fn(() => {
+                    return GuiResult.NO_GUI_NO_DISPLAY;
+                }));
+                jest.spyOn(IO, "existsSync").mockReturnValueOnce(true);
+                const promptSpy = jest.spyOn(CliUtils, "readPrompt");
+                jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(expectedSchemaText);
+                jest.spyOn(fs, "writeFileSync").mockReturnValueOnce();
+                expect(await downloadSchema(new URL(schemaUrl), schemaDestPath)).toBe(true);
+                expect(guiAvailSpy).toHaveBeenCalled();
+                expect(promptSpy).not.toHaveBeenCalled();
+                expect(fs.writeFileSync).toHaveBeenCalled();
+            });
+
     });
 });
