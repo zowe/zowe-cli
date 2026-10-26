@@ -204,8 +204,15 @@ jobs:
     - name: Test Zowe CLI
       run: zowe --version
 
-    - name: Validate Dependencies
-      run: tar -xzf zowe-cli-*.tgz && cd package && npm ci --dry-run --offline
+    - name: Verify Lockfile
+      run: |
+        TEST_DIR=$(mktemp -d)
+        TGZ_PATH="$(pwd)/$(ls -1 zowe-cli-*.tgz | head -n 1)"
+        cd "$TEST_DIR"
+        npm init -y
+        npm install "$TARBALL_PATH"
+        npm ci --dry-run --offline
+        rm -rf "$TEST_DIR"
 
   release:
     if: github.event_name == 'push' && github.ref_protected

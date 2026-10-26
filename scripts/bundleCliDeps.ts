@@ -74,32 +74,37 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     const bundleDeps: Record<string, BundleDepInfo> = {};
     const visited = new Set<string>();
     let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
-        .map((tree) => ({ tree, parentArchivePath: "node_modules" }));
+        .map((tree) => ({ tree, parentArchivePath: "" }));
+
+    // Find the archive path that `require(name)` would resolve to from the given package dir
+    const resolveFrom = (fromDir: string, name: string): string | undefined => {
+        for (let dir = path.posix.join(fromDir, "node_modules"); dir !== "."; dir = path.posix.dirname(dir)) {
+            if (path.posix.basename(dir) !== "node_modules") continue;  // e.g. package or @scope dirs
+            const candidate = path.posix.join(dir, name);
+            if (candidate in bundleDeps) return candidate;
+        }
+        return undefined;
+    };
 
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
         for (const { tree, parentArchivePath } of queue) {
-            if (visited.has(tree.path)) continue;
-            visited.add(tree.path);
-
+            // Reuse the copy this parent already resolves to if it's the right version; otherwise hoist to the
+            // top level if free, or nest under the parent. Visited-ness is per archive location, not source path.
             const pkgId = `${tree.name}@${tree.version}`;
-            const flatPath = path.posix.join("node_modules", tree.name);
-            const archivePath = flatPath in bundleDeps && bundleDeps[flatPath].id !== pkgId ?
-                path.posix.join(parentArchivePath, "node_modules", tree.name) : flatPath;
+            const resolvedPath = resolveFrom(parentArchivePath, tree.name);
+            const archivePath = resolvedPath != null && bundleDeps[resolvedPath].id === pkgId ? resolvedPath :
+                path.posix.join(resolvedPath == null ? "" : parentArchivePath, "node_modules", tree.name);
+            if (visited.has(archivePath)) continue;
+            visited.add(archivePath);
 
-            if (archivePath in bundleDeps) {
-                if (bundleDeps[archivePath].id !== pkgId) {
-                    throw new Error(`Found conflicting versions of the same package: ${bundleDeps[archivePath].id} and ${pkgId}`);
-                }
-            } else {
-                bundleDeps[archivePath] = {
-                    id: pkgId,
-                    srcPath: tree.path,
-                    link: tree.resolved != null,
-                    native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
-                    optional: tree.optional || false,
-                };
-            }
+            bundleDeps[archivePath] = {
+                id: pkgId,
+                srcPath: tree.path,
+                link: tree.resolved != null,
+                native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
+                optional: tree.optional || false,
+            };
 
             for (const subtree of Object.values(tree.dependencies ?? {})) {
                 if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
