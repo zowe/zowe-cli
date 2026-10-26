@@ -127,13 +127,11 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
       run: ./__tests__/__resources__/daemon_instances/zowe
 
-    - name: Integration Tests (Native)
-      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type == 'nodejs' }}
+    - name: Integration Tests
+      if: ${{ always() && steps.build.outcome == 'success' }}
+      env:
+        JEST_MAX_WORKERS: ${{ github.event.inputs.test-type != 'nodejs' && '1' || '' }}
       run: npm run test:integration
-
-    - name: Integration Tests (Daemon)
-      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      run: npm run test:integration -- --runInBand
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
