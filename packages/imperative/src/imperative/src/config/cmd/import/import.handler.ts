@@ -50,7 +50,7 @@ export default class ImportHandler implements ICommandHandler {
 
         const location: string = params.arguments.location;
         const parsedUrl = URL.canParse(location) ? new URL(location) : null;
-        const isHttp = parsedUrl && (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:")
+        const isHttp = parsedUrl && (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:");
         const configUrl = isHttp ? parsedUrl : null;
         const configFilePath = configUrl ? null : path.resolve(location);
         const configJson: IConfig = configUrl ?
