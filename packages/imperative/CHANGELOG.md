@@ -12,7 +12,7 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2944](https://github.com/zowe/zowe-cli/pull/2944)
 - BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2937](https://github.com/zowe/zowe-cli/pull/2937)
 - BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2934](https://github.com/zowe/zowe-cli/pull/2934)
-- BugFix: Updated the `markdown-it` and `sanitize-html` dependencies. []()
+- BugFix: Updated the `markdown-it` and `sanitize-html` dependencies. [#2987](https://github.com/zowe/zowe-cli/pull/2987)
 
 ## `5.27.24`
 
