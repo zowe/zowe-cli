@@ -7,6 +7,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - Enhancement: Added the `maxDecompressedResponseBytes` option to `IDownloadSingleOptions` (and `IDownloadOptions`) to override the new 8 GiB limit on the decompressed size of a data set or USS file download. Exceeding the limit fails the download and leaves the output incomplete.
 - Enhancement: Added the `maxBufferedResponseBytes` option to `IGetOptions` (and so to `IDownloadSingleOptions` and `IDownloadOptions`). `Get.dataSet` and `Get.USSFile`, which hold the whole content in memory, now fail with an error if it exceeds this limit, which defaults to 64 MiB; raise it to view larger content. For downloads it limits buffered HTTP error bodies.
 
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.0`
 
 - BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)

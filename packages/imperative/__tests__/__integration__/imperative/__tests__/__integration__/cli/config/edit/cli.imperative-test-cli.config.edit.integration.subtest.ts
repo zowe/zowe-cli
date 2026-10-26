@@ -57,7 +57,8 @@ describe("imperative-test-cli config convert-profiles", () => {
             });
             const expectedConfig = fs.readFileSync(configJsonPath, "utf-8");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toEqual(expectedConfig);
+            // Output also includes the editor trust prompt
+            expect(response.stdout.toString()).toContain(expectedConfig);
             expect(response.stderr.toString()).toEqual("");
         });
     });

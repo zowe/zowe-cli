@@ -39,6 +39,12 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
  * - **Custom Events**:
  *      Applications can define their own shared and user events, allowing for custom event-driven behavior.
  *
+ * ### Filesystem Safety
+ * Application and event names must match `[A-Za-z0-9][A-Za-z0-9_.-]*`.
+ * Event operations reject symbolic links, directory junctions, and hard-linked event files.
+ * The CLI home, event directories, and their ancestors must remain trusted: portable Node.js APIs
+ * do not provide atomic protection against concurrent replacement of ancestor directories.
+ *
  * @export
  * @class EventProcessor
  */
@@ -56,6 +62,7 @@ export class EventProcessor {
      * @param {IProcessorTypes} type - The type of processor (Emitter, Watcher, or Both).
      * @param {Logger} [logger] - Optional logger for recording events and errors.
      * @throws {ImperativeError} If the application name is not recognized.
+     * @throws {ImperativeError} If the application name is not a safe path component.
      */
     public constructor(appName: string, type: IProcessorTypes, logger?: Logger) {
         EventUtils.validateAppName(appName);
@@ -96,6 +103,7 @@ export class EventProcessor {
      * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
      * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
      * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
+     * @throws {ImperativeError} If the event name or event filesystem path is unsafe.
      */
     public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         return this._subscribe("shared", eventName, callbacks);
@@ -108,6 +116,7 @@ export class EventProcessor {
      * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
      * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
      * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
+     * @throws {ImperativeError} If the event name or event filesystem path is unsafe.
      */
     public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         return this._subscribe("user", eventName, callbacks);
@@ -136,6 +145,7 @@ export class EventProcessor {
      * @param {string} eventName - The name of the event to emit.
      * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
      * @throws {ImperativeError} - If the event cannot be emitted.
+     * @throws {ImperativeError} If the event name or event filesystem path is unsafe.
      */
     public emitEvent(eventName: string): void {
         if (this.processorType === IProcessorTypes.WATCHER) {

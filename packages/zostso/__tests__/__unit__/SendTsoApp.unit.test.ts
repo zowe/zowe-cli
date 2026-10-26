@@ -9,10 +9,11 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AddressSpaceApps } from "../../src";
+import { AddressSpaceApps, noAppKeyInput } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
+import { IASAppResponse } from "../../src/doc/IASAppResponse";
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -91,5 +92,76 @@ describe("SendTsoApp behavior", () => {
                 },
             ],
         });
+    });
+
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            response = await AddressSpaceApps.send(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    servletKey,
+                    appKey: "somethingValid",
+                    message: "Bad"
+                },
+                null
+            );
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The servletKey contains illegal characters.");
+    });
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the appKey %s which has invalid characters', async (appKey) => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            response = await AddressSpaceApps.send(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    appKey,
+                    servletKey: "aefab-valid",
+                    message: "Bad"
+                },
+                null
+            );
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The appKey contains illegal characters.");
+    });
+
+    it('should reject an empty appKey', async () => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            response = await AddressSpaceApps.send(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    appKey: "",
+                    servletKey: "aefab-valid",
+                    message: "Bad"
+                },
+                null
+            );
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toContain(noAppKeyInput.message);
     });
 });

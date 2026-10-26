@@ -77,6 +77,15 @@ describe("KeychainAgent", () => {
             expect(mockKeyring.createTlsPipe).toHaveBeenCalledWith("example.com", 443, mockCertAccount, true);
             expect(mockSocket.connect).toHaveBeenCalledWith("/tmp/test-pipe.sock", expect.any(Function));
             expect(result).toBe(mockSocket);
+            expect((result as any).authorized).toBe(true);
+        });
+
+        it("should not report the socket as authorized when rejectUnauthorized is false", async () => {
+            const options = { host: "example.com", port: 443, rejectUnauthorized: false };
+            const result = await agent.connect(null as any, options);
+
+            expect(mockKeyring.createTlsPipe).toHaveBeenCalledWith("example.com", 443, mockCertAccount, false);
+            expect((result as any).authorized).toBe(false);
         });
     });
 });

@@ -10,6 +10,7 @@
 */
 
 import * as spawn from "cross-spawn";
+import { IO } from "../../io";
 import { GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
 
 jest.mock("cross-spawn");
@@ -238,11 +239,24 @@ describe("ProcessUtils tests", () => {
     });
 
     describe("openInEditor", () => {
-        it("should open file in graphical editor", async () => {
+        it("should open file in default text editor when GUI is available and no editor is given", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            const mockOpener = require("opener");
+            jest.spyOn(IO, "getDefaultTextEditor").mockReturnValueOnce("defaultEdit");
             ProcessUtils.openInEditor("filePath");
-            expect(mockOpener).toHaveBeenCalledWith("filePath");
+            expect(spawn.spawn).toHaveBeenCalledWith("defaultEdit", ["filePath"], { stdio: "inherit" });
+        });
+
+        it("should split arguments from the default text editor command", async () => {
+            jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
+            jest.spyOn(IO, "getDefaultTextEditor").mockReturnValueOnce("open -a TextEdit");
+            ProcessUtils.openInEditor("filePath");
+            expect(spawn.spawn).toHaveBeenCalledWith("open", ["-a", "TextEdit", "filePath"], { stdio: "inherit" });
+        });
+
+        it("should open file synchronously when requested", async () => {
+            jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
+            ProcessUtils.openInEditor("filePath", "fakeEdit", true);
+            expect(spawn.sync).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
         it("should open file in custom graphical editor", async () => {
@@ -262,6 +276,7 @@ describe("ProcessUtils tests", () => {
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 loadedConfig: {}
             } as any);
+            jest.spyOn(IO, "getDefaultTextEditor").mockReturnValueOnce("vi");
             ProcessUtils.openInEditor("filePath");
             expect(spawn.spawn).toHaveBeenCalledWith("vi", ["filePath"], { stdio: "inherit" });
         });

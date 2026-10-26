@@ -20,6 +20,10 @@ Array [
   "tv",
   "tokenValue",
   "token-value",
+  "oldPwd",
+  "old-pwd",
+  "newPwd",
+  "new-pwd",
 ]
 `;
 
@@ -49,6 +53,10 @@ Array [
   "tv",
   "tokenValue",
   "token-value",
+  "oldPwd",
+  "old-pwd",
+  "newPwd",
+  "new-pwd",
   "Authorization",
   "Cookie",
   "Proxy-Authorization",

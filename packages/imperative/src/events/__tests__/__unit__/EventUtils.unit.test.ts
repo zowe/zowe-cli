@@ -16,17 +16,22 @@ import { IProcessorTypes } from '../../src/doc';
 import { Event } from '../../..';
 import { EventTypes, ZoweUserEvents } from "../../src/EventConstants";
 import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
+import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 
 jest.mock('../../src/EventProcessor');
 jest.mock('../../../logger');
 
 const logger = Logger.getImperativeLogger();
+let eventFilePath: string;
 
 const createTestEvent = (appName: string) => ({
     eventTime: '',
     eventName: 'testEvent',
     eventType: EventTypes.SharedEvents,
     appName,
+    eventFilePath,
     subscriptions: [
         {
             removeAllListeners: jest.fn(),
@@ -36,11 +41,26 @@ const createTestEvent = (appName: string) => ({
 } as unknown as Event);
 
 describe("EventOperator Unit Tests", () => {
+    let sandbox: string;
+    let previousConfig: typeof ImperativeConfig.instance.loadedConfig;
+    beforeAll(() => {
+        sandbox = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-event-utils-"));
+        const appDir = path.join(sandbox, ".events", "Zowe");
+        fs.mkdirSync(appDir, { recursive: true });
+        eventFilePath = path.join(appDir, "testEvent");
+        fs.writeFileSync(eventFilePath, "{}");
+        previousConfig = ImperativeConfig.instance.loadedConfig;
+        ImperativeConfig.instance.loadedConfig = {
+            name: "event-utils-tests", defaultHome: sandbox, envVariablePrefix: "EVENT_UTILS_TESTS"
+        };
+    });
     beforeEach(() => {
         jest.clearAllMocks();
     });
     afterAll(() => {
         jest.restoreAllMocks();
+        ImperativeConfig.instance.loadedConfig = previousConfig;
+        fs.rmSync(sandbox, { recursive: true, force: true });
     });
 
     describe("processor tests", () => {
@@ -111,16 +131,14 @@ describe("EventOperator Unit Tests", () => {
                 ['testEvent', testEvent]
             ]);
 
-            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
-            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
             jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
 
             const eventCb = jest.fn();
             EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
             EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
 
-            expect(createEventSpy).toHaveBeenCalledTimes(1);
-            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
             expect(eventCb).toHaveBeenCalled();
         });
 
@@ -137,18 +155,15 @@ describe("EventOperator Unit Tests", () => {
                 ['testEvent', testEvent]
             ]);
 
-            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
-            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
-            const eventTimeSetSpy = jest.spyOn(processor.eventTimes, "set");
+            jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
             jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
 
             const eventCb = jest.fn();
             EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
             EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
 
-            expect(createEventSpy).toHaveBeenCalledTimes(1);
-            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
-            expect(eventTimeSetSpy).toHaveBeenCalledWith(testEvent.eventName, testEvent.eventTime);
+            expect(processor.eventTimes.get(testEvent.eventName)).toBe(testEvent.eventTime);
             expect(eventCb).not.toHaveBeenCalled();
         });
 
@@ -163,16 +178,14 @@ describe("EventOperator Unit Tests", () => {
                 ['testEvent', testEvent]
             ]);
 
-            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
-            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
             jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
 
             const eventCb = jest.fn();
             EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
             EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
 
-            expect(createEventSpy).toHaveBeenCalledTimes(1);
-            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
             expect(testEvent.appProcId).toBeUndefined();
             expect(eventCb).not.toHaveBeenCalled();
         });

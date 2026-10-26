@@ -61,8 +61,8 @@ const mockShell = jest.fn().mockImplementation((callback) => {
 const stdoutHandler = jest.fn();
 
 function checkMockFunctionsWithCommand(command: string) {
-    expect(mockConnect).toHaveBeenCalled();
-    expect(mockShell).toHaveBeenCalled();
+    expect(mockConnect).toHaveBeenCalledTimes(1);
+    expect(mockShell).toHaveBeenCalledTimes(1);
 
     // Check the stream.end() function is called with an argument containing the SSH command
     expect(mockStreamWrite.mock.calls[0][0]).toMatch(command);
@@ -78,6 +78,9 @@ function checkMockFunctionsWithCommand(command: string) {
 
 describe("Shell", () => {
     afterEach(() => {
+        // Clearing Jest mocks does not remove EventEmitter listeners from previous tests.
+        mockClient.removeAllListeners();
+        mockStream.removeAllListeners();
         jest.clearAllMocks();
     });
 

@@ -6,8 +6,19 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added the `--max-response-bytes` option to the `zowe zos-files view data-set`, `zowe zos-files view uss-file`, `zowe zos-jobs view spool-file-by-id` and `zowe zos-jobs view all-spool-content` commands. These commands now fail if the content to display (for `all-spool-content`, the content of any one spool file) is larger than 64 MiB by default; use the option to view larger content.
 
+## `8.41.0`
+
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
+## `8.39.1`
+
+- BugFix: Add validation to the `tso` command group to reject values for the `servletKey` and `appKey` arguments that contain illegal characters. [#2953](https://github.com/zowe/zowe-cli/pull/2953)
+- BugFix: Fixed the `postinstall` plugin validation script so that it no longer runs through a shell. [#2948](https://github.com/zowe/zowe-cli/pull/2948)
+
 ## `8.39.0`
 
+- Enhancement: Added the `--allowed-login-method` connection option to CLI base connection options (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, `prompt`). This restricts which credentials a user is prompted for when logging into a service or updating stored credentials, so that they comply with site requirements. Defaults to 'prompt' when omitted. [#2906](https://github.com/zowe/zowe-cli/issues/2906)
 - BugFix: Fixed `zowe daemon enable` and `zowe daemon disable` on Windows so that their background script no longer runs `ping` or `sleep` by bare name. [#2921](https://github.com/zowe/zowe-cli/pull/2921)
 
 ## `8.37.1`

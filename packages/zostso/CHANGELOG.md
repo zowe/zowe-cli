@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
+## `8.40.0`
+
+- BugFix: Added validation to reject values containing illegal characters for the `servletKey` and `appKey` parameters in the `SendTSO`, `StopTso`, `AddressSpaceApps`, and `PingTso` classes. [#2953](https://github.com/zowe/zowe-cli/pull/2953)
+
 ## `8.35.3`
 
 - BugFix: Added a default timeout while collecting TSO responses, and a 100 ms delay before polling again when no TSO data is returned. [#2842](https://github.com/zowe/zowe-cli/pull/2842)

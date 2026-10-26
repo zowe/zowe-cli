@@ -131,6 +131,34 @@ describe("Configuration Import command handler", () => {
                 expectedConfigTextWithoutSchema);
         });
 
+        it("should fetch from web address even if a matching local path exists", async () => {
+            const existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            writeFileSyncSpy.mockReturnValueOnce();
+            fetchConfigSpy.mockResolvedValueOnce(expectedConfigObjectWithoutSchema);
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = "https://example.com/downloads/fakeapp.config.json";
+            await new ImportHandler().process(params);
+            existsSyncSpy.mockReset();
+
+            expect(fetchConfigSpy).toHaveBeenCalled();
+            expect(readFileSyncSpy).not.toHaveBeenCalled();
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(path.join(process.cwd(), "fakeapp.config.json"),
+                expectedConfigTextWithoutSchema);
+        });
+
+        it("should import config from relative local path", async () => {
+            readFileSyncSpy.mockReturnValueOnce(expectedConfigTextWithoutSchema);
+            writeFileSyncSpy.mockReturnValueOnce();
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = "./fakeapp.config.json";
+            await new ImportHandler().process(params);
+
+            expect(readFileSyncSpy).toHaveBeenCalledWith(path.resolve("./fakeapp.config.json"), "utf-8");
+            expect(fetchConfigSpy).not.toHaveBeenCalled();
+        });
+
         it("should import config with schema from web address", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
             writeFileSyncSpy.mockReturnValueOnce();

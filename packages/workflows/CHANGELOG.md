@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.35.0`
 
 - BugFix: Improved handling of temporary files created when uploading local workflow definitions. [#2824](https://github.com/zowe/zowe-cli/pull/2824)

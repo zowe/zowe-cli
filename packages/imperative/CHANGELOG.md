@@ -4,14 +4,37 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
-- BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
-- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
-- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
 - Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IRestOptions` and `IOptionsFullResponse`, with defaults in `RestConstants`, to bound memory used by REST responses. `CompressionUtils.decompressBuffer` and `CompressionUtils.decompressStream` also take a decompressed-output limit.
 - Enhancement: Added an optional `limits` parameter to `RestClient.getExpectString` and an optional `maxBytes` limit to the `BufferBuilder` constructor so callers can set response size limits for buffered requests and in-memory stream collection.
 - **Breaking**: REST requests now fail with an `ImperativeError` if a response accumulates more than 64 MiB in memory (buffered responses, compressed or not, and HTTP error bodies of streamed requests), if decompressing a buffered response produces more than 64 MiB, or if decompressing a streamed response produces more than 8 GiB. Callers that expect larger responses must set `maxBufferedResponseBytes` or `maxDecompressedResponseBytes`. Output already written to a `responseStream` when a limit is exceeded is incomplete.
 - BugFix: A failed response (size limit, decompression error, or response stream error) now destroys the incoming response and the decoding streams, ignores later data/end events, and is not retried as a connection reset. Streamed responses now pause the incoming response while the response stream is full.
+
+## `8.41.0`
+
+- BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
+- BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2965](https://github.com/zowe/zowe-cli/pull/2965)
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
+
+## `8.40.0`
+
+- Enhancement: Updated connection prompting logic to honor the `allowedLoginMethod` property. A user is now prompted only for the credentials that the method allows (`direct-basic`, `direct-cert-pem`, `apiml-basic`, `apiml-cert-pem`, or `prompt`), `apiml-*` methods exchange credentials for an APIML token and store only that token, and `direct-*` methods store credentials directly. Defaults to `prompt` when omitted.[#2906](https://github.com/zowe/zowe-cli/issues/2906)
+- BugFix: Censored secure values in the arguments and response objects written to the log at trace level by the `CommandProcessor` class. [#2955](https://github.com/zowe/zowe-cli/pull/2955)
+- BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- BugFix: Fixed `AbstractRestClient` class to throw an error when a custom `checkServerIdentity` callback is combined with certificate account authentication (`certAccount`) since these options are incompatible. [#2958](https://github.com/zowe/zowe-cli/pull/2958)
+
+## `8.39.1`
+
+- BugFix: Restricted application and event names to safe path components and rejected linked event paths. Event writes now validate file identity before truncation and use the validated descriptor. [#2950](https://github.com/zowe/zowe-cli/pull/2950)
+- BugFix: Improved diagnostic logging to reduce unnecessary trace data. [#2945](https://github.com/zowe/zowe-cli/pull/2945)
+- BugFix: Censored secure values in the arguments and response objects included in error details. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+- BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
+- BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
+- BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
+- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936)
+- BugFix: Replaced the `deepmerge` dependency with `deepmerge-ts` for technical currency. [#2941](https://github.com/zowe/zowe-cli/pull/2941)
 
 ## `8.39.0`
 

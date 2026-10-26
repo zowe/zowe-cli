@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.0`
 
 - Enhancement: Added `identityAgent` and `forwardAgent` properties to the `ISshSession` interface to configure agent options for SSH connections. [#2912](https://github.com/zowe/zowe-cli/pull/2912)

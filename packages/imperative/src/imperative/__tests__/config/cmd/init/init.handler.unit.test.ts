@@ -111,6 +111,13 @@ describe("Configuration Initialization command handler", () => {
 
         writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
         existsSyncSpy = jest.spyOn(fs, "existsSync");
+        // Model ordinary directories and missing schema files for filesystem containment checks.
+        jest.spyOn(fs, "lstatSync").mockImplementation((filePath) =>
+            filePath === fakeSchemaPath || filePath === fakeGblSchemaPath ? undefined : {
+                isDirectory: () => true,
+                isSymbolicLink: () => false
+            } as fs.Stats);
+        jest.spyOn(fs, "realpathSync").mockImplementation((filePath) => filePath.toString());
         searchSpy = jest.spyOn(Config, "search");
         editFileSpy = jest.spyOn(ProcessUtils, "openInEditor");
     });
