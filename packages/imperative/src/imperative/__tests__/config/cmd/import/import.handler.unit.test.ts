@@ -18,7 +18,7 @@ import ImportHandler from "../../../../src/config/cmd/import/import.handler";
 import { IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigConstants, IConfig } from "../../../../../config";
 import { ISession, RestClient } from "../../../../../rest";
-import { CliUtils, ImperativeConfig, ImperativeError, IO } from "../../../../..";
+import { ImperativeConfig, ImperativeError, IO } from "../../../../..";
 import { expectedProjectConfigObject, expectedSchemaObject } from
     "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
 

@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL, URL } from "url";
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
-import { CliUtils, ImperativeConfig, TextUtils } from "../../../../../utilities";
+import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
 import { AuthOrder, RestClient, Session, SessConstants } from "../../../../../rest";
 import { IO } from "../../../../../io";
