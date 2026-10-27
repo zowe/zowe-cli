@@ -114,8 +114,8 @@ describe("StartTsoApp behavior", () => {
     });
 
     test.each(
-            ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam", 
-                "lucky#9", "contains+plus", "any%complete"]
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
     )('should reject the servlet key %s which has invalid characters', async (servletKey) => {
         let error: ImperativeError;
         let response: IASAppResponse;
@@ -135,8 +135,8 @@ describe("StartTsoApp behavior", () => {
     });
 
     test.each(
-            ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam", 
-                "lucky#9", "contains+plus", "any%complete"]
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
     )('should reject the appKey %s which has invalid characters', async (appKey) => {
         let error: ImperativeError;
         let response: IASAppResponse;
