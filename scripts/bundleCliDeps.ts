@@ -19,10 +19,8 @@ This script works around npm bugs related to bundling deps in workspaces:
 */
 
 /* eslint-disable no-console */
-import * as childProcess from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
-const npmPacklist = require("npm-packlist");
 
 const cmdName = process.argv[2];
 const pkgDir = process.cwd();
@@ -49,15 +47,6 @@ function updatePkgJson(update: (_: Record<string, any>) => void) {
     fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2) + "\n");
 }
 
-interface NpmDepTree {
-    version: string;
-    name: string;
-    resolved?: string;
-    optional?: boolean;
-    path: string;
-    dependencies?: { [pkgName: string]: NpmDepTree };
-    [key: string]: any;
-}
 interface BundleDepInfo {
     id: string;
     srcPath: string;
@@ -66,25 +55,23 @@ interface BundleDepInfo {
     optional: boolean;
 }
 interface QueueItem {
-    tree: NpmDepTree;
+    node: Record<string, any>;  // Arborist Node or Link
     parentArchivePath: string;
 }
-function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDepInfo> {
+function requireFromNpm(name: string) {
+    // Use modules bundled with the running npm, so they always match the npm that is packing
+    if (process.env.npm_execpath == null) die("Must be run through an npm lifecycle script (e.g. npm pack)");
+    const npmDir = path.resolve(path.dirname(process.env.npm_execpath), "..");
+    return require(path.join(npmDir, "node_modules", name));
+}
+
+function walkDepTree(root: Record<string, any>, pkgName: string): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
     const visited = new Set<string>();
-    let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
-        .map((tree) => ({ tree, parentArchivePath: "" }));
-
-    // `npm ls` only expands children the first time a package appears; later occurrences have no `dependencies`.
-    // Index expanded nodes by source path so we can look up the children of those duplicates.
-    const expandedByPath = new Map<string, NpmDepTree>();
-    const indexTree = (tree: NpmDepTree) => {
-        if (tree.dependencies == null) return;
-        if (!expandedByPath.has(tree.path)) expandedByPath.set(tree.path, tree);
-        Object.values(tree.dependencies).forEach(indexTree);
-    };
-    indexTree(root);
+    const prodDeps = (node: Record<string, any>) => [...node.target.edgesOut.values()]
+        .filter((edge: any) => !edge.dev && edge.to != null).map((edge: any) => edge.to);
+    let queue: QueueItem[] = prodDeps(root.edgesOut.get(pkgName).to).map((node) => ({ node, parentArchivePath: "" }));
 
     // Find the archive path that `require(name)` would resolve to from the given package dir
     const resolveFrom = (fromDir: string, name: string): string | undefined => {
@@ -98,27 +85,24 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
 
     while (queue.length > 0) {
         const nextQueue: QueueItem[] = [];
-        for (const { tree, parentArchivePath } of queue) {
+        for (const { node, parentArchivePath } of queue) {
             // Reuse the copy this parent already resolves to if it's the right version; otherwise hoist to the
             // top level if free, or nest under the parent. Visited-ness is per archive location, not source path.
-            const pkgId = `${tree.name}@${tree.version}`;
-            const resolvedPath = resolveFrom(parentArchivePath, tree.name);
+            const pkgId = `${node.name}@${node.version}`;
+            const resolvedPath = resolveFrom(parentArchivePath, node.name);
             const archivePath = resolvedPath != null && bundleDeps[resolvedPath].id === pkgId ? resolvedPath :
-                path.posix.join(resolvedPath == null ? "" : parentArchivePath, "node_modules", tree.name);
+                path.posix.join(resolvedPath == null ? "" : parentArchivePath, "node_modules", node.name);
             if (visited.has(archivePath)) continue;
             visited.add(archivePath);
 
             bundleDeps[archivePath] = {
                 id: pkgId,
-                srcPath: tree.path,
-                link: tree.resolved != null,
-                native: tree.scripts?.install != null && fs.existsSync(path.join(tree.path, "binding.gyp")),
-                optional: tree.optional || false,
+                srcPath: node.realpath,
+                link: node.isLink,
+                native: node.target.package.hasInstallScript === true && fs.existsSync(path.join(node.realpath, "binding.gyp")),
+                optional: node.target.optional,
             };
-
-            for (const subtree of Object.values(tree.dependencies ?? expandedByPath.get(tree.path)?.dependencies ?? {})) {
-                if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
-            }
+            nextQueue.push(...prodDeps(node).map((child) => ({ node: child, parentArchivePath: archivePath })));
         }
         queue = nextQueue;
     }
@@ -132,10 +116,10 @@ async function prepack(pkg: { name: string }) {
         throw new Error(`[${cmdName}] "${nodeModulesBackup}" exists from a previous run and was not cleaned up`);
     }
     const start = Date.now();
-    const output = childProcess.execSync(`npm ls --all --json --long --omit=dev --package-lock-only -w ${pkg.name}`, {
-        maxBuffer: 1024 * 1024 * 100, // 100MB
-    });
-    const prodDepMap = walkDepTree(JSON.parse(output.toString()), pkg.name);
+    const Arborist = requireFromNpm("@npmcli/arborist");
+    const npmPacklist = requireFromNpm("npm-packlist");
+    const tree = await new Arborist({ path: process.cwd() }).loadVirtual();
+    const prodDepMap = walkDepTree(tree, pkg.name);
 
     try {
         if (fs.existsSync(pkgNodeModules)) fs.renameSync(pkgNodeModules, nodeModulesBackup);
