@@ -13,6 +13,7 @@ import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { readFileSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
+import { SshSession } from "./SshSession";
 
 /** Result of checking a server key against an OpenSSH known_hosts file. */
 export interface IKnownHostsVerification {
@@ -23,8 +24,6 @@ export interface IKnownHostsVerification {
 
 /** Read-only verification against OpenSSH known_hosts files. */
 export class SshKnownHosts {
-    private static readonly DEFAULT_SSH_PORT = 22;
-
     /**
      * Check the raw public key presented during the SSH handshake. Supports literal hosts, hashed
      * hosts, comma-separated patterns, negation, and [host]:port entries. A matching @revoked key
@@ -36,7 +35,7 @@ export class SshKnownHosts {
      * @param filePath File to read, defaulting to ~/.ssh/known_hosts
      * @returns Trust status and, for a changed key, the previous key's fingerprint
      */
-    public static verify(hostname: string, key: Buffer, port = SshKnownHosts.DEFAULT_SSH_PORT,
+    public static verify(hostname: string, key: Buffer, port = SshSession.DEFAULT_SSH_PORT,
         filePath = join(homedir(), ".ssh", "known_hosts")): IKnownHostsVerification {
         let contents: string;
         try {
@@ -49,7 +48,7 @@ export class SshKnownHosts {
         }
 
         const host = hostname.toLowerCase();
-        const target = port === this.DEFAULT_SSH_PORT ? host : `[${host}]:${port}`;
+        const target = port === SshSession.DEFAULT_SSH_PORT ? host : `[${host}]:${port}`;
         const algorithm = this.getKeyAlgorithm(key);
         let result: IKnownHostsVerification = { status: "unknown" };
         for (const line of contents.split(/\r?\n/)) {
