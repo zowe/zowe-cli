@@ -34,6 +34,13 @@ function die(message: string): never {
     process.exit(1);
 }
 
+function requireFromNpm(name: string) {
+    // Use modules bundled with the running npm, so they always match the npm that is packing
+    if (process.env.npm_execpath == null) die("Must be run through an npm lifecycle script (e.g. npm pack)");
+    const npmDir = path.resolve(path.dirname(process.env.npm_execpath), "..");
+    return require(path.join(npmDir, "node_modules", name));
+}
+
 function restoreNodeModules() {
     fs.rmSync(pkgNodeModules, { recursive: true, force: true });
     if (fs.existsSync(nodeModulesBackup)) {
@@ -51,20 +58,12 @@ interface BundleDepInfo {
     id: string;
     srcPath: string;
     link: boolean;
-    native: boolean;
     optional: boolean;
 }
 interface QueueItem {
     node: Record<string, any>;  // Arborist Node or Link
     parentArchivePath: string;
 }
-function requireFromNpm(name: string) {
-    // Use modules bundled with the running npm, so they always match the npm that is packing
-    if (process.env.npm_execpath == null) die("Must be run through an npm lifecycle script (e.g. npm pack)");
-    const npmDir = path.resolve(path.dirname(process.env.npm_execpath), "..");
-    return require(path.join(npmDir, "node_modules", name));
-}
-
 function walkDepTree(root: Record<string, any>, pkgName: string): Record<string, BundleDepInfo> {
     // Do a breadth-first search of node_modules to hoist dependencies without conflicts
     const bundleDeps: Record<string, BundleDepInfo> = {};
@@ -99,7 +98,6 @@ function walkDepTree(root: Record<string, any>, pkgName: string): Record<string,
                 id: pkgId,
                 srcPath: node.realpath,
                 link: node.isLink,
-                native: node.target.package.hasInstallScript === true && fs.existsSync(path.join(node.realpath, "binding.gyp")),
                 optional: node.target.optional,
             };
             nextQueue.push(...prodDeps(node).map((child) => ({ node: child, parentArchivePath: archivePath })));
@@ -138,8 +136,9 @@ async function prepack(pkg: { name: string }) {
                     fs.mkdirSync(path.dirname(absFilePath), { recursive: true });
                     fs.copyFileSync(path.join(bundleDep.srcPath, relFilePath), absFilePath);
                 }
-            } else if (!bundleDep.native) {
+            } else {
                 const absPkgPath = path.join(pkgDir, destPath);
+                // Include native package sources, but leave out binaries built for the packing host.
                 const isNativeBuild = (source: string) => path.basename(source) === "build" &&
                     fs.existsSync(path.join(source, "..", "binding.gyp"));
                 const npmIncludeFilter = (source: string) => path.basename(source) !== "node_modules" && !isNativeBuild(source);
