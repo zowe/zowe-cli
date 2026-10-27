@@ -160,7 +160,7 @@ describe("imperative-test-cli config import", () => {
                         localhostUrl + "/test.config.good.with.schema.json", "--user-config false --global-config false",
                     ], {
                         promptAnswer: "y",
-                        DISPLAY: "1" // force IsGuiAvailable to true
+                        CI: undefined, // force prompting on 
                     });
 
                     expect(response.stderr.toString()).toEqual("");
@@ -187,7 +187,7 @@ describe("imperative-test-cli config import", () => {
 
                     ], {
                         promptAnswer: "n",
-                        DISPLAY: "1"
+                        CI: undefined, // force prompting on 
                     });
 
                     expect(response.stderr.toString()).toEqual("");

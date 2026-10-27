@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL, URL } from "url";
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
-import { CliUtils, GuiResult, ImperativeConfig, ProcessUtils, TextUtils } from "../../../../../utilities";
+import { CliUtils, ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
 import { AuthOrder, RestClient, Session, SessConstants } from "../../../../../rest";
 import { IO } from "../../../../../io";
@@ -144,10 +144,13 @@ export default class ImportHandler implements ICommandHandler {
                     msg: `The schema downloaded from ${url} appears to be malformed. It does not contain a '$schema' field.`
                 });
             }
-            if (IO.existsSync(filePath) && ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
+            if (process.env.CI != null){
+                return false;
+            }
+            if (IO.existsSync(filePath)) {
                 let input: string | null = null;
                 do {
-                    input = await CliUtils.readPrompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
+                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
                 } while (input != null && input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
 
                 if (input?.toLowerCase() != "y") {
