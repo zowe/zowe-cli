@@ -40,6 +40,11 @@ export class ProfileIO {
     public static readonly MAX_YAML_DEPTH: number = 9999;
 
     /**
+     * Options for the yaml serializer, chosen to match the output format of the former yamljs package.
+     */
+    private static readonly YAML_OPTIONS = { indent: 4, keepUndefined: true, lineWidth: 0 };
+
+    /**
      * Creates the full set of directories indicated by the path. Used to create the profile root directory and
      * type directories.
      * @static
@@ -105,7 +110,7 @@ export class ProfileIO {
             /**
              * If yaml = true, we will attempt to convert to yaml format before persisting.
              */
-            const writeProfile: any = writeYaml.stringify(profileCopy);
+            const writeProfile: any = writeYaml.stringify(profileCopy, ProfileIO.YAML_OPTIONS);
 
             /**
              * Attempt to write the profile - always encoded in utf-8
@@ -190,7 +195,7 @@ export class ProfileIO {
         ProfileIO.crashInTeamConfigMode();
 
         try {
-            const yamlString: any = writeYaml.stringify(meta);
+            const yamlString: any = writeYaml.stringify(meta, ProfileIO.YAML_OPTIONS);
             fs.writeFileSync(path, yamlString, {encoding: "utf8"});
         } catch (e) {
             throw new ImperativeError({
