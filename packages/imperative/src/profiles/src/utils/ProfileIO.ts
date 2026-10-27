@@ -19,7 +19,7 @@ import { IO } from "../../../io";
 import { IProfileTypeConfiguration } from "../doc/config/IProfileTypeConfiguration";
 
 const readYaml = require("js-yaml");
-const writeYaml = require("yamljs");
+const writeYaml = require("yaml");
 
 /**
  * Profile IO methods for writing/reading profiles to disk. The profile managers never invoke "fs" directly.
@@ -35,6 +35,7 @@ export class ProfileIO {
      * @static
      * @type {number}
      * @memberof ProfileIO
+     * @deprecated
      */
     public static readonly MAX_YAML_DEPTH: number = 9999;
 
@@ -104,7 +105,7 @@ export class ProfileIO {
             /**
              * If yaml = true, we will attempt to convert to yaml format before persisting.
              */
-            const writeProfile: any = writeYaml.stringify(profileCopy, ProfileIO.MAX_YAML_DEPTH);
+            const writeProfile: any = writeYaml.stringify(profileCopy);
 
             /**
              * Attempt to write the profile - always encoded in utf-8
@@ -189,7 +190,7 @@ export class ProfileIO {
         ProfileIO.crashInTeamConfigMode();
 
         try {
-            const yamlString: any = writeYaml.stringify(meta, ProfileIO.MAX_YAML_DEPTH);
+            const yamlString: any = writeYaml.stringify(meta);
             fs.writeFileSync(path, yamlString, {encoding: "utf8"});
         } catch (e) {
             throw new ImperativeError({
