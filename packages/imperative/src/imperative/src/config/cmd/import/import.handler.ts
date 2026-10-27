@@ -141,10 +141,10 @@ export default class ImportHandler implements ICommandHandler {
                 });
             }
 
-            if (process.env.CI != null) {
-                return false;
-            }
             if (IO.existsSync(filePath)) {
+                if (process.env.CI != null) {
+                    return false;
+                }
                 let input: string | null = null;
                 do {
                     input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
