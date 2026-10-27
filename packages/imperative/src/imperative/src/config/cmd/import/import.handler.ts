@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL, URL } from "url";
 import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
-import { CliUtils, GuiResult, ImperativeConfig, ProcessUtils, TextUtils } from "../../../../../utilities";
+import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
 import { RestClient, Session, SessConstants } from "../../../../../rest";
 import { IO } from "../../../../../io";
@@ -141,7 +141,7 @@ export default class ImportHandler implements ICommandHandler {
                 });
             }
 
-            if (process.env.CI != null){
+            if (process.env.CI != null) {
                 return false;
             }
             if (IO.existsSync(filePath)) {
