@@ -48,18 +48,21 @@ export default class ImportHandler implements ICommandHandler {
             return;
         }
 
-        const configFilePath = path.resolve(params.arguments.location);
-        const isConfigLocal = fs.existsSync(configFilePath) || path.isAbsolute(params.arguments.location);
-        const configJson: IConfig = isConfigLocal ?
-            JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) :
-            await this.fetchConfig(new URL(params.arguments.location));
+        const location: string = params.arguments.location;
+        const parsedUrl = URL.canParse(location) ? new URL(location) : null;
+        const isHttp = parsedUrl && (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:");
+        const configUrl = isHttp ? parsedUrl : null;
+        const configFilePath = configUrl ? null : path.resolve(location);
+        const configJson: IConfig = configUrl ?
+            await this.fetchConfig(configUrl) :
+            JSONC.parse(fs.readFileSync(configFilePath, "utf-8"));
         config.api.layers.set(configJson);
 
         let schemaImported = false;
         // Only import schema if relative path and no backtracking
         if (configJson.$schema && configJson.$schema.startsWith("./") && !IO.containsBacktrack(configJson.$schema)) {
             const schemaUri = new URL(configJson.$schema,
-                isConfigLocal ? pathToFileURL(configFilePath) : params.arguments.location);
+                configUrl ?? pathToFileURL(configFilePath));
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);
             try {
                 schemaImported = await this.downloadSchema(schemaUri, schemaFilePath);
