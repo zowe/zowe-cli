@@ -137,10 +137,14 @@ export default class ImportHandler implements ICommandHandler {
                     msg: `The schema downloaded from ${url} appears to be malformed. It does not contain a '$schema' field.`
                 });
             }
-            if (IO.existsSync(filePath) && ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
+
+            if (process.env.CI != null){
+                return false;
+            }
+            if (IO.existsSync(filePath)) {
                 let input: string | null = null;
                 do {
-                    input = await CliUtils.readPrompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
+                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
                 } while (input != null && input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
 
                 if (input?.toLowerCase() != "y") {
