@@ -76,6 +76,16 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
     let queue: QueueItem[] = Object.values(root.dependencies![pkgName].dependencies ?? {})
         .map((tree) => ({ tree, parentArchivePath: "" }));
 
+    // `npm ls` only expands children the first time a package appears; later occurrences have no `dependencies`.
+    // Index expanded nodes by source path so we can look up the children of those duplicates.
+    const expandedByPath = new Map<string, NpmDepTree>();
+    const indexTree = (tree: NpmDepTree) => {
+        if (tree.dependencies == null) return;
+        if (!expandedByPath.has(tree.path)) expandedByPath.set(tree.path, tree);
+        Object.values(tree.dependencies).forEach(indexTree);
+    };
+    indexTree(root);
+
     // Find the archive path that `require(name)` would resolve to from the given package dir
     const resolveFrom = (fromDir: string, name: string): string | undefined => {
         for (let dir = path.posix.join(fromDir, "node_modules"); dir !== "."; dir = path.posix.dirname(dir)) {
@@ -106,7 +116,7 @@ function walkDepTree(root: NpmDepTree, pkgName: string): Record<string, BundleDe
                 optional: tree.optional || false,
             };
 
-            for (const subtree of Object.values(tree.dependencies ?? {})) {
+            for (const subtree of Object.values(tree.dependencies ?? expandedByPath.get(tree.path)?.dependencies ?? {})) {
                 if (subtree.name != null) nextQueue.push({ tree: subtree, parentArchivePath: archivePath });
             }
         }
