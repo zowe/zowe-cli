@@ -340,7 +340,8 @@ describe("Service profile overrides base", () => {
         });
 
         // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
-        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_OVERRIDE, ["config", "update-schemas"]);
+        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_OVERRIDE, ["config", "update-schemas"]);
         expect(updateResponse.status).toBe(0);
         addSchemaRef(path.join(TEST_ENVIRONMENT_OVERRIDE.workingDir, "zowe.config.json"));
 
@@ -441,7 +442,8 @@ describe("Users overriding the admin value", () => {
         fs.writeFileSync(userConfigPath, JSON.stringify(userConfig, null, 2));
 
         // createV2Profile writes no schema, but ProfileInfo needs one to merge a profile's arguments
-        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh", TEST_ENVIRONMENT_USER_OVERRIDE, ["config", "update-schemas"]);
+        const updateResponse = runCliScript(__dirname + "/__scripts__/auth_order_profile.sh",
+            TEST_ENVIRONMENT_USER_OVERRIDE, ["config", "update-schemas"]);
         expect(updateResponse.status).toBe(0);
         addSchemaRef(path.join(TEST_ENVIRONMENT_USER_OVERRIDE.workingDir, "zowe.config.json"));
 
@@ -473,7 +475,8 @@ describe("Help text tests", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_HELP);
     });
 
-    it("--allowed-login-method and --auth-order appear under BASE CONNECTION OPTIONS for zosmf-based commands, with the allowed values listed", () => {
+    it("--allowed-login-method and --auth-order appear under BASE CONNECTION OPTIONS " +
+        "for zosmf-based commands, with the allowed values listed", () => {
         const response = runCliScript(
             __dirname + "/__scripts__/auth_order_profile.sh",
             TEST_ENVIRONMENT_HELP,
