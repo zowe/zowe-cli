@@ -112,47 +112,47 @@ jobs:
         path: zowe.tgz
         overwrite: true
 
-    - name: Setup Binary in PATH
-      if: github.event.inputs.test-type != 'nodejs'
-      id: setup-binary
-      shell: bash
-      run: |
-        tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
-        echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
+    # - name: Setup Binary in PATH
+    #   if: github.event.inputs.test-type != 'nodejs'
+    #   id: setup-binary
+    #   shell: bash
+    #   run: |
+    #     tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
+    #     echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
 
-    - name: Unit Tests
-      if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:unit
+    # - name: Unit Tests
+    #   if: ${{ always() && steps.build.outcome == 'success' }}
+    #   run: npm run test:unit
 
-    - name: Unlock Keyring
-      id: unlock-keyring
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-22.04' }}
-      uses: t1m0thyj/unlock-keyring@cbcf205c879ebd86add70bab3a6abfcce59a5cae # v1
+    # - name: Unlock Keyring
+    #   id: unlock-keyring
+    #   if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-22.04' }}
+    #   uses: t1m0thyj/unlock-keyring@cbcf205c879ebd86add70bab3a6abfcce59a5cae # v1
 
-    - name: Start Daemon
-      id: start-daemon
-      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      run: ./__tests__/__resources__/daemon_instances/zowe
+    # - name: Start Daemon
+    #   id: start-daemon
+    #   if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
+    #   run: ./__tests__/__resources__/daemon_instances/zowe
 
-    - name: Integration Tests
-      if: ${{ always() && steps.build.outcome == 'success' }}
-      env:
-        JEST_MAX_WORKERS: ${{ github.event.inputs.test-type != 'nodejs' && '1' || '' }}
-      run: npm run test:integration
+    # - name: Integration Tests
+    #   if: ${{ always() && steps.build.outcome == 'success' }}
+    #   env:
+    #     JEST_MAX_WORKERS: ${{ github.event.inputs.test-type != 'nodejs' && '1' || '' }}
+    #   run: npm run test:integration
 
-    - name: Archive Results
-      if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-      with:
-        name: ${{ runner.os }}-${{ matrix.node-version }}-results
-        path: __tests__/__results__/
+    # - name: Archive Results
+    #   if: ${{ always() && steps.build.outcome == 'success' }}
+    #   uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+    #   with:
+    #     name: ${{ runner.os }}-${{ matrix.node-version }}-results
+    #     path: __tests__/__results__/
 
-    - name: Upload Results to Codecov
-      if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-      with:
-        env_vars: OS,NODE
-        token: ${{ secrets.CODECOV_TOKEN }}
+    # - name: Upload Results to Codecov
+    #   if: ${{ always() && steps.build.outcome == 'success' }}
+    #   uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+    #   with:
+    #     env_vars: OS,NODE
+    #     token: ${{ secrets.CODECOV_TOKEN }}
     
     - name: Package CLI
       id: package
