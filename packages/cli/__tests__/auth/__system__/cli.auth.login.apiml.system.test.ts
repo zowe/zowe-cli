@@ -373,7 +373,8 @@ describe("direct-* authentication method", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         });
 
-        it("direct-basic on a profile whose basePath routes through APIML - use a pound sign in a data set name that isn't encoded - results in HTTP 400 from APIML", () => {
+        it("direct-basic on a profile whose basePath routes through APIML - use a pound sign " +
+            "in a data set name that isn't encoded - results in HTTP 400 from APIML", () => {
             const dsNameWithPound = `${user}.#TEST.DATA`;
             const response = runCliScript(__dirname + "/__scripts__/auth_direct_apiml_base_path.sh", TEST_ENVIRONMENT, [dsNameWithPound]);
 
@@ -411,7 +412,8 @@ describe("direct-* authentication method", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         });
 
-        it("The command authenticates to the service with the prompted credentials. No APIML login request is made and no token is requested", async () => {
+        it("The command authenticates to the service with the prompted credentials." +
+            " No APIML login request is made and no token is requested", async () => {
             const response = runCliScript(__dirname + "/__scripts__/auth_prompt_credentials.sh", TEST_ENVIRONMENT, [user, password]);
 
             expect(response.status).toBe(0);
