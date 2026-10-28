@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.25`
 
 - BugFix: Improved how the `zowe config import` command determines whether a location is a web address or a local file. [#2981](https://github.com/zowe/zowe-cli/pull/2981/)
 - BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2967](https://github.com/zowe/zowe-cli/pull/2967)
