@@ -221,21 +221,21 @@ export class ConfigAutoStore {
                 (4) Given profile is just a base profile :yum:
             */
             if (!config.api.profiles.exists(profileName) && config.api.profiles.exists(baseProfileName) ||
-                profileObj[propName] == null && !profileSecureProps.includes(propName) &&
-                    (baseProfileObj[propName] != null || baseProfileSecureProps.includes(propName)) ||
-                (propName === "tokenValue" && profileObj.tokenType == null && baseProfileObj.tokenType != null ||
+                profileObj?.[propName] == null && !profileSecureProps.includes(propName) &&
+                    (baseProfileObj?.[propName] != null || baseProfileSecureProps.includes(propName)) ||
+                (propName === "tokenValue" && profileObj?.tokenType == null && baseProfileObj?.tokenType != null ||
                 profileType === "base")
             ) {
                 propProfilePath = config.api.profiles.getProfilePathFromName(baseProfileName);
-                isSecureProp = baseProfileSchema.properties[propName].secure || baseProfileSecureProps.includes(propName);
+                isSecureProp = baseProfileSchema?.properties[propName]?.secure || baseProfileSecureProps.includes(propName);
             }
 
             const parentPath = profilePath.includes(".profiles.") ? profilePath.slice(0, profilePath.lastIndexOf(".profiles.")) : undefined;
             if (isApimlLoginMethod && (propName === "tokenValue" || propName === "tokenType") && parentPath != null &&
-                propProfilePath === profilePath && profileObj[propName] == null && !profileSecureProps.includes(propName))
+                propProfilePath === profilePath && profileObj?.[propName] == null && !profileSecureProps.includes(propName))
             {
                 propProfilePath = parentPath;
-                isSecureProp = baseProfileSchema.properties[propName]?.secure ||
+                isSecureProp = baseProfileSchema?.properties[propName]?.secure ||
                     config.api.secure.securePropsForProfile(config.api.profiles.getProfileNameFromPath(parentPath)).includes(propName);
             }
 
