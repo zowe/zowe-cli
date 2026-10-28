@@ -22,6 +22,12 @@ export interface IKnownHostsVerification {
     knownFingerprint?: string;
 }
 
+interface IKnownHostEntry {
+    key: Buffer;
+    keyType: string;
+    revoked: boolean;
+}
+
 /** Read-only verification against OpenSSH known_hosts files. */
 export class SshKnownHosts {
     /**
@@ -37,20 +43,53 @@ export class SshKnownHosts {
      */
     public static verify(hostname: string, key: Buffer, port = SshSession.DEFAULT_SSH_PORT,
         filePath = join(homedir(), ".ssh", "known_hosts")): IKnownHostsVerification {
+        const algorithm = this.getKeyAlgorithm(key);
+        let result: IKnownHostsVerification = { status: "unknown" };
+        for (const entry of this.readEntries(hostname, port, filePath)) {
+            if (entry.key.equals(key)) {
+                if (entry.revoked) {
+                    return { status: "revoked" };
+                }
+                result = { status: "trusted" };
+            } else if (!entry.revoked && entry.keyType === algorithm && result.status !== "trusted") {
+                const digest = createHash("sha256").update(entry.key).digest("base64").replace(/=+$/, "");
+                result = { status: "changed", knownFingerprint: `SHA256:${digest}` };
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get key algorithms already trusted for an endpoint, excluding revoked keys. Uses the same host
+     * matching and entry validation as verify. Missing files return an empty list; other read errors
+     * are thrown. These preferences do not replace verification of the key presented by the server.
+     * @param hostname Hostname or IP address used to connect
+     * @param port SSH port
+     * @param filePath File to read, defaulting to ~/.ssh/known_hosts
+     * @returns Unique trusted key algorithms, in file order
+     */
+    public static getHostKeyAlgorithms(hostname: string, port = SshSession.DEFAULT_SSH_PORT,
+        filePath = join(homedir(), ".ssh", "known_hosts")): string[] {
+        const entries = this.readEntries(hostname, port, filePath);
+        const revoked = new Set(entries.filter((entry) => entry.revoked).map((entry) => entry.key.toString("base64")));
+        return [...new Set(entries.filter((entry) => !entry.revoked && !revoked.has(entry.key.toString("base64")))
+            .map((entry) => entry.keyType))];
+    }
+
+    private static readEntries(hostname: string, port: number, filePath: string): IKnownHostEntry[] {
         let contents: string;
         try {
             contents = readFileSync(filePath, "utf8");
         } catch (err) {
             if (err.code === "ENOENT" || err.code === "ENOTDIR") {
-                return { status: "unknown" };
+                return [];
             }
             throw new Error(`Could not read SSH known hosts file '${filePath}': ${err.message}`);
         }
 
         const host = hostname.toLowerCase();
         const target = port === SshSession.DEFAULT_SSH_PORT ? host : `[${host}]:${port}`;
-        const algorithm = this.getKeyAlgorithm(key);
-        let result: IKnownHostsVerification = { status: "unknown" };
+        const entries: IKnownHostEntry[] = [];
         for (const line of contents.split(/\r?\n/)) {
             const fields = line.trim().split(/\s+/);
             if (fields[0] === "" || fields[0].startsWith("#")) {
@@ -66,17 +105,9 @@ export class SshKnownHosts {
             if (storedKey == null || this.getKeyAlgorithm(storedKey) !== keyType) {
                 continue;
             }
-            if (storedKey.equals(key)) {
-                if (marker === "@revoked") {
-                    return { status: "revoked" };
-                }
-                result = { status: "trusted" };
-            } else if (marker == null && keyType === algorithm && result.status !== "trusted") {
-                const digest = createHash("sha256").update(storedKey).digest("base64").replace(/=+$/, "");
-                result = { status: "changed", knownFingerprint: `SHA256:${digest}` };
-            }
+            entries.push({ key: storedKey, keyType, revoked: marker === "@revoked" });
         }
-        return result;
+        return entries;
     }
 
     private static matchesHost(patterns: string, target: string): boolean {

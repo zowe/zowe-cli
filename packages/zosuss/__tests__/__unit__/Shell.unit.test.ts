@@ -81,6 +81,7 @@ describe("Shell", () => {
     beforeEach(() => {
         // Keep trust decisions independent of the developer's own known_hosts file.
         jest.spyOn(SshKnownHosts, "verify").mockReturnValue({ status: "unknown" });
+        jest.spyOn(SshKnownHosts, "getHostKeyAlgorithms").mockReturnValue([]);
     });
 
     afterEach(() => {
@@ -324,12 +325,48 @@ describe("Shell", () => {
                 expect(getConnectConfig().algorithms).toBeUndefined();
             });
 
+            it("should prefer known_hosts algorithms and retain fallback negotiation", async () => {
+                jest.mocked(SshKnownHosts.getHostKeyAlgorithms).mockReturnValue(["ssh-rsa"]);
+                const session = new SshSession({ hostname: "example.com", port: 2222 });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(SshKnownHosts.getHostKeyAlgorithms).toHaveBeenCalledWith("example.com", 2222);
+                const preferences = getConnectConfig().algorithms.serverHostKey;
+                expect(Object.keys(preferences)).toEqual(["remove", "prepend"]);
+                expect(preferences.prepend.test("rsa-sha2-512")).toBe(true);
+                expect(preferences.prepend.test("rsa-sha2-256")).toBe(true);
+                expect(preferences.prepend.test("ssh-rsa")).toBe(true);
+                expect(preferences.prepend.test("ssh-ed25519")).toBe(false);
+            });
+
+            it("should keep a profile pin authoritative over known_hosts preferences", async () => {
+                jest.mocked(SshKnownHosts.getHostKeyAlgorithms).mockReturnValue(["ssh-rsa"]);
+                const session = new SshSession({ hostname: "localhost", hostKey: fakeKeyB64 });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(getConnectConfig().algorithms).toEqual({ serverHostKey: ["ssh-ed25519"] });
+                expect(SshKnownHosts.getHostKeyAlgorithms).not.toHaveBeenCalled();
+            });
+
+            it.each(["invalid-key", "AAAA"])("should not fall back to known_hosts for an invalid profile pin: %s", async (hostKey) => {
+                const session = new SshSession({ hostname: "localhost", hostKey });
+                await Shell.executeSsh(session, "commandtest", stdoutHandler);
+                expect(SshKnownHosts.getHostKeyAlgorithms).not.toHaveBeenCalled();
+            });
+
+            it("should reject known_hosts read errors before connecting", async () => {
+                jest.mocked(SshKnownHosts.getHostKeyAlgorithms).mockImplementation(() => {
+                    throw new Error("Could not read SSH known hosts file");
+                });
+                await expect(Shell.isConnectionValid(fakeSshSession)).rejects.toThrow("Could not read SSH known hosts file");
+                expect(mockConnect).not.toHaveBeenCalled();
+            });
+
             it("should not pin an algorithm when insecure is true", async () => {
                 const session = new SshSession({
                     hostname: "localhost", port: 22, user: "", password: "", hostKey: fakeKeyB64, insecure: true
                 });
                 await Shell.executeSsh(session, "commandtest", stdoutHandler);
                 expect(getConnectConfig().algorithms).toBeUndefined();
+                expect(SshKnownHosts.getHostKeyAlgorithms).not.toHaveBeenCalled();
             });
         });
 

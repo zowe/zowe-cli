@@ -289,6 +289,24 @@ export class Shell {
             authsAllowed.push("password");
         }
         const pinnedAlgorithms = this.getPinnedHostKeyAlgorithms(session);
+        let serverHostKey: string[] | { remove: RegExp; prepend: RegExp } = pinnedAlgorithms;
+        const pinnedKey = session.ISshSession.hostKey;
+        if (session.ISshSession.insecure !== true && (pinnedKey == null || pinnedKey === "" || pinnedKey === "undefined")) {
+            let knownAlgorithms: string[];
+            try {
+                knownAlgorithms = SshKnownHosts.getHostKeyAlgorithms(session.ISshSession.hostname, session.ISshSession.port);
+            } catch (err) {
+                throw new ImperativeError({ msg: err.message });
+            }
+            if (knownAlgorithms.length > 0) {
+                const names = knownAlgorithms.flatMap((algorithm) => algorithm === "ssh-rsa" ?
+                    ["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"] : [algorithm]);
+                const pattern = new RegExp(`^(?:${names.map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})$`);
+                // ssh2's prepend skips existing algorithms, so remove them first to move them ahead
+                // of the defaults. A regex also lets ssh2 ignore unsupported known_hosts algorithms.
+                serverHostKey = { remove: pattern, prepend: pattern };
+            }
+        }
         connection.connect({
             host: session.ISshSession.hostname,
             port: session.ISshSession.port,
@@ -299,9 +317,9 @@ export class Shell {
             passphrase: session.ISshSession.keyPassphrase,
             authHandler: this.authenticationHandler(authsAllowed),
             hostVerifier: this.createHostVerifier(session, connState),
-            // When a host key is pinned, ask the server for that same key type, so a change in negotiation
-            // doesn't present a different but legitimate key that looks like a changed key.
-            ...pinnedAlgorithms != null ? { algorithms: { serverHostKey: pinnedAlgorithms } } : {},
+            // A profile pin restricts negotiation to that key type; known_hosts preferences retain
+            // fallback algorithms. The presented key must still pass the host verifier below.
+            ...serverHostKey != null ? { algorithms: { serverHostKey } } : {},
             readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
                 session.ISshSession.handshakeTimeout : 0,
             agent: session.ISshSession.identityAgent,

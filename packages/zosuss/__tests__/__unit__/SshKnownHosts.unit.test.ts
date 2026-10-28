@@ -14,6 +14,7 @@ import * as fs from "fs";
 import { tmpdir } from "os";
 import * as os from "os";
 import { join } from "path";
+import { Client } from "ssh2";
 import { Shell, SshKnownHosts, SshSession } from "../../src";
 
 describe("SshKnownHosts", () => {
@@ -89,6 +90,7 @@ describe("SshKnownHosts", () => {
     ])("matches %s for %s:%s as %s", (hosts, host, port, status) => {
         fs.writeFileSync(file, entry(hosts));
         expect(SshKnownHosts.verify(host, key, port, file).status).toBe(status);
+        expect(SshKnownHosts.getHostKeyAlgorithms(host, port, file)).toEqual(status === "trusted" ? ["ssh-ed25519"] : []);
     });
 
     it("reports a changed key and its previous fingerprint", () => {
@@ -101,6 +103,53 @@ describe("SshKnownHosts", () => {
     it("does not treat another key algorithm as a changed key", () => {
         fs.writeFileSync(file, entry(hostname, makeKey("ssh-rsa")));
         expect(SshKnownHosts.verify(hostname, key, 22, file).status).toBe("unknown");
+    });
+
+    it("prefers a trusted RSA key over another offered algorithm without prompting", async () => {
+        jest.spyOn(os, "homedir").mockReturnValue(directory);
+        fs.mkdirSync(join(directory, ".ssh"));
+        const defaultFile = join(directory, ".ssh", "known_hosts");
+        const rsaKey = makeKey("ssh-rsa");
+        fs.writeFileSync(defaultFile, entry(`[${hostname}]:2222`, rsaKey));
+        // A different algorithm is still unknown; it must not become implicitly trusted.
+        expect(SshKnownHosts.verify(hostname, key, 2222).status).toBe("unknown");
+
+        const { generateAlgorithmList } = require("ssh2/lib/utils");
+        const { DEFAULT_SERVER_HOST_KEY, SUPPORTED_SERVER_HOST_KEY } = require("ssh2/lib/protocol/constants");
+        const session = new SshSession({ hostname, port: 2222 });
+        const connect = jest.spyOn(Client.prototype, "connect").mockImplementation(function(config) {
+            // Use ssh2's actual algorithm ordering logic with a server offering both key types.
+            const algorithms: string[] = generateAlgorithmList(config.algorithms.serverHostKey,
+                DEFAULT_SERVER_HOST_KEY, SUPPORTED_SERVER_HOST_KEY);
+            expect(algorithms.slice(0, 3)).toEqual(["rsa-sha2-512", "rsa-sha2-256", "ssh-rsa"]);
+            expect(algorithms).toContain("ecdsa-sha2-nistp256");
+            const offered = new Map([["ssh-ed25519", key], ["rsa-sha2-512", rsaKey]]);
+            const selected = algorithms.find((algorithm) => offered.has(algorithm));
+            expect(selected).toBe("rsa-sha2-512");
+            (config.hostVerifier as (key: Buffer, callback: (valid: boolean) => void) => void)(offered.get(selected), (valid) => {
+                expect(valid).toBe(true);
+                this.emit(valid ? "ready" : "error", new Error("Host key verification failed"));
+            });
+            return this;
+        });
+        jest.spyOn(Client.prototype, "end").mockReturnThis();
+        await expect(Shell.isConnectionValid(session)).resolves.toBe(true);
+        expect(connect).toHaveBeenCalledTimes(1);
+        expect(session.ISshSession.hostKey).toBeUndefined();
+    });
+
+    it("lists unique trusted algorithms and excludes revoked keys regardless of order", () => {
+        const rsaKey = makeKey("ssh-rsa");
+        const lines = [entry(), entry(hostname, rsaKey), entry(), `@revoked ${entry()}`];
+        for (const contents of [lines, [...lines].reverse()]) {
+            fs.writeFileSync(file, contents.join("\n"));
+            expect(SshKnownHosts.getHostKeyAlgorithms(hostname, 22, file)).toEqual(["ssh-rsa"]);
+        }
+    });
+
+    it("retains an algorithm when only a different key of the same type is revoked", () => {
+        fs.writeFileSync(file, `${entry()}\n@revoked ${entry(hostname, otherKey)}`);
+        expect(SshKnownHosts.getHostKeyAlgorithms(hostname, 22, file)).toEqual(["ssh-ed25519"]);
     });
 
     it.each([false, true])("accepts any matching key among conflicting entries (reverse=%s)", (reverse) => {
@@ -128,15 +177,18 @@ describe("SshKnownHosts", () => {
     ])("does not trust malformed or unsupported entries: %s", (contents) => {
         fs.writeFileSync(file, contents);
         expect(SshKnownHosts.verify(hostname, key, 22, file).status).toBe("unknown");
+        expect(SshKnownHosts.getHostKeyAlgorithms(hostname, 22, file)).toEqual([]);
     });
 
     it("returns unknown for missing files without creating them", () => {
         expect(SshKnownHosts.verify(hostname, key, 22, file).status).toBe("unknown");
+        expect(SshKnownHosts.getHostKeyAlgorithms(hostname, 22, file)).toEqual([]);
         expect(fs.existsSync(file)).toBe(false);
     });
 
     it("throws on read errors instead of treating the host as new", () => {
         jest.spyOn(fs, "readFileSync").mockImplementation(() => { throw new Error("Permission denied"); });
         expect(() => SshKnownHosts.verify(hostname, key, 22, file)).toThrow("Could not read SSH known hosts file");
+        expect(() => SshKnownHosts.getHostKeyAlgorithms(hostname, 22, file)).toThrow("Could not read SSH known hosts file");
     });
 });
