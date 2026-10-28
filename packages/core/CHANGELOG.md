@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.41.1`
 
 - BugFix: Improved handling of special characters when generating config comments from APIML services. [#2972](https://github.com/zowe/zowe-cli/pull/2971)
 
