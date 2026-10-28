@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.35`
 
 - BugFix: Add validation to the `tso` command group to reject values for the `servletKey` argument that contain illegal characters. [#2972](https://github.com/zowe/zowe-cli/pull/2972/changes)
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2968](https://github.com/zowe/zowe-cli/pull/2968)
