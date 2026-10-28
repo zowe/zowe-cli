@@ -77,6 +77,9 @@ export class SshKnownHosts {
     }
 
     private static readEntries(hostname: string, port: number, filePath: string): IKnownHostEntry[] {
+        if (typeof hostname !== "string" || hostname.trim() === "") {
+            throw new Error("The SSH hostname must be a non-empty string.");
+        }
         let contents: string;
         try {
             contents = readFileSync(filePath, "utf8");

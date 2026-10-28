@@ -349,7 +349,7 @@ export class Shell {
         return this.createHostVerifier(session);
     }
 
-    private static createHostVerifier(session: SshSession, connState?: IConnectionState) {
+    public static createHostVerifier(session: SshSession, connState?: IConnectionState) {
         return (keyBuf: Buffer, callback: (valid: boolean) => void) => {
             // Verification explicitly disabled - accept any key (insecure).
             if (session.ISshSession.insecure === true) {

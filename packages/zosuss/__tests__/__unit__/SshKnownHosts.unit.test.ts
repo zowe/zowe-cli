@@ -186,6 +186,21 @@ describe("SshKnownHosts", () => {
         expect(fs.existsSync(file)).toBe(false);
     });
 
+    it.each([undefined, null, "", " \t ", 22])("rejects a missing or invalid hostname: %p", (host) => {
+        fs.writeFileSync(file, entry("*"));
+        expect(() => SshKnownHosts.verify(host as string, key, 22, file))
+            .toThrow("The SSH hostname must be a non-empty string.");
+        expect(() => SshKnownHosts.getHostKeyAlgorithms(host as string, 22, file))
+            .toThrow("The SSH hostname must be a non-empty string.");
+    });
+
+    it("requires a hostname even when the known_hosts file is missing", () => {
+        expect(() => SshKnownHosts.verify(undefined, key, 22, file))
+            .toThrow("The SSH hostname must be a non-empty string.");
+        expect(() => SshKnownHosts.getHostKeyAlgorithms(undefined, 22, file))
+            .toThrow("The SSH hostname must be a non-empty string.");
+    });
+
     it("throws on read errors instead of treating the host as new", () => {
         jest.spyOn(fs, "readFileSync").mockImplementation(() => { throw new Error("Permission denied"); });
         expect(() => SshKnownHosts.verify(hostname, key, 22, file)).toThrow("Could not read SSH known hosts file");
