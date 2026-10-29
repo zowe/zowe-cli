@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.41.0`
 
+- Enhancement: Clarified how values from defaults, environment variables, and profiles satisfy option `implies` dependencies, so you can define options without requiring explicit command-line flags. [#1909](https://github.com/zowe/zowe-cli/issues/1909)
 - BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
 - BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2965](https://github.com/zowe/zowe-cli/pull/2965)
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)

@@ -120,10 +120,13 @@ export interface ICommandOptionDefinition {
      */
     conflictsWith?: string[];
     /**
-     * If this option is specified, all options whose name appear in the "implies"
-     * field must also be specified.
-     * e.g. if this option is "vacation", and ["seat", "meal"] is the value for "implies",
-     * then the user will get a syntax error if they specify --vacation but not --seat and --meal
+     * If this option is defined, all options named in "implies" must also be defined.
+     * Values can come from command-line arguments, environment variables, profiles,
+     * or defaultValue. The options do not have to be specified explicitly on the command line.
+     *
+     * For example, if "vacation" implies ["seat", "meal"], defining "vacation" causes a
+     * syntax error when either "seat" or "meal" has no resolved value. A defaultValue
+     * for "seat" satisfies that dependency even when --seat is omitted.
      * @type {string[]}
      * @memberof ICommandOptionDefinition
      */
