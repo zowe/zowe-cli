@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.27.24",
+  "version": "5.27.25",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -50,7 +50,7 @@
     "comment-json": "4.1.1",
     "cross-spawn": "7.0.6",
     "dataobject-parser": "1.2.25",
-    "deepmerge": "4.2.2",
+    "deepmerge-ts": "8.0.2",
     "diff": "5.2.2",
     "diff2html": "3.4.56",
     "fastest-levenshtein": "1.0.12",
@@ -80,7 +80,7 @@
     "tinyglobby": "0.2.17",
     "which": "4.0.0",
     "wrap-ansi": "7.0.0",
-    "yamljs": "0.3.0",
+    "yaml": "2.9.1",
     "yargs": "15.3.1"
   },
   "devDependencies": {
@@ -113,13 +113,5 @@
   },
   "engines": {
     "node": ">=20.9.0"
-  },
-  "overrides": {
-    "yamljs": {
-      "glob": "^9.0.0"
-    },
-    "diff2html@3.4.20-usewontache.1.60e7a2e": {
-      "diff": "^5.2.2"
-    }
   }
 }
