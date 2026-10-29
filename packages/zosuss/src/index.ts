@@ -12,8 +12,11 @@
 export * from "./Shell";
 export * from "./SshBaseHandler";
 export * from "./SshSession";
+export * from "./SshKnownHosts";
+export * from "./SshHostKeyVerifier";
 
 export * from "./constants/ZosUss.messages";
 export * from "./constants/ZosUss.profile";
 
 export * from "./doc/ISshSession";
+export * from "./doc/ISshHostKeyVerifierOptions";
