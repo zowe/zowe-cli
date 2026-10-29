@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SshBaseHandler host key verification should explain how to resolve a changed known_hosts entry without prompting or saving 1`] = `
+"Host key verification failed. The SSH server's host key does not match the previously trusted key. The server's host key may have changed, or the server may not be the one you previously connected to. The connection was rejected before any credentials were sent.
+Previously trusted host key fingerprint: SHA256:oldfp
+Host key fingerprint now presented:      SHA256:testfingerprint
+Verify the new key, then update the matching entry in ~/.ssh/known_hosts and reconnect.
+"
+`;
+
 exports[`SshBaseHandler host key verification should not prompt in a CI environment and should reject with an error 1`] = `
 "Host key verification failed. The SSH server's host key is not trusted, so the connection was rejected before any credentials were sent.
 Server host key fingerprint: SHA256:testfingerprint
