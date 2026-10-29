@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
+
 ## `8.41.0`
 
 - BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
