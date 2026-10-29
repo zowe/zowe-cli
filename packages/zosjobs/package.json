@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-jobs-for-zowe-sdk",
-  "version": "8.41.1",
+  "version": "8.42.0",
   "description": "Zowe SDK to interact with jobs on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -42,7 +42,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "8.41.1"
+    "@zowe/zos-files-for-zowe-sdk": "8.42.0"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "8.41.1",
