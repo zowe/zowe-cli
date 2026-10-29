@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.41.0`
 
+- BugFix: Fixed the `zowe zos-files upload file-to-uss` command ignoring the `--binary` option when a `.zosattributes` file has a rule for the file. Now `--binary` takes precedence. [#2516](https://github.com/zowe/zowe-cli/issues/2516)
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
