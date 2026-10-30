@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes 
+
+- BugFix: Added validation of the structure of schema files downloaded from URLs via the `zowe config import` command, and added a prompt when an existing file would be overwritten with the downloaded schema. [#2985](https://github.com/zowe/zowe-cli/pull/2985)
+
 ## `8.41.0`
 
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
