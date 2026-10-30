@@ -375,7 +375,7 @@ describe("Configuration Import command handler", () => {
             jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(
                 JSON.stringify({ "somethingNonSchema": "cool, puppy dogs" }));
             const error = new ImperativeError({
-                msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
+                msg: `The schema downloaded from example.com appears to be malformed. ` +
                     `It does not contain a '$schema' field.`
             });
             await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
@@ -385,7 +385,7 @@ describe("Configuration Import command handler", () => {
             jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce(
                 JSON.stringify({ "$schema": { "not a string": "doesn't seem like a schema" } }));
             const error = new ImperativeError({
-                msg: `The schema downloaded from ${schemaUrl} appears to be malformed. ` +
+                msg: `The schema downloaded from example.com appears to be malformed. ` +
                     `It does not contain a '$schema' field.`
             });
             await expect(downloadSchema(new URL(schemaUrl), schemaDestPath)).rejects.toThrow(error);
