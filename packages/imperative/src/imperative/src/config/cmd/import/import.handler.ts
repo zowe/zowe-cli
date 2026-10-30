@@ -141,7 +141,7 @@ export default class ImportHandler implements ICommandHandler {
             }
             if (!Object.keys(parsedSchema).includes('$schema') || typeof parsedSchema['$schema'] !== "string") {
                 throw new ImperativeError({
-                    msg: `The schema downloaded from ${url} appears to be malformed. It does not contain a '$schema' field.`
+                    msg: `The schema downloaded from ${url.hostname} appears to be malformed. It does not contain a '$schema' field.`
                 });
             }
 
@@ -151,8 +151,9 @@ export default class ImportHandler implements ICommandHandler {
                 }
                 let input: string | null = null;
                 do {
-                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`);
-                } while (input == null || input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
+                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`)
+                        || 'n';
+                } while (input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
 
                 if (input.toLowerCase() != "y") {
                     return false;
