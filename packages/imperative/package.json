@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.27.24",
+  "version": "5.27.25",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -50,7 +50,7 @@
     "comment-json": "4.1.1",
     "cross-spawn": "7.0.6",
     "dataobject-parser": "1.2.25",
-    "deepmerge": "4.2.2",
+    "deepmerge-ts": "8.0.2",
     "diff": "5.2.2",
     "diff2html": "3.4.56",
     "fastest-levenshtein": "1.0.12",
@@ -65,7 +65,7 @@
     "lodash": "4.18.1",
     "lodash-deep": "2.0.0",
     "log4js": "6.4.6",
-    "markdown-it": "14.3.2",
+    "markdown-it": "14.3.3",
     "mustache": "4.2.0",
     "npm-package-arg": "9.1.0",
     "opener": "1.5.2",
@@ -73,14 +73,14 @@
     "progress": "2.0.3",
     "read": "1.0.7",
     "readline-sync": "1.4.10",
-    "sanitize-html": "2.17.5",
+    "sanitize-html": "2.18.1",
     "semver": "7.5.4",
     "stack-trace": "0.0.10",
     "strip-ansi": "6.0.1",
     "tinyglobby": "0.2.17",
     "which": "4.0.0",
     "wrap-ansi": "7.0.0",
-    "yamljs": "0.3.0",
+    "yaml": "2.9.1",
     "yargs": "15.3.1"
   },
   "devDependencies": {
@@ -113,13 +113,5 @@
   },
   "engines": {
     "node": ">=20.9.0"
-  },
-  "overrides": {
-    "yamljs": {
-      "glob": "^9.0.0"
-    },
-    "diff2html@3.4.20-usewontache.1.60e7a2e": {
-      "diff": "^5.2.2"
-    }
   }
 }

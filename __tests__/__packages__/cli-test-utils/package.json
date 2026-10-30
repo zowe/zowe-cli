@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli-test-utils",
-  "version": "7.29.33",
+  "version": "7.29.35",
   "description": "Test utilities package for Zowe CLI plug-ins",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",
-    "@zowe/imperative": "5.27.24"
+    "@zowe/imperative": "5.27.25"
   },
   "peerDependencies": {
     "@zowe/imperative": "^5.0.0"
