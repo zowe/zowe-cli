@@ -75,7 +75,7 @@ module.exports = {
             "varsIgnorePattern": "^_",
         }],
         "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/semi": "warn",
+        "@typescript-eslint/semi": ["error", "always"],
         "unused-imports/no-unused-imports": "warn",
         "unused-imports/no-unused-vars": ["warn", {
             "args": "none"

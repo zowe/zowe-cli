@@ -16,7 +16,7 @@ import { ICommandDefinition } from "./doc/ICommandDefinition";
 import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { TextUtils } from "../../utilities/src/TextUtils";
 import { OptionConstants } from "./constants/OptionConstants";
-import deepmerge = require("deepmerge");
+import { deepmerge } from "deepmerge-ts";
 import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { ICommandOptionDefinition } from "./doc/option/ICommandOptionDefinition";
 

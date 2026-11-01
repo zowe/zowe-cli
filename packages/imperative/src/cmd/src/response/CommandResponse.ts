@@ -27,7 +27,7 @@ import { Arguments } from "yargs";
 import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { OptionConstants } from "../constants/OptionConstants";
 import { inspect } from "util";
-import deepmerge = require("deepmerge");
+import { deepmerge } from "deepmerge-ts";
 import * as ProgressBar from "progress";
 import * as net from "net";
 import * as tty from "tty";
