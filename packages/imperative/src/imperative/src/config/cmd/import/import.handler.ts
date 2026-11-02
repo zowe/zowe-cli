@@ -151,7 +151,7 @@ export default class ImportHandler implements ICommandHandler {
                 }
                 let input: string | null = null;
                 do {
-                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url}'?`)
+                    input = await this.params.response.console.prompt(`${filePath} already exists. Overwrite it with the schema downloaded from '${url.hostname}'?`)
                         || 'n';
                 } while (input.toLowerCase() !== "y" && input.toLowerCase() !== "n");
 
