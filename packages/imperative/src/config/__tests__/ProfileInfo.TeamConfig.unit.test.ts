@@ -240,6 +240,45 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(newSess.ISession.tokenValue).toBeUndefined();
             });
         });
+
+        describe("initSessCfg", () => {
+            it("should initialize session config with default arguments including SSH properties", () => {
+                const profArgs: IProfArgAttrs[] = [
+                    { argName: "host", dataType: "string", argValue: "example.com", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "port", dataType: "number", argValue: 22, argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "user", dataType: "string", argValue: "myUser", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "password", dataType: "string", argValue: "myPassword", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "hostKey", dataType: "string", argValue: "myHostKeyBase64", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "privateKey", dataType: "string", argValue: "/path/to/key", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "keyPassphrase", dataType: "string", argValue: "myKeyPassphrase", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "allowedLoginMethod", dataType: "string", argValue: "prompt", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "authOrder", dataType: "array", argValue: ["basic"], argLoc: { locType: ProfLocType.TEAM_CONFIG } }
+                ];
+
+                const sessCfg: any = ProfileInfo.initSessCfg(profArgs);
+                expect(sessCfg.hostname).toBe("example.com");
+                expect(sessCfg.port).toBe(22);
+                expect(sessCfg.user).toBe("myUser");
+                expect(sessCfg.password).toBe("myPassword");
+                expect(sessCfg.hostKey).toBe("myHostKeyBase64");
+                expect(sessCfg.privateKey).toBe("/path/to/key");
+                expect(sessCfg.keyPassphrase).toBe("myKeyPassphrase");
+                expect(sessCfg.allowedLoginMethod).toBe("prompt");
+                expect(sessCfg.authOrder).toEqual(["basic"]);
+                expect(sessCfg.protocol).toBe(SessConstants.HTTPS_PROTOCOL);
+            });
+
+            it("should only initialize requested arguments when argNames is specified", () => {
+                const profArgs: IProfArgAttrs[] = [
+                    { argName: "host", dataType: "string", argValue: "example.com", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "hostKey", dataType: "string", argValue: "myHostKeyBase64", argLoc: { locType: ProfLocType.TEAM_CONFIG } }
+                ];
+
+                const sessCfg: any = ProfileInfo.initSessCfg(profArgs, ["hostKey"]);
+                expect(sessCfg.hostKey).toBe("myHostKeyBase64");
+                expect(sessCfg.hostname).toBeUndefined();
+            });
+        });
     });
 
     describe("readProfilesFromDisk", () => {

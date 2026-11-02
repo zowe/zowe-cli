@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Censored sensitive request information in REST client errors. [#2949](https://github.com/zowe/zowe-cli/pull/2949)
+- BugFix: Fixed `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile.
 
 ## `8.39.1`
 
