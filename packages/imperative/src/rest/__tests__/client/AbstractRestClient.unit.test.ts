@@ -1998,6 +1998,53 @@ describe("AbstractRestClient tests", () => {
                 expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
                 expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].certKey);
             });
+
+            describe("certificate account authentication", () => {
+                const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform");
+
+                beforeEach(() => {
+                    // certAccount is rejected on Linux, so pretend to be a supported platform
+                    Object.defineProperty(process, "platform", { value: "darwin" });
+                });
+
+                afterEach(() => {
+                    Object.defineProperty(process, "platform", originalPlatform);
+                });
+
+                it("should use a keychain agent when no checkServerIdentity callback is set", () => {
+                    const restClient: any = new RestClient(
+                        new Session({
+                            hostname: "FakeHostName",
+                            type: AUTH_TYPE_CERT_PEM,
+                            certAccount: "FakeCertAccount"
+                        })
+                    );
+                    const restOptions: any = { headers: {} };
+
+                    expect(restClient["setCertPemAuth"](restOptions)).toEqual(true);
+                    expect(restOptions.agent).toBeDefined();
+                    expect(restOptions.cert).toBeUndefined();
+                    expect(restOptions.key).toBeUndefined();
+                });
+
+                it("should throw when a checkServerIdentity callback is set", () => {
+                    const restClient: any = new RestClient(
+                        new Session({
+                            hostname: "FakeHostName",
+                            type: AUTH_TYPE_CERT_PEM,
+                            certAccount: "FakeCertAccount",
+                            checkServerIdentity: jest.fn()
+                        })
+                    );
+                    const restOptions: any = { headers: {} };
+
+                    expect(() => restClient["setCertPemAuth"](restOptions)).toThrow(
+                        "A custom checkServerIdentity callback is not supported with certificate account authentication (certAccount)."
+                    );
+                    expect(restOptions.agent).toBeUndefined();
+                    expect(restClient["mSession"].cachedAgent).toBeUndefined();
+                });
+            });
         });
 
         describe('buildOptions', () => {

@@ -25,7 +25,7 @@ import { Logger } from "../../logger";
 import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
-import { inspect } from "util";
+import { inspect, InspectOptions } from "util";
 import { EnvFileUtils, ImperativeConfig, TextUtils } from "../../utilities";
 import * as nodePath from "path";
 import * as os from "os";
@@ -381,7 +381,7 @@ export class CommandProcessor {
         // Log the invoke
         this.log.info(`Invoking command "${this.definition.name}"...`);
         this.log.info(`Command issued:\n\n${TextUtils.prettyJson(this.rootCommand + " " + commandLine)}`);
-        this.log.trace(`Invoke parameters:\n${inspect(params, { depth: null })}`);
+        this.log.trace(`Invoke parameters:\n${this.censoredInspect(params, { depth: null })}`);
         this.log.trace(`Command definition:\n${inspect(this.definition, { depth: null })}`);
 
         const prepareResponse = this.constructResponseObject(params);
@@ -880,7 +880,7 @@ export class CommandProcessor {
         // Construct the imperative arguments - replacement/wrapper for Yargs to insulate handlers against any
         // changes made to Yargs
         let args: ICommandArguments = CliUtils.buildBaseArgs(commandArguments);
-        this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(args)}`);
+        this.log.trace(`Base set of arguments from Yargs parse:\n${this.censoredInspect(args)}`);
         let allOpts = this.definition.options != null ? this.definition.options : [];
         allOpts = this.definition.positionals != null ? allOpts.concat(this.definition.positionals) : allOpts;
         this.log.trace(`Set of options and positionals defined on the command:\n${inspect(allOpts)}`);
@@ -889,9 +889,9 @@ export class CommandProcessor {
         // allow the user to specify the profile to load via environment variable. Then merge with already
         // supplied args from Yargs
         const envArgs = CliUtils.extractEnvForOptions(this.envVariablePrefix, allOpts);
-        this.log.trace(`Arguments extracted from :\n${inspect(args)}`);
+        this.log.trace(`Arguments extracted from :\n${this.censoredInspect(args)}`);
         args = CliUtils.mergeArguments(envArgs, args);
-        this.log.trace(`Arguments merged :\n${inspect(args)}`);
+        this.log.trace(`Arguments merged :\n${this.censoredInspect(args)}`);
 
         // Extract arguments from stdin
         this.log.trace(`Reading stdin for "${this.definition.name}" command...`);
@@ -901,7 +901,7 @@ export class CommandProcessor {
         if (this.mConfig != null) {
             // Merge the arguments from the config into the CLI args
             const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
-            this.log.trace(`Arguments extracted from the config:\n${inspect(profArgs)}`);
+            this.log.trace(`Arguments extracted from the config:\n${this.censoredInspect(profArgs)}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }
 
@@ -922,7 +922,7 @@ export class CommandProcessor {
         args._ = commandArguments._;
 
         // Log for debugging
-        this.log.trace(`Full argument object constructed:\n${inspect(args)}`);
+        this.log.trace(`Full argument object constructed:\n${this.censoredInspect(args)}`);
         return args;
     }
 
@@ -935,6 +935,24 @@ export class CommandProcessor {
      */
     private get log(): Logger {
         return this.mLogger;
+    }
+
+    /**
+     * Render an object for a trace log message with every secure value censored. Arguments, config-derived
+     * values and responses carry credentials (including those loaded from the secure vault), so they must never
+     * be inspected raw. A failure to censor must not fail the command, so it is replaced by the censor mask.
+     * @private
+     * @param {object} data - The object to render
+     * @param {InspectOptions} options - Options passed to util.inspect
+     * @returns {string} The censored, inspected representation of the object
+     * @memberof CommandProcessor
+     */
+    private censoredInspect(data: object, options?: InspectOptions): string {
+        try {
+            return inspect(Censor.censorObject(data), options);
+        } catch (censorError) {
+            return Censor.CENSOR_RESPONSE;
+        }
     }
 
     /**
@@ -1031,7 +1049,7 @@ export class CommandProcessor {
             }
         }
         this.log.info(`Command "${this.definition.name}" completed with success flag: "${json.success}"`);
-        this.log.trace(`Command "${this.definition.name}" finished. Response object:\n${inspect(json, { depth: null })}`);
+        this.log.trace(`Command "${this.definition.name}" finished. Response object:\n${this.censoredInspect(json, { depth: null })}`);
         response.endStream();
         return json;
     }

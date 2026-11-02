@@ -1110,6 +1110,13 @@ export abstract class AbstractRestClient {
                     });
                 }
             } else {
+                // TLS is handled natively, so Node never invokes the callback. Fail instead of silently skipping it.
+                if (this.session.ISession.checkServerIdentity) {
+                    throw new ImperativeError({
+                        msg: "A custom checkServerIdentity callback is not supported with certificate account authentication (certAccount).",
+                    });
+                }
+
                 // Create a custom agent that will handle certificate retrieval from keychain/certificate store
                 const agent = this.createKeychainAgent(
                     this.session.ISession.certAccount,

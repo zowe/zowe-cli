@@ -411,10 +411,16 @@ export class Censor {
 
         let newData = data;
 
+        // Console and JSON output intentionally leave "special" (schema-secure) values such as the user name visible,
+        // because the application is responsible for masking them there. Every other destination (log files, error
+        // diagnostics) has no such guarantee, so secure values are always masked by value, including passwords,
+        // tokens and passphrases.
+        const isOutputChannel = category === "console" || category === "json";
+
         const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
-            if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+            if (sec && typeof sec !== "object" && !(isOutputChannel && this.isSpecialValue(prop)) && this.isSecureValue(prop.split(".").pop())) {
                 // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
                 // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
                 newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
@@ -472,12 +478,15 @@ export class Censor {
             }
         }
 
-        // Do not modify the original data
-        return this.mCensorObject(lodash.cloneDeep(data), secValues);
+        // Do not modify the original data. Buffers (e.g. a response's stdout/stderr) are shared rather than deep
+        // copied, because mCensorObject replaces them with a size placeholder and never reads their bytes.
+        return this.mCensorObject(lodash.cloneDeepWith(data, (value) => Buffer.isBuffer(value) ? value : undefined), secValues);
     }
 
     /**
-     * Copy and censor over an object
+     * Copy and censor over an object. Buffers hold binary data rather than named properties and cannot be inspected
+     * for sensitive keys, so they are replaced with a size placeholder instead of being expanded into one property per
+     * byte (which is slow and memory hungry for large output, and would write the raw bytes to the log).
      * @param {Record<string, any>} data - the data to censor
      * @returns {Record<string, any>} - the censored data
      */
@@ -486,6 +495,8 @@ export class Censor {
         for (const [key, value] of Object.entries(data)) {
             if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
                 newData[key] = this.CENSOR_RESPONSE;
+            } else if (Buffer.isBuffer(value)) {
+                newData[key] = `<Buffer: ${value.length} bytes>`;
             } else if (value != null && typeof value == "object") {
                 newData[key] = this.mCensorObject(value, secureValues);
             } else {

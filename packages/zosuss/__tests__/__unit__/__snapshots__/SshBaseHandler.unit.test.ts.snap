@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SshBaseHandler host key verification should explain how to resolve a changed known_hosts entry without prompting or saving 1`] = `
+"Host key verification failed. The SSH server's host key does not match the previously trusted key. The server's host key may have changed, or the server may not be the one you previously connected to. The connection was rejected before any credentials were sent.
+Previously trusted host key fingerprint: SHA256:oldfp
+Host key fingerprint now presented:      SHA256:testfingerprint
+Verify the new key, then update the matching entry in ~/.ssh/known_hosts and reconnect.
+"
+`;
+
 exports[`SshBaseHandler host key verification should not prompt in a CI environment and should reject with an error 1`] = `
 "Host key verification failed. The SSH server's host key is not trusted, so the connection was rejected before any credentials were sent.
 Server host key fingerprint: SHA256:testfingerprint
@@ -70,13 +78,13 @@ exports[`SshBaseHandler persistHostKey warns and does not persist when there is 
 
 exports[`issue ssh handler tests should be able to get stdout 1`] = `"TEST OUTPUT"`;
 
-exports[`issue ssh handler tests should be able to get stdout 2`] = `"TEST OUTPUT"`;
-
 exports[`issue ssh handler tests should be able to get stdout with private key and key passphrase 1`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should be able to get stdout with privateKey 1`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should fail if user fails to enter incorrect key passphrase in 3 attempts 1`] = `"Maximum retry attempts reached. Authentication failed."`;
+
+exports[`issue ssh handler tests should process SSH command without error when allowedLoginMethod is set on profile arguments 1`] = `"TEST OUTPUT"`;
 
 exports[`issue ssh handler tests should prompt for user and keyPassphrase if neither is stored 1`] = `"test"`;
 
