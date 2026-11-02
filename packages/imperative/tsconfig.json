@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
+    "skipLibCheck": true,
     "stripInternal": true
   },
   "include": [

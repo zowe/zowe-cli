@@ -4,8 +4,18 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. []()
-- Enhancement: Built-in Imperative and Zowe CLI commands now provide `handler` constructors directly. []()
+- Enhancement: Built-in Imperative and Zowe CLI commands now provide `handler` constructors directly. [#2964](https://github.com/zowe/zowe-cli/pull/2964)
+- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. [#2963](https://github.com/zowe/zowe-cli/pull/2963)
+- BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
+
+## `8.41.0`
+
+- BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
+- BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2965](https://github.com/zowe/zowe-cli/pull/2965)
+- **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- Enhancement: Replaced the `fast-glob` dependency with the more lightweight alternative `tinyglobby`. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+- BugFix: Fixed handling of default applications when opening files with the `zowe config edit` command, and required trust confirmation before using a custom editor. [#2960](https://github.com/zowe/zowe-cli/pull/2960)
 
 ## `8.40.0`
 
@@ -22,7 +32,8 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Censored diagnostic information in the event of an error during execution of the `Imperative.init` function. [#2943](https://github.com/zowe/zowe-cli/pull/2943)
 - BugFix: Fixed `ProfileInfo.initSessCfg` to include the `allowedLoginMethod` and `authOrder` properties when creating a session from a profile. [#2929](https://github.com/zowe/zowe-cli/pull/2929)
 - BugFix: Censored secure values in the arguments and response objects included in error details when a chained handler argument mapping fails. [#2930](https://github.com/zowe/zowe-cli/pull/2930)
-- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936) 
+- BugFix: Updated the `EnvQuery.getEnvItemVal` function to censor additional Zowe-prefixed environment variables. [#2936](https://github.com/zowe/zowe-cli/pull/2936)
+- BugFix: Replaced the `deepmerge` dependency with `deepmerge-ts` for technical currency. [#2941](https://github.com/zowe/zowe-cli/pull/2941)
 
 ## `8.39.0`
 

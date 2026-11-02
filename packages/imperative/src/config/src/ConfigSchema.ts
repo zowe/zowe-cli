@@ -9,7 +9,9 @@
 *
 */
 
+import * as fs from "fs";
 import * as path from "path";
+import { globSync } from "tinyglobby";
 import * as lodash from "lodash";
 import { IExplanationMap, TextUtils } from "../../utilities/src/TextUtils";
 import { ICommandProfileProperty } from "../../cmd";
@@ -162,8 +164,9 @@ export class ConfigSchema {
             // Get the schema information to gather a list of updated paths
             const schemaInfo = opts.config.getSchemaInfo();
 
-            // Only report as updated when the schema was actually written within the layer directory
-            const schemaUpdated = schemaInfo.local && IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved);
+            // Keep update reporting consistent with the writer's destination checks.
+            const schemaUpdated = schemaInfo.local && IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved) &&
+                !fs.lstatSync(schemaInfo.resolved, { throwIfNoEntry: false })?.isSymbolicLink();
             updatedPaths = { [layer.path]: { schema: schemaInfo.original, updated: schemaUpdated } };
         }
         if (opts.config.layerExists(path.dirname(layer.path), !layer.user) && checkContrastingLayer) {
@@ -236,10 +239,12 @@ export class ConfigSchema {
         //___________________________________________________________________________________
         // Traverse DOWN
         if (opts.updateOptions.depth > 0) {
-            // Look for <APP>.schema.json
-            const fg = require("fast-glob");
-            // The `cwd` does not participate in Fast-glob's depth calculation, hence the + 1
-            const matches: string[] = fg.sync(`**/${opts.config.schemaName}`, { dot: true, onlyFiles: true, deep: opts.updateOptions.depth + 1 });
+            // Look for <APP>.schema.json up to `depth` directories down, including dot directories
+            const patterns: string[] = [];
+            for (let level = 0; level <= opts.updateOptions.depth; level++) {
+                patterns.push("{*,.*}/".repeat(level) + opts.config.schemaName);
+            }
+            const matches: string[] = globSync(patterns, { expandDirectories: false });
 
             const globalProjConfig = opts.config.findLayer(false, true);
             const globalUserConfig = opts.config.findLayer(true, true);

@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "../../cmd";
 import { Logger } from "../../logger";
-import * as glob from "fast-glob";
+import { globSync } from "tinyglobby";
 import { ImperativeError } from "../../error";
 import DefaultRootCommandHandler from "./handlers/DefaultRootCommandHandler";
 
@@ -105,8 +105,9 @@ export class DefinitionTreeResolver {
         const allCmdDefs: ICommandDefinition[] = [];
 
         for (const childGlob of cmdModuleGlobs) {
-            const matches = glob.sync(childGlob, {
-                cwd: callerDir
+            const matches = globSync(childGlob, {
+                cwd: callerDir,
+                expandDirectories: false
             });
 
             // user specified module glob, but none matched so we throw an error

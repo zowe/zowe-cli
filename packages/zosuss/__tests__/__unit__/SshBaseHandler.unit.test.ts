@@ -297,6 +297,22 @@ describe("SshBaseHandler host key verification", () => {
         expect((handler as any).persistHostKey).not.toHaveBeenCalled();
     });
 
+    it("should explain how to resolve a changed known_hosts entry without prompting or saving", async () => {
+        const handler = newHandler();
+        const params = newParams("yes");
+        const session = new SshSession({ hostname: "somewhere.com" });
+        attach(handler, session, params);
+
+        const trusted = await session.hostKeyVerifier({
+            ...fakeKeyInfo, changed: true, knownHosts: true, pinnedFingerprint: "SHA256:oldfp"
+        });
+
+        expect(trusted).toBe(false);
+        expect(params.response.console.prompt).not.toHaveBeenCalled();
+        expect(params.response.console.error).toHaveBeenCalledWith(expect.stringContaining("~/.ssh/known_hosts"));
+        expect((handler as any).persistHostKey).not.toHaveBeenCalled();
+    });
+
     it("should not prompt in a CI environment and should reject with an error", async () => {
         process.env.CI = "true";
         const handler = newHandler();

@@ -12,8 +12,8 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import * as glob from "fast-glob";
 import * as jsonfile from "jsonfile";
+import { globSync } from "tinyglobby";
 
 import { CredentialManagerFactory } from "../../security/src/CredentialManagerFactory";
 import { ICommandArguments } from "../../cmd";
@@ -167,7 +167,7 @@ export class ConfigUtils {
         }
 
         // look for V1 profiles in the CLI home directory
-        const v1ProfilePaths = glob.sync("profiles/**/*.yaml", { cwd: ImperativeConfig.instance.cliHome })
+        const v1ProfilePaths = globSync("profiles/**/*.yaml", { cwd: ImperativeConfig.instance.cliHome, expandDirectories: false })
             .filter(filename => {
                 // ignore meta yaml files
                 const { dir, name } = path.parse(filename);
