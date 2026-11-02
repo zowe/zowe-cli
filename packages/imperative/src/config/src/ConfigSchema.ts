@@ -9,7 +9,7 @@
 *
 */
 
-import * as fs from "node:fs";
+import * as fs from "fs";
 import * as path from "path";
 import { globSync } from "tinyglobby";
 import * as lodash from "lodash";
