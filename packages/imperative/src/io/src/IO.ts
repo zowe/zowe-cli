@@ -578,6 +578,11 @@ export class IO {
         );
     }
 
+    /**
+     * Whether child is a strict descendant of parent using normalized on-disk locations.
+     * Supports paths whose trailing components do not yet exist.
+     * Evaluates filesystem state at the time of the call.
+     */
     public static isSubPath(parent: string, child: string): boolean {
         let relativePathSegments: string[] = [];
         const parentAbsPath = path.resolve(parent);
@@ -585,7 +590,39 @@ export class IO {
         const relativePath = path.relative(parentAbsPath, childAbsPath);
         if (relativePath) { relativePathSegments = relativePath.split(path.sep); }
         if (relativePathSegments.length === 0 || relativePathSegments.includes("..") || path.isAbsolute(relativePath)) { return false; }
-        return true;
+        try {
+            const canonicalParent = IO.canonicalizePath(parentAbsPath);
+            const canonicalChild = IO.canonicalizePath(childAbsPath);
+            if (canonicalParent === undefined || canonicalChild === undefined) { return false; }
+            const canonicalRelativePath = path.relative(canonicalParent, canonicalChild);
+            return canonicalRelativePath.length > 0 && !path.isAbsolute(canonicalRelativePath) &&
+                !canonicalRelativePath.split(path.sep).includes("..");
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Resolve an on-disk location, retaining any not-yet-created trailing components.
+     */
+    private static canonicalizePath(absolutePath: string): string | undefined {
+        const missingSegments: string[] = [];
+        let ancestor = absolutePath;
+        for (;;) {
+            const stats = fs.lstatSync(ancestor, { throwIfNoEntry: false });
+            if (stats !== undefined) {
+                const canonicalPath = fs.realpathSync(ancestor);
+                if (missingSegments.length > 0 && !stats.isDirectory() &&
+                    (!stats.isSymbolicLink() || !fs.statSync(canonicalPath).isDirectory())) {
+                    return undefined;
+                }
+                return path.join(canonicalPath, ...missingSegments.reverse());
+            }
+            const nextAncestor = path.dirname(ancestor);
+            if (nextAncestor === ancestor) { return undefined; }
+            missingSegments.push(path.basename(ancestor));
+            ancestor = nextAncestor;
+        }
     }
 
     public static containsBacktrack(element: string): boolean {

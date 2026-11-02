@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS console SDK package will be documented in this file.
 
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.1`
 
 - BugFix: Fixed an issue where the `zowe zos-console collect sync-responses` command did not stop collecting console output after the expected keyword was found or the follow-up attempts ran out. [#2932](https://github.com/zowe/zowe-cli/pull/2932)

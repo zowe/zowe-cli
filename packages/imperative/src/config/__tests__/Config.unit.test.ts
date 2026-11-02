@@ -18,6 +18,7 @@ import { Config } from "../src/Config";
 import { ConfigConstants } from "../src/ConfigConstants";
 import * as JSONC from "comment-json";
 import { ConfigLayers, ConfigSecure } from "../src/api";
+import { ConfigSchema } from "../src/ConfigSchema";
 
 
 const MY_APP = "my_app";
@@ -78,6 +79,69 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
 describe("Config tests", () => {
     afterEach(() => {
         jest.restoreAllMocks();
+    });
+
+    describe("schema write containment", () => {
+        let tempDir: string;
+        let projectDir: string;
+        let outsideDir: string;
+        let config: Config;
+        const schema = ConfigSchema.buildSchema([]);
+        const fileLinkTest = process.platform === "win32" ? it.skip : it;
+
+        beforeEach(async () => {
+            tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-schema-"));
+            projectDir = path.join(tempDir, "project");
+            outsideDir = path.join(tempDir, "outside");
+            fs.mkdirSync(projectDir);
+            fs.mkdirSync(outsideDir);
+            config = await Config.load(MY_APP, { projectDir, homeDir: outsideDir, noLoad: true });
+            config.layerActive().properties.$schema = "./zowe.schema.json";
+        });
+
+        afterEach(() => {
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        });
+
+        const updateSchema = () => ConfigSchema["_updateSchemaActive"]({
+            config, layer: config.layerActive(), updatedPaths: {}, updateOptions: { schema }
+        }, true, false)[config.layerActive().path].updated;
+
+        it("creates and updates a regular schema within the layer directory", () => {
+            const schemaPath = path.join(projectDir, "zowe.schema.json");
+            expect(updateSchema()).toBe(true);
+            expect(JSON.parse(fs.readFileSync(schemaPath, "utf8"))).toEqual(schema);
+            fs.writeFileSync(schemaPath, "{}");
+            config.setSchema(schema);
+            expect(JSON.parse(fs.readFileSync(schemaPath, "utf8"))).toEqual(schema);
+        });
+
+        it.each([false, true])("rejects an escaped directory link with existing target: %s", (exists) => {
+            const target = path.join(outsideDir, "zowe.schema.json");
+            if (exists) fs.writeFileSync(target, "victim configuration");
+            fs.symlinkSync(outsideDir, path.join(projectDir, "linked"), process.platform === "win32" ? "junction" : "dir");
+            config.layerActive().properties.$schema = "./linked/zowe.schema.json";
+
+            expect(updateSchema()).toBe(false);
+            if (exists) {
+                expect(fs.readFileSync(target, "utf8")).toBe("victim configuration");
+            } else {
+                expect(fs.existsSync(target)).toBe(false);
+            }
+        });
+
+        fileLinkTest.each(["outside", "inside", "dangling"])("refuses a %s destination file symlink", (location) => {
+            const target = path.join(location === "inside" ? projectDir : outsideDir, "victim.json");
+            if (location !== "dangling") fs.writeFileSync(target, "victim configuration");
+            fs.symlinkSync(path.relative(projectDir, target), path.join(projectDir, "zowe.schema.json"));
+
+            expect(updateSchema()).toBe(false);
+            if (location !== "dangling") {
+                expect(fs.readFileSync(target, "utf8")).toBe("victim configuration");
+            } else {
+                expect(fs.existsSync(target)).toBe(false);
+            }
+        });
     });
 
     describe("load", () => {
@@ -862,7 +926,10 @@ describe("Config tests", () => {
     });
 
     describe("getSchemaInfo", () => {
-        const spyOnFsWriteFileSync = jest.spyOn(fs, "writeFileSync");
+        let spyOnFsWriteFileSync: jest.SpyInstance;
+        beforeEach(() => {
+            spyOnFsWriteFileSync = jest.spyOn(fs, "writeFileSync");
+        });
 
         it("should not be able to get any information if the $schema property is missing from the active layer", async () => {
             const config = await Config.load(MY_APP);

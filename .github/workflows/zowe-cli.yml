@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20.9.0, 20.x, 22.x, 24.x]
+        node-version: [22.11.0, 22.x, 24.x, 26.x]
         os:
           - windows-latest
           - ubuntu-22.04
@@ -127,13 +127,11 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
       run: ./__tests__/__resources__/daemon_instances/zowe
 
-    - name: Integration Tests (Native)
-      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type == 'nodejs' }}
+    - name: Integration Tests
+      if: ${{ always() && steps.build.outcome == 'success' }}
+      env:
+        JEST_MAX_WORKERS: ${{ github.event.inputs.test-type != 'nodejs' && '1' || '' }}
       run: npm run test:integration
-
-    - name: Integration Tests (Daemon)
-      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      run: npm run test:integration -- --runInBand
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
@@ -206,6 +204,13 @@ jobs:
     - name: Test Zowe CLI
       run: zowe --version
 
+    - name: Verify Lockfile
+      run: |
+        cd "$(mktemp -d)"
+        npm init -y
+        npm install "${{ github.workspace }}"/zowe-cli-*.tgz
+        npm ci --dry-run --offline
+
   release:
     if: github.event_name == 'push' && github.ref_protected
     needs: test
@@ -223,11 +228,11 @@ jobs:
         persist-credentials: false
         ref: ${{ github.ref }}
 
-    # Use Node 20. Currently the latest.
-    - name: Use Node.js 20
+    # Use Node 22.
+    - name: Use Node.js 22
       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
-        node-version: '20'
+        node-version: '22'
 
     - name: Install Dependencies
       run: npm ci
