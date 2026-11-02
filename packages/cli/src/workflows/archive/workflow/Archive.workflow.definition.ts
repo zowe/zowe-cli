@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { ArchiveOptions } from "../Archive.options";
-import { join } from "path";
+import ArchiveHandler from "../Archive.handler";
 
 /**
  * This object defines the command for archiving workflow instance on zOSMF.
@@ -24,7 +24,7 @@ export const Workflow: ICommandDefinition = {
     aliases: ["aw"],
     description: "Archive an active workflow instance in z/OSMF.",
     type: "command",
-    handler: join(__dirname, "../Archive.handler"),
+    handler: ArchiveHandler,
     profile: {
         optional: ["zosmf"]
     },

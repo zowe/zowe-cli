@@ -22,7 +22,6 @@ import { findNpmOnPath } from "../NpmFunctions";
 import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 
-const npmCmd = findNpmOnPath();
 
 /**
  * Updates `extenders.json` and returns a list of types to remove from the schema, if applicable.
@@ -110,7 +109,7 @@ export function uninstall(packageName: string): void {
         // formatting or colors but at least I can get the output of stdout right. (comment from install handler)
         iConsole.info("Uninstalling package...this may take some time.");
 
-        const output = ExecUtils.spawnAndGetOutput(npmCmd,
+        const output = ExecUtils.spawnAndGetOutput(findNpmOnPath(),
             [
                 "uninstall",
                 npmPackage,

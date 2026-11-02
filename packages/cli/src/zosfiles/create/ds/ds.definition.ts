@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";
+import DataSetHandler from "./ds.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).CREATE;
@@ -26,7 +27,7 @@ export const DsDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.DATA_SET_LIKE.SUMMARY,
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/ds.handler",
+    handler: DataSetHandler,
     profile: {
         optional: ["zosmf"]
     },

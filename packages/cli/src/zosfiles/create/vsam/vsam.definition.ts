@@ -15,6 +15,7 @@ import { ZosFilesConstants, CreateDefaults } from "@zowe/zos-files-for-zowe-sdk"
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
 import i18nTypings from "../../-strings-/en";
+import VsamHandler from "./vsam.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
@@ -49,7 +50,7 @@ export const VsamDefinition: ICommandDefinition = {
     summary: vsamStrings.SUMMARY,
     description: vsamStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/vsam.handler",
+    handler: VsamHandler,
     profile: {
         optional: ["zosmf"]
     },

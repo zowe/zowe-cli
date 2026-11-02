@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
+import DsmHandler from "./Dsm.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings);
@@ -23,7 +24,7 @@ export const DsmDefinition: ICommandDefinition = {
     summary: dsmStrings.SUMMARY,
     description: dsmStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/Dsm.handler",
+    handler: DsmHandler,
     profile: {
         optional: ["zosmf"]
     },

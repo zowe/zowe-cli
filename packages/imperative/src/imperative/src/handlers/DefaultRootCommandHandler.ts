@@ -9,13 +9,14 @@
 *
 */
 
-import { Imperative } from "../../../imperative/src/Imperative";
 import { ICommandTreeEntry } from "../../../cmd/src/utils/CommandUtils";
 import { CommandUtils } from "../../../cmd/src/utils/CommandUtils";
 import { ICommandHandler, IHandlerParameters } from "../../../cmd";
-import { ImperativeConfig, TextUtils } from "../../../utilities";
+import { TextUtils } from "../../../utilities/src/TextUtils";
+import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 import { WebHelpManager } from "../../../cmd/src/help/WebHelpManager";
 import { IImperativeVersions } from "../doc/IImperativeVersions";
+import { ImperativeHelpGeneratorFactory } from "../help/ImperativeHelpGeneratorFactory";
 /**
  * The default command handler for the top level/root command
  * Allows the user to check the version of the package.
@@ -38,10 +39,13 @@ export default class DefaultRootCommandHandler implements ICommandHandler {
         } else if(params.arguments.availableCommands) {
 
             // Gather and display the full set of commands available to the CLI with descriptions
-            const cmdList: ICommandTreeEntry[] = CommandUtils.flattenCommandTree(Imperative.fullCommandTree);
+            const cmdList: ICommandTreeEntry[] = CommandUtils.flattenCommandTree(params.fullDefinition);
             cmdList.forEach((cmd: ICommandTreeEntry) => {
                 if (cmd.command.type === "command") {
-                    params.response.console.log(Imperative.highlightWithPrimaryColor(`${Imperative.rootCommandName.trim()} ${cmd.fullName.trim()}`));
+                    const commandName = `${ImperativeConfig.instance.rootCommandName.trim()} ${cmd.fullName.trim()}`;
+                    params.response.console.log(
+                        TextUtils.chalk[ImperativeConfig.instance.loadedConfig.primaryTextColor || "yellow"](commandName)
+                    );
                     params.response.console.log("");
                     params.response.console.log(TextUtils.wordWrap(cmd.command.description,
                         TextUtils.DEFAULT_WRAP_WIDTH,
@@ -50,11 +54,14 @@ export default class DefaultRootCommandHandler implements ICommandHandler {
                 }
             });
 
-            params.response.data.setObj(Imperative.fullCommandTree, false);
+            params.response.data.setObj(params.fullDefinition, false);
         } else if (params.arguments.helpWeb) {
             WebHelpManager.instance.openRootHelp(params.response);
         } else {
-            params.response.console.log(Buffer.from(Imperative.getHelpGenerator({
+            const helpGeneratorFactory = new ImperativeHelpGeneratorFactory(
+                ImperativeConfig.instance.rootCommandName, ImperativeConfig.instance.loadedConfig
+            );
+            params.response.console.log(Buffer.from(helpGeneratorFactory.getHelpGenerator({
                 commandDefinition: params.definition,
                 fullCommandTree: params.fullDefinition,
                 experimentalCommandsDescription: ImperativeConfig.instance.loadedConfig.experimentalCommandDescription

@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { ZosJobsOptions } from "../../ZosJobs.options";
 
 import i18nTypings from "../../-strings-/en";
+import OldJobsHandler from "./OldJobs.handler";
 
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE;
 
@@ -22,7 +23,7 @@ export const OldJobsDefinition: ICommandDefinition = {
     type: "command",
     summary: strings.ACTIONS.OLD_JOBS.SUMMARY,
     description: strings.ACTIONS.OLD_JOBS.DESCRIPTION,
-    handler: __dirname + "/OldJobs.handler",
+    handler: OldJobsHandler,
     profile: {
         optional: ["zosmf"]
     },

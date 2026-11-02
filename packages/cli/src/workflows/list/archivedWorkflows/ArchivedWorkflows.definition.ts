@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { join } from "path";
+import ListArchivedWorkflowsHandler from "./ArchivedWorkflows.handler";
 
 /**
  * This object defines the command for listing archived z/OSMF workflows for a system or sysplex.
@@ -24,7 +24,7 @@ export const ArchivedWorkflows: ICommandDefinition = {
     summary: "List all archived workflows for a system",
     description: "List the archived z/OSMF workflows for a system or sysplex.",
     type: "command",
-    handler: join(__dirname, "ArchivedWorkflows.handler"),
+    handler: ListArchivedWorkflowsHandler,
     profile: {
         optional: ["zosmf"]
     },

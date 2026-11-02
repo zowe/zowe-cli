@@ -11,8 +11,8 @@
 
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { join } from "path";
 import { StartCommonOptions } from "../Start.common.options";
+import WorkflowFullHandler from "./WorkflowFull.handler";
 
 /**
  * This object defines the command for delete workflow using workflow key within zos-workflows.
@@ -26,7 +26,7 @@ export const WorkflowFull: ICommandDefinition = {
     summary: "Will run workflow from the beginning to the end or to the first manual step",
     description: "Will run workflow from the beginning to the end or to the first manual step.",
     type: "command",
-    handler: join(__dirname, "./WorkflowFull.handler"),
+    handler: WorkflowFullHandler,
     profile: {
         optional: ["zosmf"]
     },

@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import * as path from "path";
+import InstanceVariablesHandler from "./InstanceVariables.handler";
 
 export const instanceVariables: ICommandDefinition = {
     name: "instance-variables",
@@ -18,7 +18,7 @@ export const instanceVariables: ICommandDefinition = {
     type: "command",
     summary: "List Instance Variables and Values",
     description: "List a set of variables and their values for a given name.",
-    handler: path.join(__dirname, "/InstanceVariables.handler"),
+    handler: InstanceVariablesHandler,
     profile: {
         optional: ["zosmf"]
     },

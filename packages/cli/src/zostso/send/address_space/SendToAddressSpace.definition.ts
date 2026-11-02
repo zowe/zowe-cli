@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import Handler from "./SendToAddressSpace.handler";
 
 export const SendToAddressSpaceCommandDefinition: ICommandDefinition = {
     name: "address-space",
@@ -18,7 +19,7 @@ export const SendToAddressSpaceCommandDefinition: ICommandDefinition = {
     description: "Send data to the TSO address space, from which " +
     "you previously started and received a token (a.k.a 'servlet-key').",
     type: "command",
-    handler: __dirname + "/SendToAddressSpace.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf"]
     },

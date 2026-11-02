@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import EditHandler from "./edit.handler";
 
 /**
  * Definition of the edit command.
@@ -19,7 +19,7 @@ import { join } from "path";
 export const editDefinition: ICommandDefinition = {
     name: "edit",
     type: "command",
-    handler: join(__dirname, "edit.handler"),
+    handler: EditHandler,
     summary: "Edit config files",
     description: `Edit an existing config file in your system's default text editor.\n\n` +
         `In a graphical environment, the application associated with JSON files will be launched. ` +

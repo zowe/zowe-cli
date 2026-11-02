@@ -9,11 +9,11 @@
 *
 */
 
-import * as path from "path";
 import { ICommandDefinition } from "@zowe/imperative";
 import { UploadOptions } from "../Upload.options";
 
 import i18nTypings from "../../-strings-/en";
+import FileToUSSHandler from "./FileToUSS.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).UPLOAD.ACTIONS.FILE_TO_USS;
@@ -28,7 +28,7 @@ export const FileToUSSDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
-    handler: path.join(__dirname, "/FileToUSS.handler"),
+    handler: FileToUSSHandler,
     profile: {
         optional: ["zosmf"]
     },

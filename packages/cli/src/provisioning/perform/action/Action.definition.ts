@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import ActionHandler from "./Action.handler";
 
 export const ActionDefinition: ICommandDefinition = {
     name: "action",
@@ -21,7 +22,7 @@ export const ActionDefinition: ICommandDefinition = {
     "   \"zowe provisioning list registry-instances\" command. Once you have\n" +
     "   obtained an instance name you can use the \"zowe provisioning list\n" +
     "   instance-info <name>\" command to view the available instance actions.",
-    handler: __dirname + "/Action.handler",
+    handler: ActionHandler,
     profile: {
         optional: ["zosmf"]
     },

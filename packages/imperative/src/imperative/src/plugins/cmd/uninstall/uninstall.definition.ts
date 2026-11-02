@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import UninstallHandler from "./uninstall.handler";
 
 const pluginDescription =
   "The name of the plug-in to uninstall.\n\n" +
@@ -25,7 +25,7 @@ export const uninstallDefinition: ICommandDefinition = {
     type: "command",
     summary: "Uninstall a plug-in",
     description: "Uninstall plug-ins.",
-    handler: join(__dirname, "uninstall.handler"),
+    handler: UninstallHandler,
     positionals: [
         {
             name: "plugin...",

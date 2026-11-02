@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { FsMountOptions } from "./fs.options";
 
 import i18nTypings from "../../-strings-/en";
+import FsHandler from "./fs.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
@@ -24,7 +25,7 @@ export const FsDefinition: ICommandDefinition = {
     summary: fsStrings.SUMMARY,
     description: fsStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/fs.handler",
+    handler: FsHandler,
     profile: {
         optional: ["zosmf"]
     },

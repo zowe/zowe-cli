@@ -10,13 +10,14 @@
 */
 
 import { IPartialCommandDefinition } from "../../IPartialCommandDefinition";
+import { ICommandHandlerConstructor } from "../../handler/ICommandHandlerConstructor";
 
 export interface ICommandProfileAutoInitConfig {
     /**
-     * Path to the handler for the authentication service.
-     * The handler should inherit from Imperative BaseAuthHandler.
+     * Handler constructor or module path for automatic initialization.
+     * The handler should inherit from Imperative BaseAutoInitHandler.
      */
-    handler: string;
+    handler: string | ICommandHandlerConstructor;
 
     /**
      * The provider giving connection information and details for the automatically generated config

@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
+import Handler from "./AddressSpace.handler";
 
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
@@ -20,7 +21,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
         "you will receive a token (a.k.a 'servlet-key') for further address space interaction " +
         "(e.g. termination).",
     type: "command",
-    handler: __dirname + "/AddressSpace.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf", "tso"]
     },

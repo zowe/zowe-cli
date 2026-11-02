@@ -9,8 +9,8 @@
 *
 */
 
-import { join } from "path";
 import { ICommandDefinition } from "../../../../../cmd";
+import ReportEnvHandler from "./Report-env.handler";
 
 /**
  * Definition for the 'config report-env' command.
@@ -20,7 +20,7 @@ export const ReportEnvDefinition: ICommandDefinition = {
     name: "report-env",
     aliases: ["re"],
     type: "command",
-    handler: join(__dirname, "Report-env.handler"),
+    handler: ReportEnvHandler,
     summary: "Report the state of your working environment",
     description: "Reports key items from your environment and identifies problem conditions.",
     examples: [

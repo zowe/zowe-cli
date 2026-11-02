@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { ListOptions } from "../List.options";
 import i18nTypings from "../../-strings-/en";
+import AllMembersHandler from "./AllMembers.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).LIST.ACTIONS.ALL_MEMBERS;
@@ -26,7 +27,7 @@ export const AllMembersDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/AllMembers.handler",
+    handler: AllMembersHandler,
     profile: {
         optional: ["zosmf"]
     },

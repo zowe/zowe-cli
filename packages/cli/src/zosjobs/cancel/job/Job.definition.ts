@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { ZosJobsOptions } from "../../ZosJobs.options";
 
 import i18nTypings from "../../-strings-/en";
+import JobHandler from "./Job.handler";
 
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).CANCEL;
 
@@ -21,7 +22,7 @@ export const JobDefinition: ICommandDefinition = {
     type: "command",
     summary: strings.ACTIONS.JOB.SUMMARY,
     description: strings.ACTIONS.JOB.DESCRIPTION,
-    handler: __dirname + "/Job.handler",
+    handler: JobHandler,
     profile: {
         optional: ["zosmf"]
     },

@@ -15,6 +15,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SUBMIT.ACTIONS;
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import SharedSubmitHandler from "../Submit.shared.handler";
 
 export const DataSetDefinition: ICommandDefinition = {
     name: "data-set",
@@ -22,7 +23,7 @@ export const DataSetDefinition: ICommandDefinition = {
     type: "command",
     summary: strings.DATA_SET.SUMMARY,
     description: strings.DATA_SET.DESCRIPTION,
-    handler: __dirname + "/../Submit.shared.handler",
+    handler: SharedSubmitHandler,
     positionals: [
         {
             name: "dataset",

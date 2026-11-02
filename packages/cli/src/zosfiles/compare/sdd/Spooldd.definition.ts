@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { CompareOptions } from "../Compare.options";
 import i18nTypings from "../../-strings-/en";
+import SpoolddHandler from "./Spooldd.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COMPARE;
@@ -26,7 +27,7 @@ export const SpoolddDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.SPOOL_DD.SUMMARY,
     description: strings.ACTIONS.SPOOL_DD.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/Spooldd.handler",
+    handler: SpoolddHandler,
     profile: {
         optional: ["zosmf"],
     },

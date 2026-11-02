@@ -14,7 +14,7 @@ import { Logger } from "../../../../../logger";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { ImperativeError } from "../../../../../error";
-import { PluginManagementFacility } from "../../PluginManagementFacility";
+import { PluginRuntime } from "../../PluginRuntime";
 
 /**
  * The firststeps command handler for cli plugin firststeps.
@@ -60,7 +60,7 @@ export default class FirststepsHandler implements ICommandHandler {
                 msg: `${chalk.yellow.bold("Package name")} is required.`
             });
         } else {
-            const pluginsProperties = PluginManagementFacility.instance.allPluginCfgProps;
+            const pluginsProperties = PluginRuntime.instance.allPluginCfgProps;
 
             for (const nextPluginCfgProps of pluginsProperties) {
                 if (params.arguments.plugin == nextPluginCfgProps.pluginName) {

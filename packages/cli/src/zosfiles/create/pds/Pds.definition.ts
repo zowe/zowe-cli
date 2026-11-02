@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { CreateDefaults } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";
+import PdsHandler from "./Pds.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).CREATE;
@@ -27,7 +28,7 @@ export const PdsDefinition: ICommandDefinition = {
     summary: strings.ACTIONS.DATA_SET_PARTITIONED.SUMMARY,
     description: strings.ACTIONS.DATA_SET_PARTITIONED.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/Pds.handler",
+    handler: PdsHandler,
     profile: {
         optional: ["zosmf"]
     },

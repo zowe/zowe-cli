@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { RetrieveWorkflowDefinitionCommonOptions } from "./RetrieveWorkflowDefinition.options";
-import { join } from "path";
+import ListActiveWorkflowsHandler from "./RetrieveWorkflowDefinition.handler";
 
 /**
  * This object defines the command for retrieving workflow contents of zosworkflow definition.
@@ -25,7 +25,7 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
     summary: "Retrieve the contents of a z/OSMF workflow definition from a z/OS system",
     description: "Retrieve the contents of a z/OSMF workflow definition from a z/OS system.",
     type: "command",
-    handler: join(__dirname, "./RetrieveWorkflowDefinition.handler"),
+    handler: ListActiveWorkflowsHandler,
     profile: {
         optional: ["zosmf"]
     },

@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { Constants } from "../../../Constants";
+import Handler from "./Command.handler";
 
 export const IssueCommandDefinition: ICommandDefinition = {
     name: "command",
@@ -34,7 +35,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
     `You can manually collect additional responses using the "command response key" OR specify additional processing ` +
     `options to, for example, delay collection attempts by a specified interval.`,
     type: "command",
-    handler: __dirname + "/Command.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf"]
     },
