@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.26`
 
 - BugFix: Removed `node:fs` import that could cause errors when bundling with Webpack. [#2998](https://github.com/zowe/zowe-cli/pull/2998)
 
