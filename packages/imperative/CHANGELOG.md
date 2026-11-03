@@ -5,7 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
-- BugFix: Fixed `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile.
+- Enhancement: Updated `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile.
 
 ## `8.41.0`
 
