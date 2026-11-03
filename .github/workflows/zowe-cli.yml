@@ -72,7 +72,7 @@ jobs:
         ZOWEX_REF: bf84126f0c8368d184a8cbef983823445adcba9b # native-v1.2.7
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: ${{ matrix.node-version }}
         check-latest: true
@@ -196,12 +196,12 @@ jobs:
 
     steps:
     - name: Use Node.js LTS
-      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: 'lts/*'
 
     - name: Download CLI Package
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
       with:
         name: zowe-cli
 
@@ -237,7 +237,7 @@ jobs:
 
     # Use Node 20. Currently the latest.
     - name: Use Node.js 20
-      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: '20'
 
@@ -254,7 +254,7 @@ jobs:
     - name: Build Source
       run: npm run build
 
-    - uses: zowe-actions/octorelease@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1
+    - uses: zowe-actions/octorelease@e4c509e08c4dfca0186571e937c605284a50de06 # v1
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
