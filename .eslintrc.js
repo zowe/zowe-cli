@@ -67,6 +67,9 @@ module.exports = {
         "@typescript-eslint/no-restricted-imports": ["error", {
             "patterns": [{
                 "group": ["**/../lib", "**/../src"]
+            }, {
+                "group": ["node:*"],
+                "message": "Please use bare module specifiers (e.g., 'fs') instead of the 'node:' prefix."
             }]
         }],
         "@typescript-eslint/no-unused-vars": "off",
