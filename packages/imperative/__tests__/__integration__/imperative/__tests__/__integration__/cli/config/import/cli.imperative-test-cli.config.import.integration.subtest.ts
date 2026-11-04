@@ -16,6 +16,7 @@ import { spawn } from "cross-spawn";
 import { ITestEnvironment } from "../../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../../src/TestUtil";
+import { mkdirp } from "fs-extra";
 const stripAnsi = require("strip-ansi");
 
 // Test Environment populated in the beforeAll();
@@ -51,7 +52,7 @@ describe("imperative-test-cli config import", () => {
         localhostUrl = await new Promise((resolve, _reject) => {
             pServer.stdout.on("data", (data: Buffer) => {
                 const match = data.toString().match(serverAddressRegex);
-                if(match != null) {
+                if (match != null) {
                     resolve(stripAnsi(match[1]));
                 }
             });
@@ -149,6 +150,79 @@ describe("imperative-test-cli config import", () => {
                 expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
                     path.join(__dirname, "__resources__", "test.schema.good.json"));
             });
+
+            it("should successfully import a config and schema from a URL, " +
+                "prompting the user when the schema already exists, and the user responds 'y'", async () => {
+                    await mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
+                    fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
+                        fs.readFileSync(path.join(__dirname, "__resources__", "test.schema.good.modified.json")));
+                    const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_prompt.sh"), TEST_ENVIRONMENT.workingDir, [
+                        localhostUrl + "/test.config.good.with.schema.json", "--user-config false --global-config false",
+                    ], {
+                        promptAnswer: "y",
+                        CI: undefined, // force prompting on 
+                    });
+
+                    expect(response.stderr.toString()).toEqual("");
+                    expect(response.stdout.toString()).toContain("Imported config and schema");
+                    expect(response.stdout.toString()).toContain("already exists. Overwrite it with the schema downloaded from");
+                    expect(response.status).toEqual(0);
+
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"),
+                        path.join(__dirname, "__resources__", "test.config.good.with.schema.json"));
+                    // the file should now be overwritten from the contents of test.schema.good.modified.json
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
+                        path.join(__dirname, "__resources__", "test.schema.good.json"));
+                });
+
+
+            it("should successfully import a config from a URL, " +
+                "prompting the user when the schema already exists, and the user responds 'n', "
+                + "resulting in the schema not being written", async () => {
+                    await mkdirp(path.join(TEST_ENVIRONMENT.workingDir, "test"));
+                    fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
+                        fs.readFileSync(path.join(__dirname, "__resources__", "test.schema.good.modified.json")));
+                    const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_prompt.sh"), TEST_ENVIRONMENT.workingDir, [
+                        localhostUrl + "/test.config.good.with.schema.json", "--user-config false --global-config false",
+
+                    ], {
+                        promptAnswer: "n",
+                        CI: undefined, // force prompting on 
+                    });
+
+                    expect(response.stderr.toString()).toEqual("");
+                    expect(response.stdout.toString()).toContain("Imported config to"); // should not import schema
+                    expect(response.stdout.toString()).toContain("already exists. Overwrite it with the schema downloaded from");
+
+                    expect(response.status).toEqual(0);
+
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"),
+                        path.join(__dirname, "__resources__", "test.config.good.with.schema.json"));
+                    // should not have overwritten the schema, so the content should still be the same as test.schema.good.modified.json.
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"),
+                        path.join(__dirname, "__resources__", "test.schema.good.modified.json"));
+                });
+
+
+            it("should successfully import a config from a URL, " +
+                "but refuse to write the schema from URL when it is malformed", () => {
+
+                    const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                        localhostUrl + "/test.config.with.malformed.schema.json", "--user-config false --global-config false",
+                    ]);
+
+                    expect(response.stderr.toString()).toContain("appears to be malformed. It does not contain a '$schema' field.");
+                    expect(response.stdout.toString()).toContain("Imported config to"); // should not import schema
+
+                    expect(response.status).toEqual(0);
+
+                    expectFilesAreEqual(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"),
+                        path.join(__dirname, "__resources__", "/test.config.with.malformed.schema.json"));
+                    // should not have overwritten the schema, so the content should still be the same as test.schema.good.modified.json.
+                    expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir,
+                        "test", "test.schema.parses.but.no.schema.field.json"))).toBe(false);
+                });
+
 
             it("should successfully import a config without schema if it is defined with a URL", () => {
                 const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
