@@ -351,4 +351,28 @@ describe("CollectCommand collect", () => {
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_GET_RESOURCE);
     });
 
+    it("should stop collecting once the keyword is detected, even with follow-up attempts remaining.", async () => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn()
+            .mockResolvedValueOnce({...FOLLOW_UP_RESPONSE1, "sol-key-detected": true})
+            .mockResolvedValue(FOLLOW_UP_RESPONSE2);
+
+        const response: IConsoleResponse = await CollectCommand.collect(PRETEND_SESSION, CMD_COLLECT_FOLLOWUP2_PARMS);
+
+        expect(response.success).toBe(true);
+        expect(response.keywordDetected).toBe(true);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
+    });
+
+    it("should keep collecting while the keyword is not detected and follow-up attempts remain.", async () => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn()
+            .mockResolvedValueOnce({...FOLLOW_UP_RESPONSE1, "sol-key-detected": false})
+            .mockResolvedValueOnce({...FOLLOW_UP_RESPONSE2, "sol-key-detected": true})
+            .mockResolvedValue(FOLLOW_UP_RESPONSE2);
+
+        const response: IConsoleResponse = await CollectCommand.collect(PRETEND_SESSION, CMD_COLLECT_FOLLOWUP2_PARMS);
+
+        expect(response.keywordDetected).toBe(true);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(2);
+    });
+
 });

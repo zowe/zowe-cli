@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
+
+## `8.41.0`
+
+- BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
+
 ## `8.39.0`
 
 - BugFix: Fixed `Utilities.isFileTagBinOrAscii` and `Utilities.applyTaggedEncoding` crashing with unhandled `SyntaxError`/`TypeError` on malformed `chtag list` responses. Both methods now fall back to the safe default (return `false`/leave download options unmutated). [#2888](https://github.com/zowe/zowe-cli/issues/2888)

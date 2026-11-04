@@ -39,6 +39,12 @@ export class EncodeUri {
             // APIML fails with a 400 error unless # is encoded.
             Logger.getImperativeLogger().info("Encoding '#' in a z/OS URI path for API-ML");
             return zosUriPath.replaceAll("#", "%23");
+        } else if (zosUriPath.includes("#") && session?.ISession?.basePath) {
+            Logger.getImperativeLogger().warn(
+                `The URI path '${zosUriPath}' contains '#' and a basePath '${session.ISession.basePath}' is set, ` +
+                `but APIML encoding is disabled because chosen allowedLoginMethod is direct. ` +
+                `If this request routes through APIML, APIML may return HTTP 400 error.`
+            );
         }
         return zosUriPath;
     }

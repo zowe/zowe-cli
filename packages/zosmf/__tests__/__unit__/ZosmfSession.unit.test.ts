@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments, SessConstants } from "@zowe/imperative";
+import { ApimlDecisionReason, ConnectionPropsForSessCfg, Session, ISession, ICommandArguments, SessConstants } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a session config from cmd args",  () => {
@@ -32,6 +32,26 @@ describe("zosmf utils", () => {
         expect(sessIntface.protocol).toBe("https");
         expect(sessIntface.requestCompletionTimeout).toBe(60000);
         expect(sessIntface.socketConnectTimeout).toBe(30000);
+    });
+
+    it("should pass a direct allowedLoginMethod into the session, so that isUsingApiml is false even with a basePath", () => {
+        const args: ICommandArguments = { $0: "zowe", _: [""], basePath: "fakeBasePath", allowedLoginMethod: "direct-basic" };
+        const sessCfg: ISession = { hostname: "fakeHost", ...ZosmfSession.createSessCfgFromArgs(args) };
+        const session = new Session(sessCfg);
+
+        expect(session.ISession.allowedLoginMethod).toBe("direct-basic");
+        expect(session.isUsingApiml()).toBe(false);
+        expect(session.getApimlDecision().reason).toBe(ApimlDecisionReason.ALLOWED_LOGIN_METHOD_DIRECT);
+    });
+
+    it("should pass an apiml allowedLoginMethod into the session, so that isUsingApiml is true without a basePath", () => {
+        const args: ICommandArguments = { $0: "zowe", _: [""], allowedLoginMethod: "apiml-basic" };
+        const sessCfg: ISession = { hostname: "fakeHost", ...ZosmfSession.createSessCfgFromArgs(args) };
+        const session = new Session(sessCfg);
+
+        expect(session.ISession.allowedLoginMethod).toBe("apiml-basic");
+        expect(session.isUsingApiml()).toBe(true);
+        expect(session.getApimlDecision().reason).toBe(ApimlDecisionReason.ALLOWED_LOGIN_METHOD_APIML);
     });
 
     it("Should create a session object when tokenValue and tokenType are present", async () => {

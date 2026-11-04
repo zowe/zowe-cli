@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as os from "os";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
 import { ProfileInfo } from "../src/ProfileInfo";
@@ -238,6 +239,45 @@ describe("TeamConfig ProfileInfo tests", () => {
                 // Auth token should be undefined because user and password takes precedence
                 expect(newSess.ISession.tokenType).toBeUndefined();
                 expect(newSess.ISession.tokenValue).toBeUndefined();
+            });
+        });
+
+        describe("initSessCfg", () => {
+            it("should initialize session config with default arguments including SSH properties", () => {
+                const profArgs: IProfArgAttrs[] = [
+                    { argName: "host", dataType: "string", argValue: "example.com", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "port", dataType: "number", argValue: 22, argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "user", dataType: "string", argValue: "myUser", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "password", dataType: "string", argValue: "myPassword", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "hostKey", dataType: "string", argValue: "myHostKeyBase64", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "privateKey", dataType: "string", argValue: "/path/to/key", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "keyPassphrase", dataType: "string", argValue: "myKeyPassphrase", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "allowedLoginMethod", dataType: "string", argValue: "prompt", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "authOrder", dataType: "array", argValue: ["basic"], argLoc: { locType: ProfLocType.TEAM_CONFIG } }
+                ];
+
+                const sessCfg: any = ProfileInfo.initSessCfg(profArgs);
+                expect(sessCfg.hostname).toBe("example.com");
+                expect(sessCfg.port).toBe(22);
+                expect(sessCfg.user).toBe("myUser");
+                expect(sessCfg.password).toBe("myPassword");
+                expect(sessCfg.hostKey).toBe("myHostKeyBase64");
+                expect(sessCfg.privateKey).toBe("/path/to/key");
+                expect(sessCfg.keyPassphrase).toBe("myKeyPassphrase");
+                expect(sessCfg.allowedLoginMethod).toBe("prompt");
+                expect(sessCfg.authOrder).toEqual(["basic"]);
+                expect(sessCfg.protocol).toBe(SessConstants.HTTPS_PROTOCOL);
+            });
+
+            it("should only initialize requested arguments when argNames is specified", () => {
+                const profArgs: IProfArgAttrs[] = [
+                    { argName: "host", dataType: "string", argValue: "example.com", argLoc: { locType: ProfLocType.TEAM_CONFIG } },
+                    { argName: "hostKey", dataType: "string", argValue: "myHostKeyBase64", argLoc: { locType: ProfLocType.TEAM_CONFIG } }
+                ];
+
+                const sessCfg: any = ProfileInfo.initSessCfg(profArgs, ["hostKey"]);
+                expect(sessCfg.hostKey).toBe("myHostKeyBase64");
+                expect(sessCfg.hostname).toBeUndefined();
             });
         });
     });
@@ -1736,6 +1776,72 @@ describe("TeamConfig ProfileInfo tests", () => {
                 );
                 expect(existsSyncSpy).not.toHaveBeenCalled();
                 expect(writeFileSyncMock).not.toHaveBeenCalled();
+            });
+            describe("filesystem containment", () => {
+                let tempDir: string;
+                let projectDir: string;
+                let outsideDir: string;
+                let profInfo: ProfileInfo;
+                const fileLinkTest = process.platform === "win32" ? it.skip : it;
+
+                beforeEach(async () => {
+                    profInfo = createNewProfInfo(teamProjDir);
+                    await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                    writeFileSyncMock.mockRestore();
+                    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-profile-schema-"));
+                    projectDir = path.join(tempDir, "project");
+                    outsideDir = path.join(tempDir, "outside");
+                    fs.mkdirSync(projectDir);
+                    fs.mkdirSync(outsideDir);
+                });
+
+                afterEach(() => {
+                    fs.rmSync(tempDir, { recursive: true, force: true });
+                });
+
+                const updateSchema = (schemaUri: string) => profInfo["updateSchemaAtLayer"]("newType", {
+                    title: "New profile type", description: "Schema containment regression",
+                    type: "object", properties: { host: { type: "string" } }
+                }, {
+                    ...testCfgLayer,
+                    path: path.join(projectDir, "zowe.config.json"),
+                    properties: { ...testCfgLayer.properties, $schema: schemaUri }
+                }, true);
+
+                it("preserves a victim schema behind an escaped directory link", () => {
+                    const target = path.join(outsideDir, "zowe.schema.json");
+                    fs.writeFileSync(target, "victim configuration");
+                    fs.symlinkSync(outsideDir, path.join(projectDir, "linked"), process.platform === "win32" ? "junction" : "dir");
+
+                    expect(updateSchema("./linked/zowe.schema.json")).toBe(false);
+                    expect(fs.readFileSync(target, "utf8")).toBe("victim configuration");
+                });
+
+                fileLinkTest.each(["outside", "inside", "dangling"])("refuses a %s destination file symlink", (location) => {
+                    const target = path.join(location === "inside" ? projectDir : outsideDir, "victim.json");
+                    if (location !== "dangling") fs.writeFileSync(target, "victim configuration");
+                    fs.symlinkSync(path.relative(projectDir, target), path.join(projectDir, "zowe.schema.json"));
+
+                    expect(updateSchema("./zowe.schema.json")).toBe(false);
+                    if (location !== "dangling") {
+                        expect(fs.readFileSync(target, "utf8")).toBe("victim configuration");
+                    } else {
+                        expect(fs.existsSync(target)).toBe(false);
+                    }
+                });
+
+                it("writes the new profile type to a regular schema", () => {
+                    const schemaPath = path.join(projectDir, "zowe.schema.json");
+                    fs.writeFileSync(schemaPath, "{}");
+
+                    expect(updateSchema("./zowe.schema.json")).toBe(true);
+                    const writtenSchema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+                    expect(writtenSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toContainEqual(
+                        expect.objectContaining({
+                            if: { properties: { type: { const: "newType" } } }
+                        })
+                    );
+                });
             });
         });
 

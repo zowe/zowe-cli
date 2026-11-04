@@ -56,6 +56,11 @@ export interface IConfigAutoStoreFindAuthHandlerForProfileOpts extends IConfigAu
     cmdArguments?: ICommandArguments;
 
     /**
+     * Session config containing properties to store or inspect
+     */
+    sessCfg?: { [key: string]: any };
+
+    /**
      * Default base profile name
      * Used if cmdArguments == null
      */

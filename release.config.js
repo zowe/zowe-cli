@@ -32,6 +32,7 @@ module.exports = {
             aliasTags: {
                 "latest": ["zowe-v3-lts"]
             },
+            publishRegistry: "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/",
             smokeTest: true
         }],
         ["@octorelease/github", {

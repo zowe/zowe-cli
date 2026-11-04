@@ -20,6 +20,7 @@ import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
 import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as fs from "fs";
+import { Censor } from "../../censor";
 
 describe("Imperative", () => {
     const loadImperative = () => {
@@ -150,7 +151,10 @@ describe("Imperative", () => {
             }
         };
 
+        let backupArgv = process.argv;
+
         beforeEach(() => {
+            backupArgv = process.argv;
             defaultConfig = {
                 name: "test-cli",
                 allowPlugins: false,
@@ -169,6 +173,10 @@ describe("Imperative", () => {
             mocks.Config.load.mockResolvedValue({});
         });
 
+        afterEach(() => {
+            process.argv = backupArgv;
+        });
+
         it("should work when passed with nothing", async () => {
             // the thing that we really want to test
             const result = await Imperative.init();
@@ -177,6 +185,27 @@ describe("Imperative", () => {
             expect(mocks.Config.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample", zoweVersion: "V99" });
+        });
+
+        it("should censor process.argv before logging it", async () => {
+            jest.spyOn(mocks.Logger, "setLogInMemory")
+                .mockImplementationOnce(() => { throw new ImperativeError({ msg: "unknown error during Imperative.init" }); });
+            const loggerFatalMock = jest.fn();
+            mocks.Logger.getImperativeLogger.mockReturnValue({ fatal: loggerFatalMock } as any);
+            process.argv = [
+                "node",
+                "/usr/local/bin/zowe", "zosmf", "check", "status",
+                "--password", "zowe1234",
+                "--token-value", "abc.def.123"
+            ];
+            await expect(Imperative.init()).rejects.toThrow("Unexpected Error Encountered");
+
+            const diagCall = loggerFatalMock.mock.calls.find(c => String(c[0]).startsWith("Diagnostic information"));
+            expect(diagCall).toBeDefined();
+            expect(diagCall[3]).toContain("--password " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("zowe1234");
+            expect(diagCall[3]).toContain("--token-value " + Censor.CENSOR_RESPONSE);
+            expect(diagCall[3]).not.toContain("abc.def.123");
         });
 
         describe("AppSettings", () => {
@@ -225,7 +254,7 @@ describe("Imperative", () => {
             });
 
             it("should surface failures if daemonMode is not specified", async () => {
-                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({msg: "Config error"})).mockResolvedValue({});
+                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({ msg: "Config error" })).mockResolvedValue({});
                 let error;
                 try {
                     await Imperative.init();
@@ -239,8 +268,8 @@ describe("Imperative", () => {
             });
 
             it("should not surface failures if daemonMode is specified", async () => {
-                mocks.ConfigurationLoader.load.mockReturnValue({...defaultConfig, daemonMode: true});
-                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({msg: "Config error"})).mockResolvedValue({});
+                mocks.ConfigurationLoader.load.mockReturnValue({ ...defaultConfig, daemonMode: true });
+                jest.spyOn(mocks.Config, "load").mockRejectedValueOnce(new ImperativeError({ msg: "Config error" })).mockResolvedValue({});
                 let error;
                 try {
                     await Imperative.init();
@@ -416,7 +445,7 @@ describe("Imperative", () => {
         describe("Environment Config", () => {
             it("should not surface failures if there is an error in environment variable file", async () => {
                 mocks.EnvFileUtils.setEnvironmentForApp.mockImplementation((_appName: string) => {
-                    throw new ImperativeError({msg: "Environment Setup Error"});
+                    throw new ImperativeError({ msg: "Environment Setup Error" });
                 });
                 mocks.Logger.prototype.warn.mockClear();
 

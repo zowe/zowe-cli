@@ -140,7 +140,6 @@ export function readStdin(): Promise<Buffer> {
         stream.resume();
 
         stream.on("data", (chunk: Buffer) => {
-            log.trace(`Read data from stdin: ${chunk.toString()}`);
             log.debug(`Read ${chunk.length} bytes of data from stdin`);
             stdinContent = Buffer.concat([stdinContent, chunk]);
         });

@@ -47,6 +47,19 @@ describe("EncodeUri tests", () => {
             const encodedUri = EncodeUri.encUriPathForZos(apimlSession, suppliedUri);
             expect(encodedUri).toEqual(expectedUri);
         });
+
+        it("should not encode # for a zos URI path when allowedLoginMethod is direct-basic even with a basePath", () => {
+            const directApimlSession = new Session({
+                hostname: "fakeHost",
+                basePath: "basePath_means_apiml",
+                allowedLoginMethod: "direct-basic"
+            });
+            const zosBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
+            const suppliedUri = zosBaseUri + "/-(VOL99)/ALPHA.12345.JCL(TEST#)";
+
+            const encodedUri = EncodeUri.encUriPathForZos(directApimlSession, suppliedUri);
+            expect(encodedUri).toEqual(suppliedUri);
+        });
     }); // end encUriPathForZos
 
     describe("encUriPathForUss tests", () => {

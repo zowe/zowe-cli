@@ -9,10 +9,11 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AddressSpaceApps } from "../../src";
+import { AddressSpaceApps, noAppKeyInput } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
+import { IASAppResponse } from "../../src/doc/IASAppResponse";
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -160,7 +161,7 @@ describe("ReceiveTsoApp behavior", () => {
             timeout: false,
             servletKey: "ZOWEUSER-127-aabeaaag",
             queueID: null,
-            tsoData: [{"TSO MESSAGE":{ VERSION: "0100", DATA: "First response data." }}],
+            tsoData: [{ "TSO MESSAGE": { VERSION: "0100", DATA: "First response data." } }],
         };
 
         // Mock the second response containing "READY" to trigger stopping condition
@@ -171,8 +172,8 @@ describe("ReceiveTsoApp behavior", () => {
             servletKey: "ZOWEUSER-127-aabeaaag",
             queueID: null,
             tsoData: [
-                {"TSO MESSAGE":{ VERSION: "0100", DATA: "Second response data." }},
-                {"TSO MESSAGE":{ VERSION: "0100", DATA: "READY" }}
+                { "TSO MESSAGE": { VERSION: "0100", DATA: "Second response data." } },
+                { "TSO MESSAGE": { VERSION: "0100", DATA: "READY" } }
             ],
         };
 
@@ -200,5 +201,50 @@ describe("ReceiveTsoApp behavior", () => {
             { VERSION: "0100", DATA: "READY" },
         ]);
         expect(ZosmfRestClient.getExpectJSON).toHaveBeenCalledTimes(2); // Two calls due to no "READY" in the first response
+    });
+
+    test.each(
+        ["aef?-bieioe", "../myFile.txt", "example.com", "aefabie?myQueryParam",
+            "lucky#9", "contains+plus", "any%complete"]
+    )('should reject the appKey %s which has invalid characters', async (appKey) => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            await AddressSpaceApps.receive(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    appKey,
+                    servletKey: "aefba-abebabab-valid"
+                }
+            );
+
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("The appKey contains illegal characters.");
+    });
+
+    it('should reject an empty appKey', async () => {
+        let error: ImperativeError;
+        let response: IASAppResponse;
+        try {
+            await AddressSpaceApps.receive(
+                PRETEND_SESSION,
+                "123456",
+                {
+                    appKey: "",
+                    servletKey: "aefba-abebabab-valid"
+                }
+            );
+
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).toBeUndefined();
+        expect(error).toBeDefined();
+        expect(error.message).toContain(noAppKeyInput.message);
     });
 });

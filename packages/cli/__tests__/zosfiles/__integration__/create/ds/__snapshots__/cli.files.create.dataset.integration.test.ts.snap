@@ -196,7 +196,8 @@ exports[`Create  Data Set should display the help 1`] = `
 
       Restricts which credentials a user is prompted for when logging into a service
       or updating stored credentials, so that they comply with site requirements.
-      Defaults to 'prompt' when omitted.
+      Accepted values are 'direct-basic', 'direct-cert-pem', 'apiml-basic',
+      'apiml-cert-pem', and 'prompt'. Defaults to 'prompt' when omitted.
 
       Allowed values: direct-basic, direct-cert-pem, apiml-basic, apiml-cert-pem,
       prompt

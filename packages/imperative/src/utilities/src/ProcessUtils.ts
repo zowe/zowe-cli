@@ -10,6 +10,7 @@
 */
 
 import { Logger } from "../../logger";
+import { IO } from "../../io";
 import { ISystemInfo } from "./doc/ISystemInfo";
 import * as spawn from "cross-spawn";
 
@@ -126,17 +127,15 @@ export class ProcessUtils {
      * @param sync - Boolean where true == synchronous and false == asynchronous
      */
     public static openInEditor(filePath: string, editor?: string, sync?: boolean) {
-        if (ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE) {
+        let editorArgs: string[] = [];
+        if (ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE && editor != null) {
             Logger.getImperativeLogger().info(`Opening ${filePath} in graphical editor`);
-            if (editor != null) {
-                (sync ? spawn.sync : spawn.spawn)(editor, [filePath], { stdio: "inherit" });
-            }
-            else { this.openInDefaultApp(filePath); }
-
         } else {
-            if (editor == null) { editor = "vi"; }
+            if (editor == null) {
+                [editor, ...editorArgs] = IO.getDefaultTextEditor().split(" ");
+            }
             Logger.getImperativeLogger().info(`Opening ${filePath} in command-line editor ${editor}`);
-            (sync ? spawn.sync : spawn.spawn)(editor, [filePath], { stdio: "inherit" });
         }
+        (sync ? spawn.sync : spawn.spawn)(editor, [...editorArgs, filePath], { stdio: "inherit" });
     }
 }

@@ -57,13 +57,13 @@ jobs:
         gh run download "${{ github.event.workflow_run.id }}" --repo "${{ github.repository }}" --name Linux-22.x-results --dir __tests__/__results__
 
     - name: Configure Sonar Scan
-      uses: zowe-actions/octorelease/script@6cf71bdb7ca82117775295e076d63fe7a812f3c8 # v1
+      uses: zowe-actions/octorelease/script@19e8d943b996c97a20d271a48a6a9022d224ba84 # v1
       with:
         script: ${{ github.workspace }}/.github/configureSonar.js
 
     # Command-line properties take precedence over sonar-project.properties, so pin host and project identity
     - name: SonarCloud Scan
-      uses: sonarsource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4 # v8.2.2
+      uses: sonarsource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
       env:
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io

@@ -70,7 +70,8 @@ export class KeychainAgent extends Agent {
 
             // Mark the socket as TLS-like so Node's HTTPS layer accepts it.
             (socket as any).encrypted = true;
-            (socket as any).authorized = true;
+            // The native helper verifies the certificate chain and hostname only when rejectUnauthorized is true.
+            (socket as any).authorized = rejectUnauthorized;
             (socket as any).alpnProtocol = false;
             (socket as any).getPeerCertificate = () => ({});
 

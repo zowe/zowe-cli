@@ -1,6 +1,6 @@
 [package]
 name = "zowe"
-version = "1.2.7"
+version = "1.2.8"
 authors = ["Zowe Project"]
 edition = "2024"
 rust-version = "1.88"

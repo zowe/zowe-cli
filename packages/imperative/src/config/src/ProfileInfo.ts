@@ -1001,7 +1001,8 @@ export class ProfileInfo {
         // the set of names of arguments in IProfArgAttrs used in ISession
         const profArgNames = argNames ?? [
             "host", "port", "user", "password", "rejectUnauthorized",
-            "protocol", "basePath", "tokenType", "tokenValue"
+            "protocol", "basePath", "tokenType", "tokenValue", "allowedLoginMethod", "authOrder",
+            "hostKey", "privateKey", "keyPassphrase"
         ];
 
         for (const profArgNm of profArgNames) {
@@ -1169,11 +1170,17 @@ export class ProfileInfo {
         const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
         const schemaPath = url.fileURLToPath(schemaUri);
 
-        // Refuse to write if the resolved schema path escapes the directory of the config file that
-        // declared it.
+        // Check the schema location relative to the config layer.
         if (!IO.isSubPath(path.dirname(layer.path), schemaPath)) {
             this.mImpLogger.trace(
                 "ProfileInfo.updateSchemaAtLayer returned false: the schema path escapes the config layer directory."
+            );
+            return false;
+        }
+
+        if (fs.lstatSync(schemaPath, { throwIfNoEntry: false })?.isSymbolicLink()) {
+            this.mImpLogger.trace(
+                "ProfileInfo.updateSchemaAtLayer returned false: the schema destination is a symbolic link."
             );
             return false;
         }

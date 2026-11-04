@@ -19,7 +19,7 @@ import { existsSync } from "fs";
 import { SettingsAlreadyInitialized, SettingsNotInitialized } from "../src/errors";
 import { readFileSync, writeFile, writeFileSync } from "jsonfile";
 import { ISettingsFile } from "../src/doc/ISettingsFile";
-import * as DeepMerge from "deepmerge";
+import { deepmerge } from "deepmerge-ts";
 import { JSONSettingsFilePersistence } from "../src/persistance/JSONSettingsFilePersistence";
 import { PersistenceLevel } from "../../security/src/doc/IDefaultCredentialManagerOptions";
 
@@ -280,7 +280,7 @@ describe("AppSettings", () => {
             expect(mocks.writeFileSync).toHaveBeenCalledTimes(2);
             expect(mocks.writeFileSync).toHaveBeenCalledWith(
                 fileName,
-                DeepMerge(JSON.parse(JSON.stringify(defaultSettings)), testLoadSettings),
+                deepmerge(JSON.parse(JSON.stringify(defaultSettings)), testLoadSettings),
                 {spaces: 2}
             );
 

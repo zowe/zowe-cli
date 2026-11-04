@@ -210,11 +210,14 @@ export class Services {
         const conflictingDefaults: {[key: string]: string[]} = {};
         // const configPlugins: Set<string> = new Set<string>();
 
+        const escapeComment = (value: string): string => JSON.stringify(value).slice(1, -1)
+            .replace(/\u2028/g, String.raw`\u2028`).replace(/\u2029/g, String.raw`\u2029`);
+
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
 
             return elements.reduce((all, current: string, _index) => {
-                const escapeCurrent = JSON.stringify(current).slice(1, -1);
+                const escapeCurrent = escapeComment(current);
                 return all.concat(key.includes("base") ? `\n//"${key}": "${escapeCurrent}"` : `\n//"${key}": "${escapeCurrent}",`);
             }, "");
         };
@@ -249,9 +252,9 @@ export class Services {
                 let conflictingPluginsList = "";
                 basePathConflicts.forEach((element) => {
                     // Escape to prevent breaking out of the comment (newlines/quotes)
-                    const escapedElement = JSON.stringify(element).slice(1, -1);
+                    const escapedElement = escapeComment(element);
                     const escapedGatewayUrls = profileInfo.gatewayUrlConflicts[element]
-                        .map((url) => JSON.stringify(url).slice(1, -1))
+                        .map(escapeComment)
                         .join('", "');
                     // The new-line before the // "element"  is required in order to properly format the comment-json object
                     conflictingPluginsList += `
@@ -297,7 +300,7 @@ export class Services {
                         // Uncomment one of the lines below to set a different default.`;
                 }
                 // Escape to prevent breaking out of the comment/JSON key via embedded newlines or quotes in the profile type.
-                const escapedDefaultKey = JSON.stringify(defaultKey).slice(1, -1);
+                const escapedDefaultKey = escapeComment(defaultKey);
                 jsonString += `
                     ${_genCommentsHelper(escapedDefaultKey, conflictingDefaults[defaultKey])}
                     "${escapedDefaultKey}": ${JSON.stringify(trueDefault)}`;
