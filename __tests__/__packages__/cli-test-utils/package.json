@@ -35,8 +35,7 @@
   },
   "dependencies": {
     "find-up": "^5.0.0",
-    "js-yaml": "^4.3.1",
-    "rimraf": "^3.0.2"
+    "js-yaml": "^4.3.1"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",

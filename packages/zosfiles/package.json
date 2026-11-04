@@ -45,7 +45,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "minimatch": "5.1.9"
+    "minimatch": "11.0.1"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "7.29.36",
