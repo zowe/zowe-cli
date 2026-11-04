@@ -17,7 +17,7 @@ import {
     ArchivedDeleteWorkflow
 } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
-const minimatch = require("minimatch");
+import { minimatch } from "minimatch";
 
 /**
  * Common handler to delete a workflow instance in z/OSMF.
