@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "7.29.36",
+  "version": "7.29.37",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -48,8 +48,8 @@
     "string-width": "4.2.3"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "7.29.36",
-    "@zowe/imperative": "5.27.26"
+    "@zowe/cli-test-utils": "7.29.37",
+    "@zowe/imperative": "5.27.27"
   },
   "peerDependencies": {
     "@zowe/imperative": "^5.0.0"

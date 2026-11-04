@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.37`
 
 - BugFix: Updated the `minimatch` dependency for technical currency. [#3004](https://github.com/zowe/zowe-cli/pull/3004)
 
