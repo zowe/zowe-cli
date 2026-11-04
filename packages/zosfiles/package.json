@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.23",
-    "minimatch": "^10.2.3"
+    "minimatch": "^11.0.1"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "8.41.1",
