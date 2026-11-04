@@ -51,7 +51,8 @@ module.exports = async (context, _api, event) => {
 
     // Convert properties to argument string and store it in output
     context.logger.info("Sonar scan properties:\n" + JSON.stringify(sonarProps, null, 2));
-    fs.appendFileSync("sonar-project.properties", Object.entries(sonarProps).map(([k, v]) => `${k}=${v}`).join("\n"));
+    fs.appendFileSync("sonar-project.properties",
+        "\n" + Object.entries(sonarProps).map(([k, v]) => `${k}=${v}`).join("\n"));
     const sonarPropsContents = fs.readFileSync("sonar-project.properties", "utf-8");
     context.logger.debug("All Sonar scan properties:\n" + sonarPropsContents);
     rewriteCoverageReports(context, sonarPropsContents);
