@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
+
 ## `8.41.0`
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
