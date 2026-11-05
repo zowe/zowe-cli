@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. [#2963](https://github.com/zowe/zowe-cli/pull/2963)
 - BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
 - Enhancement: Updated `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile. [#2896](https://github.com/zowe/zowe-cli/issues/2896)
 

@@ -24,6 +24,7 @@ import { CommandResponse } from "../response/CommandResponse";
 import { ICommandResponse } from "../doc/response/response/ICommandResponse";
 import { ICommandExampleDefinition } from "../..";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
+import { CommandUtils } from "../utils/CommandUtils";
 
 /**
  * Callback that is invoked when a command defined to yargs completes execution.
@@ -180,7 +181,7 @@ export abstract class AbstractCommandYargs {
      * @return {ICommandDefinition}: A copy of the definition.
      */
     get definition(): ICommandDefinition {
-        return JSON.parse(JSON.stringify(this.mDefinition));
+        return CommandUtils.cloneDefinition(this.mDefinition);
     }
 
     /**
@@ -210,7 +211,7 @@ export abstract class AbstractCommandYargs {
      */
     public constructDefinitionTree(): ICommandDefinition {
         const parents: GroupCommandYargs[] = this.parents;
-        return parents[0] ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
+        return parents[0] ? parents[0].definition : {} as ICommandDefinition;
     }
 
     /**

@@ -27,6 +27,9 @@ import { join } from "path";
 import { Config } from "../../config";
 import { Censor } from "../../censor";
 import * as SessConstants from "../../rest/src/session/SessConstants";
+import { CommandPreparer } from "../src/CommandPreparer";
+import { IHandlerParameters } from "../src/doc/handler/IHandlerParameters";
+import TestCmdHandler from "./__model__/TestCmdHandler";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -1023,6 +1026,139 @@ describe("Command Processor", () => {
         expect(logOutput).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
         expect(logOutput).not.toContain("two words");
         expect(logOutput).not.toMatch(/\bwords\b/);
+    });
+
+    describe("direct handler constructors", () => {
+        const createProcessor = (definition: ICommandDefinition) => new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: definition,
+            definition: CommandPreparer.prepare(definition),
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummy"
+        });
+        const invokeParameters: IInvokeCommandParms = {
+            arguments: { _: ["banana"], $0: "", valid: true },
+            responseFormat: "json",
+            silent: true
+        };
+        const invoke = (definition: ICommandDefinition) => createProcessor(definition).invoke(invokeParameters);
+
+        it("should instantiate a directly provided handler", async () => {
+            const processSpy = jest.spyOn(TestCmdHandler.prototype, "process");
+            const response = await invoke({ ...SAMPLE_COMMAND_WIH_NO_HANDLER, handler: TestCmdHandler });
+
+            expect(response.success).toBe(true);
+            expect(processSpy).toHaveBeenCalledTimes(1);
+            const parameters = processSpy.mock.calls[0][0];
+            expect(parameters.definition.handler).toBe(TestCmdHandler);
+            expect(parameters.fullDefinition.handler).toBe(TestCmdHandler);
+            processSpy.mockRestore();
+        });
+
+        it("should invoke direct and path handlers in a chain and map their responses", async () => {
+            class First {
+                public async process(params: IHandlerParameters): Promise<void> {
+                    params.response.data.setObj({ color: "yellow" });
+                }
+            }
+            class Last {
+                public async process(params: IHandlerParameters): Promise<void> {
+                    params.response.data.setObj({ color: params.arguments.color });
+                }
+            }
+            const firstSpy = jest.spyOn(First.prototype, "process");
+            const lastSpy = jest.spyOn(Last.prototype, "process");
+            const response = await invoke({
+                ...SAMPLE_COMMAND_WIH_NO_HANDLER,
+                chainedHandlers: [
+                    { handler: First, mapping: [
+                        { from: "color", to: "color", applyToHandlers: [2] }
+                    ] },
+                    { handler: SAMPLE_COMMAND_REAL_HANDLER.handler },
+                    { handler: Last }
+                ]
+            });
+
+            expect(response.success).toBe(true);
+            expect(firstSpy).toHaveBeenCalledTimes(1);
+            expect(lastSpy).toHaveBeenCalledTimes(1);
+            expect(lastSpy.mock.calls[0][0].arguments.color).toBe("yellow");
+            expect(response.data).toEqual({ color: "yellow" });
+        });
+
+        it("should load a handler path when handler is a string", async () => {
+            const response = await invoke(SAMPLE_COMMAND_REAL_HANDLER);
+
+            expect(response.success).toBe(true);
+        });
+
+        it.each([false, true])("should create fresh handlers for each invocation and chain entry (chained: %p)", async (chained) => {
+            const instances: StatefulHandler[] = [];
+            class StatefulHandler {
+                public invocations = 0;
+                public async process(params: IHandlerParameters): Promise<void> {
+                    instances.push(this);
+                    this.invocations++;
+                    params.response.data.setObj({ invocations: this.invocations });
+                }
+            }
+            const definition: ICommandDefinition = { ...SAMPLE_COMMAND_WIH_NO_HANDLER };
+            if (chained) {
+                definition.chainedHandlers = [{ handler: StatefulHandler }, { handler: StatefulHandler }];
+            } else {
+                definition.handler = StatefulHandler;
+            }
+            const processor = createProcessor(definition);
+
+            const firstResponse = await processor.invoke(invokeParameters);
+            const response = await processor.invoke(invokeParameters);
+
+            expect(firstResponse.success).toBe(true);
+            expect(response.success).toBe(true);
+            expect(instances).toHaveLength(chained ? 4 : 2);
+            expect(new Set(instances).size).toBe(instances.length);
+            expect(instances.every((instance) => instance.invocations === 1)).toBe(true);
+            expect(response.data).toEqual({ invocations: 1 });
+        });
+
+        it.each([false, true])("should report constructor errors (chained: %p)", async (chained) => {
+            class BrokenHandler {
+                constructor() { throw new Error("Constructor failed"); }
+                public async process(): Promise<void> { /* never reached */ }
+            }
+            const definition: ICommandDefinition = { ...SAMPLE_COMMAND_WIH_NO_HANDLER };
+            if (chained) {
+                definition.chainedHandlers = [{ handler: BrokenHandler }];
+            } else {
+                definition.handler = BrokenHandler;
+            }
+            const response = await invoke(definition);
+
+            expect(response.success).toBe(false);
+            expect(response.error.msg).toContain("Could not instantiate the handler BrokenHandler");
+            expect(response.error.additionalDetails).toBe("Constructor failed");
+        });
+
+        it.each([false, true])("should report direct handler errors (chained: %p)", async (chained) => {
+            class FailingHandler {
+                public async process(): Promise<void> { throw new Error("Direct handler failed"); }
+            }
+            class NextHandler { public process = jest.fn(async () => undefined); }
+            const next = jest.fn(() => new NextHandler());
+            const definition: ICommandDefinition = { ...SAMPLE_COMMAND_WIH_NO_HANDLER };
+            if (chained) {
+                definition.chainedHandlers = [{ handler: FailingHandler }, { handler: next }];
+            } else {
+                definition.handler = FailingHandler;
+            }
+            const response = await invoke(definition);
+
+            expect(response.success).toBe(false);
+            expect(response.error.msg).toBe("Direct handler failed");
+            expect(next).not.toHaveBeenCalled();
+        });
     });
 
     it("should handle not being able to instantiate the handler", async () => {
