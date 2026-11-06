@@ -93,6 +93,84 @@ describe("ZosFilesUtils", () => {
             expect(error1).toBeDefined();
             expect(error2).toBeDefined();
         });
+
+        it("should fail on a data set with an invalid name 1", () => {
+            const testDs = ".USER.SET";
+            const testDsMember = ".USER.DATA.SET(MEM)";
+            let error1: Error;
+            let error2: Error;
+            let dirs1: string;
+            let dirs2: string;
+
+            try {
+                dirs1 = ZosFilesUtils.getDirsFromDataSet(testDs);
+            } catch (err) {
+                error1 = err;
+            }
+
+            try {
+                dirs2 = ZosFilesUtils.getDirsFromDataSet(testDsMember);
+            } catch (err) {
+                error2 = err;
+            }
+
+            expect(error1).toBeDefined();
+            expect(error2).toBeDefined();
+            expect(dirs1).not.toBeDefined();
+            expect(dirs2).not.toBeDefined();
+        });
+
+        it("should fail on a data set with an invalid name 2", () => {
+            const testDs = "USER.SET.";
+            const testDsMember = "USER.DATA.SET.(MEM)";
+            let error1: Error;
+            let error2: Error;
+            let dirs1: string;
+            let dirs2: string;
+
+            try {
+                dirs1 = ZosFilesUtils.getDirsFromDataSet(testDs);
+            } catch (err) {
+                error1 = err;
+            }
+
+            try {
+                dirs2 = ZosFilesUtils.getDirsFromDataSet(testDsMember);
+            } catch (err) {
+                error2 = err;
+            }
+
+            expect(error1).toBeDefined();
+            expect(error2).toBeDefined();
+            expect(dirs1).not.toBeDefined();
+            expect(dirs2).not.toBeDefined();
+        });
+
+        it("should fail on a data set with an invalid name 3", () => {
+            const testDs = "1SER.SET";
+            const testDsMember = "1SER.DATA.SET(3EM)";
+            let error1: Error;
+            let error2: Error;
+            let dirs1: string;
+            let dirs2: string;
+
+            try {
+                dirs1 = ZosFilesUtils.getDirsFromDataSet(testDs);
+            } catch (err) {
+                error1 = err;
+            }
+
+            try {
+                dirs2 = ZosFilesUtils.getDirsFromDataSet(testDsMember);
+            } catch (err) {
+                error2 = err;
+            }
+
+            expect(error1).toBeDefined();
+            expect(error2).toBeDefined();
+            expect(dirs1).not.toBeDefined();
+            expect(dirs2).not.toBeDefined();
+        });
     });
 
     describe("getFullPath", () => {
