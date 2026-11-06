@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. []()
+
 ## `8.43.0`
 
 - BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
