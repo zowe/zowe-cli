@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. []()
+- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. [#3007](https://github.com/zowe/zowe-cli/pull/3007)
 
 ## `8.43.0`
 
