@@ -73,7 +73,8 @@ export const expectedSchemaObject = {
                                     type: {
                                         const: "secured"
                                     }
-                                }
+                                },
+                                required: ["type"]
                             },
                             then: {
                                 properties: {
