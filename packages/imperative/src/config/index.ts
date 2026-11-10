@@ -19,6 +19,7 @@ export * from "./src/ConvertV1Profiles";
 export * from "./src/ProfileCredentials";
 export * from "./src/ProfileInfo";
 export * from "./src/ProfInfoErr";
+export * from "./src/TrustedConfigManager";
 export * from "./src/doc/IConfig";
 export * from "./src/doc/IConfigAutoStoreOpts";
 export * from "./src/doc/IConfigBuilderOpts";
