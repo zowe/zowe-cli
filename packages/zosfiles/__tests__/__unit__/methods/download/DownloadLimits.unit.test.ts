@@ -62,7 +62,7 @@ describe("z/OS Files - Download response limits", () => {
     describe.each(downloads)("%s", (_name, download) => {
         // Content of everything that was written below the temp directory, whichever layout the API uses
         const downloadedContent = () => Buffer.concat(
-            (fs.readdirSync(tmpDir, { recursive: true, withFileTypes: true }))
+            fs.readdirSync(tmpDir, { recursive: true, withFileTypes: true })
                 .filter((entry) => entry.isFile())
                 .map((entry) => fs.readFileSync(join(entry.parentPath, entry.name)))
         );
