@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `8.42.0`
+
+- Enhancement: Added read-only SSH trust checks against `~/.ssh/known_hosts`, the file OpenSSH uses to remember trusted SSH server public keys. [#2984](https://github.com/zowe/zowe-cli/pull/2984)
+
 ## `8.41.0`
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)

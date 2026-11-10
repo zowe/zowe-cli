@@ -6,6 +6,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added the `--max-response-bytes` option to the `zowe zos-files view data-set`, `zowe zos-files view uss-file`, `zowe zos-jobs view spool-file-by-id` and `zowe zos-jobs view all-spool-content` commands. These commands now fail if the content to display (for `all-spool-content`, the content of any one spool file) is larger than 64 MiB by default; use the option to view larger content. When the limit is exceeded, the error suggests downloading the content to a file instead of viewing it.
 
+## `8.43.0`
+
+- BugFix: Added validation of the structure of schema files downloaded from URLs via the `zowe config import` command, and added a prompt when an existing file would be overwritten with the downloaded schema. [#2985](https://github.com/zowe/zowe-cli/pull/2985)
+- BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
+
 ## `8.41.0`
 
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)

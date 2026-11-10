@@ -137,7 +137,7 @@ export class TsoValidator {
      * @memberof TsoValidator
      */
     public static validateFieldForURL(value: string, fieldName: string){
-     if (TsoConstants.TSO_FIELD_ILLEGAL_CHARACTERS.some(char => value.includes(char))) {
+        if (TsoConstants.TSO_FIELD_ILLEGAL_CHARACTERS.some(char => value.includes(char))) {
             throw new ImperativeError({ msg: `The ${fieldName} contains illegal characters.` });
         }
     }

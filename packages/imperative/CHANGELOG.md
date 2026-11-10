@@ -9,6 +9,11 @@ All notable changes to the Imperative package will be documented in this file.
 - **Breaking**: REST requests now fail with an `ImperativeError` if a response accumulates more than 64 MiB in memory (buffered responses, compressed or not, and HTTP error bodies of streamed requests), if decompressing a buffered response produces more than 64 MiB, or if decompressing a streamed response produces more than 8 GiB. Callers that expect larger responses must set `maxBufferedResponseBytes` or `maxDecompressedResponseBytes`. Errors for in-memory size limits suggest downloading the content to a file instead of viewing it. Output already written to a `responseStream` when a limit is exceeded is incomplete.
 - BugFix: A failed response (size limit, decompression error, or response stream error) now destroys the incoming response and the decoding streams, ignores later data/end events, and is not retried as a connection reset. Streamed responses now pause the incoming response while the response stream is full.
 
+## `8.43.0`
+
+- BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
+- Enhancement: Updated `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile. [#2896](https://github.com/zowe/zowe-cli/issues/2896)
+
 ## `8.41.0`
 
 - BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
