@@ -25,7 +25,7 @@ import { EventEmitter } from "events";
 import { ImperativeError } from "../../../error/src/ImperativeError";
 import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
-import { PassThrough, Writable } from "stream";
+import { getDefaultHighWaterMark, PassThrough, Writable } from "stream";
 import { randomBytes } from "crypto";
 import { TaskStage } from "../../../operations";
 import * as zlib from "zlib";
@@ -1871,7 +1871,7 @@ describe("AbstractRestClient tests", () => {
 
         it.each([
             ["uncompressed", undefined, Buffer.alloc(10, "a")],
-            ["gzip-compressed", "gzip", randomBytes(40000)]
+            ["gzip-compressed", "gzip", Buffer.alloc(getDefaultHighWaterMark(false) * 4, "a")]
         ])("should pause the response while the destination is full and resume on drain (%s)", async (_name, encoding, payload) => {
             const pendingWrites: (() => void)[] = [];
             const written: Buffer[] = [];
@@ -1893,7 +1893,8 @@ describe("AbstractRestClient tests", () => {
 
             const promise = RestClient.getExpectFullResponse(session(), { resource: "/resource", responseStream: slowStream });
             onResponse(response);
-            response.emit("data", encoding ? zlib.gzipSync(payload) : payload);
+            // Stored gzip blocks exceed the decoder's runtime buffer without relying on random data.
+            response.emit("data", encoding ? zlib.gzipSync(payload, { level: zlib.constants.Z_NO_COMPRESSION }) : payload);
             expect(response.paused).toBe(true);
 
             // The destination drains: the response resumes, and the rest of the response can complete
@@ -1916,7 +1917,7 @@ describe("AbstractRestClient tests", () => {
 
         it.each([
             ["uncompressed", undefined, Buffer.alloc(10, "a")],
-            ["gzip-compressed", "gzip", randomBytes(40000)]
+            ["gzip-compressed", "gzip", Buffer.alloc(getDefaultHighWaterMark(false) * 4, "a")]
         ])("should reject instead of hanging when the destination is destroyed without an error during backpressure (%s)",
             async (_name, encoding, payload) => {
                 const slowStream = new Writable({
@@ -1934,7 +1935,7 @@ describe("AbstractRestClient tests", () => {
 
                 const promise = RestClient.getExpectFullResponse(session(), { resource: "/resource", responseStream: slowStream });
                 onResponse(response);
-                response.emit("data", encoding ? zlib.gzipSync(payload) : payload);
+                response.emit("data", encoding ? zlib.gzipSync(payload, { level: zlib.constants.Z_NO_COMPRESSION }) : payload);
                 expect(response.paused).toBe(true);
 
                 slowStream.destroy(); // closes without emitting an error
