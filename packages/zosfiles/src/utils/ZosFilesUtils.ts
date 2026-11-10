@@ -326,7 +326,6 @@ export class ZosFilesUtils {
         if (name.length > this.MAX_DSN_LENGTH) { return false; }
 
         const segments = name.split(".");
-        if (segments.length < 2) { return false; }
 
         for (const segment of segments) {
             if (!this.SEGMENT_REGEX.test(segment)) { return false; }

@@ -317,11 +317,15 @@ describe("ZosFilesUtils", () => {
             expect(result).toEqual(false);
         });
 
-        it("should fail if there is only one segment", () => {
+        it("should succeed if there is only one segment", () => {
             const result = ZosFilesUtils.validateDSN("DATASET");
-            expect(result).toEqual(false);
+            expect(result).toEqual(true);
         });
 
+        it("should fail if there is only one segment but with invalid starting character", () => {
+            const result = ZosFilesUtils.validateDSN("1DATA");
+            expect(result).toEqual(false);
+        });
         it("should fail with an accented character", () => {
             const result = ZosFilesUtils.validateDSN("DATA.SÉT");
             expect(result).toEqual(false);

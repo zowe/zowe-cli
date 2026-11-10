@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by the `ZosFilesUtils.validateDSN` method. [todo](todo)
+
 ## `7.29.33`
 
 - BugFix: Added methods to `ZosFilesUtils` class to validate data set names, member names, and fully qualified data set names. [#2923](https://github.com/zowe/zowe-cli/pull/2923)
