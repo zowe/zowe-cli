@@ -28,7 +28,7 @@ function mockGetJobsJSONData(data: object) {
 }
 
 function mockGetJobsStringData(data: string) {
-    const mock = jest.fn((session: AbstractSession, resource: string, headers?: any[]): Promise<string> => {
+    const mock = jest.fn((session: AbstractSession, resource: string, headers?: unknown[]): Promise<string> => {
         return new Promise<string>((resolve, reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);

@@ -61,6 +61,15 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * Optional stream to read the file contents
      */
     stream?: Writable;
+
+    /**
+     * Maximum number of bytes that decompressing the response of a download may produce.
+     * If the server compresses the response and the decompressed output exceeds this limit,
+     * the download fails and any output already written is incomplete.
+     * Must be a positive safe integer.
+     * Default: 8 GiB (RestConstants.DEFAULT_MAX_STREAMED_DECOMPRESSED_RESPONSE_BYTES in @zowe/imperative)
+     */
+    maxDecompressedResponseBytes?: number;
 }
 
 /**

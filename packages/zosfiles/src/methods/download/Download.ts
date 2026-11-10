@@ -134,7 +134,9 @@ export class Download {
                 reqHeaders,
                 responseStream: writeStream,
                 normalizeResponseNewLines: !(options.binary || options.record),
-                task: options.task
+                task: options.task,
+                maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+                maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
             };
 
             if (options.range) {
@@ -271,7 +273,9 @@ export class Download {
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
-                    responseTimeout: options.responseTimeout
+                    responseTimeout: options.responseTimeout,
+                    maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+                    maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
@@ -548,7 +552,9 @@ export class Download {
                 reqHeaders,
                 responseStream: writeStream,
                 normalizeResponseNewLines: !options.binary,
-                task: options.task
+                task: options.task,
+                maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+                maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
             };
 
             if (options.range) {

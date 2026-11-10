@@ -179,13 +179,18 @@ export class RestClient extends AbstractRestClient {
      * @param {AbstractSession} session - representing connection to this api
      * @param {string} resource - URI for which this request should go against
      * @param {any} reqHeaders - headers to include in the REST request
+     * @param {Pick<IRestOptions, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">} [limits] - optional
+     *        overrides of the response size limits for this request
      * @returns {Promise<string>} - response body content from http(s) call
      * @throws  if the request gets a status code outside of the 200 range
      *          or other connection problems occur (e.g. connection refused)
      * @memberof RestClient
      */
-    public static getExpectString(session: AbstractSession, resource: string, reqHeaders: any[] = []): Promise<string> {
-        return new this(session).request({resource, request:HTTP_VERB.GET, reqHeaders});
+    public static getExpectString(session: AbstractSession, resource: string, reqHeaders: any[] = [],
+        limits?: Pick<IRestOptions, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">): Promise<string> {
+        return new this(session).request({resource, request:HTTP_VERB.GET, reqHeaders,
+            maxBufferedResponseBytes: limits?.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: limits?.maxDecompressedResponseBytes});
     }
 
     /**
@@ -399,6 +404,8 @@ export class RestClient extends AbstractRestClient {
             normalizeResponseNewLines : options.normalizeResponseNewLines,
             normalizeRequestNewLines : options.normalizeRequestNewLines,
             task : options.task,
+            maxBufferedResponseBytes : options.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes : options.maxDecompressedResponseBytes,
         };
 
         const client = new this(session);
@@ -428,6 +435,8 @@ export class RestClient extends AbstractRestClient {
             normalizeResponseNewLines: options.normalizeResponseNewLines,
             normalizeRequestNewLines: options.normalizeRequestNewLines,
             task: options.task,
+            maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
         };
 
         const client = new this(session);
@@ -457,6 +466,8 @@ export class RestClient extends AbstractRestClient {
             normalizeResponseNewLines: options.normalizeResponseNewLines,
             normalizeRequestNewLines: options.normalizeRequestNewLines,
             task: options.task,
+            maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
         };
 
         const client = new this(session);
@@ -486,6 +497,8 @@ export class RestClient extends AbstractRestClient {
             normalizeResponseNewLines: options.normalizeResponseNewLines,
             normalizeRequestNewLines: options.normalizeRequestNewLines,
             task: options.task,
+            maxBufferedResponseBytes: options.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: options.maxDecompressedResponseBytes,
         };
 
         const client = new this(session);

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, BufferBuilder, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, BufferBuilder, ImperativeExpect, RestConstants } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { Download } from "../download/Download";
 import { IGetOptions } from "./doc/IGetOptions";
@@ -35,7 +35,7 @@ export class Get {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        const responseStream = new BufferBuilder();
+        const responseStream = new BufferBuilder(options.maxBufferedResponseBytes ?? RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES);
         await Download.dataSet(session, dataSetName, {
             ...options,
             stream: responseStream
@@ -59,7 +59,7 @@ export class Get {
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message); // This should never exist for USS files
 
-        const responseStream = new BufferBuilder();
+        const responseStream = new BufferBuilder(options.maxBufferedResponseBytes ?? RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES);
         await Download.ussFile(session, USSFileName, {
             ...options,
             stream: responseStream

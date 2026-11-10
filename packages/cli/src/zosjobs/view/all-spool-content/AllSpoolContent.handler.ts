@@ -36,7 +36,10 @@ export default class AllSpoolContentHandler extends ZosmfBaseHandler {
         const responseArray: ISpoolFile[] = [];
 
         for (const spoolFile of spoolFiles) {
-            const spoolContent = await GetJobs.getSpoolContent(this.mSession, spoolFile, this.mArguments.encoding);
+            const spoolContent = await GetJobs.getSpoolContent(this.mSession, spoolFile, this.mArguments.encoding, {
+                maxBufferedResponseBytes: this.mArguments.maxResponseBytes,
+                maxDecompressedResponseBytes: this.mArguments.maxResponseBytes
+            });
             if (spoolFile.procstep != null && spoolFile.procstep.length > 0) {
                 this.console.log("Spool file: %s (ID #%d, Step: %s, ProcStep: %s)",
                     spoolFile.ddname, spoolFile.id, spoolFile.stepname, spoolFile.procstep);
