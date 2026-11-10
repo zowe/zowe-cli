@@ -101,7 +101,7 @@ export class TestEnvironment {
         }
         if (testEnvironment.pluginInstalled) {
             const pluginDir = testEnvironment.workingDir + "/plugins";
-            require("rimraf").sync(pluginDir);
+            fs.rmSync(pluginDir, { recursive: true, force: true });
         }
     }
 

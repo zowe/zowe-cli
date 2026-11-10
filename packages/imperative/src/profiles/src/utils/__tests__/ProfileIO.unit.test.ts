@@ -14,7 +14,7 @@ import Mock = jest.Mock;
 jest.mock("fs");
 jest.mock("../../../../io/src/IO");
 jest.mock("js-yaml");
-jest.mock("yamljs");
+jest.mock("yaml");
 jest.mock("../../../../utilities/src/ImperativeConfig");
 
 import * as fs from "fs";
@@ -32,7 +32,7 @@ import { IProfileTypeConfiguration } from "../../doc/config/IProfileTypeConfigur
 import { ImperativeConfig } from "../../../../utilities";
 
 const readYaml = require("js-yaml");
-const writeYaml = require("yamljs");
+const writeYaml = require("yaml");
 
 const mocks = {
     createDirsSync: jest.spyOn(IO, "createDirsSync"),

@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { EncodeUri, ImperativeError, IO, Session } from "@zowe/imperative";
-import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
+import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
 import { join } from "path";
@@ -1323,6 +1323,8 @@ describe("z/OS Files - Download", () => {
                 dsname: "TEST.PO..DATA.SET",
                 dsorg: "PO"
             };
+
+            jest.spyOn(ZosFilesUtils, "validateFQDSN").mockReturnValue(true); // Added to continue exercising the correct code
 
             try {
                 response = await Download.allDataSets(dummySession, [localDataSetPO] as any);

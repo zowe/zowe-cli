@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS console SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.35`
 
 - BugFix: Fixed an issue where the `zowe zos-console collect sync-responses` command did not stop collecting console output after the expected keyword was found or the follow-up attempts ran out. [#2938](https://github.com/zowe/zowe-cli/pull/2938)
 

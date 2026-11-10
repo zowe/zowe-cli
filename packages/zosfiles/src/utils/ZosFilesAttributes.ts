@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import * as minimatch from "minimatch";
+import { minimatch } from "minimatch";
 import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import * as pathUtils from "path";

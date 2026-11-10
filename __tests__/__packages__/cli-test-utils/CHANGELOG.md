@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## `7.29.37`
+
+- BugFix: Replaced `minimatch` dependency for technical currency. [#3004](https://github.com/zowe/zowe-cli/pull/3004)
+
 ## `7.29.33`
 
 - BugFix: Updated and removed dependencies for technical currency. [#2871](https://github.com/zowe/zowe-cli/pull/2871)
