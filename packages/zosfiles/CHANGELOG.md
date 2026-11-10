@@ -4,9 +4,9 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Added the `maxDecompressedResponseBytes` option to `IDownloadSingleOptions` (and `IDownloadOptions`) to override the new 8 GiB limit on the decompressed size of a data set or USS file download. Exceeding the limit fails the download and leaves the output incomplete.
-- Enhancement: Added the `maxBufferedResponseBytes` option to `IGetOptions` (and so to `IDownloadSingleOptions` and `IDownloadOptions`). `Get.dataSet` and `Get.USSFile`, which hold the whole content in memory, now fail with an error if it exceeds this limit, which defaults to 64 MiB; raise it to view larger content. For downloads it limits buffered HTTP error bodies.
-- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. [#3007](https://github.com/zowe/zowe-cli/pull/3007)
+- Enhancement: Added the `maxDecompressedResponseBytes` option to `IDownloadSingleOptions` (and `IDownloadOptions`) to override the new 8 GiB limit on the decompressed size of a data set or USS file download. Exceeding the limit fails the download and leaves the output incomplete. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
+- Enhancement: Added the `maxBufferedResponseBytes` option to the `IGetOptions`, `IDownloadSingleOptions`, and `IDownloadOptions` interfaces. The `Get.dataSet` and `Get.USSFile` functions, which hold the whole content in memory, now fail with an error if it exceeds this limit, which defaults to 64 MiB; raise it to view larger content. For downloads it limits buffered HTTP error bodies. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
+- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` function to ensure data set names are valid. [#3007](https://github.com/zowe/zowe-cli/pull/3007)
 
 ## `8.43.0`
 
