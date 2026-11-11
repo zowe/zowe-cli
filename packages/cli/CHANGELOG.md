@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes 
+
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3014](https://github.com/zowe/zowe-cli/pull/3014)
+
 ## `7.29.37`
 
 - BugFix: Updated the `minimatch` dependency for technical currency. [#3004](https://github.com/zowe/zowe-cli/pull/3004)
