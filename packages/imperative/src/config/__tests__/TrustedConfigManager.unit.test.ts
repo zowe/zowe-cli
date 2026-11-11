@@ -17,17 +17,23 @@ import { TrustedConfigManager } from "../src/TrustedConfigManager";
 describe("TrustedConfigManager", () => {
     let tmp: string;
     let cliHome: string;
+    let fakeHome: string;
     const savedEnv = { ...process.env };
 
     beforeEach(() => {
-        tmp = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "zowe-trust-")));
-        cliHome = path.join(tmp, "home");
+        tmp = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), "zowe-trust-")));
+        cliHome = path.join(tmp, "cliHome");
+        // The OS temp dir may be inside the real home dir (e.g. on Windows), so point home elsewhere
+        fakeHome = path.join(tmp, "fakeHome");
+        fs.mkdirSync(fakeHome);
+        jest.spyOn(os, "homedir").mockReturnValue(fakeHome);
         delete process.env.CI;
         delete process.env[TrustedConfigManager.ENV_ALLOW_UNTRUSTED];
         delete process.env[TrustedConfigManager.ENV_ALLOW_WORLD_WRITABLE];
     });
 
     afterEach(() => {
+        jest.restoreAllMocks();
         process.env = { ...savedEnv };
         fs.rmSync(tmp, { recursive: true, force: true });
     });
@@ -39,8 +45,7 @@ describe("TrustedConfigManager", () => {
     it("should trust cwd, start dir and home subdirectories", () => {
         expect(TrustedConfigManager.isDirTrusted(process.cwd(), cliHome)).toBe(true);
         expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, undefined, tmp)).toBe(true);
-        jest.spyOn(os, "homedir").mockReturnValueOnce(tmp);
-        expect(TrustedConfigManager.isDirTrusted(path.join(tmp, "a"), cliHome)).toBe(true);
+        expect(TrustedConfigManager.isDirTrusted(path.join(fakeHome, "a"), cliHome)).toBe(true);
     });
 
     it.each([["CI", "yes"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "true"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "1"]])(
@@ -89,7 +94,6 @@ describe("TrustedConfigManager", () => {
         fs.mkdirSync(sub, { recursive: true });
         fs.writeFileSync(path.join(proj, "app.config.json"), JSON.stringify({ profiles: { evil: { properties: { host: "x" } } } }));
         const load = (extra = {}) => Config.load("app", { homeDir: cliHome, projectDir: sub, noLoad: true, ...extra });
-        // Start directory itself is trusted, but parent holding the config is not
         expect((await load()).layerActive().path).not.toBe(path.join(proj, "app.config.json"));
         expect((await load({ trustPromptFn: () => true })).layerActive().path).toBe(path.join(proj, "app.config.json"));
     });
