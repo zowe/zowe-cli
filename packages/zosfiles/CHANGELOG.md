@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by the `ZosFilesUtils.validateDSN` method. [#3014](https://github.com/zowe/zowe-cli/pull/3014)
 - BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. [#3008](https://github.com/zowe/zowe-cli/pull/3008)
 - Enhancement: Added the `maxDecompressedResponseBytes` option to the `IDownloadSingleOptions` and `IDownloadOptions` interfaces to override the new 8 GiB limit on the decompressed size of a data set or USS file download. Exceeding the limit fails the download and leaves the output incomplete. [#3015](https://github.com/zowe/zowe-cli/pull/3015)
 - Enhancement: Added the `maxBufferedResponseBytes` option to the `IGetOptions`, `IDownloadSingleOptions`, and `IDownloadOptions` interfaces. The `Get.dataSet` and `Get.USSFile` functions, which hold the whole content in memory, now fail with an error if it exceeds this limit, which defaults to 64 MiB; increase the limit to view larger content. For downloads it limits buffered HTTP error bodies. [#3015](https://github.com/zowe/zowe-cli/pull/3015)
