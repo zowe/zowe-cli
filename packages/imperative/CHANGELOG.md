@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- **Breaking:** Project config files are now only loaded from trusted directories. World-writable directories are always skipped, and directories outside the current working directory, the home directory, or the `trustedConfigDirs` list in `settings/imperative.json` are skipped unless `IConfigOpts.trustPromptFn` approves them or `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS=true` is set. This prevents a malicious project config from redirecting stored credentials to an attacker-controlled host.
+- **Breaking:** Project config files are now only loaded from trusted directories. World-writable directories are always skipped, and directories outside the current working directory, the home directory, or the `trustedConfigDirs` list in `settings/imperative.json` are skipped unless `IConfigOpts.trustPromptFn` approves them or `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS=true` is set. [#3016](https://github.com/zowe/zowe-cli/pull/3016)
 
 ## `8.43.0`
 
