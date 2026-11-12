@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated configuration redaction to use unnumbered placeholders for censored properties. [#3017](https://github.com/zowe/zowe-cli/pull/3017)
+
 ## `8.43.0`
 
 - BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
