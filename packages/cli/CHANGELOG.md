@@ -4,6 +4,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
+
+## `8.43.0`
+
 - BugFix: Added validation of the structure of schema files downloaded from URLs via the `zowe config import` command, and added a prompt when an existing file would be overwritten with the downloaded schema. [#2985](https://github.com/zowe/zowe-cli/pull/2985)
 - BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
 

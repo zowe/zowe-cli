@@ -58,8 +58,8 @@ export class ZosFilesUtils {
      * @throws {ImperativeError} - when a generated directory structure contains backtracking characters
      */
     public static getDirsFromDataSet(dataSet: string) {
-        if (IO.fileEvaluatesToDir(dataSet)) {
-            throw new ImperativeError({ msg: "The data set name contains illegal characters." });
+        if (IO.fileEvaluatesToDir(dataSet) || !this.validateFQDSN(dataSet)) {
+            throw new ImperativeError({ msg: "The data set name is invalid or contains illegal characters." });
         }
         let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), path.posix.sep).toLowerCase();
         if (localDirectory.indexOf("(") >= 0 && localDirectory.indexOf(")") >= 0) {
@@ -394,8 +394,6 @@ export class ZosFilesUtils {
         if (name.length > this.MAX_DSN_LENGTH) { return false; }
 
         const segments = name.split(".");
-        if (segments.length < 2) { return false; }
-
         for (const segment of segments) {
             if (!this.SEGMENT_REGEX.test(segment)) { return false; }
         }
