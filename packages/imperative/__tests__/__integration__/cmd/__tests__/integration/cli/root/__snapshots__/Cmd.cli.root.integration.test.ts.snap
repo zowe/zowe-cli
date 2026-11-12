@@ -18,16 +18,17 @@ exports[`cmd-cli should display the help 1`] = `
  GROUPS
  ------
 
-   auth        Connect to token-based authentication services
-   auto-format Invoke handlers to test auto-format           
-   chained     chained handler test commands                 
-   gen-help    Commands to test help generator               
-   invalid     Invalid definitions                           
-   invoke      Invoke handlers to test promise reject/fulfill
-   nested      Test a complex structure                      
-   profile     Validate profile mapping                      
-   respond     Invoke handlers that will produce messages    
-   validate    Validate syntax checking                      
+   auth            Connect to token-based authentication services
+   auto-format     Invoke handlers to test auto-format           
+   chained         chained handler test commands                 
+   direct-handlers Test directly supplied handler constructors   
+   gen-help        Commands to test help generator               
+   invalid         Invalid definitions                           
+   invoke          Invoke handlers to test promise reject/fulfill
+   nested          Test a complex structure                      
+   profile         Validate profile mapping                      
+   respond         Invoke handlers that will produce messages    
+   validate        Validate syntax checking                      
 
  OPTIONS
  -------
@@ -72,16 +73,17 @@ exports[`cmd-cli should display the help 1`] = `
  GROUPS
  ------
 
-   auth        Connect to token-based authentication services
-   auto-format Invoke handlers to test auto-format           
-   chained     chained handler test commands                 
-   gen-help    Commands to test help generator               
-   invalid     Invalid definitions                           
-   invoke      Invoke handlers to test promise reject/fulfill
-   nested      Test a complex structure                      
-   profile     Validate profile mapping                      
-   respond     Invoke handlers that will produce messages    
-   validate    Validate syntax checking                      
+   auth            Connect to token-based authentication services
+   auto-format     Invoke handlers to test auto-format           
+   chained         chained handler test commands                 
+   direct-handlers Test directly supplied handler constructors   
+   gen-help        Commands to test help generator               
+   invalid         Invalid definitions                           
+   invoke          Invoke handlers to test promise reject/fulfill
+   nested          Test a complex structure                      
+   profile         Validate profile mapping                      
+   respond         Invoke handlers that will produce messages    
+   validate        Validate syntax checking                      
 
  OPTIONS
  -------
@@ -114,7 +116,7 @@ exports[`cmd-cli should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services\\\\n   auto-format Invoke handlers to test auto-format           \\\\n   chained     chained handler test commands                 \\\\n   gen-help    Commands to test help generator               \\\\n   invalid     Invalid definitions                           \\\\n   invoke      Invoke handlers to test promise reject/fulfill\\\\n   nested      Test a complex structure                      \\\\n   profile     Validate profile mapping                      \\\\n   respond     Invoke handlers that will produce messages    \\\\n   validate    Validate syntax checking                      \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth            Connect to token-based authentication services\\\\n   auto-format     Invoke handlers to test auto-format           \\\\n   chained         chained handler test commands                 \\\\n   direct-handlers Test directly supplied handler constructors   \\\\n   gen-help        Commands to test help generator               \\\\n   invalid         Invalid definitions                           \\\\n   invoke          Invoke handlers to test promise reject/fulfill\\\\n   nested          Test a complex structure                      \\\\n   profile         Validate profile mapping                      \\\\n   respond         Invoke handlers that will produce messages    \\\\n   validate        Validate syntax checking                      \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
   \\"data\\": {}
 }"
@@ -176,6 +178,22 @@ cmd-cli chained print-animals
 cmd-cli chained print-cheetah
 
 	three handlers, but the first two are silent. only prints 'cheetah'
+
+cmd-cli direct-handlers broken
+
+	Fail to construct a direct handler
+
+cmd-cli direct-handlers broken-chain
+
+	Fail to construct a chained direct handler
+
+cmd-cli direct-handlers mixed-chain
+
+	Chain direct and path handlers
+
+cmd-cli direct-handlers single
+
+	Invoke a direct handler
 
 cmd-cli gen-help allowable-options
 

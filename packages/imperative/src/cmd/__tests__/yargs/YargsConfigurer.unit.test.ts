@@ -12,11 +12,50 @@
 import { CommandProcessor } from "../../src/CommandProcessor";
 import { Constants, ImperativeConfig } from "../../..";
 import { YargsConfigurer } from "../../src/yargs/YargsConfigurer";
+import { CommandYargs } from "../../src/yargs/CommandYargs";
+import { GroupCommandYargs } from "../../src/yargs/GroupCommandYargs";
+import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
+import { IYargsParms } from "../../src/yargs/doc/IYargsParms";
 
 jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");
 
 describe("YargsConfigurer tests", () => {
+
+    it.each([false, true])("should preserve direct handlers through Yargs definition copies (chained: %p)", (chained) => {
+        class Handler { public process = jest.fn(); }
+        const handlerClass = Handler;
+        const definition: ICommandDefinition = { name: "direct", description: "Direct", type: "command" };
+        if (chained) {
+            definition.chainedHandlers = [{ handler: handlerClass }];
+        } else {
+            definition.handler = handlerClass;
+        }
+        const root: ICommandDefinition = {
+            name: "root", description: "Root", type: "group", children: [definition]
+        };
+        const parms: IYargsParms = {
+            commandDefinition: root,
+            yargsInstance: require("yargs"),
+            commandResponseParms: { silent: true },
+            helpGeneratorFactory: { getHelpGenerator: jest.fn() },
+            experimentalCommandDescription: "",
+            rootCommandName: "root",
+            commandLine: "root",
+            envVariablePrefix: "MOCK_PREFIX",
+            promptPhrase: "dummy"
+        };
+        const parent = new GroupCommandYargs(parms);
+        const command = new CommandYargs({ ...parms, commandDefinition: definition, yargsParent: parent });
+        const copy = command.definition;
+        const treeCopy = command.constructDefinitionTree();
+
+        expect(copy).not.toBe(definition);
+        expect(treeCopy.children[0]).not.toBe(definition);
+        for (const copiedDefinition of [copy, treeCopy.children[0]]) {
+            expect(chained ? copiedDefinition.chainedHandlers[0].handler : copiedDefinition.handler).toBe(handlerClass);
+        }
+    });
 
     afterEach(() => {
         jest.clearAllMocks();

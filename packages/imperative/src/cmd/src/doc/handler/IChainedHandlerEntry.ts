@@ -10,6 +10,7 @@
 */
 
 import { IChainedHandlerArgumentMapping } from "./IChainedHandlerArgumentMapping";
+import { ICommandHandlerConstructor } from "./ICommandHandlerConstructor";
 
 /**
  * A single link in a chain of chained handlers.
@@ -19,12 +20,11 @@ import { IChainedHandlerArgumentMapping } from "./IChainedHandlerArgumentMapping
 export interface IChainedHandlerEntry {
 
     /**
-     * String path to a module containing a command handler.
-     * exports.default (export default class in Typescript) should be the command handler
-     * @type {string}
+     * A command handler constructor or a path to a module whose default export is a handler constructor.
+     * Paths are loaded only when the chain entry is invoked. A new handler is created for each chain entry.
      * @memberof IChainedHandlerEntry
      */
-    handler: string;
+    handler: string | ICommandHandlerConstructor;
     /**
      * When your handler is invoked, you can call response.data.setObj(<an object>)
      * If you do, you can map properties of that object to arguments for the next handler,

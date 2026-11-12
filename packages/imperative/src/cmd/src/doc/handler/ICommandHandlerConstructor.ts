@@ -12,7 +12,6 @@
 import { ICommandHandler } from "./ICommandHandler";
 
 /**
- * This type is here so that we can indicate an object from a
- * require can be instantiated.
+ * A command handler constructor used to create a fresh handler for each invocation.
  */
 export type ICommandHandlerConstructor = new () => ICommandHandler;

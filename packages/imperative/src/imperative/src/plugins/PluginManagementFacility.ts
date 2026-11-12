@@ -1157,6 +1157,9 @@ export class PluginManagementFacility {
             } else {
                 // is this entry a command?
                 if (pluginCmdDef.type.toLowerCase() === "command") {
+                    if (typeof pluginCmdDef.handler === "function") {
+                        continue;
+                    }
                     // a command must have a handler or a chained handler
                     if (!Object.prototype.hasOwnProperty.call(pluginCmdDef, "handler")) {
                         // if it doesn't have a handler, does it have a chained handler
@@ -1164,6 +1167,9 @@ export class PluginManagementFacility {
                             // if the command has chained handlers, verify they exist
                             if (pluginCmdDef.chainedHandlers.length > 0) {
                                 for (const cmdHandler of pluginCmdDef.chainedHandlers) {
+                                    if (typeof cmdHandler.handler === "function") {
+                                        continue;
+                                    }
                                     if (!Object.prototype.hasOwnProperty.call(cmdHandler, "handler")) {
                                         // the chained handler doesn't contain a handler
                                         this.pluginIssues.recordIssue(pluginName, IssueSeverity.CMD_ERROR,
