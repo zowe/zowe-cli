@@ -4,7 +4,16 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
 - BugFix: Fixed the `zowe zos-files upload file-to-uss` command ignoring the `--binary` option when a `.zosattributes` file has a rule for the file. Now `--binary` takes precedence. [#2516](https://github.com/zowe/zowe-cli/issues/2516)
+
+## `8.43.0`
+
+- BugFix: Added validation of the structure of schema files downloaded from URLs via the `zowe config import` command, and added a prompt when an existing file would be overwritten with the downloaded schema. [#2985](https://github.com/zowe/zowe-cli/pull/2985)
+- BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
+
+## `8.41.0`
+
 - **Breaking:** Removed support for loading plug-ins from team configuration properties. The pre-existing `zowe plugins install` command is the only supported method for installing Zowe CLI plug-ins. [#2940](https://github.com/zowe/zowe-cli/pull/2940)
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 

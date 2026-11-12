@@ -64,8 +64,8 @@ function formatLogLevelMsg(logTypeName: string) {
 export const probTests: IProbTest[] = [
     {
         itemId: ItemId.NODEJS_VER,
-        probExpr: (value: string) => semver.satisfies(String(value), '<22.11.0 || 23.x || >24.x'),
-        probMsg: "Only Node.js versions 22.11.0+ and 24 are supported."
+        probExpr: (value: string) => semver.satisfies(String(value), '<22.11.0 || 23.x || >26.x'),
+        probMsg: "Only Node.js versions 22.11.0+, 24, and 26 are supported."
     },
     {
         itemId: ItemId.NPM_VER,

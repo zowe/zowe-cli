@@ -9,6 +9,7 @@
 *
 */
 
+import { inspect } from "util";
 import { RestClientError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosmfChangePassword, IZosmfChangePasswordResponse } from "../../../src";
@@ -166,6 +167,68 @@ describe("ZosmfChangePassword", () => {
         expect(error).toBeDefined();
         expect(error.mDetails.payload.oldPwd).toBe("****");
         expect(error.mDetails.payload.newPwd).toBe("****");
+    });
+
+    it.each([
+        ["single-line", "oldPass", "newPass"],
+        ["multiline", "old passphrase that makes the rendered payload wrap", "new passphrase that also wraps"]
+    ])("should censor a %s rendered payload and preserve surrounding diagnostics", async (_format, oldPwd, newPwd) => {
+        const session = new Session({ ...testSession.ISession, password: oldPwd });
+        const payload = { userID: "TESTUSER", oldPwd, newPwd };
+        const prefix = "REST API failure\nHeaders:           {}";
+        const suffix = "\nAllow Unauth Cert: true\nAvailable creds:   basic\nYour auth order:   basic\nAuth type used:    basic";
+        const restErr = new RestClientError({
+            msg: "REST API failure",
+            source: "http",
+            payload,
+            additionalDetails: prefix + "\nPayload:           " + inspect(payload, { depth: null }) + suffix
+        });
+        putSpy.mockRejectedValue(restErr);
+
+        await expect(ZosmfChangePassword.changePassword(session, newPwd)).rejects.toBe(restErr);
+
+        expect(restErr.additionalDetails).not.toContain(oldPwd);
+        expect(restErr.additionalDetails).not.toContain(newPwd);
+        expect(restErr.additionalDetails).toBe(
+            prefix + "\nPayload:           " + inspect({ userID: "TESTUSER", oldPwd: "****", newPwd: "****" }, { depth: null }) + suffix
+        );
+    });
+
+    it.each([
+        ["without trailing diagnostics", " ", ""],
+        ["with extensive padding", " ".repeat(100000), "\nAllow Unauth Cert: true"]
+    ])("should censor a rendered payload %s", async (_format, padding, suffix) => {
+        const payload = { userID: "TESTUSER", oldPwd: "oldPass", newPwd: "newPass" };
+        const restErr = new RestClientError({
+            msg: "REST API failure",
+            source: "http",
+            payload,
+            additionalDetails: "REST API failure\nPayload:" + padding + inspect(payload, { depth: null }) + suffix
+        });
+        putSpy.mockRejectedValue(restErr);
+
+        await expect(ZosmfChangePassword.changePassword(testSession, "newPass")).rejects.toBe(restErr);
+
+        expect(restErr.additionalDetails).toBe(
+            "REST API failure\nPayload:           " +
+            inspect({ userID: "TESTUSER", oldPwd: "****", newPwd: "****" }, { depth: null }) + suffix
+        );
+    });
+
+    it("should preserve diagnostics without a rendered payload", async () => {
+        const additionalDetails = "REST API failure\nHeaders:           {}";
+        const restErr = new RestClientError({
+            msg: "REST API failure",
+            source: "http",
+            payload: { userID: "TESTUSER", oldPwd: "oldPass", newPwd: "newPass" },
+            additionalDetails
+        });
+        putSpy.mockRejectedValue(restErr);
+
+        await expect(ZosmfChangePassword.changePassword(testSession, "newPass")).rejects.toBe(restErr);
+
+        expect(restErr.additionalDetails).toBe(additionalDetails);
+        expect(restErr.mDetails.payload).toEqual({ userID: "TESTUSER", oldPwd: "****", newPwd: "****" });
     });
 
     it("should append extra info for generic 8/2 failure", async () => {

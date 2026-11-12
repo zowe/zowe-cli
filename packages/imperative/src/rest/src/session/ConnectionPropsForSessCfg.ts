@@ -315,7 +315,7 @@ export class ConnectionPropsForSessCfg {
     ) {
         const allowedLoginMethod = AuthOrder.normalizeLoginMethod(
             ConnectionPropsForSessCfg.propHasValue(cmdArgs.allowedLoginMethod) ?
-                    cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod);
+                cmdArgs.allowedLoginMethod : sessCfg.allowedLoginMethod);
         const isApimlLoginMethod = allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_BASIC ||
             allowedLoginMethod === SessConstants.ALLOWED_LOGIN_METHOD_APIML_CERT_PEM;
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {

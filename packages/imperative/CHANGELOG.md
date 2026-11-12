@@ -2,7 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.43.0`
+
+- BugFix: Resolved issue with optional chaining in the `ConfigAutoStore` class's `_storeSessCfgProps` function. [#2992](https://github.com/zowe/zowe-cli/pull/2992)
+- Enhancement: Updated `ProfileInfo.initSessCfg` to include the `hostKey`, `privateKey`, and `keyPassphrase` properties when creating a session from a profile. [#2896](https://github.com/zowe/zowe-cli/issues/2896)
+
+## `8.41.0`
 
 - BugFix: Improved how `zowe config import` determines whether a location is a web address or a local file. [#2969](https://github.com/zowe/zowe-cli/pull/2969)
 - BugFix: Improved local path handling for schema updates and downloads, and refined schema update reporting. [#2965](https://github.com/zowe/zowe-cli/pull/2965)

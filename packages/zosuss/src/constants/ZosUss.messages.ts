@@ -45,6 +45,10 @@ export const ZosUssMessages: { [key: string]: IMessageDefinition } = {
             "key. The server's host key may have changed, or the server may not be the one you " +
             "previously connected to. The connection was rejected before any credentials were sent."
     },
+    hostKeyRevoked: {
+        message: "Host key verification failed. The SSH server's host key is marked @revoked in ~/.ssh/known_hosts. " +
+            "The connection was rejected before any credentials were sent."
+    },
     pinnedHostKeyConnectFailed: {
         message: "Connection failed before the host key could be verified. A pinned host key is configured for " +
             "this server, so the server may have changed its host key type."

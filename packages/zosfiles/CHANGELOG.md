@@ -4,6 +4,15 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Fixed an issue where data set names with only one qualifier would be rejected by the `ZosFilesUtils.validateDSN` method. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
+- BugFix: Added check in `ZosFilesUtils` class's `getDirsFromDataSet` to ensure data set names are valid. [#3007](https://github.com/zowe/zowe-cli/pull/3007)
+
+## `8.43.0`
+
+- BugFix: Updated the `minimatch` dependency for technical currency. [#3001](https://github.com/zowe/zowe-cli/pull/3001)
+
+## `8.41.0`
+
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)
 
 ## `8.39.0`
