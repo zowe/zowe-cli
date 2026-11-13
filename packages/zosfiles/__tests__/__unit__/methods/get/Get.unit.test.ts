@@ -135,6 +135,48 @@ describe("z/OS Files - View", () => {
             }));
         });
 
+        describe("in-memory size limit", () => {
+            // Get.USSFile checks the file tag with a PUT before downloading
+            beforeEach(() => {
+                jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockResolvedValue(Buffer.from("{}"));
+            });
+
+            // Behave like the REST client: writing to the response stream fails the request if the stream errors
+            const writeToResponseStream = () => zosmfExpectSpy.mockImplementationOnce((_session, options) =>
+                new Promise((resolve, reject) => {
+                    options.responseStream.on("error", reject);
+                    options.responseStream.on("finish", () => resolve({}));
+                    options.responseStream.end(content);
+                }));
+
+            it.each([
+                ["data set", (options: IGetOptions) => Get.dataSet(dummySession, dsname, options)],
+                ["USS file", (options: IGetOptions) => Get.USSFile(dummySession, ussfile, options)]
+            ])("should return %s content that is exactly maxBufferedResponseBytes", async (_name, get) => {
+                writeToResponseStream();
+                expect(await get({ maxBufferedResponseBytes: content.length })).toEqual(content);
+            });
+
+            it.each([
+                ["data set", (options: IGetOptions) => Get.dataSet(dummySession, dsname, options)],
+                ["USS file", (options: IGetOptions) => Get.USSFile(dummySession, ussfile, options)]
+            ])("should fail when %s content is over maxBufferedResponseBytes", async (_name, get) => {
+                writeToResponseStream();
+                await expect(get({ maxBufferedResponseBytes: content.length - 1 }))
+                    .rejects.toThrow(`exceeds the maximum of ${content.length - 1} bytes`);
+            });
+
+            it("should reject an invalid maxBufferedResponseBytes", async () => {
+                await expect(Get.dataSet(dummySession, dsname, { maxBufferedResponseBytes: 0 })).rejects.toThrow("Invalid maxBytes");
+                expect(zosmfExpectSpy).not.toHaveBeenCalled();
+            });
+
+            it("should forward maxBufferedResponseBytes to the REST request", async () => {
+                await Get.dataSet(dummySession, dsname, { maxBufferedResponseBytes: 1000 });
+                expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({ maxBufferedResponseBytes: 1000 }));
+            });
+        });
+
         it("should get data set content in binary mode", async () => {
             let response;
             let caughtError;

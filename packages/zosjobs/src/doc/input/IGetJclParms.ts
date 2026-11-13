@@ -37,4 +37,20 @@ export interface IGetJclParms extends ICommonJobParms {
      * @memberof IGetJclParms
      */
     encoding?: string;
+
+    /**
+     * Maximum number of bytes of the JCL response that may be held in memory. Must be a positive safe integer.
+     * Default: 64 MiB (RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES in @zowe/imperative)
+     * @type {number}
+     * @memberof IGetJclParms
+     */
+    maxBufferedResponseBytes?: number;
+
+    /**
+     * Maximum number of bytes that decompressing the JCL response may produce. Must be a positive safe integer.
+     * Default: 64 MiB (RestConstants.DEFAULT_MAX_BUFFERED_DECOMPRESSED_RESPONSE_BYTES in @zowe/imperative)
+     * @type {number}
+     * @memberof IGetJclParms
+     */
+    maxDecompressedResponseBytes?: number;
 }

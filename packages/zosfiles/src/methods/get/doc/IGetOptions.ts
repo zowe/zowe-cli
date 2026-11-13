@@ -30,4 +30,14 @@ export interface IGetOptions extends IOptions {
      * @memberof IGetOptions
      */
     queryParams?: string
+
+    /**
+     * Maximum number of bytes of content that may be held in memory. Get.dataSet and Get.USSFile
+     * collect the whole content in memory and fail with an error if it is larger than this;
+     * for downloads it limits HTTP error bodies, which are buffered. Must be a positive safe integer.
+     * Default: 64 MiB (RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES in @zowe/imperative)
+     * @type {number}
+     * @memberof IGetOptions
+     */
+    maxBufferedResponseBytes?: number;
 }

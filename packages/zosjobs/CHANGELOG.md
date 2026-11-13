@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IGetJclParms` and an optional `limits` parameter to the `GetJobs.getSpoolContent`, `getSpoolContentById`, and `getSpoolContentCommon` functions. JCL and spool content responses larger than the new 64 MiB default limits can now be retrieved by increasing them. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
+
 ## `8.41.0`
 
 - BugFix: Updated minimum supported version of Node from 20 to 22.11.0. [#2951](https://github.com/zowe/zowe-cli/pull/2951)

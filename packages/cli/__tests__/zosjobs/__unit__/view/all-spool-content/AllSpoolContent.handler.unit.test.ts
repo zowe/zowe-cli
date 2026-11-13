@@ -34,6 +34,7 @@ describe("zos-jobs view all-spool-content handler", () => {
     afterEach(() => {
         jest.resetAllMocks();
         DEFAULT_PARAMETERS.arguments.encoding = undefined; // Why is this needed? Where are things being set???
+        DEFAULT_PARAMETERS.arguments.maxResponseBytes = undefined;
     });
 
     it("should be able to get the content of a spool file", async () => {
@@ -56,7 +57,8 @@ describe("zos-jobs view all-spool-content handler", () => {
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined,
+            { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
@@ -80,7 +82,32 @@ describe("zos-jobs view all-spool-content handler", () => {
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, "IBM-037");
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, "IBM-037",
+            { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
+    });
+
+    it("should pass --max-response-bytes as the limits for each spool file", async () => {
+        const spoolContent = fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _jobid) => {
+            return GetJobsData.SAMPLE_SPOOL_FILES;
+        });
+        GetJobs.getSpoolContent = jest.fn(async (_session, _spoolFile) => {
+            return spoolContent.toString();
+        });
+        const handler = new AllSpoolContentHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments.jobid = "JOB65536";
+        params.arguments.maxResponseBytes = 1000000000;
+        await handler.process(params);
+        const jobSession = handler["mSession"];
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
+        for (const spoolFile of GetJobsData.SAMPLE_SPOOL_FILES) {
+            expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(jobSession, spoolFile, undefined,
+                { maxBufferedResponseBytes: 1000000000, maxDecompressedResponseBytes: 1000000000 });
+        }
     });
 
     it("should be able to get the content of a spool file with procstep", async () => {
@@ -103,7 +130,8 @@ describe("zos-jobs view all-spool-content handler", () => {
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP[GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined,
+            { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -176,7 +204,8 @@ describe("zos-jobs view all-spool-content handler", () => {
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(1);
         const firstSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[0];
-        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(jobSession, firstSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(jobSession, firstSpoolFile, undefined,
+            { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

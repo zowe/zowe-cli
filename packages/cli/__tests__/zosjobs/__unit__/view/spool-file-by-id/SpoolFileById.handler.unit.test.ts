@@ -52,7 +52,26 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(jobSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined, { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
+    });
+
+    it("should pass --max-response-bytes as both the buffered and decompressed response limits", async () => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        GetJobs.getSpoolContentById = jest.fn(async (_session, _jobname, _jobid, _spoolId) => {
+            return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
+        });
+        const handler = new SpoolFileByIdHandler.default();
+        const params = cloneDeep(DEFAULT_PARAMETERS);
+        params.arguments.jobid = "j12345";
+        params.arguments.spoolfileid = "2";
+        params.arguments.maxResponseBytes = 1000000000;
+        await handler.process(params);
+        const jobSession = handler["mSession"];
+        expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(jobSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined,
+            { maxBufferedResponseBytes: 1000000000, maxDecompressedResponseBytes: 1000000000 });
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
@@ -72,7 +91,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(jobSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", "IBM-037");
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", "IBM-037", { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -117,7 +136,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(jobSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
+            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined, { maxBufferedResponseBytes: undefined, maxDecompressedResponseBytes: undefined });
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

@@ -28,7 +28,7 @@ function mockGetJobsJSONData(data: object) {
 }
 
 function mockGetJobsStringData(data: string) {
-    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[]): Promise<string> => {
+    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[], _limits?: object): Promise<string> => {
         return new Promise<string>((resolve, _reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);
@@ -454,6 +454,16 @@ describe("GetJobs tests", () => {
             expect(getJclMock).toHaveBeenCalled();
             expect(getJclMock.mock.calls[0][1]).toContain("?mode=record");
         });
+
+        it("should forward response size limits when getting JCL", async () => {
+            const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
+            (ZosmfRestClient.getExpectString as any) = getJclMock;
+
+            await GetJobs.getJclCommon(pretendSession, {
+                jobname: "jobname", jobid: "jobid", maxBufferedResponseBytes: 100, maxDecompressedResponseBytes: 200
+            });
+            expect(getJclMock.mock.calls[0][3]).toEqual({ maxBufferedResponseBytes: 100, maxDecompressedResponseBytes: 200 });
+        });
     });
 
     describe("getSpoolFiles APIs", () => {
@@ -562,6 +572,21 @@ describe("GetJobs tests", () => {
             const content = await GetJobs.getSpoolContentById(pretendSession, "MYJOB1", "JOB0123", 1, 278 as any);
             expect((ZosmfRestClient.getExpectString as any).mock.calls[0][1]).toContain("fileEncoding=278");
             expect(content).toEqual(GetJobsData.SAMPLE_JES_MSG_LG);
+        });
+
+        it("should forward response size limits when getting spool content", async () => {
+            const getSpoolMock = mockGetJobsStringData(GetJobsData.SAMPLE_JES_MSG_LG);
+            (ZosmfRestClient.getExpectString as any) = getSpoolMock;
+            const limits = { maxBufferedResponseBytes: 100, maxDecompressedResponseBytes: 200 };
+
+            await GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE, undefined, limits);
+            await GetJobs.getSpoolContentCommon(pretendSession, GetJobsData.SAMPLE_JOB_FILE, undefined, limits);
+            await GetJobs.getSpoolContentById(pretendSession, "MYJOB1", "JOB0123", 1, undefined, limits);
+
+            expect(getSpoolMock).toHaveBeenCalledTimes(3);
+            for (const call of getSpoolMock.mock.calls) {
+                expect(call[3]).toEqual(limits);
+            }
         });
 
         it("should error if spoolID is omitted from getSpoolContentById", async () => {
