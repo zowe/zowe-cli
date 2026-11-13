@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Improved handling of command argument values in log messages and diagnostic output. [#3018](https://github.com/zowe/zowe-cli/pull/3018)
 - BugFix: Updated configuration redaction to use unnumbered placeholders for censored properties. [#3017](https://github.com/zowe/zowe-cli/pull/3017)
 
 ## `8.43.0`
