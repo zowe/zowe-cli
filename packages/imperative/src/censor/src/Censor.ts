@@ -102,6 +102,9 @@ export class Censor {
     //Singleton caches of the Config, Command Definition and Command Arguments
     private static mConfig: Config = null;
 
+    // Sensitive values from the current command to mask in log messages.
+    private static mCommandArgumentValues: Set<string> = new Set();
+
     /**
      * Singleton implementation of an internal reference to the schema
      */
@@ -256,6 +259,7 @@ export class Censor {
      * @param {ICensorOptions} censorOpts - The objects to use to gather options that should be censored
      */
     public static setCensoredOptions(censorOpts?: ICensorOptions) {
+        this.setCommandArguments();
         this.mCensoredOptions = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS, ...this.CUSTOM_CENSORED_HEADERS]);
 
         if (censorOpts) {
@@ -314,18 +318,40 @@ export class Censor {
     }
 
     /**
+     * Register the current command's parsed arguments for value-based log censorship.
+     * Only sensitive scalar values (including repeated/array operands) are retained, without modifying the arguments.
+     * Call after setting censored options and again when resolved arguments change. Omitting args clears the values.
+     * @param {ICommandArguments} args - The current command arguments, if available
+     */
+    public static setCommandArguments(args?: ICommandArguments): void {
+        this.mCommandArgumentValues = new Set();
+        for (const [option, value] of Object.entries(args ?? {})) {
+            if (option === "_" || option === "$0" || !this.isSecureValue(option)) continue;
+            const values = (Array.isArray(value) ? value : [value])
+                .filter(item => typeof item === "string" || typeof item === "number" || typeof item === "boolean")
+                .map(item => String(item))
+                .filter(item => item.length > 0 && item !== this.CENSOR_RESPONSE);
+            values.forEach(item => this.mCommandArgumentValues.add(item));
+        }
+    }
+
+    /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args - The args list to censor
      * @returns {string[]}
      */
     public static censorCLIArgs(args: string[]): string[] {
-        const newArgs: string[] = JSON.parse(JSON.stringify(args));
-        const censoredValues = this.CENSORED_OPTIONS.map(CliUtils.getDashFormOfOption);
-        for (const value of censoredValues) {
-            if (args.indexOf(value) >= 0) {
-                const valueIndex = args.indexOf(value);
-                if (valueIndex < args.length - 1) {
-                    newArgs[valueIndex + 1] = this.CENSOR_RESPONSE; // censor the argument after the option name
+        const newArgs = [...args];
+        const censoredOptions = new Set(this.CENSORED_OPTIONS.map(option => CliUtils.getDashFormOfOption(option).toLowerCase()));
+        for (let index = 0; index < args.length; index++) {
+            const equalsIndex = args[index].indexOf("=");
+            const option = equalsIndex < 0 ? args[index] : args[index].slice(0, equalsIndex);
+            if (censoredOptions.has(option.toLowerCase())) {
+                if (equalsIndex >= 0) {
+                    newArgs[index] = `${option}=${this.CENSOR_RESPONSE}`;
+                } else if (index < args.length - 1) {
+                    // Mask the entire argv element before joining: shell quotes have already been removed.
+                    newArgs[index + 1] = this.CENSOR_RESPONSE;
                 }
             }
         }
@@ -395,38 +421,41 @@ export class Censor {
     public static censorRawData(data: string, category: string = ""): string {
         const config = this.mConfig ?? ImperativeConfig.instance?.config;
 
-        // Return the data if not using config
-        if (!config?.exists) return data;
+        const isOutputChannel = category === "console" || category === "json";
+        if (!config?.exists && (isOutputChannel || this.mCommandArgumentValues.size === 0)) return data;
 
         // Return the data if we are printing to the console and masking is disabled
-        if (ImperativeConfig.instance?.envVariablePrefix) {
+        if (isOutputChannel && ImperativeConfig.instance?.envVariablePrefix) {
             const envMaskOutput = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).maskOutput.value;
             const envShowSecureArgs = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).showSecureArgs.value;
             // Hardcoding "console" instead of using Logger.DEFAULT_CONSOLE_NAME because of circular dependencies
-            if ((category === "console" || category === "json") &&
-                (envMaskOutput.toUpperCase() === "FALSE" || envShowSecureArgs.toUpperCase() === "TRUE")) {
+            if (envMaskOutput.toUpperCase() === "FALSE" || envShowSecureArgs.toUpperCase() === "TRUE") {
                 return data;
             }
         }
 
-        let newData = data;
+        // Parsed arguments protect log destinations; console/JSON retain their existing config-based display rules.
+        const secureValues = new Set<string>(isOutputChannel ? [] : this.mCommandArgumentValues);
 
         // Console and JSON output intentionally leave "special" (schema-secure) values such as the user name visible,
         // because the application is responsible for masking them there. Every other destination (log files, error
         // diagnostics) has no such guarantee, so secure values are always masked by value, including passwords,
         // tokens and passphrases.
-        const isOutputChannel = category === "console" || category === "json";
-
-        const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
-        for (const prop of secureFields) {
-            const sec = lodash.get(config.mProperties, prop);
-            if (sec && typeof sec !== "object" && !(isOutputChannel && this.isSpecialValue(prop)) && this.isSecureValue(prop.split(".").pop())) {
-                // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
-                // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
-                newData = newData.replace(new RegExp(this.escapeRegExp(sec), "gi"), this.CENSOR_RESPONSE);
+        if (config?.exists) {
+            const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
+            for (const prop of secureFields) {
+                const sec = lodash.get(config.mProperties, prop);
+                if (sec && typeof sec !== "object" && !(isOutputChannel && this.isSpecialValue(prop)) && this.isSecureValue(prop.split(".").pop())) {
+                    secureValues.add(String(sec));
+                }
             }
         }
-        return newData;
+        if (secureValues.size === 0) return data;
+
+        // Match literal values in one pass, longest first so overlapping secrets cannot leave a suffix exposed.
+        const pattern = Array.from(secureValues).sort((left, right) => right.length - left.length)
+            .map(value => this.escapeRegExp(value)).join("|");
+        return data.replace(new RegExp(pattern, "gi"), this.CENSOR_RESPONSE);
     }
 
     /**

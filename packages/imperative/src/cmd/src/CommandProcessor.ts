@@ -371,6 +371,7 @@ export class CommandProcessor {
             commandDefinition: this.definition,
             commandArguments: params.arguments
         });
+        Censor.setCommandArguments(params.arguments);
 
         const commandLine = Censor.censorCommandLine(
             ImperativeConfig.instance.commandLine || this.commandLine,
@@ -455,6 +456,7 @@ export class CommandProcessor {
 
         // Recreate the response object with the update params from prepare.
         params.arguments = preparedArgs;
+        Censor.setCommandArguments(preparedArgs);
         const response = this.constructResponseObject(params);
         response.succeeded();
 
@@ -566,6 +568,8 @@ export class CommandProcessor {
                 return this.finishResponse(response);
             }
         }
+
+        Censor.setCommandArguments(preparedArgs);
 
         // Validate that the syntax is correct for the command
         let validator: ICommandValidatorResponse;
@@ -1003,7 +1007,7 @@ export class CommandProcessor {
             this.log.error("Diagnostic information:\n" +
                 "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                 "Environmental variables: '%s'",
-            os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
+            os.platform(), os.arch(), Censor.censorCLIArgs(process.argv).join(" "),
             Censor.censorEnvVariables());
             const errorMessage: string = TextUtils.formatMessage(couldNotInstantiateCommandHandler.message, {
                 commandHandler: nodePath.normalize(handlerPath) || "\"undefined or not specified\"",
@@ -1072,7 +1076,7 @@ export class CommandProcessor {
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
             "Node versions: '%s'" +
             "Environmental variables: '%s'",
-        os.platform(), os.arch(), Censor.censorCommandLine(process.argv.join(" ")),
+        os.platform(), os.arch(), Censor.censorCLIArgs(process.argv).join(" "),
         JSON.stringify(process.versions, null, 2),
         Censor.censorEnvVariables());
 
