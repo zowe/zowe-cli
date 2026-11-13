@@ -20,6 +20,12 @@ import { EventEmitter } from "events";
 export class MockHttpRequestResponse extends EventEmitter {
 
     private mStatus: string;
+    private mPaused: boolean = false;
+
+    /**
+     * Whether destroy() has been called
+     */
+    public destroyed: boolean = false;
 
     /**
      * Methods for request
@@ -35,6 +41,26 @@ export class MockHttpRequestResponse extends EventEmitter {
 
     public write(data: string) {
         // doing important stuff with input data here
+    }
+
+    public destroy(err?: Error) {
+        this.destroyed = true;
+        if (err) { this.emit("error", err); }
+    }
+
+    public pause() {
+        this.mPaused = true;
+    }
+
+    public resume() {
+        this.mPaused = false;
+    }
+
+    /**
+     * Whether the simulated response is currently paused (backpressure)
+     */
+    get paused(): boolean {
+        return this.mPaused;
     }
 
     /**
