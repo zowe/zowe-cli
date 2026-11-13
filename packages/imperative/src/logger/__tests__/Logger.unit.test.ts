@@ -25,6 +25,7 @@ import { IO } from "../../io";
 import * as dayjs from "dayjs";
 import { defaultPrintfFormat } from "../src/log4jsToWinston";
 import { Censor } from "../../censor";
+import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 
 jest.mock("../../io", () => ({
     IO: {
@@ -249,6 +250,31 @@ describe("Logger tests", () => {
             expect.stringContaining(censoredMessage)
         );
     });
+
+    it.each(["trace", "debug", "info", "warn", "error", "fatal", "simple"] as const)(
+        "Should mask parsed CLI secrets in formatted %s messages before sending them to the log service", (level) => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({} as ImperativeConfig);
+            Censor.setCensoredOptions({ profiles: [] });
+            const secret = "correct horse p@$$(w)ord[1]*";
+            Censor.setCommandArguments({ _: [], $0: "zowe", certFilePassphrase: secret });
+            try {
+                const logger = Logger.initLogger(LoggingConfigurer.configureLogger(fakeHome, { name }));
+                const service = (logger as any).logService;
+                const method = level === "trace" || level === "fatal" ? "log" : level === "simple" ? "info" : level;
+                jest.spyOn(service, method).mockImplementation(() => undefined);
+                const message = logger[level]("Failed using %s on %s", secret, "visible-host");
+                const expected = `Failed using ${Censor.CENSOR_RESPONSE} on visible-host`;
+                expect(message).toBe(expected);
+                if (level === "trace" || level === "fatal") {
+                    expect(service.log).toHaveBeenCalledWith(level, expect.stringContaining(expected));
+                } else {
+                    expect(service[level === "simple" ? "info" : level]).toHaveBeenCalledWith(expect.stringContaining(expected));
+                }
+            } finally {
+                Censor.setCensoredOptions({ profiles: [] });
+            }
+        }
+    );
 
     it("Should allow all service function to store message in memory", () => {
         const logger = Logger.getImperativeLogger();

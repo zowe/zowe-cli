@@ -131,6 +131,42 @@ describe("Censor tests", () => {
                 expect(data).not.toContain(Censor.CENSOR_RESPONSE);
             });
         }
+
+        it.each(Censor.DEFAULT_CENSORED_OPTIONS)("should hide the entire equals-form value for --%s", (option) => {
+            expect(Censor.censorCLIArgs([`--${option}=correct horse battery=tail`, "--host=visible"]))
+                .toEqual([`--${option}=${Censor.CENSOR_RESPONSE}`, "--host=visible"]);
+        });
+
+        it("should mask every occurrence without modifying the input or exposing parts of a value", () => {
+            const args = [
+                "node", "zowe", "--cert-file-passphrase", "correct horse battery",
+                "--password=two\twords\nwith=p@$$(w)ord[1]*", "--cert-file-passphrase", "second secret",
+                "--password", "--value-starts-with-dashes", "--host", "visible host"
+            ];
+            const original = [...args];
+            expect(Censor.censorCLIArgs(args)).toEqual([
+                "node", "zowe", "--cert-file-passphrase", Censor.CENSOR_RESPONSE,
+                `--password=${Censor.CENSOR_RESPONSE}`, "--cert-file-passphrase", Censor.CENSOR_RESPONSE,
+                "--password", Censor.CENSOR_RESPONSE, "--host", "visible host"
+            ]);
+            expect(args).toEqual(original);
+        });
+
+        it("should mask custom secure aliases in both forms", () => {
+            (Censor as any).addCensoredOption("s");
+            try {
+                expect(Censor.censorCLIArgs(["-s", "first secret", "-s=second secret"]))
+                    .toEqual(["-s", Censor.CENSOR_RESPONSE, `-s=${Censor.CENSOR_RESPONSE}`]);
+            } finally {
+                Censor.setCensoredOptions();
+            }
+        });
+
+        it("should handle an empty value or missing operand", () => {
+            expect(Censor.censorCLIArgs(["--password=", "--password", "", "--password"]))
+                .toEqual([`--password=${Censor.CENSOR_RESPONSE}`, "--password", Censor.CENSOR_RESPONSE, "--password"]);
+            expect(Censor.censorCLIArgs([])).toEqual([]);
+        });
     });
 
     describe("censorCommandLine", () => {
@@ -310,6 +346,128 @@ describe("Censor tests", () => {
             const invalidJson = "{'invalidJson': true]";
             const censoredNullStr = Censor.censorSession(invalidJson);
             expect(censoredNullStr).toContain(invalidJson);
+        });
+    });
+
+    describe("setCommandArguments", () => {
+        beforeEach(() => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ envVariablePrefix: "ZOWE" } as ImperativeConfig);
+            jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+                maskOutput: { value: "TRUE" }, showSecureArgs: { value: "FALSE" }
+            } as any);
+            Censor.setCensoredOptions({ profiles: [] });
+        });
+
+        afterEach(() => {
+            Censor.setCensoredOptions({ profiles: [] });
+            jest.restoreAllMocks();
+        });
+
+        it.each(Censor.DEFAULT_CENSORED_OPTIONS)("should mask the parsed %s value anywhere in a log without config", (option) => {
+            const secret = "correct horse battery";
+            Censor.setCommandArguments({ _: [], $0: "zowe", [option]: secret, host: "visible-host" });
+
+            expect(Censor.censorRawData(`Failed using ${secret}; retrying ${secret} on visible-host`, "imperative"))
+                .toBe(`Failed using ${Censor.CENSOR_RESPONSE}; retrying ${Censor.CENSOR_RESPONSE} on visible-host`);
+        });
+
+        it("should mask CLI and config values together, matching overlapping secrets longest first", () => {
+            const config = {
+                exists: true,
+                mProperties: { profiles: { test: { properties: { password: "config-secret" } } } },
+                api: { secure: { findSecure: () => ["profiles.test.properties.password"] } }
+            } as unknown as ICensorOptions["config"];
+            Censor.setCensoredOptions({ config, profiles: [] });
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "config-secret with spaces" });
+
+            expect(Censor.censorRawData("config-secret with spaces, config-secret", "app"))
+                .toBe(`${Censor.CENSOR_RESPONSE}, ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should mask CLI values when a config object exists but no config file exists", () => {
+            Censor.setCensoredOptions({ config: {
+                exists: false, mProperties: { profiles: {} }, api: { secure: { findSecure: (): string[] => [] } }
+            } as unknown as ICensorOptions["config"], profiles: [] });
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "cli-secret" });
+            expect(Censor.censorRawData("failure: cli-secret", "imperative")).toBe(`failure: ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should mask repeated operands and regex metacharacters literally without modifying the arguments", () => {
+            const args = { _: ["command"], $0: "zowe", password: ["a.c", "a.c longer", "se(cret[", "two\twords\n"], port: 443 };
+            Censor.setCommandArguments(args);
+
+            expect(Censor.censorRawData("a.c longer, a.c, axc, se(cret[, two\twords\n, 443", "imperative"))
+                .toBe(`${Censor.CENSOR_RESPONSE}, ${Censor.CENSOR_RESPONSE}, axc, ${Censor.CENSOR_RESPONSE}, ${Censor.CENSOR_RESPONSE}, 443`);
+            expect(args).toEqual({ _: ["command"], $0: "zowe", password: ["a.c", "a.c longer", "se(cret[", "two\twords\n"], port: 443 });
+        });
+
+        it("should mask schema-defined secure options and aliases", () => {
+            Censor.setCensoredOptions({ profiles: [{
+                type: "test",
+                schema: {
+                    title: "Test", description: "Test", type: "object",
+                    properties: { apiKey: {
+                        type: "string", secure: true,
+                        optionDefinition: { name: "api-key", aliases: ["k"], type: "string", description: "API key" }
+                    } }
+                }
+            }] });
+            Censor.setCommandArguments({ _: [], $0: "zowe", apiKey: "camel-secret", "api-key": "kebab-secret", k: "alias-secret" });
+            expect(Censor.censorRawData("camel-secret kebab-secret alias-secret", "app"))
+                .toBe(`${Censor.CENSOR_RESPONSE} ${Censor.CENSOR_RESPONSE} ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should replace the previous command values and clear them when reset", () => {
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "first-secret" });
+            expect(Censor.censorRawData("first-secret second-secret")).toBe(`${Censor.CENSOR_RESPONSE} second-secret`);
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "second-secret" });
+            expect(Censor.censorRawData("first-secret second-secret")).toBe(`first-secret ${Censor.CENSOR_RESPONSE}`);
+            Censor.setCommandArguments();
+            expect(Censor.censorRawData("first-secret second-secret")).toBe("first-secret second-secret");
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "second-secret" });
+            Censor.setCensoredOptions();
+            expect(Censor.censorRawData("second-secret")).toBe("second-secret");
+        });
+
+        it("should snapshot sensitive values until they are explicitly refreshed", () => {
+            const args = { _: ["command"], $0: "zowe", password: ["original-secret"] };
+            Censor.setCommandArguments(args);
+            args.password[0] = "changed-secret";
+            expect(Censor.censorRawData("original-secret changed-secret")).toBe(`${Censor.CENSOR_RESPONSE} changed-secret`);
+            Censor.setCommandArguments(args);
+            expect(Censor.censorRawData("original-secret changed-secret")).toBe(`original-secret ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should ignore empty, missing and object values and preserve ordinary arguments", () => {
+            Censor.setCommandArguments({
+                _: ["command"], $0: "zowe", password: ["", null, undefined, {}, Censor.CENSOR_RESPONSE], host: "visible-host"
+            });
+            const message = "command zowe visible-host ****";
+            expect(Censor.censorRawData(message, "imperative")).toBe(message);
+        });
+
+        it("should mask numeric operands, including zero", () => {
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: [0, 12345] });
+            expect(Censor.censorRawData("0 12345", "imperative")).toBe(`${Censor.CENSOR_RESPONSE} ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it.each(["console", "json"])("should preserve %s output behavior while protecting log destinations", (category) => {
+            Censor.setCommandArguments({ _: [], $0: "zowe", password: "special-secret", certFilePassphrase: "certificate-secret" });
+            expect(Censor.censorRawData("special-secret certificate-secret", category)).toBe("special-secret certificate-secret");
+            expect(Censor.censorRawData("special-secret certificate-secret", "imperative"))
+                .toBe(`${Censor.CENSOR_RESPONSE} ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it.each([
+            ["FALSE", "FALSE"], ["TRUE", "TRUE"]
+        ])("should honor console flags (%s, %s) while always masking log messages", (maskOutput, showSecureArgs) => {
+            jest.mocked(EnvironmentalVariableSettings.read).mockReturnValue({
+                maskOutput: { value: maskOutput }, showSecureArgs: { value: showSecureArgs }
+            } as any);
+            Censor.setCommandArguments({ _: [], $0: "zowe", certFilePassphrase: "cli-secret" });
+            expect(Censor.censorRawData("cli-secret", "console")).toBe("cli-secret");
+            expect(Censor.censorRawData("cli-secret", "json")).toBe("cli-secret");
+            expect(Censor.censorRawData("cli-secret", "imperative")).toBe(Censor.CENSOR_RESPONSE);
         });
     });
 
