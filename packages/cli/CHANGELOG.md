@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
+- BugFix: Fixed the `zowe zos-files upload file-to-uss` command ignoring the `--binary` option when a `.zosattributes` file has a rule for the file. Now `--binary` takes precedence. [#2516](https://github.com/zowe/zowe-cli/issues/2516)
 
 ## `8.43.0`
 
