@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the transitive `futures-util` dependency to remove the unmaintained `pin-utils` crate. [#3005](https://github.com/zowe/zowe-cli/pull/3005)
+
 ## `8.38.0`
 
 - BugFix: Removed the hard dependency on the `process.report` object when detecting the Linux libc variant. The `process.report` object is unavailable in some runtimes that embed Node, such as the VS Code extension host, where reading it threw a `TypeError` and prevented the keyring from loading at all. Detection now uses filesystem probes first and treats an inconclusive result as glibc. [#2898](https://github.com/zowe/zowe-cli/pull/2898)
