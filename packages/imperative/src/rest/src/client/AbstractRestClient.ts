@@ -1393,10 +1393,9 @@ export abstract class AbstractRestClient {
     }
 
     /**
-     * Terminally fail the current response. Rejects the request with the given error, then
-     * destroys the incoming response and the stream chain so that nothing keeps running or
-     * buffering, and ignores any callbacks that are still pending.
-     * Output already written to a response stream is incomplete.
+     * Terminally fail the current response. Destroys the incoming response and stream chain
+     * so that nothing keeps running or buffering, and ignores callbacks still pending.
+     * Rejects after the destination finishes teardown so callers can safely delete incomplete output.
      * @private
      * @param {ImperativeError} err - the reason the response failed
      * @memberof AbstractRestClient
@@ -1409,12 +1408,21 @@ export abstract class AbstractRestClient {
         this.mTerminated = true;
         this.mChunks = [];
         this.mData = Buffer.from([]);
-        this.mReject(err);
 
         // A late error from the destroyed response must not become an uncaught exception
         this.mResponse?.on("error", (): void => undefined);
         this.mResponse?.destroy();
-        this.mResponseStream?.destroy(err);
+        if (this.mResponseStream != null) {
+            // destroy() starts asynchronous teardown (including closing an fs.WriteStream's file).
+            // Wait for completion before a download caller attempts to remove the partial file.
+            const cleanup = finished(this.mResponseStream, { readable: false }, () => {
+                cleanup();
+                this.mReject(err);
+            });
+            this.mResponseStream.destroy(err);
+        } else {
+            this.mReject(err);
+        }
         this.mDecodeStream?.destroy();
     }
 

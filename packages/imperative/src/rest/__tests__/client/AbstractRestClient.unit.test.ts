@@ -1843,6 +1843,39 @@ describe("AbstractRestClient tests", () => {
             expect(responseStream.destroyed).toBe(true);
         });
 
+        it.each([true, false])("should wait for destination teardown before rejecting a size limit (emitClose: %s)", async (emitClose) => {
+            const mock = mockResponse([Buffer.alloc(11, "e")], {}, "500");
+            let completeDestroy: (error?: Error | null) => void;
+            let destroyError: Error | null;
+            const responseStream = new Writable({
+                emitClose,
+                write(_chunk, _encoding, callback) {
+                    callback();
+                },
+                destroy(error, callback) {
+                    destroyError = error;
+                    completeDestroy = callback;
+                }
+            });
+            let settled = false;
+            const result = RestClient.getExpectFullResponse(session(), {
+                resource: "/resource", responseStream, maxBufferedResponseBytes: 10
+            }).catch((error) => {
+                settled = true;
+                return error;
+            });
+            await mock.finished();
+
+            expect(responseStream.destroyed).toBe(true);
+            expect(settled).toBe(false);
+            completeDestroy(destroyError);
+
+            const error = await result;
+            expect(error).toBe(destroyError);
+            expect(error.message).toContain("maximum buffered size of 10 bytes");
+            expect(responseStream.closed).toBe(true);
+        });
+
         it("should not retry an intentional abort as a connection reset", async () => {
             const mock = mockResponse([Buffer.alloc(11, "a")]);
             await expect(RestClient.getExpectFullResponse(session(), { resource: "/resource", maxBufferedResponseBytes: 10 }))
