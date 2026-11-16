@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Updated `ICommandDefinition`'s `handler` parameter to accept an `ICommandHandlerConstructor` in addition to a path to the handler itself. [#2963](https://github.com/zowe/zowe-cli/pull/2963)
 - BugFix: Updated configuration redaction to use unnumbered placeholders for censored properties. [#3017](https://github.com/zowe/zowe-cli/pull/3017)
 
 ## `8.43.0`

@@ -14,7 +14,7 @@ import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { ICommandOptionDefinition } from "../doc/option/ICommandOptionDefinition";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { ICommandArguments } from "../doc/args/ICommandArguments";
-import { isEqual, omit } from "lodash";
+import { cloneDeep, isEqual, omit } from "lodash";
 
 /**
  * Command tree entry describes an entry of a command in the full command tree - used when flattening the command
@@ -35,6 +35,15 @@ export type CommandSegment = "group" | "command";
  * Command utility class. Place static utils for command processing here.
  */
 export class CommandUtils {
+    /**
+     * Copy a command tree while preserving directly supplied handler constructors.
+     * @param definition - the definition to copy
+     * @returns a copy with the original handler constructors
+     */
+    public static cloneDefinition(definition: ICommandDefinition): ICommandDefinition {
+        return cloneDeep(definition);
+    }
+
     /**
      * Get a representation of the original command as issued by the user .with all canonical forms of options specified.
      * You only need to supply the "command" segement of your command. The "full command" (including previous groups, etc.)

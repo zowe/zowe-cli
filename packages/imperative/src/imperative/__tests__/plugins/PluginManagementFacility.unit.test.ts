@@ -778,6 +778,41 @@ describe("Plugin Management Facility", () => {
                 PMF.validatePluginCmdDefs = realValidatePluginCmdDefs;
             });
 
+            it("should accept a direct handler", () => {
+                class Handler { public process = jest.fn(); }
+                const handler = Handler;
+                const definition: ICommandDefinition = {
+                    name: "direct", description: "Direct", type: "command",
+                    handler
+                };
+                mocks.existsSync.mockReturnValue(false);
+
+                PMF.validatePluginCmdDefs(pluginName, [definition], 1);
+
+                expect(pluginIssues.getIssueListForPlugin(pluginName)).toHaveLength(0);
+                expect(definition.handler).toBe(handler);
+            });
+
+            it("should accept mixed direct and path handlers in a chain", () => {
+                const definition: ICommandDefinition = {
+                    name: "chain", description: "Chain", type: "command",
+                    chainedHandlers: [
+                        { handler: class { public process = jest.fn(); } },
+                        { handler: "lib/chain.handler" },
+                        { handler: class { public process = jest.fn(); } }
+                    ]
+                };
+                mocks.existsSync.mockReturnValue(true);
+
+                PMF.validatePluginCmdDefs(pluginName, [definition], 1);
+
+                expect(pluginIssues.getIssueListForPlugin(pluginName)).toHaveLength(0);
+                expect(typeof definition.chainedHandlers[0].handler).toBe("function");
+                expect(definition.chainedHandlers[1].handler).toBe(
+                    join(PMFConstants.instance.PLUGIN_HOME_LOCATION, pluginName, "lib/chain.handler")
+                );
+            });
+
             it("should have no issues when the plugin command defs are valid", () => {
                 // Ensure we get to the function that we want to validate
                 mocks.existsSync.mockReturnValue(true);
