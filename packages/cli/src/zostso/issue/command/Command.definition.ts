@@ -11,6 +11,7 @@
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
+import Handler from "./Command.handler";
 
 export const CommandDefinition: ICommandDefinition = {
     name: "command",
@@ -21,7 +22,7 @@ export const CommandDefinition: ICommandDefinition = {
         "waits for the READY prompt to print the response, and terminates the TSO address space. All response data" +
         " is returned to the user up to (but not including) the TSO 'READY' prompt.",
     type: "command",
-    handler: __dirname + "/Command.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf", "tso"],
     },

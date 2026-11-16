@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { Constants } from "../../../Constants";
+import Handler from "./Response.handler";
 
 export const SyncResponseCommandDefinition: ICommandDefinition = {
     name: "sync-responses",
@@ -28,7 +29,7 @@ export const SyncResponseCommandDefinition: ICommandDefinition = {
     `from a given command. Therefore, the ${Constants.DISPLAY_NAME} console APIs return a "solicited response key" ` +
     `that can be used to "follow-up" and collect any additional solicited command responses.`,
     type: "command",
-    handler: __dirname + "/Response.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf"]
     },

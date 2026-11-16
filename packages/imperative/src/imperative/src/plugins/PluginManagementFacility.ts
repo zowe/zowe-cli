@@ -9,6 +9,7 @@
 *
 */
 
+import { PluginRuntime } from "./PluginRuntime";
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 import { UpdateImpConfig } from "../UpdateImpConfig";
 import { isAbsolute, join } from "path";
@@ -53,6 +54,8 @@ export class PluginManagementFacility {
     public static get instance(): PluginManagementFacility {
         if (this.mInstance == null) {
             this.mInstance = new PluginManagementFacility();
+            // Handlers share the singleton's runtime; other facilities retain their own.
+            PluginRuntime.instance = this.mInstance.pluginRuntime;
         }
 
         return this.mInstance;
@@ -61,7 +64,15 @@ export class PluginManagementFacility {
     /**
      * Internal reference to the set of configuration properties for all loaded plugins.
      */
-    private mAllPluginCfgProps: IPluginCfgProps[] = [];
+    private readonly pluginRuntime = new PluginRuntime();
+
+    private get mAllPluginCfgProps(): IPluginCfgProps[] {
+        return this.pluginRuntime.allPluginCfgProps;
+    }
+
+    private set mAllPluginCfgProps(value: IPluginCfgProps[]) {
+        this.pluginRuntime.allPluginCfgProps = value;
+    }
 
     /**
      * Get the set of configuration properties for all loaded plugins.
@@ -147,8 +158,7 @@ export class PluginManagementFacility {
 
     // __________________________________________________________________________
     /**
-     * Initialize the PMF. Must be called to enable the various commands provided
-     * by the facility.
+     * Initialize the PMF, create the plug-in module hooks, and register its commands.
      */
     public init(): void {
         this.impLogger.debug("PluginManagementFacility.init() - Start");
@@ -365,19 +375,8 @@ export class PluginManagementFacility {
      */
     public requirePluginModuleCallback(pluginName: string): ((relativePath: string) => any) {
 
-        return (relativePath: string) => {
-            const pluginModuleRuntimePath = this.formPluginRuntimePath(pluginName, relativePath);
-            try {
-                return require(pluginModuleRuntimePath);
-            } catch (requireError) {
-                PluginIssues.instance.recordIssue(pluginName, IssueSeverity.CMD_ERROR,
-                    "Unable to load the following module for plug-in '" +
-                    pluginName + "' :\n" + pluginModuleRuntimePath + "\n" +
-                    "Reason = " + requireError.message
-                );
-                return {};
-            }
-        };
+        return this.pluginRuntime.requirePluginModuleCallback(pluginName,
+            (relativePath) => this.formPluginRuntimePath(pluginName, relativePath));
     }
 
     // __________________________________________________________________________
@@ -688,27 +687,7 @@ export class PluginManagementFacility {
         pluginName: string,
         relativePath: string = ""
     ): string {
-        // Attempt to find the node_modules that contains the plugin
-        let pluginRuntimeDir = null;
-        for (const location of this.pmfConst.PLUGIN_NODE_MODULE_LOCATION) {
-            pluginRuntimeDir = join(location, pluginName);
-            if (existsSync(pluginRuntimeDir)) {
-                break;
-            }
-        }
-
-        if (relativePath.length === 0) {
-            return pluginRuntimeDir;
-        }
-
-        /* If the relative path is already absolute, do not place our
-         * plugin's runtime location in front of the supplied path.
-         */
-        if (isAbsolute(relativePath)) {
-            return relativePath;
-        }
-
-        return join(pluginRuntimeDir, relativePath);
+        return this.pluginRuntime.formPluginRuntimePath(pluginName, relativePath, this.pmfConst.PLUGIN_NODE_MODULE_LOCATION);
     }
 
     // __________________________________________________________________________

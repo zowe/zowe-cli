@@ -9,13 +9,14 @@
 *
 */
 
-import { join } from "path";
 import { CliUtils, IChainedHandlerArgumentMapping, ICommandDefinition, ICommandOptionDefinition,
     ICommandPositionalDefinition } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosFilesOptionDefinitions } from "../../ZosFiles.options";
 
 import i18nTypings from "../../-strings-/en";
+import TargetProfileHandler from "./TargetProfile.handler";
+import DsclpHandler from "./Dsclp.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET_CROSS_LPAR;
@@ -137,7 +138,7 @@ export const DsclpDefinition: ICommandDefinition = {
     type: "command",
     chainedHandlers: [
         {
-            handler: join(__dirname, "TargetProfile.handler"),
+            handler: TargetProfileHandler,
             mapping: [
                 ...buildChainedHandlerArgMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
                 ...buildChainedHandlerArgMapping(TargetZosmfOptions),
@@ -148,7 +149,7 @@ export const DsclpDefinition: ICommandDefinition = {
             ]
         },
         {
-            handler: join(__dirname, "Dsclp.handler"),
+            handler: DsclpHandler,
             mapping: [
                 ...buildChainedHandlerArgMapping(Positionals),
                 ...buildChainedHandlerArgMapping(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),

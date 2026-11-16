@@ -10,6 +10,7 @@
 */
 
 import { IPartialCommandDefinition } from "../../IPartialCommandDefinition";
+import { ICommandHandlerConstructor } from "../../handler/ICommandHandlerConstructor";
 
 export interface ICommandProfileAuthConfig {
     /**
@@ -18,10 +19,10 @@ export interface ICommandProfileAuthConfig {
     serviceName: string;
 
     /**
-     * Path to the handler for the authentication service.
+     * Handler constructor or module path for the authentication service.
      * The handler should inherit from Imperative BaseAuthHandler.
      */
-    handler: string;
+    handler: string | ICommandHandlerConstructor;
 
     /**
      * Command properties for `auth login <serviceName>`

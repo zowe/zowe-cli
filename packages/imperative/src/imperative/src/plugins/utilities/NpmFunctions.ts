@@ -22,8 +22,6 @@ import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
 import { Logger } from "../../../../logger";
 import { ImperativeError } from "../../../../error";
 
-const npmCmd = findNpmOnPath();
-
 /**
  * Common function that returns npm command as a string.
  *
@@ -83,11 +81,11 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     let execOutput = "";
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
     if (verbose && daemonStream == null) {
-        ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
+        ExecUtils.spawnWithInheritedStdio(findNpmOnPath(), args, {
             cwd: PMFConstants.instance.PMF_ROOT,
         });
     } else {
-        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+        execOutput = ExecUtils.spawnAndGetOutput(findNpmOnPath(), args, {
             cwd: PMFConstants.instance.PMF_ROOT,
             stdio: pipe
         }).toString();
@@ -116,7 +114,7 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const maxBuffer = 1024 * 1024 * 10; // 10MB
         execOutput = ExecUtils.spawnAndGetOutput(
-            npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
+            findNpmOnPath(), ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
         ).toString();
 
         // In test pipelines, parallel tests use Git to retrieve source to compile and to
@@ -177,7 +175,7 @@ export class NpmRegistryUtils {
      */
     public static getRegistry(userRegistry?: string): string {
         if (userRegistry != null) return userRegistry;
-        const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", "registry"]);
+        const execOutput = ExecUtils.spawnAndGetOutput(findNpmOnPath(), ["config", "get", "registry"]);
         return execOutput.toString().replace("\n", "");
     }
 
@@ -186,7 +184,7 @@ export class NpmRegistryUtils {
      * @param {string} registry The npm registry to install from.
      */
     public static npmLogin(registry: string) {
-        ExecUtils.spawnAndGetOutput(npmCmd,
+        ExecUtils.spawnAndGetOutput(findNpmOnPath(),
             [
                 "login",
                 "--registry", registry,
@@ -238,7 +236,7 @@ export class NpmRegistryUtils {
     }
 
     private static getScopeRegistry(scope: string): string | undefined {
-        const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", `${scope}:registry`]);
+        const execOutput = ExecUtils.spawnAndGetOutput(findNpmOnPath(), ["config", "get", `${scope}:registry`]);
         if (execOutput.toString().trim() === "undefined") return;
         return execOutput.toString().replace("\n", "");
     }

@@ -15,6 +15,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SUBMIT.ACTIONS;
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import SharedSubmitHandler from "../Submit.shared.handler";
 
 export const USSFileDefinition: ICommandDefinition = {
     name: "uss-file",
@@ -22,7 +23,7 @@ export const USSFileDefinition: ICommandDefinition = {
     type: "command",
     summary: strings.USS_FILE.SUMMARY,
     description: strings.USS_FILE.DESCRIPTION,
-    handler: __dirname + "/../Submit.shared.handler",
+    handler: SharedSubmitHandler,
     positionals: [
         {
             name: "file",

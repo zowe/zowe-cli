@@ -15,6 +15,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).SUBMIT.ACTIONS;
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import SharedSubmitHandler from "../Submit.shared.handler";
 
 export const StdinDefinition: ICommandDefinition = {
     name: "stdin",
@@ -22,7 +23,7 @@ export const StdinDefinition: ICommandDefinition = {
     type: "command",
     summary: strings.STDIN.SUMMARY,
     description: strings.STDIN.DESCRIPTION,
-    handler: __dirname + "/../Submit.shared.handler",
+    handler: SharedSubmitHandler,
     options: ([
         {
             name: "wait-for-active", aliases: ["wfa"],

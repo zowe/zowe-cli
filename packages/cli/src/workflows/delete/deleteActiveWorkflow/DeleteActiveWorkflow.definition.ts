@@ -10,8 +10,8 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { join } from "path";
 import { DeleteWorkflowOptions } from "../deleteActiveWorkflow/DeleteActiveWorkflow.options";
+import DeleteCommonHandler from "../Delete.common.handler";
 
 
 /**
@@ -26,7 +26,7 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
     summary: "Delete an active workflow instance in z/OSMF",
     description: "Delete an active workflow instance in z/OSMF.",
     type: "command",
-    handler: join(__dirname, "../Delete.common.handler"),
+    handler: DeleteCommonHandler,
     profile: {
         optional: ["zosmf"]
     },

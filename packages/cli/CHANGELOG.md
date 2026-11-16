@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Built-in Imperative and Zowe CLI commands now provide `handler` constructors directly. [#2964](https://github.com/zowe/zowe-cli/pull/2964)
 - BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
 
 ## `8.43.0`

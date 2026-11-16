@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { ZfsCreateOptions } from "./zfs.options";
 import { ZosFilesCreateOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";
+import ZfsHandler from "./zfs.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
@@ -24,7 +25,7 @@ export const ZfsDefinition: ICommandDefinition = {
     summary: zfsStrings.SUMMARY,
     description: zfsStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/zfs.handler",
+    handler: ZfsHandler,
     profile: {
         optional: ["zosmf"]
     },

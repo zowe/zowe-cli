@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { Constants } from "../../../Constants";
+import Handler from "./Template.handler";
 
 export const TemplateDefinition: ICommandDefinition = {
     name: "template",
@@ -20,7 +21,7 @@ export const TemplateDefinition: ICommandDefinition = {
     description: "Using z/OSMF cloud provisioning services, provision available templates.\n" +
         "You can view available templates using the " + Constants.BINARY_NAME + " provisioning list " +
         "catalog-templates command.",
-    handler: __dirname + "/Template.handler",
+    handler: Handler,
     profile: {
         optional: ["zosmf"]
     },

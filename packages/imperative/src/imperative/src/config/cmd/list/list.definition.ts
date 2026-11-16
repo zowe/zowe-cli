@@ -9,8 +9,8 @@
 *
 */
 
-import { join } from "path";
 import { ICommandDefinition } from "../../../../../cmd";
+import ListHandler from "./list.handler";
 
 export const listDefinition: ICommandDefinition = {
     name: "list",
@@ -18,7 +18,7 @@ export const listDefinition: ICommandDefinition = {
     type: "command",
     summary: "List config properties",
     description: "List config properties.",
-    handler: join(__dirname, "list.handler"),
+    handler: ListHandler,
     positionals: [
         {
             name: "property",

@@ -10,12 +10,12 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import SecureHandler from "./secure.handler";
 
 export const secureDefinition: ICommandDefinition = {
     name: "secure",
     type: "command",
-    handler: join(__dirname, "secure.handler"),
+    handler: SecureHandler,
     summary: "Secure configuration properties",
     description: "Prompt for secure configuration properties.",
     options: [

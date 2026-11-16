@@ -15,7 +15,7 @@ import { IPluginJson } from "../../doc/IPluginJson";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
 import { Logger } from "../../../../../logger/";
-import { PluginManagementFacility } from "../../PluginManagementFacility";
+import { PluginRuntime } from "../../PluginRuntime";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { uninstall } from "../../utilities/npm-interface";
 import { getPackageInfo } from "../../utilities/NpmFunctions";
@@ -106,7 +106,7 @@ export default class UninstallHandler implements ICommandHandler {
         try {
             // get the plugin's Imperative config definition
             const packageInfo = getPackageInfo(pluginPackageNm);
-            const requirerFunction = PluginManagementFacility.instance.requirePluginModuleCallback(pluginPackageNm);
+            const requirerFunction = PluginRuntime.instance.requirePluginModuleCallback(pluginPackageNm);
             const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
             if ( pluginImpConfig?.pluginLifeCycle === undefined) {
@@ -128,7 +128,7 @@ export default class UninstallHandler implements ICommandHandler {
 
             // call the plugin's preUninstall operation
             impLogger.debug(`Calling the preUninstall function for plugin '${pluginPackageNm}'`);
-            const requirerFun = PluginManagementFacility.instance.requirePluginModuleCallback(pluginPackageNm);
+            const requirerFun = PluginRuntime.instance.requirePluginModuleCallback(pluginPackageNm);
             const lifeCycleClass = requirerFun(pluginImpConfig.pluginLifeCycle);
             const lifeCycleInstance = new lifeCycleClass();
             await lifeCycleInstance.preUninstall();

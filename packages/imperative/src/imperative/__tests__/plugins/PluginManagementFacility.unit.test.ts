@@ -181,50 +181,40 @@ describe("Plugin Management Facility", () => {
         expect(PluginManagementFacility.instance).toBeTruthy();
     });
 
-    it("should add our plugin command definitions", () => {
-        const mockAddCmdGrp = jest.fn();
-        const realAddCmdGrp = UpdateImpConfig.addCmdGrp;
-        UpdateImpConfig.addCmdGrp = mockAddCmdGrp;
-        const mockFindPackageBinName = jest.fn(() => "MockCliCmdName");
-        const realFindPackageBinName = impCfg.findPackageBinName;
-        impCfg.findPackageBinName = mockFindPackageBinName;
-
-        const installDef: ICommandDefinition = require("../../src/plugins/cmd/install/install.definition").installDefinition;
-        const listDef: ICommandDefinition = require("../../src/plugins/cmd/list/list.definition").listDefinition;
-        const uninstallDef: ICommandDefinition = require("../../src/plugins/cmd/uninstall/uninstall.definition").uninstallDefinition;
-        const updateDef: ICommandDefinition = require("../../src/plugins/cmd/update/update.definition").updateDefinition;
-        const validateDef: ICommandDefinition = require("../../src/plugins/cmd/validate/validate.definition").validateDefinition;
-        const firststepsDef: ICommandDefinition = require("../../src/plugins/cmd/showfirststeps/showfirststeps.definition").firststepsDefinition;
+    it("should initialize the plug-in module hooks and register commands", () => {
+        const addCmdGrp = jest.spyOn(UpdateImpConfig, "addCmdGrp").mockImplementation();
         mocks.existsSync.mockReturnValue(true);
 
         expect((PluginManagementFacility.instance as any).wasInitCalled).toBe(false);
         PluginManagementFacility.instance.init();
         expect((PluginManagementFacility.instance as any).wasInitCalled).toBe(true);
-
-        // Validate that the module loader was called.
-        // const createPluginHooksSpy = jest.spyOn(PluginRequireProvider, "createPluginHooks");
-        // expect(createPluginHooksSpy).toHaveBeenCalledWith(
         expect(PluginRequireProvider.createPluginHooks).toHaveBeenCalledWith(
             [ PMFConstants.instance.IMPERATIVE_PKG_NAME, PMFConstants.instance.CLI_CORE_PKG_NAME ]
         );
-
-
-        expect(UpdateImpConfig.addCmdGrp).toHaveBeenCalledWith({
+        expect(addCmdGrp).toHaveBeenCalledTimes(1);
+        expect(addCmdGrp).toHaveBeenCalledWith({
             name: "plugins",
             type: "group",
             summary: "Install and manage plug-ins",
             description: "Install and manage plug-ins.",
             children: [
-                installDef,
-                listDef,
-                uninstallDef,
-                updateDef,
-                validateDef,
-                firststepsDef
+                require("../../src/plugins/cmd/install/install.definition").installDefinition,
+                require("../../src/plugins/cmd/list/list.definition").listDefinition,
+                require("../../src/plugins/cmd/uninstall/uninstall.definition").uninstallDefinition,
+                require("../../src/plugins/cmd/update/update.definition").updateDefinition,
+                require("../../src/plugins/cmd/validate/validate.definition").validateDefinition,
+                require("../../src/plugins/cmd/showfirststeps/showfirststeps.definition").firststepsDefinition
             ]
         });
-        UpdateImpConfig.addCmdGrp = realAddCmdGrp;
-        impCfg.findPackageBinName = realFindPackageBinName;
+        expect((PluginRequireProvider.createPluginHooks as jest.Mock).mock.invocationCallOrder[0])
+            .toBeLessThan(addCmdGrp.mock.invocationCallOrder[0]);
+        addCmdGrp.mockRestore();
+    });
+
+    it("should keep independently constructed facilities separate from the singleton", () => {
+        const independent = new PluginManagementFacility();
+        expect(independent.allPluginCfgProps).toEqual([]);
+        expect(independent.allPluginCfgProps).not.toBe(PluginManagementFacility.instance.allPluginCfgProps);
     });
 
     describe("loadAllPluginCfgProps function", () => {

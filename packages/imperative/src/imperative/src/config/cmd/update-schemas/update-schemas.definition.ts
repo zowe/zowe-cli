@@ -9,8 +9,8 @@
 *
 */
 
-import { join } from "path";
 import { ICommandDefinition } from "../../../../../cmd";
+import UpdateSchemasHandler from "./update-schemas.handler";
 
 export const updateSchemasDefinition: ICommandDefinition = {
     name: "update-schemas",
@@ -20,7 +20,7 @@ export const updateSchemasDefinition: ICommandDefinition = {
     description: "Update schema files by looking up the directory structure.\n\n" +
         "Schema files up in higher level directories will always be updated. " +
         "To also update schema files down in lower level directories, specify the `--depth` flag.",
-    handler: join(__dirname, "update-schemas.handler"),
+    handler: UpdateSchemasHandler,
     positionals: [],
     options: [
         {

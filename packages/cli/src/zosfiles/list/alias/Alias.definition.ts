@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
+import AliasHandler from "./Alias.handler";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).LIST.ACTIONS.ALIAS;
@@ -25,7 +26,7 @@ export const AliasDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/Alias.handler",
+    handler: AliasHandler,
     profile: {
         optional: ["zosmf"]
     },

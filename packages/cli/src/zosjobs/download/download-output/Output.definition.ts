@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import OutputHandler from "./Output.handler";
 
 export const OutputDefinition: ICommandDefinition = {
     name: "output",
@@ -18,7 +19,7 @@ export const OutputDefinition: ICommandDefinition = {
     summary: "Download all job output to a directory",
     description: "Download all job output to a local directory. " +
         "Each spool DD will be downloaded to its own file in the directory.",
-    handler: __dirname + "/Output.handler",
+    handler: OutputHandler,
     profile: {
         optional: ["zosmf"]
     },
