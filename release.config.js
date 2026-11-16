@@ -37,7 +37,8 @@ module.exports = {
         }],
         ["@octorelease/github", {
             checkPrLabels: true,
-            publishRelease: true
+            publishRelease: true,
+            skipLabelPrompt: ["dependencies"]
         }],
         "@octorelease/git"
     ]
