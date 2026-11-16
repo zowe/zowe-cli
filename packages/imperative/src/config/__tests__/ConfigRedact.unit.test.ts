@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { Censor } from "../../censor";
 import { ConfigRedact } from "../src/api/ConfigRedact";
 
 describe("ConfigRedact", () => {
@@ -94,6 +95,35 @@ describe("ConfigRedact", () => {
         const secondHost = results[1].redactedConfig.profiles[Object.keys(results[1].redactedConfig.profiles)[0]].properties.host;
 
         expect(firstHost).toBe(secondHost);
+    });
+
+    it("uses unnumbered type placeholders for default censored options and their aliases", () => {
+        const properties = Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, `secret-${name}`]));
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            profiles: {
+                test: { properties }
+            }
+        }));
+
+        const [{ redactedConfig }] = redact.getRedactedLayers({ redactProfileNames: false });
+
+        expect(redactedConfig.profiles.test.properties).toEqual(
+            Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, "<string>"]))
+        );
+    });
+
+    it("keeps censored options separate from stable placeholders for shared values", () => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            profiles: {
+                first: { properties: { host: "shared-first", password: "shared-first" } },
+                second: { properties: { password: "shared-second", host: "shared-second", tokenValue: "$TOKEN" } }
+            }
+        }));
+
+        const [{ redactedConfig }] = redact.getRedactedLayers({ redactProfileNames: false });
+
+        expect(redactedConfig.profiles.first.properties).toEqual({ host: "<host1>", password: "<string>" });
+        expect(redactedConfig.profiles.second.properties).toEqual({ password: "<string>", host: "<host2>", tokenValue: "<string>" });
     });
 
     it("resets redaction keys between separate calls", () => {

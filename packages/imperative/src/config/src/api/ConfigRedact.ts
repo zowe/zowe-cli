@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { Censor } from "../../../censor";
 import { ImperativeError } from "../../../error";
 import { IConfigLayer } from "../doc/IConfigLayer";
 import { IConfigExportRedactedOpts } from "../doc/IConfigExportRedactedOpts";
@@ -266,6 +267,10 @@ export class ConfigRedact extends ConfigApi {
     }
 
     private getOrCreateKey(value: any, propertyName: string): string {
+        if (Censor.DEFAULT_CENSORED_OPTIONS.includes(propertyName)) {
+            return `<${typeof value}>`;
+        }
+
         const valueStr = String(value);
         const cacheKey = `${typeof value}:${valueStr}`;
 
