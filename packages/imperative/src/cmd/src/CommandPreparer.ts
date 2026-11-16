@@ -20,6 +20,7 @@ import { deepmerge } from "deepmerge-ts";
 import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { ICommandOptionDefinition } from "./doc/option/ICommandOptionDefinition";
 import { CommandUtils } from "./utils/CommandUtils";
+import { cloneDeep } from "lodash";
 
 /**
  * Command preparer provides static utilities to ensure that command definitions are suitable for Imperative definition.
@@ -408,7 +409,7 @@ export class CommandPreparer {
                     });
                 }
 
-                trait.value = JSON.parse(JSON.stringify(traitPropertyDef));
+                trait.value = CommandPreparer.cloneTraitValue(traitPropertyDef);
                 if (trait.value == null) {
                     throw new ImperativeError({
                         msg: `You cannot pass on a trait (${trait.property}) with a value of ` +
@@ -619,8 +620,7 @@ export class CommandPreparer {
                     /**
                      * Either merge/append or overwrite the field in the definition.
                      */
-                    const cloned = trait.value != null ?
-                        JSON.parse(JSON.stringify(trait.value)) : undefined;
+                    const cloned = CommandPreparer.cloneTraitValue(trait.value);
 
                     if (cloned == null) {
                         throw new ImperativeError({
@@ -653,6 +653,11 @@ export class CommandPreparer {
                 CommandPreparer.passOn(child, inherit);
             }
         }
+    }
+
+    /** Copy trait data while keeping function values intact. */
+    private static cloneTraitValue(value: any): any {
+        return typeof value === "function" ? value : cloneDeep(value);
     }
 
     /**

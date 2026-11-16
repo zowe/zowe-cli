@@ -55,6 +55,22 @@ describe("Command Preparer", () => {
         })).toThrow("contains both a handler and chained handler configuration");
     });
 
+    it("should pass a handler constructor to children", () => {
+        class Handler { public process = jest.fn(); }
+        const original: ICommandDefinition = {
+            name: "group", description: "Group", type: "group",
+            passOn: [{ property: "handler", value: Handler }],
+            children: [
+                { name: "first", description: "First", type: "command" },
+                { name: "second", description: "Second", type: "command" }
+            ]
+        };
+
+        const prepared = CommandPreparer.prepare(original);
+        expect(prepared.children[0].handler).toBe(Handler);
+        expect(prepared.children[1].handler).toBe(Handler);
+    });
+
     it("should prepare the final command document for imperative usage", () => {
         ORIGINAL_DEFINITIONS.forEach((test) => {
             const prepared: ICommandDefinition = CommandPreparer.prepare(test);
