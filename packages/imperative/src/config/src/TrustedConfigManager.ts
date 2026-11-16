@@ -48,7 +48,7 @@ export class TrustedConfigManager {
     /**
      * Check whether a directory may be used to load project config files.
      * A directory is trusted if any of the following holds:
-     *  1. CI environment variable is set, or ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS is "1" or "true"
+     *  1. CI environment variable is nonempty and neither "false" nor "0", or ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS is "1" or "true"
      *  2. It is the current working directory or the project directory chosen by the caller
      *  3. It is inside the user's home directory
      *  4. It is in the trusted directory list
@@ -60,7 +60,8 @@ export class TrustedConfigManager {
      */
     public static isDirTrusted(dirPath: string, cliHome: string, promptFn?: TrustPromptFn, startDir?: string): boolean {
         const allowEnv = process.env[this.ENV_ALLOW_UNTRUSTED]?.toLowerCase();
-        if (process.env.CI != null || allowEnv === "1" || allowEnv === "true") return true;
+        const isCI = Boolean(process.env.CI && process.env.CI !== "false" && process.env.CI !== "0");
+        if (isCI || allowEnv === "1" || allowEnv === "true") return true;
 
         const target = this.normalize(dirPath);
         if (target === this.normalize(process.cwd())) return true;

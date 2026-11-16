@@ -324,6 +324,7 @@ export class Config {
      * ignore the Zowe hone directory (in case our current directory is under
      * Zowe home.). For global config files we only retrieve config files
      * from the Zowe home directory.
+     * Rejected project layers keep an empty path; only missing files use the default project path.
      *
      * @internal
      * @param layer Enum value for config layer
@@ -335,14 +336,14 @@ export class Config {
                 const userConfigPath = Config.search(this.userConfigName, {
                     ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
                 });
-                return userConfigPath || path.join(this.mProjectDir, this.userConfigName);
+                return userConfigPath ?? path.join(this.mProjectDir, this.userConfigName);
             }
             case Layers.ProjectConfig: {
                 if (this.mProjectDir === false) return "";
                 const configPath = Config.search(this.configName, {
                     ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
                 });
-                return configPath || path.join(this.mProjectDir, this.configName);
+                return configPath ?? path.join(this.mProjectDir, this.configName);
             }
             case Layers.GlobalUser:
                 return path.join(this.mHomeDir, this.userConfigName);
@@ -484,16 +485,22 @@ export class Config {
      * @param opts.isTrusted Optional callback to decide whether a directory
      *        containing the file may be used. Untrusted directories are skipped.
      *
-     * @returns The full path name to config file or null if not found.
+     * @returns The full path name to a trusted config file, an empty string if
+     *          files were rejected and no trusted file was found, or null if no file was found.
      */
     public static search(file: string, opts?: { ignoreDirs?: string[]; startDir?: string; isTrusted?: (dir: string) => boolean }): string {
         opts = opts || {};
+        let rejected = false;
         const p = findUp.sync((directory: string) => {
             if (opts.ignoreDirs?.includes(directory)) return;
-            if (opts.isTrusted && fs.existsSync(path.join(directory, file)) && !opts.isTrusted(directory)) return;
+            if (opts.isTrusted && fs.existsSync(path.join(directory, file)) && !opts.isTrusted(directory)) {
+                rejected = true;
+                return;
+            }
             return fs.existsSync(path.join(directory, file)) && directory;
         }, { cwd: opts.startDir, type: "directory" });
-        return p ? path.join(p, file) : null;
+        if (p) return path.join(p, file);
+        return rejected ? "" : null;
     }
 
     // _______________________________________________________________________

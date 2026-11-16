@@ -48,11 +48,19 @@ describe("TrustedConfigManager", () => {
         expect(TrustedConfigManager.isDirTrusted(path.join(fakeHome, "a"), cliHome)).toBe(true);
     });
 
-    it.each([["CI", "yes"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "true"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "1"]])(
+    it.each([
+        ["CI", "yes"], ["CI", "true"], ["CI", "1"],
+        [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "true"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "1"]
+    ])(
         "should trust everything when %s=%s", (key, val) => {
             process.env[key] = val;
             expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(true);
         });
+
+    it.each(["", "false", "0"])("should not bypass trust checks when CI=%s", (value) => {
+        process.env.CI = value;
+        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(false);
+    });
 
     it("should defer to the prompt function", () => {
         expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => true)).toBe(true);
@@ -87,14 +95,64 @@ describe("TrustedConfigManager", () => {
         expect(TrustedConfigManager.isWorldWritable(tmp)).toBe(false);
     });
 
-    (process.platform === "win32" ? it.skip : it)("should skip untrusted project config during Config.load", async () => {
+    it.each(["app.config.json", "app.config.user.json"])("should not read a rejected %s during load or reload", async (file) => {
+        const { Config } = await import("../src/Config");
+        const proj = path.join(tmp, "proj");
+        fs.mkdirSync(proj);
+        const configPath = path.join(proj, file);
+        fs.writeFileSync(configPath, JSON.stringify({ profiles: { evil: { properties: { host: "x" } } } }));
+        jest.spyOn(TrustedConfigManager, "isWorldWritable").mockImplementation((dir) => dir === proj);
+        const readSpy = jest.spyOn(fs, "readFileSync");
+        const opts = { homeDir: cliHome, projectDir: proj };
+        const config = await Config.load("app", opts);
+        const user = file === "app.config.user.json";
+
+        expect(config.findLayer(user, false).path).toBe("");
+        expect(config.findLayer(user, false).exists).toBe(false);
+        expect(config.properties).toEqual(Config.empty());
+
+        config.api.layers.read({ user, global: false });
+        await config.reload(opts);
+        expect(config.findLayer(user, false).path).toBe("");
+        expect(config.findLayer(user, false).exists).toBe(false);
+        expect(config.properties).toEqual(Config.empty());
+        expect(readSpy.mock.calls.some(([filePath]) => filePath === configPath)).toBe(false);
+    });
+
+    it("should preserve default paths for missing project config files", async () => {
+        const { Config } = await import("../src/Config");
+        const proj = path.join(tmp, "proj");
+        fs.mkdirSync(proj);
+        const config = await Config.load("app", { homeDir: cliHome, projectDir: proj });
+        expect(config.findLayer(false, false).path).toBe(path.join(proj, "app.config.json"));
+        expect(config.findLayer(true, false).path).toBe(path.join(proj, "app.config.user.json"));
+        expect(config.properties).toEqual(Config.empty());
+    });
+
+    it("should continue searching for trusted config after rejecting a project config", async () => {
+        const { Config } = await import("../src/Config");
+        const proj = path.join(tmp, "proj");
+        fs.mkdirSync(proj);
+        fs.writeFileSync(path.join(proj, "app.config.json"), JSON.stringify({ profiles: { evil: {} } }));
+        fs.writeFileSync(path.join(tmp, "app.config.json"), JSON.stringify({ profiles: { trusted: {} } }));
+        jest.spyOn(TrustedConfigManager, "isWorldWritable").mockImplementation((dir) => dir === proj);
+        const config = await Config.load("app", { homeDir: cliHome, projectDir: proj, trustPromptFn: () => true });
+        expect(config.findLayer(false, false).path).toBe(path.join(tmp, "app.config.json"));
+        expect(config.properties.profiles).toEqual({ trusted: {} });
+    });
+
+    it("should skip untrusted project config during Config.load", async () => {
         const { Config } = await import("../src/Config");
         const proj = path.join(tmp, "proj");
         const sub = path.join(proj, "sub");
         fs.mkdirSync(sub, { recursive: true });
         fs.writeFileSync(path.join(proj, "app.config.json"), JSON.stringify({ profiles: { evil: { properties: { host: "x" } } } }));
-        const load = (extra = {}) => Config.load("app", { homeDir: cliHome, projectDir: sub, noLoad: true, ...extra });
-        expect((await load()).layerActive().path).not.toBe(path.join(proj, "app.config.json"));
-        expect((await load({ trustPromptFn: () => true })).layerActive().path).toBe(path.join(proj, "app.config.json"));
+        const load = (extra = {}) => Config.load("app", { homeDir: cliHome, projectDir: sub, ...extra });
+        const untrusted = await load();
+        expect(untrusted.layerActive().path).not.toBe(path.join(proj, "app.config.json"));
+        expect(untrusted.properties.profiles).toEqual({});
+        const trusted = await load({ trustPromptFn: () => true });
+        expect(trusted.layerActive().path).toBe(path.join(proj, "app.config.json"));
+        expect(trusted.properties.profiles.evil).toBeDefined();
     });
 });
