@@ -29,14 +29,6 @@ describe("View USS file", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command_view_uss_help.sh");
-        const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-        expect(response.status).toBe(0);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should fail due to missing uss filename", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);

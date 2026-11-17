@@ -10,7 +10,7 @@
 */
 
 import {
-    AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, Logger, NextVerFeatures, RestClient
+    AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, IOptionsFullResponse, Logger, NextVerFeatures, RestClient
 } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { JobsUtils } from "./JobsUtils";
@@ -329,12 +329,14 @@ export class GetJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - the job name for the job for which you want to retrieve JCL
      * @param {string} jobid - the job ID for the job for which you want to retrieve JCL
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<IJob>} - job document on resolve
      * @memberof GetJobs
      */
-    public static async getJcl(session: AbstractSession, jobname: string, jobid: string) {
+    public static async getJcl(session: AbstractSession, jobname: string, jobid: string,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getJcl()");
-        return GetJobs.getJclCommon(session, { jobname, jobid });
+        return GetJobs.getJclCommon(session, { jobname, jobid }, limits);
     }
 
     /**
@@ -344,12 +346,14 @@ export class GetJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job for which you would like to retrieve JCL
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<string>} - promise that resolves to JCL content
      * @memberof GetJobs
      */
-    public static async getJclForJob(session: AbstractSession, job: IJob) {
+    public static async getJclForJob(session: AbstractSession, job: IJob,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getJclForJob()");
-        return GetJobs.getJclCommon(session, { jobname: job.jobname, jobid: job.jobid });
+        return GetJobs.getJclCommon(session, { jobname: job.jobname, jobid: job.jobid }, limits);
     }
 
     /**
@@ -357,10 +361,12 @@ export class GetJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ICommonJobParms} parms - parm object (see ICommonJobParms interface for details)
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<string>} - promise that resolves to the JCL content
      * @memberof GetJobs
      */
-    public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
+    public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
         JobsUtils.validateJobNameAndId(parms.jobname, parms.jobid);
@@ -369,7 +375,10 @@ export class GetJobs {
             JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT
         );
         Logger.getAppLogger().info("GetJobs.getJclCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, parameters);
+        return ZosmfRestClient.getExpectString(session, parameters, undefined, {
+            maxBufferedResponseBytes: limits?.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: limits?.maxDecompressedResponseBytes
+        });
     }
 
     /**
@@ -378,12 +387,14 @@ export class GetJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param jobFile - the spool file for which you want to retrieve the content
      * @param encoding - the code page to use for EBCDIC translation
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<string>} - promise that resolves to the spool content
      * @memberof GetJobs
      */
-    public static getSpoolContent(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
+    public static getSpoolContent(session: AbstractSession, jobFile: IJobFile, encoding?: string,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContent()");
-        return GetJobs.getSpoolContentCommon(session, jobFile, encoding);
+        return GetJobs.getSpoolContentCommon(session, jobFile, encoding, limits);
     }
 
     /**
@@ -393,10 +404,13 @@ export class GetJobs {
      * @param jobname - the job name for the job containing the spool content
      * @param jobid - the job id for the job containing the spool content
      * @param spoolId - id number assigned by zosmf that identifies the particular job spool file (DD)
+     * @param encoding - the code page to use for EBCDIC translation
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<string>} - promise that resolves to the spool content
      * @memberof GetJobs
      */
-    public static async getSpoolContentById(session: AbstractSession, jobname: string, jobid: string, spoolId: number, encoding?: string) {
+    public static async getSpoolContentById(session: AbstractSession, jobname: string, jobid: string, spoolId: number, encoding?: string,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentById()");
         ImperativeExpect.toNotBeNullOrUndefined(jobname, "Required parameter jobname must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(jobid, "Required parameter jobid must be defined");
@@ -412,7 +426,10 @@ export class GetJobs {
             parameters += "?fileEncoding=" + encoding;
         }
         Logger.getAppLogger().info("GetJobs.getSpoolContentById() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8]);
+        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8], {
+            maxBufferedResponseBytes: limits?.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: limits?.maxDecompressedResponseBytes
+        });
     }
 
     /**
@@ -421,10 +438,12 @@ export class GetJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param jobFile - the spool file for which you want to retrieve the content
      * @param encoding - the code page to use for EBCDIC translation
+     * @param limits - optional overrides of the maximum buffered and decompressed response size for this request
      * @returns {Promise<string>} - promise that resolves to the spool content
      * @memberof GetJobs
      */
-    public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
+    public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile, encoding?: string,
+        limits?: Pick<IOptionsFullResponse, "maxBufferedResponseBytes" | "maxDecompressedResponseBytes">) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(jobFile, "Required job file object must be defined");
         JobsUtils.validateJobNameAndId(jobFile.jobname, jobFile.jobid);
@@ -435,7 +454,10 @@ export class GetJobs {
         );
         if (encoding && encoding.trim() != "") {parameters += "?fileEncoding=" + encoding;}
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8]);
+        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8], {
+            maxBufferedResponseBytes: limits?.maxBufferedResponseBytes,
+            maxDecompressedResponseBytes: limits?.maxDecompressedResponseBytes
+        });
     }
 
     private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms | undefined): IJob[] {

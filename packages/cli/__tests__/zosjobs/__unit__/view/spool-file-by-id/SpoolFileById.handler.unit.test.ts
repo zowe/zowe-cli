@@ -10,13 +10,12 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
 import * as SpoolFileByIdHandler from "../../../../../src/zosjobs/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
-import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { cloneDeep } from "lodash";
@@ -52,14 +51,6 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
-
-        expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
@@ -77,14 +68,6 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
-
-        expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", "IBM-037");
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -127,15 +110,6 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         }
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
-
-        expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
-            GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2", undefined);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

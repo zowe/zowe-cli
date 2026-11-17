@@ -82,4 +82,23 @@ export interface IOptionsFullResponse {
      * @memberof IOptionsFullResponse
      */
     task?: ITaskWithStatus;
+
+    /**
+     * Maximum number of bytes accumulated in memory for a response, including HTTP
+     * error bodies of streamed requests. Must be a positive safe integer.
+     * Defaults to RestConstants.DEFAULT_MAX_BUFFERED_RESPONSE_BYTES (64 MiB).
+     * @type {number}
+     * @memberof IOptionsFullResponse
+     */
+    maxBufferedResponseBytes?: number;
+
+    /**
+     * Maximum number of bytes produced by decompressing a response. Must be a
+     * positive safe integer. Defaults to 64 MiB for buffered responses or 8 GiB
+     * for streamed responses. Output already streamed when this limit is exceeded
+     * is incomplete.
+     * @type {number}
+     * @memberof IOptionsFullResponse
+     */
+    maxDecompressedResponseBytes?: number;
 }

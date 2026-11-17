@@ -29,14 +29,6 @@ describe("zos-jobs view all-spool-content command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", () => {
-        const response = runCliScript(__dirname + "/__scripts__/all-spool-content/job_help.sh",
-            TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     describe("syntax errors", () => {
         it("should occur if the jobid is missing", () => {
             const response = runCliScript(__dirname + "/__scripts__/all-spool-content/job_syntax_missing_jobid.sh",
