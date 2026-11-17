@@ -22,6 +22,15 @@ Object {
       "name": "encoding",
       "type": "string",
     },
+    Object {
+      "description": "The maximum size, in bytes, of the spool file content to hold in memory and display. The command fails if the content is larger. Increase this value to view larger spool files. Default: 67108864 (64 MiB).",
+      "name": "max-response-bytes",
+      "numericValueRange": Array [
+        1,
+        9007199254740991,
+      ],
+      "type": "number",
+    },
   ],
   "positionals": Array [
     Object {

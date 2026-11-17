@@ -109,4 +109,36 @@ export class RestConstants {
      * @memberof RestConstants
      */
     public static readonly BEARER_PREFIX: string = "Bearer ";
+
+    /**
+     * Default ceiling on the number of bytes accumulated in memory for a single
+     * response (compressed or not). Applies to buffered responses and to HTTP
+     * error bodies of streamed requests. Override with
+     * IRestOptions.maxBufferedResponseBytes.
+     * @static
+     * @type {number}
+     * @memberof RestConstants
+     */
+    public static readonly DEFAULT_MAX_BUFFERED_RESPONSE_BYTES: number = 64 * 1024 * 1024;
+
+    /**
+     * Default ceiling on the number of bytes produced by decompressing a buffered
+     * response, which is held in memory. Override with
+     * IRestOptions.maxDecompressedResponseBytes.
+     * @static
+     * @type {number}
+     * @memberof RestConstants
+     */
+    public static readonly DEFAULT_MAX_BUFFERED_DECOMPRESSED_RESPONSE_BYTES: number = 64 * 1024 * 1024;
+
+    /**
+     * Default ceiling on the number of bytes produced by decompressing a response that is
+     * streamed to a destination (e.g. a file) instead of being held in memory. This is far
+     * larger than the buffered ceiling so that large downloads, such as big sequential data
+     * sets, are not cut off. Override with IRestOptions.maxDecompressedResponseBytes.
+     * @static
+     * @type {number}
+     * @memberof RestConstants
+     */
+    public static readonly DEFAULT_MAX_STREAMED_DECOMPRESSED_RESPONSE_BYTES: number = 8 * 1024 * 1024 * 1024;
 }
