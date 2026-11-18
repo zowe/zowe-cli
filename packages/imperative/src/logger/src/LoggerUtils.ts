@@ -23,6 +23,9 @@ import { IProfileSchema } from "../../profiles/src/doc/definition/IProfileSchema
 export class LoggerUtils {
     public static readonly CENSOR_RESPONSE = "****";
 
+    // Values from the current command only; replaced whenever arguments are registered.
+    private static mCommandArgumentValues: Set<string> = new Set();
+
     /**
      * NOTE(Kelosky): Ideally we might have a consolidated list for secure fields, but for now we'll just
      * make sure they're collocated within the same class.
@@ -63,19 +66,64 @@ export class LoggerUtils {
         return `${value}`.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     }
 
+    private static get censoredOptions(): Set<string> {
+        const options = new Set([...LoggerUtils.CENSORED_OPTIONS, ...LoggerUtils.COMMAND_LINE_CENSORED_OPTIONS]);
+        for (const profile of LoggerUtils.profileSchemas) {
+            for (const [name, property] of Object.entries(profile.schema.properties)) {
+                if (!property.secure) continue;
+                options.add(name);
+                for (const definition of [property.optionDefinition, ...property.optionDefinitions ?? []]) {
+                    if (definition == null) continue;
+                    if (definition.name != null) options.add(definition.name);
+                    definition.aliases?.forEach(alias => options.add(alias));
+                }
+            }
+        }
+        if (ImperativeConfig.instance.config?.exists) {
+            LoggerUtils.secureFields.forEach(property => options.add(property.split(".").pop()));
+        }
+        for (const option of Array.from(options)) {
+            options.add(CliUtils.getOptionFormat(option).camelCase);
+            options.add(CliUtils.getOptionFormat(option).kebabCase);
+        }
+        return options;
+    }
+
+    /**
+     * Register sensitive scalar argument values for log masking without changing the arguments.
+     * Call again after resolving arguments. Omitting args clears values from the previous command.
+     * @param args - The current command arguments, if available
+     */
+    public static setCommandArguments(args?: Arguments): void {
+        LoggerUtils.mCommandArgumentValues = new Set();
+        if (args == null) return;
+        const options = LoggerUtils.censoredOptions;
+        for (const [option, value] of Object.entries(args)) {
+            if (option === "_" || option === "$0" || !options.has(option)) continue;
+            const values = (Array.isArray(value) ? value : [value])
+                .filter(item => typeof item === "string" || typeof item === "number" || typeof item === "boolean")
+                .map(item => String(item))
+                .filter(item => item.length > 0 && item !== LoggerUtils.CENSOR_RESPONSE);
+            values.forEach(item => LoggerUtils.mCommandArgumentValues.add(item));
+        }
+    }
+
     /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args
      * @returns {string[]}
      */
     public static censorCLIArgs(args: string[]): string[] {
-        const newArgs: string[] = JSON.parse(JSON.stringify(args));
-        const censoredValues = LoggerUtils.CENSORED_OPTIONS.map(CliUtils.getDashFormOfOption);
-        for (const value of censoredValues) {
-            if (args.indexOf(value) >= 0) {
-                const valueIndex = args.indexOf(value);
-                if (valueIndex < args.length - 1) {
-                    newArgs[valueIndex + 1] = LoggerUtils.CENSOR_RESPONSE; // censor the argument after the option name
+        const newArgs = [...args];
+        const options = new Set(Array.from(LoggerUtils.censoredOptions, option => CliUtils.getDashFormOfOption(option).toLowerCase()));
+        for (let index = 0; index < args.length; index++) {
+            const equalsIndex = args[index].indexOf("=");
+            const option = equalsIndex < 0 ? args[index] : args[index].slice(0, equalsIndex);
+            if (options.has(option.toLowerCase())) {
+                if (equalsIndex >= 0) {
+                    newArgs[index] = `${option}=${LoggerUtils.CENSOR_RESPONSE}`;
+                } else if (index < args.length - 1) {
+                    newArgs[index + 1] = LoggerUtils.CENSOR_RESPONSE;
                 }
             }
         }
@@ -268,31 +316,37 @@ export class LoggerUtils {
      * @returns {string}
      */
     public static censorRawData(data: string, category: string = ""): string {
-        // Return the data if not using config
-        if (!ImperativeConfig.instance.config?.exists) return data;
+        const configExists = ImperativeConfig.instance.config?.exists;
+        const isOutputChannel = category === "console" || category === "json";
+        if (!configExists && (isOutputChannel || LoggerUtils.mCommandArgumentValues.size === 0)) return data;
 
         // Return the data if we are printing to the console and masking is disabled
-        const envMaskOutput = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).maskOutput.value;
-        // Hardcoding "console" instead of using Logger.DEFAULT_CONSOLE_NAME because of circular dependencies
-        if ((category === "console" || category === "json") && envMaskOutput.toUpperCase() === "FALSE") return data;
+        if (isOutputChannel) {
+            const envMaskOutput = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).maskOutput.value;
+            if (envMaskOutput.toUpperCase() === "FALSE") return data;
+        }
 
-        let newData = data;
+        const secureValues = new Set<string>(isOutputChannel ? [] : LoggerUtils.mCommandArgumentValues);
 
         // Console and JSON output intentionally leave "special" (schema-secure) values such as the user name visible,
         // because the application is responsible for masking them there. Every other destination (log files, error
         // diagnostics) has no such guarantee, so secure values are always masked by value, including passwords,
         // tokens and passphrases.
-        const isOutputChannel = category === "console" || category === "json";
-
-        const layer = LoggerUtils.layer;
-        for (const prop of LoggerUtils.secureFields) {
-            const sec = lodash.get(layer.properties, prop);
-            if (sec && typeof sec !== "object" && !(isOutputChannel && LoggerUtils.isSpecialValue(prop)))
-                // Escape the secret so regex metacharacters (e.g. `$`, `(`, `\`) are matched literally instead of
-                // being interpreted as regex syntax, which would leave the value unmasked or throw a SyntaxError.
-                newData = newData.replace(new RegExp(LoggerUtils.escapeRegExp(sec), "gi"), LoggerUtils.CENSOR_RESPONSE);
+        if (configExists) {
+            const layer = LoggerUtils.layer;
+            for (const prop of LoggerUtils.secureFields) {
+                const sec = lodash.get(layer.properties, prop);
+                if (sec && typeof sec !== "object" && !(isOutputChannel && LoggerUtils.isSpecialValue(prop))) {
+                    secureValues.add(String(sec));
+                }
+            }
         }
-        return newData;
+        if (secureValues.size === 0) return data;
+
+        // Match literal values longest first so overlapping values are masked completely.
+        const pattern = Array.from(secureValues).sort((left, right) => right.length - left.length)
+            .map(value => LoggerUtils.escapeRegExp(value)).join("|");
+        return data.replace(new RegExp(pattern, "gi"), LoggerUtils.CENSOR_RESPONSE);
     }
 
     /**

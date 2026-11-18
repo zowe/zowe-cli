@@ -388,6 +388,8 @@ export class CommandProcessor {
                 `${CommandProcessor.ERROR_TAG} invoke(): Cannot invoke the handler for command "${this.definition.name}". The handler is blank.`);
         }
 
+        LoggerUtils.setCommandArguments(params.arguments);
+
         // Censor any sensitive options before the command line is logged. This
         // masks credentials regardless of the separator used (`--opt value` or
         // `--opt=value`), the dash form (short aliases), or embedded whitespace
@@ -475,6 +477,7 @@ export class CommandProcessor {
 
         // Recreate the response object with the update params from prepare.
         params.arguments = prepared.args;
+        LoggerUtils.setCommandArguments(prepared.args);
         const response = this.constructResponseObject(params);
         response.succeeded();
 
@@ -590,6 +593,8 @@ export class CommandProcessor {
                 return this.finishResponse(response);
             }
         }
+
+        LoggerUtils.setCommandArguments(prepared.args);
 
         // Validate that the syntax is correct for the command
         let validator: ICommandValidatorResponse;
@@ -1124,7 +1129,7 @@ export class CommandProcessor {
             this.log.error("Diagnostic information:\n" +
                 "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                 "Environmental variables: '%s'",
-            os.platform(), os.arch(), LoggerUtils.censorCommandLine(process.argv.join(" ")),
+            os.platform(), os.arch(), LoggerUtils.censorCLIArgs(process.argv).join(" "),
             LoggerUtils.censorEnvVariables());
             const errorMessage: string = TextUtils.formatMessage(couldNotInstantiateCommandHandler.message, {
                 commandHandler: nodePath.normalize(handlerPath) || "\"undefined or not specified\"",
@@ -1192,7 +1197,7 @@ export class CommandProcessor {
             "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
             "Node versions: '%s'" +
             "Environmental variables: '%s'",
-        os.platform(), os.arch(), LoggerUtils.censorCommandLine(process.argv.join(" ")),
+        os.platform(), os.arch(), LoggerUtils.censorCLIArgs(process.argv).join(" "),
         JSON.stringify(process.versions, null, 2),
         LoggerUtils.censorEnvVariables());
 

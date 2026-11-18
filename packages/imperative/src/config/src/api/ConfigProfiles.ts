@@ -89,7 +89,7 @@ export class ConfigProfiles extends ConfigApi {
      * the currently active layer.
      *
      * @param profileType The name of the desired type of profile (like zosmf).
-     * @param value The dotted node path to the profile (like ca32.zosmf).
+     * @param value The dotted node path to the profile (like lpar1.zosmf).
      */
     public defaultSet(profileType: string, value: string) {
         this.mConfig.layerActive().properties.defaults[profileType] = value;

@@ -71,6 +71,7 @@ describe("Logger tests", () => {
     });
 
     afterEach(() => {
+        LoggerUtils.setCommandArguments();
         (LoggerManager as any).mInstance = null;
         jest.restoreAllMocks();
     });
@@ -292,6 +293,21 @@ describe("Logger tests", () => {
     describe("Secure data censoring", () => {
         // Every level of these emits through censorRawData; the list is the invariant under test.
         const LEVELS = ["trace", "debug", "info", "warn", "error", "fatal", "simple"] as const;
+
+        it.each(LEVELS)("Should mask parsed command values in formatted %s messages without team config", (level) => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ loadedConfig: { profiles: [] } } as ImperativeConfig);
+            (LoggerUtils as any).mProfiles = null;
+            const secret = "correct horse p@$$(w)ord[1]*";
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", certFilePassphrase: secret });
+            const logger = Logger.initLogger(LoggingConfigurer.configureLogger(fakeHome, { name }));
+            const method = level === "simple" ? "info" : level;
+            (logger as any).logService[method] = jest.fn();
+
+            const message = logger[level]("Failed using %s on %s", secret, "visible-host");
+
+            expect(message).toBe("Failed using **** on visible-host");
+            expect((logger as any).logService[method]).toHaveBeenCalledWith(expect.stringContaining("Failed using **** on visible-host"));
+        });
 
         afterEach(() => {
             (LoggerManager as any).mInstance = null;

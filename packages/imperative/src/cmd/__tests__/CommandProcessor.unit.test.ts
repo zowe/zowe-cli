@@ -27,7 +27,8 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils, NextVerFeatures } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../..";
+import { Logger, LoggerUtils } from "../..";
+import TestCmdHandler from "./__model__/TestCmdHandler";
 import { CommandProfiles } from "../src/profiles/CommandProfiles";
 
 jest.mock("../src/syntax/SyntaxValidator");
@@ -250,6 +251,7 @@ const ENV_VAR_PREFIX: string = "UNIT_TEST";
 describe("Command Processor", () => {
     // Restore everything after each test
     afterEach(() => {
+        LoggerUtils.setCommandArguments();
         process.stdout.write = ORIGINAL_STDOUT_WRITE;
         process.stderr.write = ORIGINAL_STDERR_WRITE;
         jest.restoreAllMocks();
@@ -968,6 +970,107 @@ describe("Command Processor", () => {
         expect(logOutput).not.toMatch(/\bwords\b/);
     });
 
+    describe("value-based log censorship for the current command", () => {
+        let processor: CommandProcessor;
+
+        beforeEach(() => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                loadedConfig: { profiles: [] }
+            } as unknown as ImperativeConfig);
+            jest.spyOn(CommandProfileLoader, "loader").mockReturnValue({
+                loadProfiles: jest.fn().mockResolvedValue(new CommandProfiles(new Map()))
+            } as unknown as CommandProfileLoader);
+            jest.spyOn(SharedOptions, "readStdinIfRequested").mockResolvedValue(false);
+            processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: {
+                    ...SAMPLE_COMMAND_REAL_HANDLER,
+                    options: [{ name: "password", type: "string", description: "Password" }],
+                    profile: { optional: ["fruit"] }
+                },
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "please"
+            });
+        });
+
+        afterEach(() => {
+            LoggerUtils.setCommandArguments();
+        });
+
+        it("should mask arbitrary logs before preparation and in handlers, resetting between invocations", async () => {
+            const messages: string[] = [];
+            const input = "first-cli-secret | second-cli-secret";
+            jest.spyOn(processor as any, "prepare").mockImplementation(async (_response: CommandResponse, args: IInvokeCommandParms["arguments"]) => {
+                messages.push(Logger.getAppLogger().error(input));
+                return { args };
+            });
+            jest.spyOn(TestCmdHandler.prototype, "process").mockImplementation(async () => {
+                messages.push(Logger.getAppLogger().error(input));
+            });
+
+            for (const password of ["first-cli-secret", "second-cli-secret"]) {
+                const result = await processor.invoke({ arguments: { _: [], $0: "zowe", valid: true, password }, silent: true });
+                expect(result.success).toBe(true);
+            }
+            expect(messages).toEqual([
+                `${LoggerUtils.CENSOR_RESPONSE} | second-cli-secret`, `${LoggerUtils.CENSOR_RESPONSE} | second-cli-secret`,
+                `first-cli-secret | ${LoggerUtils.CENSOR_RESPONSE}`, `first-cli-secret | ${LoggerUtils.CENSOR_RESPONSE}`
+            ]);
+        });
+
+        it("should register arguments resolved from the environment before the handler runs", async () => {
+            const envName = `${ENV_VAR_PREFIX}_OPT_PASSWORD`;
+            const original = process.env[envName];
+            process.env[envName] = "resolved secret phrase";
+            let message: string;
+            jest.spyOn(TestCmdHandler.prototype, "process").mockImplementation(async (params) => {
+                message = Logger.getAppLogger().error("Failed using %s", params.arguments.password);
+            });
+            try {
+                const result = await processor.invoke({ arguments: { _: [], $0: "zowe", valid: true }, silent: true });
+                expect(result.success).toBe(true);
+                expect(message).toBe(`Failed using ${LoggerUtils.CENSOR_RESPONSE}`);
+            } finally {
+                if (original === undefined) delete process.env[envName];
+                else process.env[envName] = original;
+            }
+        });
+
+        it("should register values resolved from v1 profiles before the handler runs", async () => {
+            const profiles = new CommandProfiles(new Map([["fruit", [{ name: "legacy", type: "fruit", password: "legacy-profile-secret" }]]]));
+            jest.spyOn(CommandProfileLoader, "loader").mockReturnValue({
+                loadProfiles: jest.fn().mockResolvedValue(profiles)
+            } as unknown as CommandProfileLoader);
+            let message: string;
+            jest.spyOn(TestCmdHandler.prototype, "process").mockImplementation(async (params) => {
+                message = Logger.getAppLogger().error("Failed using %s", params.arguments.password);
+            });
+
+            const result = await processor.invoke({ arguments: { _: [], $0: "zowe", valid: true }, silent: true });
+
+            expect(result.success).toBe(true);
+            expect(message).toBe(`Failed using ${LoggerUtils.CENSOR_RESPONSE}`);
+        });
+
+        it("should register prompted values before validation and handler execution", async () => {
+            const prompt = jest.fn().mockResolvedValue("prompted secret phrase");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({ prompt } as any);
+            let message: string;
+            jest.spyOn(TestCmdHandler.prototype, "process").mockImplementation(async (params) => {
+                message = Logger.getAppLogger().error("Failed using %s", params.arguments.password);
+            });
+            const result = await processor.invoke({
+                arguments: { _: [], $0: "zowe", valid: true, password: "please" }, silent: true
+            });
+            expect(result.success).toBe(true);
+            expect(prompt).toHaveBeenCalledTimes(1);
+            expect(message).toBe(`Failed using ${LoggerUtils.CENSOR_RESPONSE}`);
+        });
+    });
+
     describe("trace-level logging of arguments", () => {
         const vaultPassword = "vaultSecretPwd";
         const vaultTokenValue = "vaultSecretToken";
@@ -1383,9 +1486,9 @@ describe("Command Processor", () => {
             expect(errorOutput).not.toContain("superSecretPwd");
             expect(errorOutput).toContain(LoggerUtils.CENSOR_RESPONSE);
             expect(errorOutput).toContain("visibleHostValue");
-            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            // Equals-form credential in argv must be redacted
             expect(errorOutput).not.toContain("argvSecretPwd");
-            expect(errorOutput).toContain(`--password ${LoggerUtils.CENSOR_RESPONSE}`);
+            expect(errorOutput).toContain(`--password=${LoggerUtils.CENSOR_RESPONSE}`);
         } finally {
             process.argv = originalArgv;
             delete process.env.ZOWE_OPT_PASSWORD;
@@ -1439,14 +1542,68 @@ describe("Command Processor", () => {
             expect(errorOutput).not.toContain("awsSuperSecret");
             expect(errorOutput).toContain(LoggerUtils.CENSOR_RESPONSE);
             expect(errorOutput).toContain("visiblePortValue");
-            // Equals-form credential in argv must be redacted (via censorCommandLine)
+            // Equals-form credential in argv must be redacted
             expect(errorOutput).not.toContain("argvSecretToken");
-            expect(errorOutput).toContain(`--token-value ${LoggerUtils.CENSOR_RESPONSE}`);
+            expect(errorOutput).toContain(`--token-value=${LoggerUtils.CENSOR_RESPONSE}`);
         } finally {
             process.argv = originalArgv;
             delete process.env.AWS_SECRET_ACCESS_KEY;
             delete process.env.MY_DIAG_TEST_PORT;
         }
+    });
+
+    describe.each<[string, ICommandDefinition]>([
+        ["handler error", SAMPLE_COMMAND_REAL_HANDLER],
+        ["handler load failure", SAMPLE_COMMAND_DEFINITION]
+    ])("diagnostic argument redaction on %s", (_name, definition) => {
+        const secret = "correct horse battery";
+
+        it.each<[string, string[]]>([
+            ["separate value", ["--cert-file-passphrase", secret]],
+            ["equals value", [`--cert-file-passphrase=${secret}`]],
+            ["camel case", ["--certFilePassphrase", secret]],
+            ["repeated option", ["--cert-file-passphrase", secret, "--cert-file-passphrase", "second secret phrase"]],
+            ["mixed forms", [`--cert-file-passphrase=${secret}`, "--cert-file-passphrase", "second secret phrase"]]
+        ])("should redact the entire secret for %s", async (_form, secretArgs: string[]) => {
+            const processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_COMPLEX_COMMAND,
+                definition,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy"
+            });
+            let diagnosticArgv = "";
+            Object.defineProperty(processor, "log", {
+                get: () => ({
+                    debug: jest.fn(), info: jest.fn(), trace: jest.fn(),
+                    error: (...args: unknown[]) => {
+                        if ((args[0] as string).startsWith("Diagnostic information:")) {
+                            diagnosticArgv = args[3] as string;
+                        }
+                    }
+                })
+            });
+            const originalArgv = process.argv;
+            const argv = ["node", "zowe", ...secretArgs, "--host", "visibleHost"];
+            process.argv = [...argv];
+            try {
+                const response = await processor.invoke({
+                    arguments: { _: ["check", "for", "banana"], $0: "", valid: true, throwImperative: true },
+                    responseFormat: "json",
+                    silent: true
+                });
+                expect(response.success).toBe(false);
+                expect(diagnosticArgv).toContain(LoggerUtils.CENSOR_RESPONSE);
+                expect(diagnosticArgv).toContain("--host visibleHost");
+                expect(diagnosticArgv).not.toMatch(/\b(correct|horse|battery|second|secret|phrase)\b/);
+                expect(process.argv).toEqual(argv);
+            } finally {
+                process.argv = originalArgv;
+            }
+        });
     });
 
     it("should not strip tabs from the imperative error message", async () => {
