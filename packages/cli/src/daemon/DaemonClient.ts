@@ -13,7 +13,7 @@ import * as crypto from "crypto";
 import * as net from "net";
 import * as path from "path";
 import { PassThrough, Readable } from "stream";
-import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+import { Censor, DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeConfig, ImperativeError, IO } from "@zowe/imperative";
 import { DaemonUtil } from "./DaemonUtil";
 
 /**
@@ -232,11 +232,15 @@ export class DaemonClient {
             }
         } else {
             Imperative.commandLine = jsonData.argv.join(" ");
-            Imperative.api.appLogger.trace(`daemon input command: ${Imperative.commandLine}`);
             const context: IDaemonContext = { stream: this.mClient, response: jsonData };
             if (stdinData != null) {
                 context.stdinStream = this.createStdinStream(stdinData, jsonData.stdinLength);
             }
+            Censor.setCensoredOptions({
+                profiles: ImperativeConfig.instance.loadedConfig?.profiles,
+                config: ImperativeConfig.instance.config
+            });
+            Imperative.api.appLogger.trace(`daemon input command: ${Censor.censorCLIArgs(jsonData.argv).join(" ")}`);
             Imperative.parse(jsonData.argv, context);
         }
     }
