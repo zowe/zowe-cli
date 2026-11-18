@@ -10,16 +10,24 @@
 */
 
 jest.mock("net");
-jest.mock("@zowe/imperative");
+jest.mock("@zowe/imperative", () => ({
+    ...jest.createMockFromModule<Record<string, unknown>>("@zowe/imperative"),
+    LoggerUtils: jest.requireActual("../../../../imperative/src/logger/src/LoggerUtils").LoggerUtils,
+    ImperativeConfig: jest.requireActual("../../../../imperative/src/utilities/src/ImperativeConfig").ImperativeConfig
+}));
 import * as net from "net";
 import * as stream from "stream";
 import getStream = require("get-stream");
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
-import { IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+import { IDaemonResponse, Imperative, ImperativeConfig, ImperativeError, IO, LoggerUtils } from "@zowe/imperative";
 
 describe("DaemonClient tests", () => {
     beforeEach(() => {
         jest.restoreAllMocks();
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            loadedConfig: { profiles: [] }
+        } as unknown as ImperativeConfig);
+        (LoggerUtils as any).mProfiles = null;
     });
     const fakeToken = "fakeToken";
 
@@ -73,6 +81,41 @@ describe("DaemonClient tests", () => {
         expect(log).toHaveBeenLastCalledWith('daemon input command: feed 🐶');
         expect(log).toHaveBeenCalledTimes(2);
         expect(parse).toHaveBeenCalled();
+    });
+
+    it.each<[string[], string]>([
+        [["--password", "two words"], "--password ****"],
+        [["--password=two words"], "--password=****"],
+        [["--password", "first secret", "--password=second secret"], "--password **** --password=****"],
+        [["--certFilePassphrase", "two words"], "--certFilePassphrase ****"],
+        [["--api-key", "two words", "-k=another secret"], "--api-key **** -k=****"]
+    ])("should mask incoming command arguments %j before parsing", async (options: string[], masked: string) => {
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            loadedConfig: { profiles: [{
+                type: "test",
+                schema: { type: "object", properties: {
+                    apiKey: { type: "string", secure: true, optionDefinition: {
+                        name: "api-key", aliases: ["k"], type: "string", description: "API key"
+                    } }
+                } }
+            }] }
+        } as unknown as ImperativeConfig);
+        const trace = jest.fn();
+        LoggerUtils.setCommandArguments({ _: [], $0: "zowe", password: "visible-host" });
+        const parse = jest.fn();
+        (Imperative as any) = { api: { appLogger: { trace } }, commandLine: "", parse };
+        const client = { write: jest.fn(), end: jest.fn() };
+        const daemonClient = new DaemonClient(client as any, undefined, "fake", fakeToken);
+        const argv = ["test", ...options, "--host", "visible-host"];
+
+        await (daemonClient as any).data(Buffer.from(JSON.stringify({
+            argv, user: Buffer.from("fake").toString("base64"), token: fakeToken
+        })));
+
+        expect(trace).toHaveBeenCalledWith(`daemon input command: test ${masked} --host visible-host`);
+        expect(parse).toHaveBeenCalledWith(argv, expect.objectContaining({ response: expect.objectContaining({ argv }) }));
+        expect(Imperative.commandLine).toBe(argv.join(" "));
+        expect(LoggerUtils.censorRawData("visible-host", "app")).toBe("visible-host");
     });
 
     it("should process response with binary stdin data when received", async () => {

@@ -15,6 +15,101 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 
 describe("LoggerUtils tests", () => {
 
+    afterEach(() => {
+        LoggerUtils.setCommandArguments();
+    });
+
+    it.each(LoggerUtils.CENSORED_OPTIONS)("should mask equals-form values for %s", (option) => {
+        const dash = option.length === 1 ? "-" : "--";
+        expect(LoggerUtils.censorCLIArgs([`${dash}${option}=two words=tail`, "--host=visible"]))
+            .toEqual([`${dash}${option}=****`, "--host=visible"]);
+    });
+
+    it("should mask every repeated argument, preserve argument boundaries, and leave the input unchanged", () => {
+        const args = ["--password", "two words", "--password=second secret", "--certFilePassphrase", "p@$$(w)ord[1]*", "--host", "visible"];
+        expect(LoggerUtils.censorCLIArgs(args))
+            .toEqual(["--password", "****", "--password=****", "--certFilePassphrase", "****", "--host", "visible"]);
+        expect(args).toEqual(["--password", "two words", "--password=second secret", "--certFilePassphrase", "p@$$(w)ord[1]*", "--host", "visible"]);
+        expect(LoggerUtils.censorCLIArgs(["--password=", "--password", "", "--password"]))
+            .toEqual(["--password=****", "--password", "****", "--password"]);
+        expect(LoggerUtils.censorCLIArgs([])).toEqual([]);
+    });
+
+    describe("setCommandArguments", () => {
+        beforeEach(() => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ loadedConfig: { profiles: [] } } as ImperativeConfig);
+            (LoggerUtils as any).mProfiles = null;
+        });
+
+        afterEach(() => {
+            (LoggerUtils as any).mProfiles = null;
+            jest.restoreAllMocks();
+        });
+
+        it.each(LoggerUtils.CENSORED_OPTIONS)("should mask parsed %s values in arbitrary logs without team config", (option) => {
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", [option]: "two words", host: "visible" });
+            expect(LoggerUtils.censorRawData("Failed using two words on visible; retry two words", "app"))
+                .toBe("Failed using **** on visible; retry ****");
+        });
+
+        it("should mask arrays, scalar values, regex characters, and overlapping values without changing the arguments", () => {
+            const args = { _: ["command"], $0: "zowe", password: ["a.c", "a.c longer", "se(cret[", "two\twords\n", 0, false] };
+            LoggerUtils.setCommandArguments(args);
+            expect(LoggerUtils.censorRawData("a.c longer, a.c, axc, se(cret[, two\twords\n, 0, false", "app"))
+                .toBe("****, ****, axc, ****, ****, ****, ****");
+            expect(args.password).toEqual(["a.c", "a.c longer", "se(cret[", "two\twords\n", 0, false]);
+        });
+
+        it("should replace the previous command's values and clear them when called without arguments", () => {
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", password: "first-secret" });
+            expect(LoggerUtils.censorRawData("first-secret second-secret")).toBe("**** second-secret");
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", password: "second-secret" });
+            expect(LoggerUtils.censorRawData("first-secret second-secret")).toBe("first-secret ****");
+            LoggerUtils.setCommandArguments();
+            expect(LoggerUtils.censorRawData("first-secret second-secret")).toBe("first-secret second-secret");
+        });
+
+        it("should ignore missing, empty, object and already masked values", () => {
+            LoggerUtils.setCommandArguments({ _: ["command"], $0: "zowe", password: [null, undefined, "", {}, "****"], host: "visible" });
+            expect(LoggerUtils.censorRawData("command zowe visible ****")).toBe("command zowe visible ****");
+        });
+
+        it("should recognize secure schema properties, option definitions, and aliases", () => {
+            LoggerUtils.setProfileSchemas(new Map([["test", {
+                type: "test", title: "Test", description: "Test", properties: {
+                    apiKey: { type: "string", secure: true, optionDefinition: {
+                        name: "api-key", aliases: ["k"], type: "string", description: "API key"
+                    } },
+                    otherSecret: { type: "string", secure: true, optionDefinitions: [{
+                        name: "other-secret", aliases: ["s"], type: "string", description: "Other secret"
+                    }] }
+                }
+            }]]));
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", apiKey: "camel-secret", "api-key": "kebab-secret", k: "alias-secret", s: "other" });
+            expect(LoggerUtils.censorRawData("camel-secret kebab-secret alias-secret other")).toBe("**** **** **** ****");
+            expect(LoggerUtils.censorCLIArgs(["--api-key", "two words", "-k=another secret", "-s", "other"]))
+                .toEqual(["--api-key", "****", "-k=****", "-s", "****"]);
+        });
+
+        it("should combine parsed and config values, masking overlapping values longest first", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: { exists: true, api: {
+                    layers: { get: () => ({ properties: { profiles: { test: { password: "config-secret", custom: "config-only" } } } }) },
+                    secure: { secureFields: () => ["profiles.test.password", "profiles.test.custom"] }
+                } }
+            } as unknown as ImperativeConfig);
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", password: "config-secret with spaces", custom: "cli-custom" });
+            expect(LoggerUtils.censorRawData("config-secret with spaces, config-secret, config-only, cli-custom", "app"))
+                .toBe("****, ****, ****, ****");
+        });
+
+        it.each(["console", "json"])("should preserve %s output behavior while masking log messages", (category) => {
+            LoggerUtils.setCommandArguments({ _: [], $0: "zowe", password: "cli-secret" });
+            expect(LoggerUtils.censorRawData("cli-secret", category)).toBe("cli-secret");
+            expect(LoggerUtils.censorRawData("cli-secret", "app")).toBe("****");
+        });
+    });
+
     it("Should hide --password operand", () => {
         const data = LoggerUtils.censorCLIArgs(["--password", "cantSeeMe"]);
         expect(data).toContain(LoggerUtils.CENSOR_RESPONSE);
