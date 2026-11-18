@@ -5,7 +5,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Updated configuration redaction to use unnumbered placeholders for censored properties. [#3017](https://github.com/zowe/zowe-cli/pull/3017)
-- Enhancement: Clarified how values from defaults, environment variables, and profiles satisfy option `implies` dependencies, so you can define options without requiring explicit command-line flags. [#1909](https://github.com/zowe/zowe-cli/issues/1909)
 
 ## `8.43.0`
 
