@@ -128,6 +128,24 @@ describe("ConfigRedact", () => {
     });
 
 
+    describe("redactObject", () => {
+        it.each([
+            ["standalone-secret", "<str1>"],
+            [42, "<num1>"],
+            [true, "<bool1>"]
+        ])("redacts the standalone value %p", (value, expected) => {
+            const opts = redact["normalizeOpts"]({ redactBooleans: true });
+
+            expect(redact["redactObject"](value, opts)).toBe(expected);
+        });
+
+        it.each(["standalone-secret", 42, true])("preserves the standalone value %p when redaction is disabled", (value) => {
+            const opts = redact["normalizeOpts"]({ redactStrings: false, redactNumbers: false, redactBooleans: false });
+
+            expect(redact["redactObject"](value, opts)).toBe(value);
+        });
+    });
+
     it("uses unnumbered type placeholders for censored options and aliases at the top level and in profiles", () => {
         const properties = Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, `secret-${name}`]));
         jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
