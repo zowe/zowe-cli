@@ -171,7 +171,7 @@ export class ConfigRedact extends ConfigApi {
                 if (key === "$schema") {
                     redacted[rawKey] = "<SCHEMA_PATH_REDACTED>";
                 } else {
-                    redacted[rawKey] = this.redactObject(value, opts);
+                    redacted[rawKey] = this.redactValue(rawKey, value, opts);
                 }
             }
         }

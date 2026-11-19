@@ -128,9 +128,10 @@ describe("ConfigRedact", () => {
     });
 
 
-    it("uses unnumbered type placeholders for default censored options and their aliases", () => {
+    it("uses unnumbered type placeholders for censored options and aliases at the top level and in profiles", () => {
         const properties = Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, `secret-${name}`]));
         jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            ...properties,
             profiles: {
                 test: { properties }
             }
@@ -141,6 +142,25 @@ describe("ConfigRedact", () => {
         expect(redactedConfig.profiles.test.properties).toEqual(
             Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, "<string>"]))
         );
+        for (const name of Censor.DEFAULT_CENSORED_OPTIONS) {
+            expect(redactedConfig[name]).toBe("<string>");
+        }
+    });
+
+    it("uses unnumbered placeholders for censored top-level array entries without sharing stable keys", () => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            password: ["shared-secret", ["another-secret"], 42, true, "", null],
+            customValue: "shared-secret",
+            tokenValue: "shared-secret"
+        }));
+
+        const [{ redactedConfig }] = redact.getRedactedLayers({ redactBooleans: true });
+
+        expect(redactedConfig).toEqual({
+            password: ["<string>", ["<string>"], "<number>", "<boolean>", "", null],
+            customValue: "<str1>",
+            tokenValue: "<string>"
+        });
     });
 
     it("keeps censored options separate from stable placeholders for shared values", () => {
