@@ -263,7 +263,7 @@ export class ConfigRedact extends ConfigApi {
             return redacted;
         }
 
-        return obj;
+        return this.redactValue("", obj, opts);
     }
 
     private getOrCreateKey(value: any, propertyName: string): string {

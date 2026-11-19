@@ -97,6 +97,37 @@ describe("ConfigRedact", () => {
         expect(firstHost).toBe(secondHost);
     });
 
+    it.each(["preview", "export"])("redacts unknown top-level entries during %s", (mode) => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            profiles: {},
+            defaults: {},
+            customSecret: "example-secret-token-123",
+            customNumber: 42,
+            customBoolean: true,
+            customValues: ["example-secret-token-123", ["another-secret"], { label: "nested-secret" }, 42, true, "", null]
+        }));
+        jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+
+        const [{ redactedConfig }] = mode === "preview" ?
+            redact.getRedactedLayers({ redactStrings: true }) :
+            redact.exportToDirectory("mock-export", { redactStrings: true });
+
+        const expected = {
+            profiles: {},
+            defaults: {},
+            customSecret: "<str1>",
+            customNumber: "<num1>",
+            customBoolean: true,
+            customValues: ["<str1>", ["<str2>"], { label: "<str3>" }, "<num1>", true, "", null]
+        };
+        expect(redactedConfig).toEqual(expected);
+        if (mode === "export") {
+            expect(writeSpy).toHaveBeenCalledWith(expect.any(String), JSON.stringify(expected, null, 2), "utf8");
+        }
+    });
+
+
     it("uses unnumbered type placeholders for default censored options and their aliases", () => {
         const properties = Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, `secret-${name}`]));
         jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
