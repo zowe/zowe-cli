@@ -34,6 +34,8 @@ import { IO } from "../../io";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
 import { ConfigEnvironmentVariables } from "./ConfigEnvironmentVariables";
 import { IConfigEnvVarManaged } from "./doc/IConfigEnvVarManaged";
+import { Logger } from "../../logger";
+import { TrustedConfigManager, TrustPromptFn } from "./TrustedConfigManager";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -88,6 +90,12 @@ export class Config {
      * @internal
      */
     public mProjectDir: string | false;
+
+    /**
+     * Callback used to ask whether an unrecognized project config directory is trusted
+     * @internal
+     */
+    private mTrustPromptFn?: TrustPromptFn;
 
     /**
      * Currently active layer whose properties will be manipulated
@@ -198,6 +206,7 @@ export class Config {
         this.mEnvVarManaged = [];
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
         this.mProjectDir = opts?.projectDir ?? process.cwd();
+        this.mTrustPromptFn = opts?.trustPromptFn ?? this.mTrustPromptFn;
 
         // Populate configuration file layers
         for (const layer of [
@@ -290,6 +299,26 @@ export class Config {
 
     // _______________________________________________________________________
     /**
+     * Decide whether a directory containing a project config file may be loaded.
+     * World-writable and untrusted directories are skipped with a warning.
+     * @internal
+     */
+    private isTrustedDir = (dir: string): boolean => {
+        if (TrustedConfigManager.isWorldWritable(dir)) {
+            Logger.getImperativeLogger().warn(`Skipping project config in world-writable directory: ${dir}`);
+            return false;
+        }
+        if (!TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, this.mTrustPromptFn,
+            typeof this.mProjectDir === "string" ? this.mProjectDir : undefined)) {
+            Logger.getImperativeLogger().warn(`Skipping project config in untrusted directory: ${dir}. ` +
+                `Set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true or add it to "trustedConfigDirs" in settings/imperative.json to trust it.`);
+            return false;
+        }
+        return true;
+    };
+
+    // _______________________________________________________________________
+    /**
      * Get absolute file path for a config layer.
      * For project config files, We search up from our current directory and
      * ignore the Zowe hone directory (in case our current directory is under
@@ -303,12 +332,16 @@ export class Config {
         switch (layer) {
             case Layers.ProjectUser: {
                 if (this.mProjectDir === false) return "";
-                const userConfigPath = Config.search(this.userConfigName, { ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir });
+                const userConfigPath = Config.search(this.userConfigName, {
+                    ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
+                });
                 return userConfigPath || path.join(this.mProjectDir, this.userConfigName);
             }
             case Layers.ProjectConfig: {
                 if (this.mProjectDir === false) return "";
-                const configPath = Config.search(this.configName, { ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir });
+                const configPath = Config.search(this.configName, {
+                    ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
+                });
                 return configPath || path.join(this.mProjectDir, this.configName);
             }
             case Layers.GlobalUser:
@@ -448,13 +481,16 @@ export class Config {
      *        ignored (skipped) during the search.
      * @param opts.startDir Contains the name of the directory where the
      *        search should be started. Defaults to working directory.
+     * @param opts.isTrusted Optional callback to decide whether a directory
+     *        containing the file may be used. Untrusted directories are skipped.
      *
      * @returns The full path name to config file or null if not found.
      */
-    public static search(file: string, opts?: { ignoreDirs?: string[]; startDir?: string }): string {
+    public static search(file: string, opts?: { ignoreDirs?: string[]; startDir?: string; isTrusted?: (dir: string) => boolean }): string {
         opts = opts || {};
         const p = findUp.sync((directory: string) => {
             if (opts.ignoreDirs?.includes(directory)) return;
+            if (opts.isTrusted && fs.existsSync(path.join(directory, file)) && !opts.isTrusted(directory)) return;
             return fs.existsSync(path.join(directory, file)) && directory;
         }, { cwd: opts.startDir, type: "directory" });
         return p ? path.join(p, file) : null;
