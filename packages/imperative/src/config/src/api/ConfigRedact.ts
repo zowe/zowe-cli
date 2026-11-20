@@ -171,7 +171,7 @@ export class ConfigRedact extends ConfigApi {
                 if (key === "$schema") {
                     redacted[rawKey] = "<SCHEMA_PATH_REDACTED>";
                 } else {
-                    redacted[rawKey] = this.redactObject(value, opts);
+                    redacted[rawKey] = this.redactValue(rawKey, value, opts);
                 }
             }
         }
@@ -263,7 +263,7 @@ export class ConfigRedact extends ConfigApi {
             return redacted;
         }
 
-        return obj;
+        return this.redactValue("", obj, opts);
     }
 
     private getOrCreateKey(value: any, propertyName: string): string {
