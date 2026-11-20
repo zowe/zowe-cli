@@ -275,5 +275,62 @@ describe("Upload file-to-uss handler", () => {
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
         });
+
+        it("should upload a file to a USS in binary mode if requested, ignoring the zosattributes file", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../../src/zosfiles/upload/ftu/FileToUSS.handler");
+            const handler = new handlerReq.default();
+            const inputfile = "test.bin";
+            const USSFileName = "testing";
+
+            const loadFromFileSpy = jest.spyOn(ZosFilesAttributes, "loadFromFile").mockImplementation(() => {
+                const zosAttributes = Object.create(ZosFilesAttributes.prototype);
+                zosAttributes.attributes = new Map([
+                    ['*', { ignore: false, localEncoding: 'ISO8859-1', remoteEncoding: 'EBCDIC' }]
+                ]);
+                zosAttributes.basePath = undefined;
+                return zosAttributes;
+            });
+            loadFromFileSpy.mockClear();
+            Upload.uploadFile = jest.fn(async () => {
+                return {
+                    success: true,
+                    commandResponse: "uploaded",
+                    apiResponse: [
+                        { success: true, from: inputfile, to: USSFileName }
+                    ]
+                };
+            });
+
+            await handler.process({
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"],
+                    inputfile,
+                    USSFileName,
+                    binary: true,
+                    ...UNIT_TEST_ZOSMF_PROF_OPTS
+                },
+                response: {
+                    data: {
+                        setMessage: jest.fn(),
+                        setObj: jest.fn()
+                    },
+                    console: {
+                        log: jest.fn()
+                    },
+                    progress: {
+                        startBar: jest.fn(),
+                        endBar: jest.fn()
+                    }
+                }
+            } as any);
+
+            expect(loadFromFileSpy).toHaveBeenCalledTimes(1);
+            expect(Upload.uploadFile).toHaveBeenCalledTimes(1);
+            const uploadOptions = (Upload.uploadFile as jest.Mock).mock.calls[0][3];
+            expect(uploadOptions.binary).toBe(true);
+            expect(uploadOptions.attributes).toBeUndefined();
+        });
     });
 });

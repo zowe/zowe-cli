@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added the `--max-response-bytes` option to the `zowe zos-files view data-set`, `zowe zos-files view uss-file`, `zowe zos-jobs view spool-file-by-id`, and `zowe zos-jobs view all-spool-content` commands. These commands now fail if the content to display (for `all-spool-content`, the content of any one spool file) is larger than 64 MiB by default; increase the limit using this option to view larger content. When the limit is exceeded, the error suggests downloading the content to a file instead of viewing it. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
 - BugFix: Fixed an issue where data set names with only one qualifier would be rejected by some commands such as the `zowe files list alias` command. [#3013](https://github.com/zowe/zowe-cli/pull/3013)
+- BugFix: Fixed the `zowe zos-files upload file-to-uss` command ignoring the `--binary` option when a `.zosattributes` file has a rule for the file. Now `--binary` takes precedence. [#2516](https://github.com/zowe/zowe-cli/issues/2516)
 
 ## `8.43.0`
 
