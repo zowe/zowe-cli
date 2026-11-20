@@ -69,13 +69,15 @@ export class ConfigEnvironmentVariables {
             if (path) { propPath = path + "." + key; }
             else { propPath = key; }
 
-            if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
+            // Coercion can turn an environment value into any JSON type.
+            // Restore a managed property before traversing its resolved value.
+            const match = config.mEnvVarManaged.find((value) => {
+                return value.propPath == propPath && value.global == layer.global && value.user == layer.user;
+            });
+            if (match) {
+                obj[key] = match.originalValue;
+            } else if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
                 this.restoreEnvironmentVariablesInConfigLayer(obj[key], config, layer, propPath);
-            } else if (typeof obj[key] == 'string') {
-                const match = config.mEnvVarManaged.find((value) => {
-                    return value.propPath == propPath && value.global == layer.global && value.user == layer.user;
-                });
-                if (match) { obj[key] = match.originalValue; }
             }
         });
     }

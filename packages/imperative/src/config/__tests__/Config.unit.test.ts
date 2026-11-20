@@ -81,6 +81,76 @@ describe("Config tests", () => {
         jest.restoreAllMocks();
     });
 
+    describe("saving environment-managed credentials", () => {
+        let tempDir: string;
+        let homeDir: string;
+        let originalEnv: NodeJS.ProcessEnv;
+
+        beforeEach(() => {
+            originalEnv = process.env;
+            process.env = {
+                ...originalEnv,
+                CONFIG_SAVE_TEST_PORT: "443",
+                CONFIG_SAVE_TEST_USER: "test-user"
+            };
+            tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-config-env-"));
+            homeDir = path.join(tempDir, "home");
+            fs.mkdirSync(homeDir);
+        });
+
+        afterEach(() => {
+            process.env = originalEnv;
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        });
+
+        it.each(["12345", "0", "true", "false", "null", '["secret"]', '{"nested":"secret"}'])(
+            "should preserve references through save and reload for JSON credential %s",
+            async (password) => {
+                process.env.CONFIG_SAVE_TEST_PASSWORD = password;
+                const configPath = path.join(tempDir, `${MY_APP}.config.json`);
+                const properties = {
+                    host: "example.test",
+                    port: "$CONFIG_SAVE_TEST_PORT",
+                    user: "${CONFIG_SAVE_TEST_USER}",
+                    password: "$CONFIG_SAVE_TEST_PASSWORD"
+                };
+                fs.writeFileSync(configPath, JSON.stringify({
+                    profiles: { test: { type: "zosmf", properties, secure: ["password"] } },
+                    defaults: { zosmf: "test" }
+                }));
+                const store = new Map<string, string>();
+                const vault = {
+                    load: async (key: string) => store.get(key),
+                    save: async (key: string, value: string) => { store.set(key, value); }
+                };
+                const config = await Config.load(MY_APP, { projectDir: tempDir, homeDir, vault });
+                expect(config.properties.profiles.test.properties).toEqual({
+                    host: "example.test", port: 443, user: "test-user", password: JSON.parse(password)
+                });
+
+                config.set("profiles.test.properties.host", "changed.test");
+                await config.save();
+                expect(JSON.parse(fs.readFileSync(configPath, "utf8")).profiles.test).toEqual({
+                    type: "zosmf", properties: { ...properties, host: "changed.test" }, secure: ["password"]
+                });
+                expect(Array.from(store.entries())).toEqual([]);
+
+                // A second save must also retain the references.
+                await config.save();
+                expect(JSON.parse(fs.readFileSync(configPath, "utf8")).profiles.test.properties).toEqual({
+                    ...properties, host: "changed.test"
+                });
+
+                process.env.CONFIG_SAVE_TEST_PASSWORD = "67890";
+                process.env.CONFIG_SAVE_TEST_PORT = "8443";
+                await config.reload({ projectDir: tempDir, homeDir });
+                expect(config.properties.profiles.test.properties).toEqual({
+                    host: "changed.test", port: 8443, user: "test-user", password: 67890
+                });
+            }
+        );
+    });
+
     describe("schema write containment", () => {
         let tempDir: string;
         let projectDir: string;
