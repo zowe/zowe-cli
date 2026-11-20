@@ -97,9 +97,59 @@ describe("ConfigRedact", () => {
         expect(firstHost).toBe(secondHost);
     });
 
-    it("uses unnumbered type placeholders for default censored options and their aliases", () => {
+    it.each(["preview", "export"])("redacts unknown top-level entries during %s", (mode) => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            profiles: {},
+            defaults: {},
+            customSecret: "example-secret-token-123",
+            customNumber: 42,
+            customBoolean: true,
+            customValues: ["example-secret-token-123", ["another-secret"], { label: "nested-secret" }, 42, true, "", null]
+        }));
+        jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+
+        const [{ redactedConfig }] = mode === "preview" ?
+            redact.getRedactedLayers({ redactStrings: true }) :
+            redact.exportToDirectory("mock-export", { redactStrings: true });
+
+        const expected = {
+            profiles: {},
+            defaults: {},
+            customSecret: "<str1>",
+            customNumber: "<num1>",
+            customBoolean: true,
+            customValues: ["<str1>", ["<str2>"], { label: "<str3>" }, "<num1>", true, "", null]
+        };
+        expect(redactedConfig).toEqual(expected);
+        if (mode === "export") {
+            expect(writeSpy).toHaveBeenCalledWith(expect.any(String), JSON.stringify(expected, null, 2), "utf8");
+        }
+    });
+
+
+    describe("redactObject", () => {
+        it.each([
+            ["standalone-secret", "<str1>"],
+            [42, "<num1>"],
+            [true, "<bool1>"]
+        ])("redacts the standalone value %p", (value, expected) => {
+            const opts = redact["normalizeOpts"]({ redactBooleans: true });
+
+            expect(redact["redactObject"](value, opts)).toBe(expected);
+        });
+
+        it.each(["standalone-secret", 42, true])("preserves the standalone value %p when redaction is disabled", (value) => {
+            const opts = redact["normalizeOpts"]({ redactStrings: false, redactNumbers: false, redactBooleans: false });
+
+            expect(redact["redactObject"](value, opts)).toBe(value);
+        });
+    });
+
+    it("uses unnumbered type placeholders for censored options and aliases at the top level and in profiles", () => {
         const properties = Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, `secret-${name}`]));
         jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            ...properties,
             profiles: {
                 test: { properties }
             }
@@ -110,6 +160,25 @@ describe("ConfigRedact", () => {
         expect(redactedConfig.profiles.test.properties).toEqual(
             Object.fromEntries(Censor.DEFAULT_CENSORED_OPTIONS.map(name => [name, "<string>"]))
         );
+        for (const name of Censor.DEFAULT_CENSORED_OPTIONS) {
+            expect(redactedConfig[name]).toBe("<string>");
+        }
+    });
+
+    it("uses unnumbered placeholders for censored top-level array entries without sharing stable keys", () => {
+        jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify({
+            password: ["shared-secret", ["another-secret"], 42, true, "", null],
+            customValue: "shared-secret",
+            tokenValue: "shared-secret"
+        }));
+
+        const [{ redactedConfig }] = redact.getRedactedLayers({ redactBooleans: true });
+
+        expect(redactedConfig).toEqual({
+            password: ["<string>", ["<string>"], "<number>", "<boolean>", "", null],
+            customValue: "<str1>",
+            tokenValue: "<string>"
+        });
     });
 
     it("keeps censored options separate from stable placeholders for shared values", () => {
