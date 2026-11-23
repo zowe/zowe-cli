@@ -12,6 +12,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { Logger } from "../../logger";
 import { TrustedConfigManager } from "../src/TrustedConfigManager";
 
 describe("TrustedConfigManager", () => {
@@ -83,6 +84,139 @@ describe("TrustedConfigManager", () => {
         TrustedConfigManager.add(cliHome, tmp);
         const saved = JSON.parse(fs.readFileSync(path.join(cliHome, "settings", "imperative.json"), "utf-8"));
         expect(saved.overrides).toEqual({ CredentialManager: false });
+    });
+
+    it("should skip relative paths in settings with a warning", () => {
+        fs.mkdirSync(path.join(cliHome, "settings"), { recursive: true });
+        fs.writeFileSync(path.join(cliHome, "settings", "imperative.json"), JSON.stringify({
+            trustedConfigDirs: [tmp, "relative/dir"]
+        }));
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining("relative/dir"));
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining("cannot be relative or contain a symbolic link"));
+    });
+
+    it("should skip symbolic links in settings with a warning", () => {
+        const link = path.join(tmp, "link");
+        fs.symlinkSync(fakeHome, link, process.platform === "win32" ? "junction" : "dir");
+        fs.mkdirSync(path.join(cliHome, "settings"), { recursive: true });
+        fs.writeFileSync(path.join(cliHome, "settings", "imperative.json"), JSON.stringify({
+            trustedConfigDirs: [tmp, link]
+        }));
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining(link));
+    });
+
+    it("should not warn when saved trusted paths are valid", () => {
+        TrustedConfigManager.add(cliHome, tmp);
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    it("should reject relative paths without writing settings", () => {
+        expect(() => TrustedConfigManager.add(cliHome, "relative/dir"))
+            .toThrow("Trusted directory path cannot be relative or contain a symbolic link");
+        expect(fs.existsSync(path.join(cliHome, "settings", "imperative.json"))).toBe(false);
+    });
+
+    it("should reject symbolic links without writing settings", () => {
+        const link = path.join(tmp, "link");
+        fs.symlinkSync(fakeHome, link, process.platform === "win32" ? "junction" : "dir");
+        expect(() => TrustedConfigManager.add(cliHome, link))
+            .toThrow("Trusted directory path cannot be relative or contain a symbolic link");
+        expect(fs.existsSync(path.join(cliHome, "settings", "imperative.json"))).toBe(false);
+    });
+
+    it("should skip a path under a linked parent with a warning", () => {
+        const link = path.join(tmp, "link");
+        fs.mkdirSync(path.join(fakeHome, "child"));
+        fs.symlinkSync(fakeHome, link, process.platform === "win32" ? "junction" : "dir");
+        const child = path.join(link, "child");
+        fs.mkdirSync(path.join(cliHome, "settings"), { recursive: true });
+        fs.writeFileSync(path.join(cliHome, "settings", "imperative.json"), JSON.stringify({
+            trustedConfigDirs: [tmp, child]
+        }));
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining(child));
+    });
+
+    it("should reject a path under a linked parent without writing settings", () => {
+        const link = path.join(tmp, "link");
+        fs.mkdirSync(path.join(fakeHome, "child"));
+        fs.symlinkSync(fakeHome, link, process.platform === "win32" ? "junction" : "dir");
+        expect(() => TrustedConfigManager.add(cliHome, path.join(link, "child")))
+            .toThrow("Trusted directory path cannot be relative or contain a symbolic link");
+        expect(fs.existsSync(path.join(cliHome, "settings", "imperative.json"))).toBe(false);
+    });
+
+    it("should reject a dangling symbolic link without writing settings", () => {
+        const link = path.join(tmp, "link");
+        fs.symlinkSync(path.join(tmp, "absent"), link, process.platform === "win32" ? "junction" : "dir");
+        expect(() => TrustedConfigManager.add(cliHome, link))
+            .toThrow("Trusted directory path cannot be relative or contain a symbolic link");
+        expect(fs.existsSync(path.join(cliHome, "settings", "imperative.json"))).toBe(false);
+    });
+
+    it("should reject missing absolute paths without writing settings", () => {
+        const missing = path.join(tmp, "missing", "child");
+        expect(() => TrustedConfigManager.add(cliHome, missing)).toThrow();
+        expect(fs.existsSync(path.join(cliHome, "settings", "imperative.json"))).toBe(false);
+    });
+
+    it("should skip missing absolute paths in settings with a warning", () => {
+        const missing = path.join(tmp, "missing", "child");
+        fs.mkdirSync(path.join(cliHome, "settings"), { recursive: true });
+        fs.writeFileSync(path.join(cliHome, "settings", "imperative.json"), JSON.stringify({
+            trustedConfigDirs: [tmp, missing]
+        }));
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining(missing));
+    });
+
+    it("should reject paths when realpath fails with a permission error", () => {
+        fs.mkdirSync(path.join(cliHome, "settings"), { recursive: true });
+        fs.writeFileSync(path.join(cliHome, "settings", "imperative.json"), JSON.stringify({ trustedConfigDirs: [tmp] }));
+        jest.spyOn(fs.realpathSync, "native").mockImplementation(() => {
+            throw Object.assign(new Error("Cannot resolve path"), { code: "EACCES" });
+        });
+        const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+        expect(TrustedConfigManager.list(cliHome)).toEqual([]);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining(tmp));
+        expect(() => TrustedConfigManager.add(cliHome, tmp))
+            .toThrow("Trusted directory path cannot be relative or contain a symbolic link");
+    });
+
+    (process.platform === "win32" ? it : it.skip)("should accept Windows paths with different casing", () => {
+        const trusted = path.join(tmp, "MixedCase");
+        fs.mkdirSync(trusted);
+        TrustedConfigManager.add(cliHome, trusted.toLowerCase());
+        expect(TrustedConfigManager.list(cliHome)).toEqual([fs.realpathSync.native(trusted)]);
+    });
+
+    it("should not trust a home subdirectory that links outside the home", () => {
+        const outside = path.join(tmp, "outside");
+        fs.mkdirSync(outside);
+        const link = path.join(fakeHome, "link");
+        fs.symlinkSync(outside, link, process.platform === "win32" ? "junction" : "dir");
+        expect(TrustedConfigManager.isDirTrusted(link, cliHome)).toBe(false);
+    });
+
+    it("should normalize trusted paths when adding, comparing and removing them", () => {
+        const trusted = path.join(tmp, "trusted");
+        fs.mkdirSync(trusted);
+        const unnormalized = `${tmp}${path.sep}unused${path.sep}..${path.sep}trusted`;
+        TrustedConfigManager.add(cliHome, unnormalized);
+        TrustedConfigManager.add(cliHome, trusted);
+        expect(TrustedConfigManager.list(cliHome)).toEqual([trusted]);
+        expect(TrustedConfigManager.isDirTrusted(trusted, cliHome)).toBe(true);
+        TrustedConfigManager.remove(cliHome, unnormalized);
+        expect(TrustedConfigManager.list(cliHome)).toEqual([]);
     });
 
     (process.platform === "win32" ? it.skip : it)("should detect world-writable directories", () => {

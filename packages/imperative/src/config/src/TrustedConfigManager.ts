@@ -12,6 +12,8 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import { ImperativeError } from "../../error";
+import { Logger } from "../../logger";
 
 /**
  * Callback that asks the user whether a directory containing a project config
@@ -75,14 +77,27 @@ export class TrustedConfigManager {
         return promptFn != null ? promptFn(dirPath) === true : false;
     }
 
-    /** List trusted directories. */
+    /** List trusted directories, skipping relative paths and paths containing symbolic links with a warning. */
     public static list(cliHome: string): string[] {
         const dirs = this.readSettings(cliHome)[this.SETTINGS_KEY];
-        return Array.isArray(dirs) ? dirs.filter((d) => typeof d === "string") : [];
+        return Array.isArray(dirs) ? dirs.filter((d) => {
+            if (typeof d !== "string") return false;
+            if (!this.isValidPath(d)) {
+                Logger.getImperativeLogger().warn(`Skipping '${d}', trusted directory path cannot be relative or contain a symbolic link`);
+                return false;
+            }
+            return true;
+        }) : [];
     }
 
-    /** Add a directory to the trusted list. */
+    /**
+     * Add a directory to the trusted list.
+     * @throws An ImperativeError if the path is relative, contains a symbolic link, or cannot be resolved
+     */
     public static add(cliHome: string, dirPath: string): void {
+        if (!this.isValidPath(dirPath)) {
+            throw new ImperativeError({ msg: "Trusted directory path cannot be relative or contain a symbolic link" });
+        }
         const dirs = this.list(cliHome);
         const target = this.normalize(dirPath);
         if (dirs.some((d) => this.normalize(d) === target)) return;
@@ -94,6 +109,18 @@ export class TrustedConfigManager {
         const target = this.normalize(dirPath);
         const dirs = this.list(cliHome).filter((d) => this.normalize(d) !== target);
         this.writeSettings(cliHome, { ...this.readSettings(cliHome), [this.SETTINGS_KEY]: dirs });
+    }
+
+    /** Require an existing absolute path with no symbolic links in any normalized component. */
+    private static isValidPath(dirPath: string): boolean {
+        if (!path.isAbsolute(dirPath)) return false;
+        try {
+            const resolved = path.resolve(dirPath);
+            // path.relative accounts for case differences on Windows.
+            return path.relative(resolved, fs.realpathSync.native(resolved)) === "";
+        } catch {
+            return false;
+        }
     }
 
     private static normalize(dirPath: string): string {
