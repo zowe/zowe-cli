@@ -39,41 +39,52 @@ describe("TrustedConfigManager", () => {
         fs.rmSync(tmp, { recursive: true, force: true });
     });
 
-    it("should not trust an unknown directory without a prompt", () => {
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(false);
+    it("should not trust an unknown directory without a prompt", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).resolves.toBe(false);
     });
 
-    it("should trust cwd, start dir and home subdirectories", () => {
-        expect(TrustedConfigManager.isDirTrusted(process.cwd(), cliHome)).toBe(true);
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, undefined, tmp)).toBe(true);
-        expect(TrustedConfigManager.isDirTrusted(path.join(fakeHome, "a"), cliHome)).toBe(true);
+    it("should trust cwd, start dir and home subdirectories", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(process.cwd(), cliHome)).resolves.toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, undefined, tmp)).resolves.toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(path.join(fakeHome, "a"), cliHome)).resolves.toBe(true);
     });
 
     it.each([
         ["CI", "yes"], ["CI", "true"], ["CI", "1"],
         [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "true"], [TrustedConfigManager.ENV_ALLOW_UNTRUSTED, "1"]
     ])(
-        "should trust everything when %s=%s", (key, val) => {
+        "should trust everything when %s=%s", async (key, val) => {
             process.env[key] = val;
-            expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(true);
+            await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).resolves.toBe(true);
         });
 
-    it.each(["", "false", "0"])("should not bypass trust checks when CI=%s", (value) => {
+    it.each(["", "false", "0"])("should not bypass trust checks when CI=%s", async (value) => {
         process.env.CI = value;
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(false);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).resolves.toBe(false);
     });
 
-    it("should defer to the prompt function", () => {
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => true)).toBe(true);
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => false)).toBe(false);
+    it("should defer to the prompt function", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => true)).resolves.toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => false)).resolves.toBe(false);
     });
 
-    it("should add, list and remove trusted directories", () => {
+    it("should await an asynchronous prompt function", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => true)).resolves.toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => false)).resolves.toBe(false);
+    });
+
+    it("should propagate an asynchronous prompt failure", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => {
+            throw new Error("Prompt failed");
+        })).rejects.toThrow("Prompt failed");
+    });
+
+    it("should add, list and remove trusted directories", async () => {
         expect(TrustedConfigManager.list(cliHome)).toEqual([]);
         TrustedConfigManager.add(cliHome, tmp);
         TrustedConfigManager.add(cliHome, tmp);
         expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
-        expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).resolves.toBe(true);
         TrustedConfigManager.remove(cliHome, tmp);
         expect(TrustedConfigManager.list(cliHome)).toEqual([]);
     });
@@ -199,22 +210,22 @@ describe("TrustedConfigManager", () => {
         expect(TrustedConfigManager.list(cliHome)).toEqual([fs.realpathSync.native(trusted)]);
     });
 
-    it("should not trust a home subdirectory that links outside the home", () => {
+    it("should not trust a home subdirectory that links outside the home", async () => {
         const outside = path.join(tmp, "outside");
         fs.mkdirSync(outside);
         const link = path.join(fakeHome, "link");
         fs.symlinkSync(outside, link, process.platform === "win32" ? "junction" : "dir");
-        expect(TrustedConfigManager.isDirTrusted(link, cliHome)).toBe(false);
+        await expect(TrustedConfigManager.isDirTrusted(link, cliHome)).resolves.toBe(false);
     });
 
-    it("should normalize trusted paths when adding, comparing and removing them", () => {
+    it("should normalize trusted paths when adding, comparing and removing them", async () => {
         const trusted = path.join(tmp, "trusted");
         fs.mkdirSync(trusted);
         const unnormalized = `${tmp}${path.sep}unused${path.sep}..${path.sep}trusted`;
         TrustedConfigManager.add(cliHome, unnormalized);
         TrustedConfigManager.add(cliHome, trusted);
         expect(TrustedConfigManager.list(cliHome)).toEqual([trusted]);
-        expect(TrustedConfigManager.isDirTrusted(trusted, cliHome)).toBe(true);
+        await expect(TrustedConfigManager.isDirTrusted(trusted, cliHome)).resolves.toBe(true);
         TrustedConfigManager.remove(cliHome, unnormalized);
         expect(TrustedConfigManager.list(cliHome)).toEqual([]);
     });
@@ -266,11 +277,11 @@ describe("TrustedConfigManager", () => {
     it("should continue searching for trusted config after rejecting a project config", async () => {
         const { Config } = await import("../src/Config");
         const proj = path.join(tmp, "proj");
-        fs.mkdirSync(proj);
+        const sub = path.join(proj, "sub");
+        fs.mkdirSync(sub, { recursive: true });
         fs.writeFileSync(path.join(proj, "app.config.json"), JSON.stringify({ profiles: { evil: {} } }));
         fs.writeFileSync(path.join(tmp, "app.config.json"), JSON.stringify({ profiles: { trusted: {} } }));
-        jest.spyOn(TrustedConfigManager, "isWorldWritable").mockImplementation((dir) => dir === proj);
-        const config = await Config.load("app", { homeDir: cliHome, projectDir: proj, trustPromptFn: () => true });
+        const config = await Config.load("app", { homeDir: cliHome, projectDir: sub, trustPromptFn: async (dir) => dir === tmp });
         expect(config.findLayer(false, false).path).toBe(path.join(tmp, "app.config.json"));
         expect(config.properties.profiles).toEqual({ trusted: {} });
     });
@@ -285,8 +296,33 @@ describe("TrustedConfigManager", () => {
         const untrusted = await load();
         expect(untrusted.layerActive().path).not.toBe(path.join(proj, "app.config.json"));
         expect(untrusted.properties.profiles).toEqual({});
-        const trusted = await load({ trustPromptFn: () => true });
+        const trusted = await load({ trustPromptFn: async () => true });
         expect(trusted.layerActive().path).toBe(path.join(proj, "app.config.json"));
         expect(trusted.properties.profiles.evil).toBeDefined();
+    });
+
+    it("should not read project config rejected by an asynchronous prompt during load or reload", async () => {
+        const { Config } = await import("../src/Config");
+        const proj = path.join(tmp, "proj");
+        const sub = path.join(proj, "sub");
+        fs.mkdirSync(sub, { recursive: true });
+        const configPath = path.join(proj, "app.config.json");
+        const userConfigPath = path.join(proj, "app.config.user.json");
+        fs.writeFileSync(configPath, JSON.stringify({ profiles: { evil: {} } }));
+        fs.writeFileSync(userConfigPath, JSON.stringify({ profiles: { evil: {} } }));
+        const trustPromptFn = jest.fn(async () => false);
+        const readSpy = jest.spyOn(fs, "readFileSync");
+        const opts = { homeDir: cliHome, projectDir: sub };
+        const config = await Config.load("app", { ...opts, trustPromptFn });
+        expect(trustPromptFn).toHaveBeenCalledWith(proj);
+        expect(config.properties).toEqual(Config.empty());
+
+        trustPromptFn.mockClear();
+        await config.reload(opts);
+        expect(trustPromptFn).toHaveBeenCalledWith(proj);
+        expect(config.findLayer(false, false).path).toBe("");
+        expect(config.findLayer(true, false).path).toBe("");
+        expect(config.properties).toEqual(Config.empty());
+        expect(readSpy.mock.calls.some(([file]) => file === configPath || file === userConfigPath)).toBe(false);
     });
 });

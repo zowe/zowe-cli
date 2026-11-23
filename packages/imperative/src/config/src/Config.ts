@@ -214,7 +214,7 @@ export class Config {
             Layers.GlobalUser, Layers.GlobalConfig
         ]) {
             this.mLayers.push({
-                path: this.layerPath(layer),
+                path: await this.layerPath(layer),
                 exists: false,
                 properties: Config.empty(),
                 global: layer === Layers.GlobalUser || layer === Layers.GlobalConfig,
@@ -303,12 +303,12 @@ export class Config {
      * World-writable and untrusted directories are skipped with a warning.
      * @internal
      */
-    private isTrustedDir = (dir: string): boolean => {
+    private isTrustedDir = async (dir: string): Promise<boolean> => {
         if (TrustedConfigManager.isWorldWritable(dir)) {
             Logger.getImperativeLogger().warn(`Skipping project config in world-writable directory: ${dir}`);
             return false;
         }
-        if (!TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, this.mTrustPromptFn,
+        if (!await TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, this.mTrustPromptFn,
             typeof this.mProjectDir === "string" ? this.mProjectDir : undefined)) {
             Logger.getImperativeLogger().warn(`Skipping project config in untrusted directory: ${dir}. ` +
                 `Set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true or add it to "trustedConfigDirs" in settings/imperative.json to trust it.`);
@@ -329,21 +329,24 @@ export class Config {
      * @internal
      * @param layer Enum value for config layer
      */
-    private layerPath(layer: Layers): string {
+    private async layerPath(layer: Layers): Promise<string> {
         switch (layer) {
-            case Layers.ProjectUser: {
-                if (this.mProjectDir === false) return "";
-                const userConfigPath = Config.search(this.userConfigName, {
-                    ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
-                });
-                return userConfigPath ?? path.join(this.mProjectDir, this.userConfigName);
-            }
+            case Layers.ProjectUser:
             case Layers.ProjectConfig: {
                 if (this.mProjectDir === false) return "";
-                const configPath = Config.search(this.configName, {
-                    ignoreDirs: [this.mHomeDir], startDir: this.mProjectDir, isTrusted: this.isTrustedDir
-                });
-                return configPath ?? path.join(this.mProjectDir, this.configName);
+                const file = layer === Layers.ProjectUser ? this.userConfigName : this.configName;
+                let startDir = this.mProjectDir;
+                let rejected = false;
+                let configPath: string;
+                while ((configPath = Config.search(file, { ignoreDirs: [this.mHomeDir], startDir })) != null) {
+                    const dir = path.dirname(configPath);
+                    if (await this.isTrustedDir(dir)) return configPath;
+                    rejected = true;
+                    const parent = path.dirname(dir);
+                    if (parent === dir) return "";
+                    startDir = parent;
+                }
+                return rejected ? "" : path.join(this.mProjectDir, file);
             }
             case Layers.GlobalUser:
                 return path.join(this.mHomeDir, this.userConfigName);

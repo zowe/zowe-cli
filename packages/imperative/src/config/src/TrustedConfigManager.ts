@@ -17,9 +17,9 @@ import { Logger } from "../../logger";
 
 /**
  * Callback that asks the user whether a directory containing a project config
- * file should be trusted. Must return true to trust the directory.
+ * file should be trusted. Must return or resolve to true to trust the directory.
  */
-export type TrustPromptFn = (dirPath: string) => boolean;
+export type TrustPromptFn = (dirPath: string) => boolean | Promise<boolean>;
 
 /**
  * Manages the list of directories from which project config files may be loaded.
@@ -54,13 +54,13 @@ export class TrustedConfigManager {
      *  2. It is the current working directory or the project directory chosen by the caller
      *  3. It is inside the user's home directory
      *  4. It is in the trusted directory list
-     *  5. The prompt function (if provided) returns true
+     *  5. The prompt function (if provided) returns or resolves to true
      * @param dirPath Directory to check
      * @param cliHome Zowe CLI home directory containing the settings folder
      * @param promptFn Optional callback to ask the user for trust
      * @param startDir Project directory explicitly requested by the caller
      */
-    public static isDirTrusted(dirPath: string, cliHome: string, promptFn?: TrustPromptFn, startDir?: string): boolean {
+    public static async isDirTrusted(dirPath: string, cliHome: string, promptFn?: TrustPromptFn, startDir?: string): Promise<boolean> {
         const allowEnv = process.env[this.ENV_ALLOW_UNTRUSTED]?.toLowerCase();
         const isCI = Boolean(process.env.CI && process.env.CI !== "false" && process.env.CI !== "0");
         if (isCI || allowEnv === "1" || allowEnv === "true") return true;
@@ -74,7 +74,7 @@ export class TrustedConfigManager {
 
         if (this.list(cliHome).some((d) => this.normalize(d) === target)) return true;
 
-        return promptFn != null ? promptFn(dirPath) === true : false;
+        return promptFn != null ? await promptFn(dirPath) === true : false;
     }
 
     /** List trusted directories, skipping relative paths and paths containing symbolic links with a warning. */

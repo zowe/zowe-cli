@@ -41,7 +41,8 @@ export interface IConfigOpts {
 
     /**
      * Callback to ask whether an unrecognized directory containing a project config
-     * file should be trusted. If omitted, such directories are skipped.
+     * file should be trusted. May return a boolean or a promise of a boolean.
+     * If omitted, such directories are skipped.
      */
     trustPromptFn?: TrustPromptFn;
 }
