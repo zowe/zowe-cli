@@ -5,7 +5,11 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed warning and error messages not displayed in console before logger is initialized.
-- **Breaking:** Project config files are now only loaded from trusted directories. World-writable directories are always skipped, and directories outside the current working directory, the home directory, or the `trustedConfigDirs` list in `settings/imperative.json` are skipped unless `IConfigOpts.trustPromptFn` approves them or `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS=true` is set. [#3016](https://github.com/zowe/zowe-cli/pull/3016)
+- **Breaking**: Updated the `Config.search` method to skip config files in world-writable directories and in directories that are not trusted. [#3016](https://github.com/zowe/zowe-cli/pull/3016)
+  - These checks can be bypassed with the `ZOWE_CONFIG_ALLOW_WORLD_WRITABLE` and `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS` environment variables.
+  - In CI environments, the trusted directory check is skipped.
+  - The current directory and any location inside the user's home directory are automatically trusted. Other trusted directories can be stored in the `trustedConfigDirs` setting of Zowe CLI's `~/.zowe/settings/imperative.json`.
+  - Applications can prompt for directory trust with a synchronous or asynchronous `trustPromptFn` callback passed to either the `Config.load` or `ProfileInfo.readProfilesFromDisk` methods.
 - BugFix: Improved handling of command argument values in log messages and diagnostic output. [#3018](https://github.com/zowe/zowe-cli/pull/3018)
 - Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IRestOptions` and `IOptionsFullResponse`, with defaults in `RestConstants`, to bound memory used by REST responses. The `CompressionUtils.decompressBuffer` and `CompressionUtils.decompressStream` functions also take a decompressed-output limit. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
 - Enhancement: Added an optional `limits` parameter to `RestClient.getExpectString` and an optional `maxBytes` limit to the `BufferBuilder` class constructor so callers can set response size limits for buffered requests and in-memory stream collection. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
