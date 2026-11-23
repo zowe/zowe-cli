@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Fixed warning and error messages not displayed in console before logger is initialized.
 - **Breaking:** Project config files are now only loaded from trusted directories. World-writable directories are always skipped, and directories outside the current working directory, the home directory, or the `trustedConfigDirs` list in `settings/imperative.json` are skipped unless `IConfigOpts.trustPromptFn` approves them or `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS=true` is set. [#3016](https://github.com/zowe/zowe-cli/pull/3016)
 - BugFix: Improved handling of command argument values in log messages and diagnostic output. [#3018](https://github.com/zowe/zowe-cli/pull/3018)
 - Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IRestOptions` and `IOptionsFullResponse`, with defaults in `RestConstants`, to bound memory used by REST responses. The `CompressionUtils.decompressBuffer` and `CompressionUtils.decompressStream` functions also take a decompressed-output limit. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
