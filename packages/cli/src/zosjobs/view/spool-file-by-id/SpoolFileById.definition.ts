@@ -48,6 +48,14 @@ export const SpoolFileByIdDefinition: ICommandDefinition = {
             description: "Download the spool file content with encoding mode, which means that " +
                 "data conversion is performed using the file encoding specified.",
             type: "string"
+        },
+        {
+            name: "max-response-bytes",
+            description: "The maximum size, in bytes, of the spool file content to hold in memory and display. " +
+                "The command fails if the content is larger. Increase this value to view larger spool files. " +
+                "Default: 67108864 (64 MiB).",
+            type: "number",
+            numericValueRange: [1, Number.MAX_SAFE_INTEGER]
         }
     ],
     examples: [
