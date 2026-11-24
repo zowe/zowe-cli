@@ -94,7 +94,8 @@ describe("Config tests", () => {
                 CONFIG_SAVE_TEST_PORT: "443",
                 CONFIG_SAVE_TEST_USER: "test-user"
             };
-            tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "zowe-config-env-"));
+            // Config.load resolves projectDir with realpathSync.native, which expands Windows 8.3 short names (e.g. RUNNER~1)
+            tempDir = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), "zowe-config-env-")));
             homeDir = path.join(tempDir, "home");
             fs.mkdirSync(homeDir);
         });
