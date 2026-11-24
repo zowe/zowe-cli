@@ -19,6 +19,7 @@ import { ConfigConstants } from "../src/ConfigConstants";
 import * as JSONC from "comment-json";
 import { ConfigLayers, ConfigSecure } from "../src/api";
 import { ConfigSchema } from "../src/ConfigSchema";
+import { EventOperator, EventProcessor } from "../../events";
 
 
 const MY_APP = "my_app";
@@ -178,6 +179,8 @@ describe("Config tests", () => {
                 save: async (key: string, value: string) => { store.set(key, value); }
             };
             const config = await Config.load(MY_APP, { projectDir: tempDir, homeDir, vault });
+            // Saving to the vault emits a Zowe event, which reads extenders.json from the real Zowe home
+            jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as unknown as EventProcessor);
 
             config.set("profiles.test.properties.settings.timeout", 60);
             config.set("profiles.test.properties.password.nested", "changed");
