@@ -258,23 +258,6 @@ export class Config {
 
         try {
             for (const currLayer of this.mLayers) {
-
-                // These operations are expensive - only do them if we NEED to.
-                if (this.mEnvVarManaged.length > 0) {
-                    const envVarCandidates = this.mEnvVarManaged.filter((entry) => {
-                        return currLayer.global === entry.global && currLayer.user === entry.user;
-                    });
-
-                    if (envVarCandidates.length > 0) {
-                        ConfigEnvironmentVariables.restoreEnvironmentVariablesInConfigLayer(
-                            currLayer.properties.profiles,
-                            this,
-                            currLayer,
-                            "profiles"
-                        );
-                    }
-                }
-
                 if (allLayers || currLayer.user === this.mActive.user && currLayer.global === this.mActive.global) {
                     this.api.layers.write(currLayer);
                 }
@@ -524,6 +507,12 @@ export class Config {
             } else {
                 obj = obj[segment];
             }
+        });
+
+        // An edit inside an environment-managed value replaces its reference with the edited value.
+        // Save then handles it like any other property, so secure values are stored in the vault.
+        this.mEnvVarManaged = this.mEnvVarManaged.filter((value) => {
+            return value.global != layer.global || value.user != layer.user || !propertyPath.startsWith(value.propPath + ".");
         });
 
         if (opts.secure != null) {
