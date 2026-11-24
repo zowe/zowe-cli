@@ -105,7 +105,7 @@ describe("TrustedConfigManager", () => {
 
     it("should skip relative paths in settings with a warning", () => {
         files.set(settingsFile, JSON.stringify({
-            trustedConfigDirs: [tmp, "relative/dir"]
+            trustedProjectDirs: [tmp, "relative/dir"]
         }));
         const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
         expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
@@ -118,7 +118,7 @@ describe("TrustedConfigManager", () => {
         const link = path.join(tmp, "link");
         jest.mocked(fs.realpathSync.native).mockImplementation((file) => file === link ? fakeHome : String(file));
         files.set(settingsFile, JSON.stringify({
-            trustedConfigDirs: [tmp, link]
+            trustedProjectDirs: [tmp, link]
         }));
         const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
         expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
@@ -151,7 +151,7 @@ describe("TrustedConfigManager", () => {
         const child = path.join(link, "child");
         jest.mocked(fs.realpathSync.native).mockImplementation((file) => file === child ? path.join(fakeHome, "child") : String(file));
         files.set(settingsFile, JSON.stringify({
-            trustedConfigDirs: [tmp, child]
+            trustedProjectDirs: [tmp, child]
         }));
         const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
         expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
@@ -193,7 +193,7 @@ describe("TrustedConfigManager", () => {
             return String(file);
         });
         files.set(settingsFile, JSON.stringify({
-            trustedConfigDirs: [tmp, missing]
+            trustedProjectDirs: [tmp, missing]
         }));
         const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
         expect(TrustedConfigManager.list(cliHome)).toEqual([tmp]);
@@ -201,7 +201,7 @@ describe("TrustedConfigManager", () => {
     });
 
     it("should reject paths when realpath fails with a permission error", () => {
-        files.set(settingsFile, JSON.stringify({ trustedConfigDirs: [tmp] }));
+        files.set(settingsFile, JSON.stringify({ trustedProjectDirs: [tmp] }));
         jest.mocked(fs.realpathSync.native).mockImplementation(() => {
             throw Object.assign(new Error("Cannot resolve path"), { code: "EACCES" });
         });

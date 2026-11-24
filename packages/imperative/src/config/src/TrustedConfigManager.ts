@@ -14,6 +14,7 @@ import * as os from "os";
 import * as path from "path";
 import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
+import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
 
 /**
  * Callback that asks the user whether a directory containing a project config
@@ -23,7 +24,7 @@ export type TrustPromptFn = (dirPath: string) => boolean | Promise<boolean>;
 
 /**
  * Manages the list of directories from which project config files may be loaded.
- * The list is stored under the `trustedConfigDirs` key in `<cliHome>/settings/imperative.json`.
+ * The list is stored under the `trustedProjectDirs` key in `<cliHome>/settings/imperative.json`.
  */
 export class TrustedConfigManager {
     /** Set to "1" or "true" to trust all directories */
@@ -31,8 +32,6 @@ export class TrustedConfigManager {
 
     /** Set to any value to allow loading project config from world-writable directories */
     public static readonly ENV_ALLOW_WORLD_WRITABLE = "ZOWE_CONFIG_ALLOW_WORLD_WRITABLE";
-
-    private static readonly SETTINGS_KEY = "trustedConfigDirs";
 
     /**
      * Check whether a directory is writable by any user. Always false on Windows
@@ -79,7 +78,7 @@ export class TrustedConfigManager {
 
     /** List trusted directories, skipping relative paths and paths containing symbolic links with a warning. */
     public static list(cliHome: string): string[] {
-        const dirs = this.readSettings(cliHome)[this.SETTINGS_KEY];
+        const dirs = this.readSettings(cliHome).trustedProjectDirs;
         return Array.isArray(dirs) ? dirs.filter((d) => {
             if (typeof d !== "string") return false;
             if (!this.isValidPath(d)) {
@@ -101,14 +100,14 @@ export class TrustedConfigManager {
         const dirs = this.list(cliHome);
         const target = this.normalize(dirPath);
         if (dirs.some((d) => this.normalize(d) === target)) return;
-        this.writeSettings(cliHome, { ...this.readSettings(cliHome), [this.SETTINGS_KEY]: [...dirs, target] });
+        this.writeSettings(cliHome, { ...this.readSettings(cliHome), trustedProjectDirs: [...dirs, target] });
     }
 
     /** Remove a directory from the trusted list. */
     public static remove(cliHome: string, dirPath: string): void {
         const target = this.normalize(dirPath);
         const dirs = this.list(cliHome).filter((d) => this.normalize(d) !== target);
-        this.writeSettings(cliHome, { ...this.readSettings(cliHome), [this.SETTINGS_KEY]: dirs });
+        this.writeSettings(cliHome, { ...this.readSettings(cliHome), trustedProjectDirs: dirs });
     }
 
     /** Require an existing absolute path with no symbolic links in any normalized component. */
@@ -136,7 +135,7 @@ export class TrustedConfigManager {
         return path.join(cliHome, "settings", "imperative.json");
     }
 
-    private static readSettings(cliHome: string): Record<string, unknown> {
+    private static readSettings(cliHome: string): Partial<ISettingsFile> {
         try {
             return JSON.parse(fs.readFileSync(this.settingsFile(cliHome), "utf-8"));
         } catch {
@@ -144,7 +143,7 @@ export class TrustedConfigManager {
         }
     }
 
-    private static writeSettings(cliHome: string, settings: Record<string, unknown>): void {
+    private static writeSettings(cliHome: string, settings: Partial<ISettingsFile>): void {
         const file = this.settingsFile(cliHome);
         fs.mkdirSync(path.dirname(file), { recursive: true });
         fs.writeFileSync(file, JSON.stringify(settings, null, 2));

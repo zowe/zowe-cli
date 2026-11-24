@@ -311,7 +311,7 @@ export class Config {
         if (!await TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, this.mTrustPromptFn,
             typeof this.mProjectDir === "string" ? this.mProjectDir : undefined)) {
             Logger.getImperativeLogger().warn(`Skipping project config in untrusted directory: ${dir}. ` +
-                `Set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true or add it to "trustedConfigDirs" in settings/imperative.json to trust it.`);
+                `Set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true or add it to "trustedProjectDirs" in settings/imperative.json to trust it.`);
             return false;
         }
         return true;

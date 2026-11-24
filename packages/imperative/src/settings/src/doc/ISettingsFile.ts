@@ -47,4 +47,9 @@ export interface ISettingsFile {
      * compatibility with older CLI versions.
      */
     credentialManagerOptions?: Record<string, unknown>;
+
+    /**
+     * Absolute paths of directories trusted to load project configuration.
+     */
+    trustedProjectDirs?: string[];
 }
