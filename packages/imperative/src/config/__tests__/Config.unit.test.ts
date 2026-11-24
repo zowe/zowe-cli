@@ -19,6 +19,7 @@ import { ConfigConstants } from "../src/ConfigConstants";
 import * as JSONC from "comment-json";
 import { ConfigLayers, ConfigSecure } from "../src/api";
 import { ConfigSchema } from "../src/ConfigSchema";
+import { EventOperator, EventProcessor } from "../../events";
 
 
 const MY_APP = "my_app";
@@ -79,6 +80,125 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
 describe("Config tests", () => {
     afterEach(() => {
         jest.restoreAllMocks();
+    });
+
+    describe("saving environment-managed credentials", () => {
+        let tempDir: string;
+        let homeDir: string;
+        let originalEnv: NodeJS.ProcessEnv;
+
+        beforeEach(() => {
+            originalEnv = process.env;
+            process.env = {
+                ...originalEnv,
+                CONFIG_SAVE_TEST_PORT: "443",
+                CONFIG_SAVE_TEST_USER: "test-user"
+            };
+            // Config.load resolves projectDir with realpathSync.native, which expands Windows 8.3 short names (e.g. RUNNER~1)
+            tempDir = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), "zowe-config-env-")));
+            homeDir = path.join(tempDir, "home");
+            fs.mkdirSync(homeDir);
+        });
+
+        afterEach(() => {
+            process.env = originalEnv;
+            fs.rmSync(tempDir, { recursive: true, force: true });
+        });
+
+        it.each(["12345", "0", "true", "false", "null", '["secret"]', '{"nested":"secret"}'])(
+            "should preserve references through save and reload for JSON credential %s",
+            async (password) => {
+                process.env.CONFIG_SAVE_TEST_PASSWORD = password;
+                const configPath = path.join(tempDir, `${MY_APP}.config.json`);
+                const properties = {
+                    host: "example.test",
+                    port: "$CONFIG_SAVE_TEST_PORT",
+                    user: "${CONFIG_SAVE_TEST_USER}",
+                    password: "$CONFIG_SAVE_TEST_PASSWORD"
+                };
+                fs.writeFileSync(configPath, JSON.stringify({
+                    profiles: { test: { type: "zosmf", properties, secure: ["password"] } },
+                    defaults: { zosmf: "test" }
+                }));
+                const store = new Map<string, string>();
+                const vault = {
+                    load: async (key: string) => store.get(key),
+                    save: async (key: string, value: string) => { store.set(key, value); }
+                };
+                const config = await Config.load(MY_APP, { projectDir: tempDir, homeDir, vault });
+                expect(config.properties.profiles.test.properties).toEqual({
+                    host: "example.test", port: 443, user: "test-user", password: JSON.parse(password)
+                });
+
+                config.set("profiles.test.properties.host", "changed.test");
+                await config.save();
+                expect(JSON.parse(fs.readFileSync(configPath, "utf8")).profiles.test).toEqual({
+                    type: "zosmf", properties: { ...properties, host: "changed.test" }, secure: ["password"]
+                });
+                expect(Array.from(store.entries())).toEqual([]);
+                // Saving must not replace the resolved values in memory.
+                expect(config.properties.profiles.test.properties).toEqual({
+                    host: "changed.test", port: 443, user: "test-user", password: JSON.parse(password)
+                });
+
+                // A second save must also retain the references.
+                await config.save();
+                expect(JSON.parse(fs.readFileSync(configPath, "utf8")).profiles.test.properties).toEqual({
+                    ...properties, host: "changed.test"
+                });
+
+                process.env.CONFIG_SAVE_TEST_PASSWORD = "67890";
+                process.env.CONFIG_SAVE_TEST_PORT = "8443";
+                await config.reload({ projectDir: tempDir, homeDir });
+                expect(config.properties.profiles.test.properties).toEqual({
+                    host: "changed.test", port: 8443, user: "test-user", password: 67890
+                });
+            }
+        );
+
+        it("should save the edited value when an edit is nested inside an environment-managed property", async () => {
+            process.env.CONFIG_SAVE_TEST_SETTINGS = '{"timeout":30}';
+            process.env.CONFIG_SAVE_TEST_PASSWORD = '{"nested":"secret"}';
+            const configPath = path.join(tempDir, `${MY_APP}.config.json`);
+            fs.writeFileSync(configPath, JSON.stringify({
+                profiles: {
+                    test: {
+                        type: "zosmf",
+                        properties: {
+                            port: "$CONFIG_SAVE_TEST_PORT",
+                            settings: "$CONFIG_SAVE_TEST_SETTINGS",
+                            password: "$CONFIG_SAVE_TEST_PASSWORD"
+                        },
+                        secure: ["password"]
+                    }
+                },
+                defaults: { zosmf: "test" }
+            }));
+            const store = new Map<string, string>();
+            const vault = {
+                load: async (key: string) => store.get(key),
+                save: async (key: string, value: string) => { store.set(key, value); }
+            };
+            const config = await Config.load(MY_APP, { projectDir: tempDir, homeDir, vault });
+            // Saving to the vault emits a Zowe event, which reads extenders.json from the real Zowe home
+            jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as unknown as EventProcessor);
+
+            config.set("profiles.test.properties.settings.timeout", 60);
+            config.set("profiles.test.properties.password.nested", "changed");
+            await config.save();
+
+            expect(JSON.parse(fs.readFileSync(configPath, "utf8")).profiles.test.properties).toEqual({
+                port: "$CONFIG_SAVE_TEST_PORT", settings: { timeout: 60 }
+            });
+            expect(JSON.parse(store.get(ConfigConstants.SECURE_ACCT))).toEqual({
+                [configPath]: { "profiles.test.properties.password": { nested: "changed" } }
+            });
+
+            await config.reload({ projectDir: tempDir, homeDir });
+            expect(config.properties.profiles.test.properties).toEqual({
+                port: 443, settings: { timeout: 60 }, password: { nested: "changed" }
+            });
+        });
     });
 
     describe("schema write containment", () => {

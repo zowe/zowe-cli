@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Preserve environment variable references when saving configuration, including values parsed as JSON, without changing the resolved values held in memory. [#3022](https://github.com/zowe/zowe-cli/pull/3022)
 - BugFix: Improved handling of command argument values in log messages and diagnostic output. [#3018](https://github.com/zowe/zowe-cli/pull/3018)
 - Enhancement: Added the `maxBufferedResponseBytes` and `maxDecompressedResponseBytes` options to `IRestOptions` and `IOptionsFullResponse`, with defaults in `RestConstants`, to bound memory used by REST responses. The `CompressionUtils.decompressBuffer` and `CompressionUtils.decompressStream` functions also take a decompressed-output limit. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
 - Enhancement: Added an optional `limits` parameter to `RestClient.getExpectString` and an optional `maxBytes` limit to the `BufferBuilder` class constructor so callers can set response size limits for buffered requests and in-memory stream collection. [#3011](https://github.com/zowe/zowe-cli/pull/3011)
