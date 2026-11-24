@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.44.0`
 
 - BugFix: Preserve environment variable references when saving configuration, including values parsed as JSON, without changing the resolved values held in memory. [#3022](https://github.com/zowe/zowe-cli/pull/3022)
 - BugFix: Improved handling of command argument values in log messages and diagnostic output. [#3018](https://github.com/zowe/zowe-cli/pull/3018)
