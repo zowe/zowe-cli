@@ -1838,7 +1838,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                     const writtenSchema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
                     expect(writtenSchema.properties.profiles.patternProperties["^\\S*$"].allOf).toContainEqual(
                         expect.objectContaining({
-                            if: { properties: { type: { const: "newType" } } }
+                            if: { properties: { type: { const: "newType" } }, required: ["type"] }
                         })
                     );
                 });
