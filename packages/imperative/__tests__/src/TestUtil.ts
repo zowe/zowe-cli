@@ -467,8 +467,9 @@ export async function setupConfigToLoad(properties?: IConfig, opts: IConfigOpts 
     if (properties != null) {
         tempMocks.push(
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify(properties)),
-            jest.spyOn(Config, "search").mockReturnValueOnce("fakeapp.config.user.json")
-                .mockReturnValueOnce("fakeapp.config.json"), // Give search something to return
+            // Config.search returns absolute paths, so place the mocked files in the trusted test directory.
+            jest.spyOn(Config, "search").mockReturnValueOnce(nodePath.join(dirname, "fakeapp.config.user.json"))
+                .mockReturnValueOnce(nodePath.join(dirname, "fakeapp.config.json")),
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValue(false) // Only the user config exists
         );
     }
