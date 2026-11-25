@@ -16,6 +16,7 @@ import * as lodash from "lodash";
 import { ImperativeError } from "../../../error";
 import { ConfigConstants } from "../ConfigConstants";
 import { IConfigLayer } from "../doc/IConfigLayer";
+import { ConfigEnvironmentVariables } from "../ConfigEnvironmentVariables";
 import { ConfigApi } from "./ConfigApi";
 import { IConfig } from "../doc/IConfig";
 import { Logger } from "../../../logger";
@@ -87,6 +88,12 @@ export class ConfigLayers extends ConfigApi {
         const layer = opts ? this.mConfig.findLayer(opts.user, opts.global) : this.mConfig.layerActive();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
         const layerCloned = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as any;
+        // Write environment variable references to disk without changing the resolved values in memory
+        if (layerCloned.properties.profiles != null) {
+            ConfigEnvironmentVariables.restoreEnvironmentVariablesInConfigLayer(
+                layerCloned.properties.profiles, this.mConfig, layer, "profiles"
+            );
+        }
         this.mConfig.api.secure.cacheAndPrune(layerCloned);
 
         // Write the layer

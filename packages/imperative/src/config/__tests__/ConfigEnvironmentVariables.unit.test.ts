@@ -199,6 +199,33 @@ describe("Config Environment Variables", () => {
             jest.restoreAllMocks();
         });
 
+        it.each([12345, 0, true, false, null, ["secret"], { nested: "secret" }].map(replacementValue => ({ replacementValue })))(
+            "should restore coerced value $replacementValue only in its owning layer",
+            ({ replacementValue }) => {
+                fakeConfig.mEnvVarManaged?.push({
+                    global: false,
+                    user: false,
+                    propPath: "profiles.fake.properties.password",
+                    originalValue: "${TESTPASS}",
+                    replacementValue: ConfigUtils.coercePropValue(JSON.stringify(replacementValue))
+                });
+                for (const global of [false, true]) {
+                    for (const user of [false, true]) {
+                        const configObject = {
+                            fake: { properties: { password: replacementValue, port: 443 } }
+                        };
+                        ConfigEnvironmentVariables.restoreEnvironmentVariablesInConfigLayer(
+                            configObject, fakeConfig as Config, { global, user } as IConfigLayer, "profiles"
+                        );
+                        expect(configObject.fake.properties.password).toEqual(
+                            !global && !user ? "${TESTPASS}" : replacementValue
+                        );
+                        expect(configObject.fake.properties.port).toBe(443);
+                    }
+                }
+            }
+        );
+
         it("should find nothing to restore", () => {
             const configObject = {
                 fake: {

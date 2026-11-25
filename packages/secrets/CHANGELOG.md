@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Recent Changes
+## `8.44.0`
 
 - BugFix: Updated the transitive `futures-util` dependency to remove the unmaintained `pin-utils` crate. [#3005](https://github.com/zowe/zowe-cli/pull/3005)
 
