@@ -15,7 +15,7 @@ jest.mock("fs");
 jest.mock("jsonfile");
 
 import { AppSettings } from "..";
-import { existsSync } from "fs";
+import * as fs from "fs";
 import { SettingsAlreadyInitialized, SettingsNotInitialized } from "../src/errors";
 import { readFileSync, writeFile, writeFileSync } from "jsonfile";
 import { ISettingsFile } from "../src/doc/ISettingsFile";
@@ -54,7 +54,7 @@ const exposeAppSettingsInternal = (settings: AppSettings): IAppSettingsAllMethod
 
 describe("AppSettings", () => {
     const mocks = {
-        existsSync: existsSync as unknown as Mock<typeof existsSync>,
+        existsSync: fs.existsSync as unknown as Mock<typeof fs.existsSync>,
         writeFile: writeFile as unknown as Mock<typeof writeFile>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>
@@ -67,9 +67,14 @@ describe("AppSettings", () => {
         credentialManagerOptions: {}
     };
 
+    beforeEach(() => {
+        jest.spyOn(fs, "lstatSync").mockReturnValue({ isFile: () => true } as fs.Stats);
+    });
+
     afterEach(() => {
         // Each test should be isolated so clean up any changes that might have happened to the settings file.
         (AppSettings as any).mInstance = undefined;
+        jest.mocked(fs.lstatSync).mockRestore();
     });
 
     describe("initialization static errors", () => {
@@ -262,7 +267,7 @@ describe("AppSettings", () => {
             exposeAppSettingsInternal(AppSettings.instance).flush();
 
             expect(mocks.writeFileSync).toHaveBeenCalledTimes(1);
-            expect(mocks.writeFileSync).toHaveBeenCalledWith(fileName, defaultSettings, {spaces: 2});
+            expect(mocks.writeFileSync).toHaveBeenCalledWith(fileName, defaultSettings, {spaces: 2, mode: 0o600});
 
             // Clean up from previous test
             (AppSettings as any).mInstance = undefined;
@@ -281,7 +286,7 @@ describe("AppSettings", () => {
             expect(mocks.writeFileSync).toHaveBeenCalledWith(
                 fileName,
                 deepmerge(JSON.parse(JSON.stringify(defaultSettings)), testLoadSettings),
-                {spaces: 2}
+                {spaces: 2, mode: 0o600}
             );
 
         });
@@ -294,7 +299,7 @@ describe("AppSettings", () => {
             AppSettings.initialize(fileName, defaultSettings);
 
             expect(mocks.writeFileSync).toHaveBeenCalledTimes(1);
-            expect(mocks.writeFileSync).toHaveBeenCalledWith(fileName, defaultSettings, {spaces: 2});
+            expect(mocks.writeFileSync).toHaveBeenCalledWith(fileName, defaultSettings, {spaces: 2, mode: 0o600});
 
         });
 

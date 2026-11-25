@@ -24,6 +24,7 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
+import { EventEmitter } from "events";
 import { Config } from "../../config";
 import { Censor } from "../../censor";
 import * as SessConstants from "../../rest/src/session/SessConstants";
@@ -1549,6 +1550,29 @@ describe("Command Processor", () => {
         );
     });
 
+    it("should include ignored config guidance in failed command stderr and JSON error details", async () => {
+        const message = "Ignored project config: /shared/zowe.config.json (untrusted directory)";
+        const processor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_REAL_HANDLER,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+        (processor as any).mConfig = { untrustedConfigFilesMessage: message };
+        const result = await processor.invoke({
+            arguments: { _: [], $0: "", valid: true, throwImperative: true },
+            silent: true,
+            responseFormat: "json"
+        });
+        expect(result.success).toBe(false);
+        expect(result.stderr.toString()).toContain(message);
+        expect(result.error.additionalDetails).toContain(message);
+        expect(result.error.additionalDetails).toContain("More details!");
+    });
+
     it("should handle the handler rejecting with a message", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -1676,6 +1700,26 @@ describe("Command Processor", () => {
         };
         const commandResponse: ICommandResponse = await processor.invoke(parms);
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
+    });
+
+    it("should include skipped config warnings keyed by file path in --show-inputs-only", async () => {
+        const skipped = { "/shared/zowe.config.json": "Untrusted directory." };
+        const processor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_REAL_HANDLER,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+        (processor as any).mConfig = { layers: [], untrustedConfigFiles: skipped };
+        const result = await processor.invoke({
+            arguments: { _: [], $0: "", valid: true, showInputsOnly: true },
+            silent: true
+        });
+        expect(result.success).toBe(true);
+        expect(result.data.untrustedConfigFiles).toEqual(skipped);
     });
 
     it("should display input value for simple parm when --show-inputs-only flag is set with a chained handler", async () => {
@@ -2482,6 +2526,95 @@ describe("Command Processor", () => {
         } finally {
             delete process.env.UNIT_TEST_ENV;
         }
+    });
+
+    describe("project config trust at command time", () => {
+        const configPath = "/project/zowe.config.json";
+        const warning = `Skipped ${configPath}`;
+        const stdinTTY = Object.getOwnPropertyDescriptor(process.stdin, "isTTY");
+        const stderrTTY = Object.getOwnPropertyDescriptor(process.stderr, "isTTY");
+        let config: Config;
+        let reload: jest.MockedFunction<Config["reload"]>;
+
+        beforeEach(() => {
+            config = { untrustedConfigFiles: { [configPath]: warning }, untrustedConfigFilesMessage: warning } as unknown as Config;
+            reload = jest.fn();
+            config.reload = reload;
+            jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValue({});
+            jest.spyOn(process.stdout, "write").mockImplementation(() => true);
+            jest.spyOn(process.stderr, "write").mockImplementation(() => true);
+            Object.defineProperty(process.stdin, "isTTY", { value: true, configurable: true });
+            Object.defineProperty(process.stderr, "isTTY", { value: true, configurable: true });
+        });
+
+        afterEach(() => {
+            if (stdinTTY) Object.defineProperty(process.stdin, "isTTY", stdinTTY);
+            else delete process.stdin.isTTY;
+            if (stderrTTY) Object.defineProperty(process.stderr, "isTTY", stderrTTY);
+            else delete process.stderr.isTTY;
+        });
+
+        function processor(daemonContext?: ConstructorParameters<typeof CommandProcessor>[0]["daemonContext"]): CommandProcessor {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({ config, daemonContext } as ImperativeConfig);
+            return new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: SAMPLE_COMMAND_REAL_HANDLER,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config,
+                daemonContext
+            });
+        }
+
+        it.each([[" Yes ", true], ["no", false], ["", false], [null, false]])(
+            "uses the local command response to handle %s", async (answer, trusted) => {
+                const readPrompt = jest.spyOn(CliUtils, "readPrompt").mockResolvedValue(answer);
+                reload.mockImplementation(async opts => {
+                    expect(await opts.trustPromptFn("/project")).toBe(trusted);
+                });
+                const result = await processor().invoke({ arguments: { _: [], $0: "", valid: true }, responseFormat: "json" });
+                expect(result.success).toBe(true);
+                expect(result.stderr.toString()).toContain(warning);
+                expect(readPrompt).toHaveBeenCalledWith(expect.stringContaining("/project"), { toStderr: true, exitOnCancel: false });
+            }
+        );
+
+        it("does not prompt for local commands with piped input", async () => {
+            Object.defineProperty(process.stdin, "isTTY", { value: false });
+            const result = await processor().invoke({ arguments: { _: [], $0: "", valid: true } });
+            expect(reload).not.toHaveBeenCalled();
+            expect(result.stderr.toString()).toContain(warning);
+        });
+
+        it("sends the daemon prompt to client stderr and uses the client's answer during reload", async () => {
+            Object.defineProperty(process.stdin, "isTTY", { value: false });
+            const socket = Object.assign(new EventEmitter(), { end: jest.fn(), write: jest.fn() });
+            socket.write.mockImplementation((frame: string) => {
+                if ("prompt" in JSON.parse(frame.trim())) {
+                    queueMicrotask(() => socket.emit("data", Buffer.from(JSON.stringify({ stdin: "yes" }))));
+                }
+            });
+            reload.mockImplementation(async opts => {
+                expect(await opts.trustPromptFn("/project")).toBe(true);
+            });
+            const result = await processor({ stream: socket as any, response: { interactive: true } })
+                .invoke({ arguments: { _: [], $0: "", valid: true }, responseFormat: "json" });
+            expect(result.success).toBe(true);
+            expect(reload).toHaveBeenCalledTimes(1);
+            expect(JSON.parse(socket.write.mock.calls[0][0].trim())).toEqual({ stderr: expect.stringContaining("/project"), prompt: "" });
+        });
+
+        it("reloads without a prompt for non-interactive daemon clients", async () => {
+            const socket = Object.assign(new EventEmitter(), { end: jest.fn(), write: jest.fn() });
+            const result = await processor({ stream: socket as any, response: { interactive: false } })
+                .invoke({ arguments: { _: [], $0: "", valid: true }, responseFormat: "json" });
+            expect(result.success).toBe(true);
+            expect(reload).toHaveBeenCalledWith({ trustPromptFn: undefined });
+            expect(socket.write.mock.calls.some(([frame]) => "prompt" in JSON.parse(frame.trim()))).toBe(false);
+            expect(result.stderr.toString()).toContain(warning);
+        });
     });
 
     it("should invoke the handler and process daemon response and use the environment file", async () => {

@@ -42,7 +42,9 @@ export interface IConfigOpts {
     /**
      * Callback to ask whether an unrecognized directory containing a project config
      * file should be trusted. May return a boolean or a promise of a boolean.
-     * If omitted, such directories are skipped.
+     * Accepted directories are saved in the CLI home settings for future loads.
+     * If omitted, such directories are skipped. A directory containing both a team
+     * and user config is prompted for only once per load.
      */
     trustPromptFn?: TrustPromptFn;
 }

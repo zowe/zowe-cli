@@ -195,7 +195,10 @@ export class Imperative {
 
             try {
                 ImperativeConfig.instance.config = await Config.load(configAppName,
-                    { homeDir: ImperativeConfig.instance.cliHome, ignoreErrors }
+                    {
+                        homeDir: ImperativeConfig.instance.cliHome,
+                        ignoreErrors
+                    }
                 );
             } catch (err) {
                 delayedConfigLoadError = err;

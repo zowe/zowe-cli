@@ -81,6 +81,7 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
 describe("Config tests", () => {
     beforeEach(() => {
         jest.spyOn(TrustedConfigManager, "isDirTrusted").mockResolvedValue(true);
+        jest.spyOn(TrustedConfigManager, "isWorldWritable").mockReturnValue(false);
     });
 
     afterEach(() => {

@@ -482,6 +482,15 @@ export class ProfileInfo {
         return this.mLoadedConfig;
     }
 
+    /**
+     * Maps each project config path skipped during the most recent load to its warning.
+     * Use this to explain missing profiles or connection failures after calling {@link readProfilesFromDisk}.
+     * Returns an empty object before the first load or when no files were skipped.
+     */
+    public get untrustedConfigFiles(): Record<string, string> {
+        return this.mLoadedConfig?.untrustedConfigFiles ?? {};
+    }
+
     // _______________________________________________________________________
     /**
      * Helper function to identify if the existing config is secure or not

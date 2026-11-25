@@ -27,7 +27,7 @@ import * as nodePath from "path";
 import * as fs from "fs";
 import { randomBytes, randomUUID as uuidv4 } from "crypto";
 import * as os from "os";
-import { Config, IConfig, IConfigOpts } from "../../src/config";
+import { Config, IConfig, IConfigOpts, TrustedConfigManager } from "../../src/config";
 import { ImperativeConfig } from "../../src/utilities";
 import { sync } from "cross-spawn";
 
@@ -460,6 +460,9 @@ export function runCliScript(scriptPath: string, cwd: string, args: any = [], en
 export async function setupConfigToLoad(properties?: IConfig, opts: IConfigOpts = {}): Promise<void> {
     const dirname = nodePath.dirname(expect.getState().testPath); // Get __dirname for current test suite
     const tempMocks: jest.SpyInstance[] = [
+        // Synthetic config paths below are fixtures for profile tests, not real trust decisions.
+        jest.spyOn(TrustedConfigManager, "isDirTrusted").mockResolvedValue(true),
+        jest.spyOn(TrustedConfigManager, "isWorldWritable").mockReturnValue(false),
         jest.spyOn(os, "homedir").mockReturnValue(dirname), // Pretend the current directory is the homedir
         jest.spyOn(process, "cwd").mockReturnValue(dirname) // Pretend the current directory is where the command was invoked
     ];

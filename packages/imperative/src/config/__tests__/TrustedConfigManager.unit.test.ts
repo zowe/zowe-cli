@@ -33,6 +33,7 @@ describe("TrustedConfigManager", () => {
         jest.mocked(fs.writeFileSync).mockImplementation((file, data) => files.set(String(file), String(data)));
         jest.mocked(fs.existsSync).mockImplementation((file) => files.has(String(file)));
         jest.mocked(fs.statSync).mockReturnValue({ mode: 0o755, isDirectory: () => true } as fs.Stats);
+        jest.mocked(fs.lstatSync).mockReturnValue({ isFile: () => true } as fs.Stats);
         jest.mocked(fs.realpathSync.native).mockImplementation((file) => String(file));
         jest.spyOn(Logger.prototype, "warn").mockImplementation();
         jest.spyOn(os, "homedir").mockReturnValue(fakeHome);
@@ -72,11 +73,13 @@ describe("TrustedConfigManager", () => {
 
     it("should defer to the prompt function", async () => {
         await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => true)).resolves.toBe(true);
+        files.clear();
         await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => false)).resolves.toBe(false);
     });
 
     it("should await an asynchronous prompt function", async () => {
         await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => true)).resolves.toBe(true);
+        files.clear();
         await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => false)).resolves.toBe(false);
     });
 
@@ -84,6 +87,40 @@ describe("TrustedConfigManager", () => {
         await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, async () => {
             throw new Error("Prompt failed");
         })).rejects.toThrow("Prompt failed");
+    });
+
+    it("should remember an accepted prompt for later loads", async () => {
+        const prompt = jest.fn(async () => true);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, prompt)).resolves.toBe(true);
+        expect(JSON.parse(files.get(settingsFile)).trustedProjectDirs).toEqual([tmp]);
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, prompt)).resolves.toBe(true);
+        expect(prompt).toHaveBeenCalledTimes(1);
+        expect(fs.writeFileSync).toHaveBeenCalledWith(settingsFile, expect.any(String), { mode: 0o600 });
+    });
+
+    it("should warn if an accepted trust decision cannot be saved", async () => {
+        jest.mocked(fs.writeFileSync).mockImplementation(() => { throw new Error("Access denied"); });
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome, () => true)).resolves.toBe(true);
+        expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(expect.stringContaining("could not be saved for future commands"));
+    });
+
+    it("should trust home subdirectories whose names start with two dots", async () => {
+        await expect(TrustedConfigManager.isDirTrusted(path.join(fakeHome, "..project"), cliHome)).resolves.toBe(true);
+    });
+
+    it.each(["null", "[]", "invalid JSON"])("should warn about malformed settings without overwriting them: %s", contents => {
+        files.set(settingsFile, contents);
+        expect(TrustedConfigManager.list(cliHome)).toEqual([]);
+        expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(expect.stringContaining(settingsFile));
+        expect(() => TrustedConfigManager.add(cliHome, tmp)).toThrow();
+        expect(fs.writeFileSync).not.toHaveBeenCalled();
+    });
+
+    (process.platform === "win32" ? it.skip : it)("should refuse a saved allow list when the file cannot be inspected", async () => {
+        files.set(settingsFile, JSON.stringify({ trustedProjectDirs: [tmp] }));
+        jest.mocked(fs.lstatSync).mockImplementationOnce(() => { throw new Error("Access denied"); });
+        await expect(TrustedConfigManager.isDirTrusted(tmp, cliHome)).resolves.toBe(false);
+        expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(expect.stringContaining("Access denied"));
     });
 
     it("should add, list and remove trusted directories", async () => {
@@ -247,6 +284,48 @@ describe("TrustedConfigManager", () => {
         expect(TrustedConfigManager.isWorldWritable(tmp)).toBe(false);
     });
 
+    (process.platform === "win32" ? describe.skip : describe)("Unix permissions", () => {
+        it.each(["false", "0", "no", ""])("should enforce permissions when the override is %s", value => {
+            process.env[TrustedConfigManager.ENV_ALLOW_WORLD_WRITABLE] = value;
+            jest.mocked(fs.statSync).mockReturnValue({ mode: 0o777 } as fs.Stats);
+            expect(TrustedConfigManager.isWorldWritable(tmp)).toBe(true);
+        });
+
+        it.each(["1", "true", "True", "TRUE"])("should bypass permissions only when explicitly enabled: %s", value => {
+            process.env[TrustedConfigManager.ENV_ALLOW_WORLD_WRITABLE] = value;
+            jest.mocked(fs.statSync).mockReturnValue({ mode: 0o777 } as fs.Stats);
+            expect(TrustedConfigManager.isWorldWritable(tmp)).toBe(false);
+        });
+
+        it.each(["CI", TrustedConfigManager.ENV_ALLOW_UNTRUSTED])("should enforce permissions independently of %s", async key => {
+            process.env[key] = "true";
+            const configPath = path.join(tmp, "app.config.json");
+            files.set(configPath, "{}");
+            jest.mocked(fs.statSync).mockReturnValue({ mode: 0o777, isDirectory: () => true } as fs.Stats);
+            const config = await Config.load("app", { homeDir: cliHome, projectDir: tmp });
+            expect(config.untrustedConfigFiles[configPath]).toContain("World-writable directory.");
+            expect(config.findLayer(false, false).exists).toBe(false);
+            expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(expect.stringContaining("Remove world-write permission"));
+        });
+
+        it("should skip and report configs when directory permissions cannot be checked", async () => {
+            const configPath = path.join(tmp, "app.config.json");
+            files.set(configPath, "{}");
+            jest.spyOn(TrustedConfigManager, "isWorldWritable").mockImplementation(() => { throw new Error("Permission denied"); });
+            const config = await Config.load("app", { homeDir: cliHome, projectDir: tmp });
+            expect(config.untrustedConfigFiles).toEqual({
+                [configPath]: expect.stringContaining("Directory permissions could not be verified.")
+            });
+            expect(config.findLayer(false, false).exists).toBe(false);
+            expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(expect.stringContaining(configPath));
+        });
+
+        it("should propagate a directory permission lookup failure", () => {
+            jest.mocked(fs.statSync).mockImplementation(() => { throw new Error("Permission denied"); });
+            expect(() => TrustedConfigManager.isWorldWritable(tmp)).toThrow("Permission denied");
+        });
+    });
+
     it.each(["app.config.json", "app.config.user.json"])("should not read a rejected %s during load or reload", async (file) => {
         const proj = path.join(tmp, "proj");
         const configPath = path.join(proj, file);
@@ -321,5 +400,41 @@ describe("TrustedConfigManager", () => {
         expect(config.findLayer(true, false).path).toBe("");
         expect(config.properties).toEqual(Config.empty());
         expect(readMock.mock.calls.some(([file]) => file === configPath || file === userConfigPath)).toBe(false);
+        expect(trustPromptFn).toHaveBeenCalledTimes(1);
+        expect(config.untrustedConfigFiles).toEqual({
+            [userConfigPath]: expect.stringContaining("Untrusted directory."),
+            [configPath]: expect.stringContaining("Untrusted directory.")
+        });
+        expect(config.untrustedConfigFilesMessage).toContain(configPath);
+        expect(config.untrustedConfigFilesMessage).toContain("Previous versions would have loaded");
+        expect(config.untrustedConfigFilesMessage).toContain(settingsFile);
+        expect(config.untrustedConfigFilesMessage).toContain(TrustedConfigManager.ENV_ALLOW_UNTRUSTED);
+        for (const filePath of [configPath, userConfigPath]) {
+            const warning = config.untrustedConfigFiles[filePath];
+            expect(warning).toContain("If you trust this directory");
+            expect(Logger.getImperativeLogger().warn).toHaveBeenCalledWith(`Skipping project config '${filePath}': ${warning}`);
+        }
+        const snapshot = config.untrustedConfigFiles;
+        snapshot[userConfigPath] = "changed";
+        expect(config.untrustedConfigFiles[userConfigPath]).toContain("Untrusted directory.");
+        files.delete(configPath);
+        files.delete(userConfigPath);
+        await config.reload(opts);
+        expect(config.untrustedConfigFiles).toEqual({});
+        expect(config.untrustedConfigFilesMessage).toBe("");
+    });
+
+    it("uses a command's trust callback only for that reload", async () => {
+        const proj = path.join(tmp, "proj");
+        const configPath = path.join(proj, "app.config.json");
+        files.set(configPath, "{}");
+        const opts = { homeDir: cliHome, projectDir: path.join(proj, "sub") };
+        const config = await Config.load("app", opts);
+        const trustPromptFn = jest.fn(async () => false);
+        await config.reload({ ...opts, trustPromptFn });
+        expect(trustPromptFn).toHaveBeenCalledWith(proj);
+        await config.reload(opts);
+        expect(trustPromptFn).toHaveBeenCalledTimes(1);
+        expect(config.untrustedConfigFiles[configPath]).toContain("Untrusted directory.");
     });
 });

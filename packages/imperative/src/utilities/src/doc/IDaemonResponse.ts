@@ -25,6 +25,9 @@ export interface IDaemonResponse {
      */
     cwd?: string;
 
+    /** Whether the client has interactive stdin and stderr terminals. */
+    interactive?: boolean;
+
     /**
      * Environment variables with CLI prefix received from the daemon client.
      */

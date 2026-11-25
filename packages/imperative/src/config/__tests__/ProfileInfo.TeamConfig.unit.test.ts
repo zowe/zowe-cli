@@ -33,6 +33,7 @@ import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
 import { Logger } from "../../logger/src/Logger";
+import { TrustedConfigManager } from "../src/TrustedConfigManager";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -346,6 +347,22 @@ describe("TeamConfig ProfileInfo tests", () => {
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
+        });
+
+        it("should report ignored project configs directly on ProfileInfo", async () => {
+            const projectDir = path.join(testDir, testAppNm + "_user_and_team_config_proj");
+            const profInfo = createNewProfInfo(projectDir);
+            jest.spyOn(TrustedConfigManager, "isDirTrusted").mockResolvedValue(false);
+            expect(profInfo.untrustedConfigFiles).toEqual({});
+
+            await profInfo.readProfilesFromDisk({ homeDir: teamProjDir, projectDir });
+            expect(profInfo.untrustedConfigFiles).toEqual({
+                [path.join(projectDir, `${testAppNm}.config.user.json`)]: expect.stringContaining("Untrusted directory."),
+                [path.join(projectDir, `${testAppNm}.config.json`)]: expect.stringContaining("Untrusted directory.")
+            });
+
+            await profInfo.readProfilesFromDisk({ homeDir: teamProjDir, projectDir: false });
+            expect(profInfo.untrustedConfigFiles).toEqual({});
         });
     });
 

@@ -97,6 +97,25 @@ export class Config {
      */
     private mTrustPromptFn?: TrustPromptFn;
 
+    private mTrustWarnings = new Map<string, string | undefined>();
+    private mUntrustedConfigFiles: Record<string, string> = {};
+
+    /** Maps each project config path skipped during the most recent load to its warning. */
+    public get untrustedConfigFiles(): Record<string, string> {
+        return { ...this.mUntrustedConfigFiles };
+    }
+
+    /** Diagnostic guidance for commands affected by skipped project configuration. */
+    public get untrustedConfigFilesMessage(): string {
+        const files = Object.entries(this.mUntrustedConfigFiles);
+        if (files.length === 0) return "";
+        const details = files.map(([file, warning]) => `  ${file}: ${warning}`).join("\n");
+        return `The following project configuration files are being ignored and may affect this command:\n${details}\n` +
+            `Previous versions would have loaded these files. ` +
+            `For legacy behavior in CI pipelines, set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true ` +
+            `and, only if needed, ${TrustedConfigManager.ENV_ALLOW_WORLD_WRITABLE}=true.`;
+    }
+
     /**
      * Currently active layer whose properties will be manipulated
      * @internal
@@ -179,6 +198,7 @@ export class Config {
         myNewConfig.mActive = { user: false, global: false };
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
+        myNewConfig.mTrustPromptFn = opts.trustPromptFn;
 
         // Populate configuration file layers
         await myNewConfig.reload(opts);
@@ -188,7 +208,7 @@ export class Config {
 
     /**
      * Reload config files from disk in the current project directory.
-     * @param opts Options to control how Config class behaves
+     * @param opts Options for this reload. A trust prompt supplied here overrides the default from {@link Config.load} for this call.
      * @throws An ImperativeError if the configuration does not load successfully
      */
     public async reload(opts?: IConfigOpts) {
@@ -204,9 +224,11 @@ export class Config {
 
         this.mLayers = [];
         this.mEnvVarManaged = [];
+        this.mTrustWarnings.clear();
+        this.mUntrustedConfigFiles = {};
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
         this.mProjectDir = opts?.projectDir ?? process.cwd();
-        this.mTrustPromptFn = opts?.trustPromptFn ?? this.mTrustPromptFn;
+        const trustPromptFn = opts?.trustPromptFn ?? this.mTrustPromptFn;
 
         // Populate configuration file layers
         for (const layer of [
@@ -214,7 +236,7 @@ export class Config {
             Layers.GlobalUser, Layers.GlobalConfig
         ]) {
             this.mLayers.push({
-                path: await this.layerPath(layer),
+                path: await this.layerPath(layer, trustPromptFn),
                 exists: false,
                 properties: Config.empty(),
                 global: layer === Layers.GlobalUser || layer === Layers.GlobalConfig,
@@ -282,23 +304,29 @@ export class Config {
 
     // _______________________________________________________________________
     /**
-     * Decide whether a directory containing a project config file may be loaded.
-     * World-writable and untrusted directories are skipped with a warning.
-     * @internal
+     * Return a warning if project config in this directory must be skipped.
+     * Cache the decision for both project config layers.
      */
-    private isTrustedDir = async (dir: string): Promise<boolean> => {
-        if (TrustedConfigManager.isWorldWritable(dir)) {
-            Logger.getImperativeLogger().warn(`Skipping project config in world-writable directory: ${dir}`);
-            return false;
+    private async getTrustWarning(dir: string, trustPromptFn?: TrustPromptFn): Promise<string | undefined> {
+        if (!this.mTrustWarnings.has(dir)) {
+            let warning: string | undefined;
+            try {
+                if (TrustedConfigManager.isWorldWritable(dir)) {
+                    warning = "World-writable directory. Remove world-write permission from the directory before loading this config.";
+                }
+            } catch (err) {
+                warning = "Directory permissions could not be verified. Check that the directory exists and that you can access it.";
+                Logger.getImperativeLogger().warn(`Unable to verify project config directory permissions for '${dir}': ${err.message}`);
+            }
+            if (warning == null && !await TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, trustPromptFn,
+                typeof this.mProjectDir === "string" ? this.mProjectDir : undefined)) {
+                warning = `Untrusted directory. If you trust this directory, accept the interactive prompt or add its absolute path ` +
+                    `to "trustedProjectDirs" in '${path.join(this.mHomeDir, "settings", "imperative.json")}'.`;
+            }
+            this.mTrustWarnings.set(dir, warning);
         }
-        if (!await TrustedConfigManager.isDirTrusted(dir, this.mHomeDir, this.mTrustPromptFn,
-            typeof this.mProjectDir === "string" ? this.mProjectDir : undefined)) {
-            Logger.getImperativeLogger().warn(`Skipping project config in untrusted directory: ${dir}. ` +
-                `Set ${TrustedConfigManager.ENV_ALLOW_UNTRUSTED}=true or add it to "trustedProjectDirs" in settings/imperative.json to trust it.`);
-            return false;
-        }
-        return true;
-    };
+        return this.mTrustWarnings.get(dir);
+    }
 
     // _______________________________________________________________________
     /**
@@ -311,8 +339,9 @@ export class Config {
      *
      * @internal
      * @param layer Enum value for config layer
+     * @param trustPromptFn Callback to use during this discovery
      */
-    private async layerPath(layer: Layers): Promise<string> {
+    private async layerPath(layer: Layers, trustPromptFn?: TrustPromptFn): Promise<string> {
         switch (layer) {
             case Layers.ProjectUser:
             case Layers.ProjectConfig: {
@@ -322,8 +351,12 @@ export class Config {
                 let rejected = false;
                 let configPath: string;
                 while ((configPath = Config.search(file, { ignoreDirs: [this.mHomeDir], startDir })) != null) {
+                    if (Object.hasOwn(this.mUntrustedConfigFiles, configPath)) return "";
                     const dir = path.dirname(configPath);
-                    if (await this.isTrustedDir(dir)) return configPath;
+                    const warning = await this.getTrustWarning(dir, trustPromptFn);
+                    if (warning == null) return configPath;
+                    this.mUntrustedConfigFiles[configPath] = warning;
+                    Logger.getImperativeLogger().warn(`Skipping project config '${configPath}': ${warning}`);
                     rejected = true;
                     const parent = path.dirname(dir);
                     if (parent === dir) return "";

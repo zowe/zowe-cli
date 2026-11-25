@@ -249,6 +249,9 @@ describe("Plugin Management Facility", () => {
         });
 
         beforeEach(() => {
+            // AppSettings checks that the mocked settings file is a regular file.
+            jest.spyOn(fs, "lstatSync").mockReturnValue({ isFile: () => true } as fs.Stats);
+
             // supply data for PluginIssues.getInstalledPlugins()
             mocks.readFileSync.mockReturnValue(mockInstalledPlugins);
 
@@ -259,6 +262,10 @@ describe("Plugin Management Facility", () => {
             jest.spyOn(Logger.prototype, "error").mockImplementation((newText) => {
                 return loggedErrText += newText + "\n";
             });
+        });
+
+        afterEach(() => {
+            jest.mocked(fs.lstatSync).mockRestore();
         });
 
         it("should create the plugins.json file and directory", () => {
