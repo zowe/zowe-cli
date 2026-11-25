@@ -15,6 +15,7 @@ import * as path from "path";
 import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
+import { JSONSettingsFilePersistence } from "../../settings/src/persistance/JSONSettingsFilePersistence";
 
 /**
  * Callback that asks the user whether a directory containing a project config
@@ -30,20 +31,18 @@ export class TrustedConfigManager {
     /** Set to "1" or "true" to trust all directories */
     public static readonly ENV_ALLOW_UNTRUSTED = "ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS";
 
-    /** Set to any value to allow loading project config from world-writable directories */
+    /** Set to "1" or "true" to allow loading project config from world-writable directories */
     public static readonly ENV_ALLOW_WORLD_WRITABLE = "ZOWE_CONFIG_ALLOW_WORLD_WRITABLE";
 
     /**
      * Check whether a directory is writable by any user. Always false on Windows
-     * or if the ZOWE_CONFIG_ALLOW_WORLD_WRITABLE environment variable is set.
+     * or if ZOWE_CONFIG_ALLOW_WORLD_WRITABLE is "1" or "true" (case insensitive).
+     * Throws if directory permissions cannot be checked.
      */
     public static isWorldWritable(dirPath: string): boolean {
-        if (process.platform === "win32" || process.env[this.ENV_ALLOW_WORLD_WRITABLE]) return false;
-        try {
-            return (fs.statSync(dirPath).mode & fs.constants.S_IWOTH) !== 0;
-        } catch {
-            return false;
-        }
+        const allowEnv = process.env[this.ENV_ALLOW_WORLD_WRITABLE]?.toLowerCase();
+        if (process.platform === "win32" || allowEnv === "1" || allowEnv === "true") return false;
+        return (fs.statSync(dirPath).mode & fs.constants.S_IWOTH) !== 0;
     }
 
     /**
@@ -69,24 +68,39 @@ export class TrustedConfigManager {
         if (startDir != null && target === this.normalize(startDir)) return true;
 
         const rel = path.relative(this.normalize(os.homedir()), target);
-        if (rel === "" || !rel.startsWith("..") && !path.isAbsolute(rel)) return true;
+        if (rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel)) return true;
 
         if (this.list(cliHome).some((d) => this.normalize(d) === target)) return true;
 
-        return promptFn != null ? await promptFn(dirPath) === true : false;
+        if (promptFn == null || await promptFn(dirPath) !== true) return false;
+        try {
+            this.add(cliHome, target);
+        } catch (err) {
+            Logger.getImperativeLogger().warn(`Directory '${dirPath}' is trusted for this operation, ` +
+                `but could not be saved for future commands: ${err.message}`);
+        }
+        return true;
     }
 
     /** List trusted directories, skipping relative paths and paths containing symbolic links with a warning. */
     public static list(cliHome: string): string[] {
         const dirs = this.readSettings(cliHome).trustedProjectDirs;
-        return Array.isArray(dirs) ? dirs.filter((d) => {
-            if (typeof d !== "string") return false;
+        if (dirs == null) return [];
+        if (!Array.isArray(dirs)) {
+            Logger.getImperativeLogger().warn("Ignoring invalid trustedProjectDirs setting: expected an array of absolute directory paths");
+            return [];
+        }
+        return dirs.filter((d) => {
+            if (typeof d !== "string") {
+                Logger.getImperativeLogger().warn("Skipping invalid trustedProjectDirs entry: expected an absolute directory path string");
+                return false;
+            }
             if (!this.isValidPath(d)) {
                 Logger.getImperativeLogger().warn(`Skipping '${d}', trusted directory path cannot be relative or contain a symbolic link`);
                 return false;
             }
             return true;
-        }) : [];
+        });
     }
 
     /**
@@ -100,14 +114,14 @@ export class TrustedConfigManager {
         const dirs = this.list(cliHome);
         const target = this.normalize(dirPath);
         if (dirs.some((d) => this.normalize(d) === target)) return;
-        this.writeSettings(cliHome, { ...this.readSettings(cliHome), trustedProjectDirs: [...dirs, target] });
+        this.writeSettings(cliHome, { ...this.readSettings(cliHome, false), trustedProjectDirs: [...dirs, target] });
     }
 
     /** Remove a directory from the trusted list. */
     public static remove(cliHome: string, dirPath: string): void {
         const target = this.normalize(dirPath);
         const dirs = this.list(cliHome).filter((d) => this.normalize(d) !== target);
-        this.writeSettings(cliHome, { ...this.readSettings(cliHome), trustedProjectDirs: dirs });
+        this.writeSettings(cliHome, { ...this.readSettings(cliHome, false), trustedProjectDirs: dirs });
     }
 
     /** Require an existing absolute path with no symbolic links in any normalized component. */
@@ -135,10 +149,20 @@ export class TrustedConfigManager {
         return path.join(cliHome, "settings", "imperative.json");
     }
 
-    private static readSettings(cliHome: string): Partial<ISettingsFile> {
+    private static readSettings(cliHome: string, ignoreErrors = true): Partial<ISettingsFile> {
+        const file = this.settingsFile(cliHome);
         try {
-            return JSON.parse(fs.readFileSync(this.settingsFile(cliHome), "utf-8"));
-        } catch {
+            JSONSettingsFilePersistence.checkSettingsFile(file);
+            const settings = JSON.parse(fs.readFileSync(file, "utf-8"));
+            if (settings == null || typeof settings !== "object" || Array.isArray(settings)) {
+                throw new Error("Settings must be a JSON object");
+            }
+            return settings;
+        } catch (err) {
+            if (err.code !== "ENOENT") {
+                if (!ignoreErrors) throw err;
+                Logger.getImperativeLogger().warn(`Unable to load trusted project directories from '${file}': ${err.message}`);
+            }
             return {};
         }
     }
@@ -146,6 +170,7 @@ export class TrustedConfigManager {
     private static writeSettings(cliHome: string, settings: Partial<ISettingsFile>): void {
         const file = this.settingsFile(cliHome);
         fs.mkdirSync(path.dirname(file), { recursive: true });
-        fs.writeFileSync(file, JSON.stringify(settings, null, 2));
+        JSONSettingsFilePersistence.checkSettingsFile(file);
+        fs.writeFileSync(file, JSON.stringify(settings, null, 2), { mode: 0o600 });
     }
 }

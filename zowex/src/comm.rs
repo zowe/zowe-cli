@@ -482,6 +482,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                         let response: DaemonResponse = DaemonResponse {
                             argv: None,
                             cwd: None,
+                            interactive: None,
                             env: None,
                             stdinLength: None,
                             stdin: Some(s),

@@ -183,6 +183,7 @@ describe("Imperative", () => {
 
             expect(result).toBeUndefined();
             expect(mocks.Config.load).toHaveBeenCalledTimes(1);
+            expect(mocks.Config.load.mock.calls[0][1].trustPromptFn).toBeUndefined();
             expect(mocks.OverridesLoader.load).toHaveBeenCalledTimes(1);
             expect(mocks.OverridesLoader.load).toHaveBeenCalledWith(defaultConfig, { version: 10000, name: "sample", zoweVersion: "V99" });
         });

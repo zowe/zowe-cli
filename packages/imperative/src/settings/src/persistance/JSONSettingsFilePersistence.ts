@@ -12,8 +12,26 @@
 import { ISettingsFile } from "../doc/ISettingsFile";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { ISettingsFilePersistence } from "./ISettingsFilePersistence";
+import { lstatSync } from "fs";
 
 export class JSONSettingsFilePersistence implements ISettingsFilePersistence {
+    private static readonly PRIVATE_MODE = 0o600;
+    /** Check that an existing Unix settings path is a regular file. @internal */
+    public static checkSettingsFile(file: string): void {
+        if (process.platform !== "win32") {
+            let stat: ReturnType<typeof lstatSync>;
+            try {
+                stat = lstatSync(file);
+            } catch (err) {
+                if (err.code === "ENOENT") return;
+                throw err;
+            }
+            if (!stat.isFile()) {
+                throw new Error(`Settings file '${file}' must be a regular file, not a symbolic link`);
+            }
+        }
+    }
+
     private readonly path: string;
 
     constructor(private readonly settingsFile: string) {
@@ -21,12 +39,16 @@ export class JSONSettingsFilePersistence implements ISettingsFilePersistence {
     }
 
     public read(): ISettingsFile {
+        JSONSettingsFilePersistence.checkSettingsFile(this.path);
         return readFileSync(this.path);
     }
 
     public write(settings: ISettingsFile): void {
+        JSONSettingsFilePersistence.checkSettingsFile(this.path);
+        // The mode applies only when the write creates the file.
         writeFileSync(this.path, settings, {
-            spaces: 2
+            spaces: 2,
+            mode: JSONSettingsFilePersistence.PRIVATE_MODE
         });
     }
 }

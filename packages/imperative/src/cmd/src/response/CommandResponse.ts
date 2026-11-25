@@ -599,10 +599,10 @@ export class CommandResponse implements ICommandResponseApi {
                     if (outer.mStream) {
                         return new Promise<string>((resolve) => {
 
-                            // send prompt content
-                            const daemonRequest = opts?.hideText ?
-                                DaemonRequest.create({ securePrompt: msg }) :
-                                DaemonRequest.create({ prompt: msg });
+                            // The native client displays stderr before reading the prompt reply.
+                            const prompt = opts?.toStderr ? "" : msg;
+                            const stderr = opts?.toStderr ? msg : undefined;
+                            const daemonRequest = DaemonRequest.create(opts?.hideText ? { stderr, securePrompt: prompt } : { stderr, prompt });
 
                             outer.writeStream(daemonRequest);
 

@@ -80,6 +80,9 @@ interface IResolvedArgsResponse {
      */
     locations?: string[];
 
+    /** Warnings keyed by the path of each project config ignored during discovery. */
+    untrustedConfigFiles?: Record<string, string>;
+
     /**
      * @type {string}
      * @memberof IResolvedArgsResponse
@@ -108,6 +111,21 @@ export class CommandProcessor {
      * @memberof CommandProcessor
      */
     private static readonly ERROR_TAG: string = "Command Processor Error:";
+
+    /** Ask the command's client whether it trusts the directory. */
+    private static async promptForConfigTrust(response: CommandResponse, dir: string): Promise<boolean> {
+        try {
+            const answer = await response.console.prompt(
+                `Trust project configuration in '${dir}' for this and future commands? [y/N] `,
+                { toStderr: true, exitOnCancel: false }
+            );
+            const reply = answer?.trim().toLowerCase();
+            return reply === "y" || reply === "yes";
+        } catch (err) {
+            Logger.getImperativeLogger().warn(`Unable to prompt for trust of '${dir}'; project configuration will be ignored: ${err.message}`);
+            return false;
+        }
+    }
     /**
      * The root command name of the CLI (specified in the Imperative Configuration document)
      * @private
@@ -373,18 +391,6 @@ export class CommandProcessor {
         });
         Censor.setCommandArguments(params.arguments);
 
-        const commandLine = Censor.censorCommandLine(
-            ImperativeConfig.instance.commandLine || this.commandLine,
-            params.arguments
-        );
-
-        // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);
-        // Log the invoke
-        this.log.info(`Invoking command "${this.definition.name}"...`);
-        this.log.info(`Command issued:\n\n${TextUtils.prettyJson(this.rootCommand + " " + commandLine)}`);
-        this.log.trace(`Invoke parameters:\n${this.censoredInspect(params, { depth: null })}`);
-        this.log.trace(`Command definition:\n${inspect(this.definition, { depth: null })}`);
-
         const prepareResponse = this.constructResponseObject(params);
         prepareResponse.succeeded();
 
@@ -403,7 +409,8 @@ export class CommandProcessor {
 
                 // Define environment variables received from daemon
                 if (this.mDaemonContext.response.env != null) {
-                    // Delete environment variables that start with CLI prefix
+                    // Clients that report interactivity also forward CI for the request.
+                    if (this.mDaemonContext.response.interactive != null) delete process.env.CI;
                     for (const envVarName of Object.keys(process.env)) {
                         if (envVarName.startsWith(`${this.mEnvVariablePrefix}_`)) {
                             delete process.env[envVarName];
@@ -416,10 +423,32 @@ export class CommandProcessor {
                     // Load environment variables from env file
                     EnvFileUtils.resetEnvironmentForApp();
                 }
-
-                // reload config for daemon client directory
-                await ImperativeConfig.instance.config.reload();
             }
+
+            const daemonRequest = this.mDaemonContext?.response;
+            const cliConfig = ImperativeConfig.instance.config;
+            // Local startup already loaded usable configs. Retry discovery when it skipped any files.
+            const retrySkippedFiles = cliConfig === this.mConfig && Object.keys(cliConfig?.untrustedConfigFiles ?? {}).length > 0;
+            const interactive = !params.silent && (daemonRequest
+                ? daemonRequest.interactive === true && this.mDaemonContext.stream != null
+                : process.stdin.isTTY && process.stderr.isTTY);
+            if (daemonRequest || retrySkippedFiles && interactive) {
+                await cliConfig.reload({
+                    trustPromptFn: interactive ? dir => CommandProcessor.promptForConfigTrust(prepareResponse, dir) : undefined
+                });
+                Censor.setCensoredOptions({
+                    profiles: ImperativeConfig.instance.loadedConfig?.profiles,
+                    config: cliConfig,
+                    commandDefinition: this.definition,
+                    commandArguments: params.arguments
+                });
+            }
+
+            const commandLine = Censor.censorCommandLine(ImperativeConfig.instance.commandLine || this.commandLine, params.arguments);
+            this.log.info(`Invoking command "${this.definition.name}"...`);
+            this.log.info(`Command issued:\n\n${TextUtils.prettyJson(this.rootCommand + " " + commandLine)}`);
+            this.log.trace(`Invoke parameters:\n${this.censoredInspect(params, { depth: null })}`);
+            this.log.trace(`Command definition:\n${inspect(this.definition, { depth: null })}`);
 
             this.log.info(`Preparing (loading profiles, reading stdin, etc.) execution of "${this.definition.name}" command...`);
             preparedArgs = await this.prepare(prepareResponse, params.arguments);
@@ -816,6 +845,10 @@ export class CommandProcessor {
                 showInputsOnly.locations.push(layer.path);
             }
         });
+        const untrustedConfigFiles = this.mConfig?.untrustedConfigFiles;
+        if (untrustedConfigFiles && Object.keys(untrustedConfigFiles).length > 0) {
+            showInputsOnly.untrustedConfigFiles = untrustedConfigFiles;
+        }
 
         /**
          * Show warning if we censored output and we were not instructed to show secure values
@@ -974,7 +1007,7 @@ export class CommandProcessor {
             args: params.arguments,
             silent: params.silent == null ? false : params.silent,
             responseFormat: params.responseFormat,
-            stream: ImperativeConfig.instance.daemonContext?.stream
+            stream: this.mDaemonContext?.stream ?? ImperativeConfig.instance.daemonContext?.stream
         });
     }
 
@@ -1036,7 +1069,19 @@ export class CommandProcessor {
      * @memberof CommandProcessor
      */
     private finishResponse(response: CommandResponse): ICommandResponse {
-        const json: ICommandResponse = response.buildJsonResponse();
+        let json: ICommandResponse = response.buildJsonResponse();
+        const trustMessage = (this.mConfig ?? ImperativeConfig.instance.config)?.untrustedConfigFilesMessage;
+        if (trustMessage) {
+            response.console.error(trustMessage);
+            if (!json.success) {
+                response.setError({
+                    ...json.error,
+                    msg: json.error?.msg ?? json.message,
+                    additionalDetails: [json.error?.additionalDetails, trustMessage].filter(Boolean).join("\n\n")
+                });
+            }
+            json = response.buildJsonResponse();
+        }
         if (!response.silent) {
             switch (response.responseFormat) {
                 case "json":

@@ -502,11 +502,12 @@ export class CliUtils {
             secToWait = maxSecToWait;
         }
 
+        const output = opts?.toStderr ? process.stderr : process.stdout;
         let response: string;
         try {
             response = await read({
                 input: process.stdin,
-                output: process.stdout,
+                output,
                 terminal: true,
                 prompt: message,
                 silent: opts?.hideText,
@@ -514,10 +515,10 @@ export class CliUtils {
                 timeout: secToWait * 1000 // eslint-disable-line @typescript-eslint/no-magic-numbers
             });
             if (opts?.hideText) {
-                process.stdout.write("\r\n");
+                output.write("\r\n");
             }
         } catch (err) {
-            if (err.message === "canceled") {
+            if (err.message === "canceled" && opts?.exitOnCancel !== false) {
                 process.exit(2);
             } else if (err.message === "timed out") {
                 return null;

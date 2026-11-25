@@ -328,6 +328,9 @@ export class EnvQuery {
             getResult.itemValMsg += `${os.EOL}No Zowe client configuration detected.${os.EOL}`;
         }
 
+        const trustMessage = ImperativeConfig.instance.config?.untrustedConfigFilesMessage;
+        if (trustMessage) getResult.itemValMsg += os.EOL + trustMessage + os.EOL;
+
         // add indent to each line
         getResult.itemValMsg  = EnvQuery.divider + "Zowe CLI configuration information:" +
             os.EOL + os.EOL + EnvQuery.indent +

@@ -176,6 +176,18 @@ export class AppSettings {
      */
     private flush() {
         try {
+            // Trust decisions may have been saved after this singleton was initialized.
+            // Preserve the latest allow list when saving unrelated settings.
+            try {
+                const persisted = this.persistence.read();
+                if (persisted?.trustedProjectDirs !== undefined) {
+                    this.settings.trustedProjectDirs = persisted.trustedProjectDirs;
+                } else {
+                    delete this.settings.trustedProjectDirs;
+                }
+            } catch (err) {
+                if (err.code !== "ENOENT") throw err;
+            }
             this.persistence.write(this.settings);
         } catch (err) {
             Logger.getImperativeLogger().error("Unable to save settings");

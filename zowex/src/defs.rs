@@ -60,6 +60,7 @@ pub struct DaemonRequest {
 pub struct DaemonResponse {
     pub argv: Option<Vec<String>>,
     pub cwd: Option<String>,
+    pub interactive: Option<bool>,
     pub env: Option<HashMap<String, String>>,
     pub stdinLength: Option<i32>,
     pub stdin: Option<String>,

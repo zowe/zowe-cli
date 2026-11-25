@@ -36,4 +36,10 @@ export interface IPromptOptions {
      * @memberof IPromptOptions
      */
     maskChar?: string | null;
+
+    /** Write the prompt to stderr. Defaults to stdout. @internal */
+    toStderr?: boolean;
+
+    /** Exit on cancellation of a local prompt. Set to false to reject instead. Defaults to true. @internal */
+    exitOnCancel?: boolean;
 }

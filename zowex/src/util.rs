@@ -277,7 +277,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {
     let mut environment: HashMap<String, String> = env::vars()
-        .filter(|(k, _)| k.starts_with("ZOWE_"))
+        .filter(|(k, _)| k.starts_with("ZOWE_") || k == "CI")
         .collect();
 
     match env::var("FORCE_COLOR") {

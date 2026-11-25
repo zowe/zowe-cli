@@ -265,8 +265,9 @@ pub async fn run_daemon_command(
         }
     };
 
+    let stdin_is_terminal = io::stdin().is_terminal();
     let mut stdin = Vec::new();
-    if !std::io::stdin().is_terminal() {
+    if !stdin_is_terminal {
         if let Err(err_val) = io::stdin().read_to_end(&mut stdin) {
             eprintln!("Failed reading stdin\nDetails = {}", err_val);
             return Err(EXIT_CODE_COMM_IO_ERROR);
@@ -285,6 +286,7 @@ pub async fn run_daemon_command(
             DaemonResponse {
                 argv: None,
                 cwd: None,
+                interactive: None,
                 env: None,
                 stdinLength: Some(0),
                 stdin: Some(control_c),
@@ -295,6 +297,7 @@ pub async fn run_daemon_command(
             DaemonResponse {
                 argv: Some(zowe_cmd_args.to_vec()),
                 cwd: Some(cwd.into_os_string().into_string().unwrap()),
+                interactive: Some(stdin_is_terminal && io::stderr().is_terminal()),
                 env: Some(util_get_zowe_env()),
                 stdinLength: Some(stdin.len() as i32),
                 stdin: None,

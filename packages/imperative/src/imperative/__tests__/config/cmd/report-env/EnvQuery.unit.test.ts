@@ -299,6 +299,19 @@ describe("Tests for EnvQuery module", () => {
             expect(itemObj.itemProbMsg).toBe("");
         });
 
+        it("should report skipped configs even when there is no loaded team config", async () => {
+            const message = "Ignored project config: /shared/zowe.config.json (untrusted directory)";
+            const getter = jest.spyOn(impCfg, "config", "get").mockReturnValue({
+                exists: false, untrustedConfigFilesMessage: message
+            } as any);
+            try {
+                const itemObj = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_INFO);
+                expect(itemObj.itemValMsg).toContain(message);
+            } finally {
+                getter.mockRestore();
+            }
+        });
+
         it("should censor an environment variable that satisfies Censor.isSecureEnvName", async () => {
             process.env["ZOWE_CLIENT_SECRET"] = "abc123";
             process.env["ZOWE_API_KEY"] = "zomg_an_api_key-ohno";
