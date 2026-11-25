@@ -2,6 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed warning and error messages not displayed in console before logger is initialized.
+- **Breaking**: Updated the `Config.search` method to skip config files in world-writable directories and in directories that are not trusted. [#3016](https://github.com/zowe/zowe-cli/pull/3016)
+  - These checks can be bypassed with the `ZOWE_CONFIG_ALLOW_WORLD_WRITABLE` and `ZOWE_CONFIG_ALLOW_UNTRUSTED_DIRS` environment variables.
+  - In CI environments, the trusted directory check is skipped.
+  - The current directory and any location inside the user's home directory are automatically trusted. Other trusted directories can be stored in the `trustedProjectDirs` setting of Zowe CLI's `~/.zowe/settings/imperative.json`.
+  - Applications can prompt for directory trust with a synchronous or asynchronous `trustPromptFn` callback passed to either the `Config.load` or `ProfileInfo.readProfilesFromDisk` methods.
+
 ## `8.44.0`
 
 - BugFix: Preserve environment variable references when saving configuration, including values parsed as JSON, without changing the resolved values held in memory. [#3022](https://github.com/zowe/zowe-cli/pull/3022)

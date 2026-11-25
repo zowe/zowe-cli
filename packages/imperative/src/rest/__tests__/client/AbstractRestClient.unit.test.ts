@@ -2254,9 +2254,13 @@ describe("AbstractRestClient tests", () => {
 
             beforeEach(() => {
                 // pretend that readFileSync can read the cert and the cert key
-                readFileSyncSpy = jest.spyOn(fs, "readFileSync").mockReturnValue(
-                    "Some fake data from ReadFileSync"
-                );
+                const readFileSync = fs.readFileSync;
+                readFileSyncSpy = jest.spyOn(fs, "readFileSync").mockImplementation((file, options) => {
+                    if (file === "FakePemCert" || file === "FakePemCertKey") {
+                        return "Some fake data from ReadFileSync";
+                    }
+                    return readFileSync(file, options);
+                });
             });
 
             afterEach(() => {

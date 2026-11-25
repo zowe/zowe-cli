@@ -160,7 +160,7 @@ export class AppSettings {
      * Get a member of ISettingsFile of specified namespace
      * @param namespace
      */
-    public getNamespace(namespace: keyof ISettingsFile) {
+    public getNamespace<K extends keyof ISettingsFile>(namespace: K): ISettingsFile[K] {
         return this.settings[namespace];
     }
 

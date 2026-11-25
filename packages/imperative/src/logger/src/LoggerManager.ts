@@ -10,7 +10,7 @@
 */
 
 import { IQueuedMessage } from "./doc/IQueuedMessage";
-import { Console } from "../../console";
+import { Console, ConsoleLevels } from "../../console";
 import { appendFileSync } from "fs";
 
 /**
@@ -93,7 +93,8 @@ export class LoggerManager {
      * @param method - log method
      * @param message - log message
      */
-    public queueMessage(category: string, method: string, message: string){
+    public queueMessage(category: string, method: ConsoleLevels, message: string){
+        if (method === "off") return;
         if (this.logInMemory) {
             this.QueuedMessages.unshift({
                 category,
@@ -105,7 +106,7 @@ export class LoggerManager {
                 this.QueuedMessages.pop();
             }
         } else {
-            this.console.info(message);
+            this.console[method](message);
         }
     }
 
@@ -125,7 +126,7 @@ export class LoggerManager {
                      * For whatever reason causing logger to unable to append to the log file,
                      * log the error to console so user see and take appropriate action.
                      */
-                    this.console.info(error);
+                    this.console.error(error);
                 }
             });
         }

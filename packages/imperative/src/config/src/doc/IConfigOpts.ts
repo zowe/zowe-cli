@@ -10,6 +10,7 @@
 */
 
 import { IConfigVault } from "./IConfigVault";
+import { TrustPromptFn } from "../TrustedConfigManager";
 
 export interface IConfigOpts {
     /**
@@ -37,4 +38,11 @@ export interface IConfigOpts {
      * Do not attempt to load the config, meant for when the config is broken
      */
     noLoad?: boolean;
+
+    /**
+     * Callback to ask whether an unrecognized directory containing a project config
+     * file should be trusted. May return a boolean or a promise of a boolean.
+     * If omitted, such directories are skipped.
+     */
+    trustPromptFn?: TrustPromptFn;
 }

@@ -19,6 +19,7 @@ import { ConfigConstants } from "../src/ConfigConstants";
 import * as JSONC from "comment-json";
 import { ConfigLayers, ConfigSecure } from "../src/api";
 import { ConfigSchema } from "../src/ConfigSchema";
+import { TrustedConfigManager } from "../src/TrustedConfigManager";
 import { EventOperator, EventProcessor } from "../../events";
 
 
@@ -78,6 +79,10 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
 };
 
 describe("Config tests", () => {
+    beforeEach(() => {
+        jest.spyOn(TrustedConfigManager, "isDirTrusted").mockResolvedValue(true);
+    });
+
     afterEach(() => {
         jest.restoreAllMocks();
     });
